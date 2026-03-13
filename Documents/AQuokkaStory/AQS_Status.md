@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **AQS Root:** `Assets/_Sandbox/_AQS/`
-**Last Updated:** March 12, 2026 (Session 0.5 -- Asset Audit)
+**Last Updated:** March 12, 2026 (Session 1 -- Sprint 1 Start)
 
 > **NOTE:** Original project lost to crash (pre-GitHub backup era). Resurrecting from archived docs at `Documents/Archives/`. All code is lost -- starting from scratch. Concept art and design docs survived.
 
@@ -15,7 +15,7 @@
 
 ## Current State
 
-**Phase:** Pre-development. Docs resurrected and reformatted. No code exists yet.
+**Phase:** Sprint 1 -- Core Feel. Foundation scripts in, Scorch imported, debugging complete. Next: greybox scene + wire up player.
 
 **What survived the crash:**
 - Full GDD (multiple versions, latest Dec 2025)
@@ -39,16 +39,18 @@ These items were completed before the crash and need to be rebuilt:
 
 | Item | Old Status | New Status |
 |------|-----------|------------|
-| Project setup (Unity 6, URP, GitHub) | Was DONE | TODO |
-| Core player movement (walk, jump, crouch) | Was DONE | TODO |
+| Project setup (Unity 6, URP, GitHub) | Was DONE | DONE |
+| Core player movement (hop, jump) | Was DONE | IN PROGRESS -- QuokkaController compiles, needs scene wiring |
 | Climbing system with stamina | Was DONE | TODO |
-| Input System integration | Was DONE | TODO |
-| Ground detection (collision-based) | Was DONE | TODO |
+| Input System integration | Was DONE | DONE -- AQS_InputActions asset + QuokkaInputHandler |
+| Ground detection (collision-based) | Was DONE | DONE -- collision enter/stay/exit with normal check |
 | Joey prefab (base visuals) | Was DONE | TODO |
 | JoeyDefinition/AbilityDefinition SOs | Was IN PROGRESS | TODO |
 | MVP launch mechanic | Was TODO | TODO |
-| Package installation + configuration | Was DONE | TODO |
-| Asset eval for new candidates | N/A | TODO |
+| Package installation + configuration | Was DONE | DONE -- Sprint 1 packages installed |
+| Asset eval for new candidates | N/A | DONE -- 30 relevant assets identified |
+| GameEvent/GameEventListener system | Was DONE | DONE -- AQS.Core namespace |
+| Placeholder character (Scorch) | N/A | DONE -- imported with anims, no scripts |
 
 ## Key Decisions (Session 0)
 
@@ -158,6 +160,37 @@ These are already evaluated, approved, and owned. Install during Sprint 1 packag
 - One playable level (Tutorial or Swamp)
 - All core systems integrated
 - Ready to migrate to standalone project with GitHub
+
+---
+
+## Session 1 (Mar 12, 2026) -- COMPLETE
+
+**Status:** Sprint 1 foundation. Scripts compiling, Scorch imported, GitHub repo created.
+
+**Session 1 Work:**
+- Created GameEvent/GameEventListener system (AQS.Core) adapted from HOK
+- Created QuokkaController (AQS.Player) -- hop-based movement, jump with coyote time + buffer + cut, fall gravity, collision-based ground detection
+- Created QuokkaInputHandler (AQS.Player) -- wires Input System to controller
+- Created AQS_InputActions.inputactions -- Gameplay map with Move/Jump/LaunchJoey, keyboard + gamepad
+- Imported Scorch from HOK as placeholder character (models, materials, animations -- no scripts)
+- Created .gitignore with third-party asset exclusions (207 tracked files, 27.8MB)
+- Initial commit + push to https://github.com/TecVooDoo/Sandbox
+- Fixed compile errors: `Collision2D.GetContacts(List<>)` overload doesn't work in Unity 6 -- use `collision.contactCount` + `collision.GetContact(i)` instead
+- Fixed physics type: 2.5D uses 3D physics (Rigidbody, CapsuleCollider, Collision) with Z locked, NOT 2D physics (Rigidbody2D)
+- Boing Kit vs All In 1 Springs comparison: Boing Kit wins for AQS (BoingBones for ear/tail, AnimationBlend works with Animancer)
+
+**Key Gotchas Discovered:**
+- Unity 6 `Rigidbody` uses `linearVelocity` (not `velocity`) -- confirmed by linter
+- Unity 6 `Collision2D.GetContacts(List<ContactPoint2D>)` silently fails to compile -- use index-based access
+- 2.5D with 3D models = 3D physics + `RigidbodyConstraints.FreezePositionZ | FreezeRotation`
+- 3D `Rigidbody` has no `gravityScale` -- use `AddForce` with `Physics.gravity` multiplier instead
+
+**Next Session:**
+- Create AQS_Greybox scene with ProBuilder platforms, walls, climbable surfaces
+- Wire up player GameObject (Rigidbody, CapsuleCollider, PlayerInput, QuokkaController, QuokkaInputHandler)
+- Set up Ground layer
+- Test hop movement + jump feel
+- Begin climb system if time permits
 
 ---
 

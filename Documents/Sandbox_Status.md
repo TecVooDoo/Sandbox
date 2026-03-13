@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Project Path:** `E:\Unity\Sandbox`
 **Document Version:** Reconstructed Feb 23, 2026 (after data loss)
-**Last Updated:** March 12, 2026 (Session 57)
+**Last Updated:** March 12, 2026 (Session 58)
 
 > **NOTE:** This document was reconstructed after the Sandbox project became corrupt on Feb 23, 2026. Content recovered from session context and MEMORY.md.
 
@@ -18,6 +18,22 @@ Sandbox is a dedicated asset evaluation environment for ALL TecVooDoo projects. 
 **Primary output:** `Sandbox_AssetLog.md` -- 291 asset evaluations as of Session 57.
 
 **Reference doc:** `Sandbox_DevReference.md` -- coding standards, MCP gotchas, eval standards, AI rules. Read on demand.
+
+---
+
+## Session 58 (Mar 12, 2026) -- COMPLETE
+
+**Status:** A Quokka Story Sprint 1 foundation -- scripts, input, placeholder character, GitHub setup.
+
+**Session 58 Work:**
+- AQS Sprint 1 start: GameEvent system, QuokkaController (hop movement, jump, ground detection), QuokkaInputHandler, Input Actions asset
+- Imported Scorch from HOK as placeholder character (models, materials, animations only)
+- Created .gitignore with third-party asset exclusions, initial commit + push to GitHub
+- Debugged Unity 6 compile issues: `GetContacts(List<>)` silent failure, 2D vs 3D physics types for 2.5D
+- Asset audit: 30 relevant assets identified from AssetLog for AQS across 5 sprints
+- Boing Kit vs All In 1 Springs comparison (Boing Kit wins for AQS)
+
+**Asset Log:** 293 entries (2 new: ENTRY-292 Boing Kit install, ENTRY-293 Rope Toolkit install confirmed).
 
 ---
 

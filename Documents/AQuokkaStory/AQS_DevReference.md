@@ -1,7 +1,7 @@
 # A Quokka Story -- Dev Reference
 
 **Purpose:** Architecture, coding standards, and AI rules for A Quokka Story. Read on demand -- primary doc is `AQS_Status.md`.
-**Last Updated:** March 12, 2026 (Session 0.5 -- Asset Audit)
+**Last Updated:** March 12, 2026 (Session 1 -- Sprint 1 Start)
 
 ---
 
@@ -223,6 +223,8 @@ Same as all TecVooDoo projects:
 - **Keep scripts focused** -- extract when a class has more than one clear responsibility. No hard line limit. A 3000-line class that does one thing well is fine.
 - **Prefer interfaces and generics** -- decouple systems, reduce duplication
 - **Collision-based ground detection** -- NOT raycasts (design decision from original project, works better with 2.5D slopes and moving platforms)
+- **3D physics for 2.5D** -- use `Rigidbody` + `CapsuleCollider` + `Collision` (3D types), NOT `Rigidbody2D`. Freeze Z position + rotation. 3D models (Scorch, future quokka) need 3D colliders.
+- **Unity 6 Rigidbody API** -- use `rb.linearVelocity` (not `velocity`). No `gravityScale` on 3D Rigidbody -- use `AddForce` with `Physics.gravity` multiplier for fall acceleration.
 
 ---
 
