@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "ai-game-developer": {
+      "args": [
+        "port=54815",
+        "plugin-timeout=10000",
+        "client-transport=stdio"
+      ],
+      "command": "E:/Unity/Sandbox/Library/mcp-server/win-x64/unity-mcp-server.exe"
+    }
+  }
+}

@@ -1,0 +1,398 @@
+Category,Type,Move,Counter Move
+01 Basic,Idle,Frank_FS4_Idle_Stand_Loop,
+01 Basic,Idle,Frank_FS4_Idle_Crouch_Loop,
+01 Basic,Idle,Frank_FS4_Idle_Prone_Loop,
+01 Basic,Idle,Frank_FS4_Idle_Lay_Loop,
+01 Basic,Step_Dash,Frank_FS4_Step_Forward,
+01 Basic,Step_Dash,Frank_FS4_Step_Backward,
+01 Basic,Step_Dash,Frank_FS4_Step_Crouch_Forward,
+01 Basic,Step_Dash,Frank_FS4_Step_Crouch_Backward,
+01 Basic,Step_Dash,Frank_FS4_Dash_Forward,
+01 Basic,Step_Dash,Frank_FS4_Dash_Backward,
+01 Basic,Defensive_Move,Frank_FS4_Duck,
+01 Basic,Defensive_Move,Frank_FS4_Sway,
+01 Basic,Defensive_Move,Frank_FS4_Slip_Left,
+01 Basic,Defensive_Move,Frank_FS4_Slip_Right,
+01 Basic,Defensive_Move,Frank_FS4_Duck_Step_Forward,
+01 Basic,Defensive_Move,Frank_FS4_Duck_Step_Backward,
+01 Basic,Defensive_Move,Frank_FS4_Duck_Step_Left,
+01 Basic,Defensive_Move,Frank_FS4_Duck_Step_Right,
+01 Basic,Defensive_Move,Frank_FS4_Sway_BackStep,
+01 Basic,Defensive_Move,Frank_FS4_Weaving01,
+01 Basic,Defensive_Move,Frank_FS4_Weaving02,
+01 Basic,Defensive_Move,Frank_FS4_Defense_Low_Dodge1,
+01 Basic,Defensive_Move,Frank_FS4_Defense_Low_Dodge2,
+01 Basic,Defensive_Move,Frank_FS4_Defense_Low_Dodge3,
+02  Attack 1,Punch L,Frank_FS4_Attack_Punch_L_01,Frank_FS4_Hit_High_Front_Lite
+02  Attack 1,Punch L,Frank_FS4_Attack_Punch_L_02,Frank_FS4_Hit_High_Front_Lite
+02  Attack 1,Punch L,Frank_FS4_Attack_Punch_L_03,Frank_FS4_Hit_High_Front_Lite
+02  Attack 1,Punch L,Frank_FS4_Attack_Punch_L_04,Frank_FS4_Hit_High_Front_Lite
+02  Attack 1,Punch L,Frank_FS4_Attack_Punch_L_05,Frank_FS4_Hit_High_Front
+02  Attack 1,Punch L,Frank_FS4_Attack_Punch_L_06,Frank_FS4_Hit_High_Front
+02  Attack 1,Punch L,Frank_FS4_Attack_Punch_L_07,Frank_FS4_Hit_High_Front
+02  Attack 1,Punch L,Frank_FS4_Attack_Punch_L_08,Frank_FS4_Hit_High_Front
+02  Attack 1,Punch L,Frank_FS4_Attack_Punch_L_09,Frank_FS4_Hit_High_Front
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_01,Frank_FS4_Hit_High_Front_Lite
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_02,Frank_FS4_Hit_High_Front_Lite
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_03,Frank_FS4_Hit_High_Front_Lite
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_04,Frank_FS4_Hit_High_Front_Lite
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_05,Frank_FS4_Hit_High_Front_Lite
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_06,Frank_FS4_Hit_High_Front
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_07,Frank_FS4_Hit_High_Front
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_08,Frank_FS4_Hit_High_Front
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_09,Frank_FS4_Hit_High_Front
+02  Attack 1,Punch R,Frank_FS4_Attack_Punch_R_10,Frank_FS4_Hit_High_Front
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_01,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_02,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_03,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_04,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_05,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_06,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_07,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_08,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_09,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_10,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_11,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick L,Frank_FS4_Attack_Kick_L_12,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_01,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_02,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_03,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_04,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_05,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_06,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_07,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_08,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_09,Frank_FS4_Hit_Mid_Front_Lite
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_10,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_11,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_12,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_13,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_14,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_15,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_16,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_17,Frank_FS4_Hit_Mid_Front
+02  Attack 1,Kick R,Frank_FS4_Attack_Kick_R_18,Frank_FS4_Hit_Mid_Front
+03  Attack 2,Attacks_Crouch,Frank_FS4_Attack_Crouch_Punch_01,Frank_FS4_Hit_Low_Front_Lite
+03  Attack 2,Attacks_Crouch,Frank_FS4_Attack_Crouch_Punch_02,Frank_FS4_Hit_Low_Front_Lite
+03  Attack 2,Attacks_Crouch,Frank_FS4_Attack_Crouch_Punch_03,Frank_FS4_Hit_Low_Front
+03  Attack 2,Attacks_Crouch,Frank_FS4_Attack_Crouch_Kick_01,Frank_FS4_Hit_Low_Front_Lite
+03  Attack 2,Attacks_Crouch,Frank_FS4_Attack_Crouch_Kick_02,Frank_FS4_Hit_Low_Front_Lite
+03  Attack 2,Attacks_Crouch,Frank_FS4_Attack_Crouch_Kick_03,Frank_FS4_Hit_Low_Front
+03  Attack 2,Attacks_Standing_Up,Frank_FS4_Attack_Standing_Up_01,Frank_FS4_Hit_Mid_Front_Lite
+03  Attack 2,Attacks_Standing_Up,Frank_FS4_Attack_Standing_Up_02,Frank_FS4_Hit_Mid_Front_Lite
+03  Attack 2,Attacks_Standing_Up,Frank_FS4_Attack_Standing_Up_03,Frank_FS4_Hit_Mid_Front_Lite
+03  Attack 2,Attacks_Standing_Up,Frank_FS4_Attack_Standing_Up_04,Frank_FS4_Hit_Mid_Front
+03  Attack 2,Attacks_Standing_Up,Frank_FS4_Attack_Standing_Up_05,Frank_FS4_Hit_Mid_Front
+03  Attack 2,Attacks_Standing_Up,Frank_FS4_Attack_Standing_Up_06,Frank_FS4_Hit_Mid_Front
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_01,Frank_FS4_Hit_Air_01
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_02,Frank_FS4_Hit_Air_01
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_03,Frank_FS4_Hit_Air_01
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_04,Frank_FS4_Hit_Air_01
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_05,Frank_FS4_Hit_Air_01
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_06,Frank_FS4_Hit_Air_01
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_07,Frank_FS4_Hit_Air_01
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_08,Frank_FS4_Hit_Air_01
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_09,Frank_FS4_Hit_Air_03
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_10,Frank_FS4_Hit_Air_03
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_11,Frank_FS4_Hit_Air_03
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_12,Frank_FS4_Hit_Air_03
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_13,Frank_FS4_Hit_Air_03
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_14,Frank_FS4_Hit_Air_03
+03  Attack 2,Attack_Jump,Frank_FS4_Attack_Jump_15,Frank_FS4_Hit_Air_03
+03  Attack 2,Attack_Somersault,Frank_FS4_Attack_Somersault_01,Frank_FS4_Hit_Air_02_Low
+03  Attack 2,Attack_Somersault,Frank_FS4_Attack_Somersault_02,Frank_FS4_Hit_Air_02_Low
+03  Attack 2,Attack_Somersault,Frank_FS4_Attack_Somersault_03,Frank_FS4_Hit_Air_02_Low
+03  Attack 2,Attack_Wall,Frank_FS4_Attack_Wall_Dodge,
+03  Attack 2,Attack_Wall,Frank_FS4_Attack_Wall_01,Frank_FS4_Hit_Wall_Bound
+03  Attack 2,Attack_Wall,Frank_FS4_Attack_Wall_02,Frank_FS4_Hit_Wall_Bound
+03  Attack 2,Attack_Wall,Frank_FS4_Attack_Wall_03,Frank_FS4_Hit_Wall_Bound
+03  Attack 2,Attack_Wall,Frank_FS4_Attack_Wall_04,Frank_FS4_Hit_Wall_Bound
+04  Defence,Defence,Frank_FS4_Defence_Loop,
+04  Defence,Defence,Frank_FS4_Defence_High_F_In_Place,
+04  Defence,Defence,Frank_FS4_Defence_High_F,
+04  Defence,Defence,Frank_FS4_Defence_High_L,
+04  Defence,Defence,Frank_FS4_Defence_High_R,
+04  Defence,Defence,Frank_FS4_Defence_Mid_Crouch_Loop,
+04  Defence,Defence,Frank_FS4_Defence_Mid_Crouch_F_In_Place,
+04  Defence,Defence,Frank_FS4_Defence_Mid_Crouch_F,
+04  Defence,Defence,Frank_FS4_Defence_Mid_Crouch_L,
+04  Defence,Defence,Frank_FS4_Defence_Mid_Crouch_R,
+04  Defence,Defence,Frank_FS4_Defence_Low_Loop,
+04  Defence,Defence,Frank_FS4_Defence_Low_F_In_Place,
+04  Defence,Defence,Frank_FS4_Defence_Low_F,
+04  Defence,Defence,Frank_FS4_Defence_Low_L,
+04  Defence,Defence,Frank_FS4_Defence_Low_R,
+04  Defence,Defence,Frank_FS4_Defence_Air_Loop,
+04  Defence,Defence,Frank_FS4_Defence_Air_F_In_Place,
+04  Defence,Defence,Frank_FS4_Defence_Air_F,
+04  Defence,Defence,Frank_FS4_Defence_Air_L,
+04  Defence,Defence,Frank_FS4_Defence_Air_R,
+04  Defence,Defence,Frank_FS4_Defence_Mid_Loop,
+04  Defence,Defence,Frank_FS4_Defence_Mid_F_In_Place,
+04  Defence,Defence,Frank_FS4_Defence_Mid_F,
+04  Defence,Defence,Frank_FS4_Defence_Mid_L,
+04  Defence,Defence,Frank_FS4_Defence_Mid_R,
+04  Defence,Defence,Frank_FS4_DefenceCounter,
+04  Defence,Defence,Frank_FS4_DefenceCounter_Impact,
+04  Defence,Defence,Frank_FS4_Defence_Break,
+04  Defence,Strong_Defence,Frank_FS4_Strong_Defence_High_1,
+04  Defence,Strong_Defence,Frank_FS4_Strong_Defence_High_2,
+04  Defence,Strong_Defence,Frank_FS4_Strong_Defence_Mid_1,
+04  Defence,Strong_Defence,Frank_FS4_Strong_Defence_Mid_2,
+04  Defence,Strong_Defence,Frank_FS4_Strong_Defence_Mid_Crouch_1,
+04  Defence,Strong_Defence,Frank_FS4_Strong_Defence_Mid_Crouch_2,
+04  Defence,Strong_Defence,Frank_FS4_Strong_Defence_Low,
+05  Combination All,,Frank_FS4_Combination_01_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_02_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_03_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_04_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_05_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_06_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_07_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_08_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_09A_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_09B_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_09C_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_10A_All,Frank_FS4_Hit_High_Front
+05  Combination All,,Frank_FS4_Combination_10B_All,Frank_FS4_Hit_High_Front
+06  Atk_Back,,Frank_FS4_Attack_Back_01,Frank_FS4_Hit_Back_01
+06  Atk_Back,,Frank_FS4_Attack_Back_02,Frank_FS4_Hit_Back_01
+06  Atk_Back,,Frank_FS4_Attack_Back_03,Frank_FS4_Hit_Back_01
+06  Atk_Back,,Frank_FS4_Attack_Back_04,Frank_FS4_Hit_Crouch_Back_01
+06  Atk_Back,,Frank_FS4_Attack_Back_05,Frank_FS4_Hit_Crouch_Back_01
+06  Atk_Back,,Frank_FS4_Attack_Back_06,Frank_FS4_Hit_Crouch_Back_01
+06  Atk_Back,,Frank_FS4_Attack_Back_07,Frank_FS4_Hit_Crouch_Back_01
+07  Parry,,Frank_FS4_Parry_01,Frank_FS4_Parry_01_reAct
+07  Parry,,Frank_FS4_Parry_02,Frank_FS4_Parry_02_reAct
+07  Parry,,Frank_FS4_Parry_03,Frank_FS4_Parry_03_reAct
+07  Parry,,Frank_FS4_Parry_04,Frank_FS4_Parry_04_reAct
+07  Parry,,Frank_FS4_Parry_05,Frank_FS4_Parry_05_reAct
+07  Parry,,Frank_FS4_Parry_06,Frank_FS4_Parry_06_reAct
+07  Parry,,Frank_FS4_Parry_07,Frank_FS4_Parry_07_reAct
+07  Parry,,Frank_FS4_Parry_08,Frank_FS4_Parry_08_reAct
+07  Parry,,Frank_FS4_Parry_09,Frank_FS4_Parry_09_reAct
+08  Parry_reAct,,Frank_FS4_Parry_01_reAct,
+08  Parry_reAct,,Frank_FS4_Parry_02_reAct,
+08  Parry_reAct,,Frank_FS4_Parry_03_reAct,
+08  Parry_reAct,,Frank_FS4_Parry_04_reAct,
+08  Parry_reAct,,Frank_FS4_Parry_05_reAct,
+08  Parry_reAct,,Frank_FS4_Parry_06_reAct,
+08  Parry_reAct,,Frank_FS4_Parry_07_reAct,
+08  Parry_reAct,,Frank_FS4_Parry_08_reAct,
+08  Parry_reAct,,Frank_FS4_Parry_09_reAct,
+09  Grab,,Frank_FS4_Grab_01,Frank_FS4_Grab_01_reAct
+09  Grab,,Frank_FS4_Grab_02,Frank_FS4_Grab_02_reAct
+09  Grab,,Frank_FS4_Grab_03,Frank_FS4_Grab_03_reAct
+09  Grab,,Frank_FS4_Grab_04,Frank_FS4_Grab_04_reAct
+09  Grab,,Frank_FS4_Grab_05,Frank_FS4_Grab_05_reAct
+09  Grab,,Frank_FS4_Grab_06,Frank_FS4_Grab_06_reAct
+09  Grab,,Frank_FS4_Grab_07,Frank_FS4_Grab_07_reAct
+09  Grab,,Frank_FS4_Grab_Back_01,Frank_FS4_Grab_Back_01_reAct
+09  Grab,,Frank_FS4_Grab_Back_02,Frank_FS4_Grab_Back_02_reAct
+09  Grab,,Frank_FS4_Grab_Crouch_01,Frank_FS4_Grab_Crouch_01_reAct
+09  Grab,,Frank_FS4_Grab_Crouch_02,Frank_FS4_Grab_Crouch_02_reAct
+10  Grab_reAct,,Frank_FS4_Grab_01_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_02_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_03_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_04_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_05_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_06_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_07_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_Back_01_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_Back_02_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_Crouch_01_reAct,
+10  Grab_reAct,,Frank_FS4_Grab_Crouch_02_reAct,
+11  Grab_Fail,,Frank_FS4_Grab_01_Fail,Frank_FS4_Grab_01_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_02_Fail,Frank_FS4_Grab_02_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_03_Fail,Frank_FS4_Grab_03_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_04_Fail,Frank_FS4_Grab_04_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_05_Fail,Frank_FS4_Grab_05_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_06_Fail,Frank_FS4_Grab_06_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_07_Fail,Frank_FS4_Grab_07_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_Crouch_01_Fail_A,Frank_FS4_Grab_Crouch_01_A_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_Crouch_01_Fail_B,Frank_FS4_Grab_Crouch_01_B_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_Crouch_02_Fail_A,Frank_FS4_Grab_Crouch_02_A_Fail_reAct
+11  Grab_Fail,,Frank_FS4_Grab_Crouch_02_Fail_B,Frank_FS4_Grab_Crouch_02_B_Fail_reAct
+11  Grab_Fail,Grab_Action,Frank_FS4_Grab_Action_1,
+11  Grab_Fail,Grab_Action,Frank_FS4_Grab_Action_2,
+11  Grab_Fail,Grab_Action,Frank_FS4_Grab_Action_Step,
+11  Grab_Fail,Grab_Action,Frank_FS4_Grab_Action_Fail,Frank_FS4_Grab_Action_Fail_reAct
+11  Grab_Fail,Grab_Action,Frank_FS4_Grab_Action_Crouch,
+11  Grab_Fail,Grab_Action,Frank_FS4_Grab_Action_Crouch_Fail,Frank_FS4_Grab_Action_Crouch_Fail_reAct
+11  Grab_Fail,Grab_Action,Frank_FS4_Grab_Action_Fail_reAct,
+11  Grab_Fail,Grab_Action,Frank_FS4_Grab_Action_Crouch_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_01_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_02_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_03_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_04_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_05_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_06_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_07_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_Crouch_01_A_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_Crouch_01_B_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_Crouch_02_A_Fail_reAct,
+12  Grab_Fail_reAct,,Frank_FS4_Grab_Crouch_02_B_Fail_reAct,
+13  Hit,,Frank_FS4_Hit_Fly_Away,
+13  Hit,,Frank_FS4_Hit_Wall_Bound,
+13  Hit,,Frank_FS4_Hit_Wall_Stun_Front,
+13  Hit,,Frank_FS4_Hit_Wall_Stun_Back,
+13  Hit,,Frank_FS4_Hit_Wall_Stun_Left,
+13  Hit,,Frank_FS4_Hit_Wall_Stun_Right,
+13  Hit,,Frank_FS4_Hit_High_Front_Lite,
+13  Hit,,Frank_FS4_Hit_High_Left_Lite,
+13  Hit,,Frank_FS4_Hit_High_Right_Lite,
+13  Hit,,Frank_FS4_Hit_High_Front,
+13  Hit,,Frank_FS4_Hit_High_Left,
+13  Hit,,Frank_FS4_Hit_High_Right,
+13  Hit,,Frank_FS4_Hit_Mid_Front_Lite,
+13  Hit,,Frank_FS4_Hit_Mid_Left_Lite,
+13  Hit,,Frank_FS4_Hit_Mid_Right_Lite,
+13  Hit,,Frank_FS4_Hit_Mid_Front,
+13  Hit,,Frank_FS4_Hit_Mid_Left,
+13  Hit,,Frank_FS4_Hit_Mid_Right,
+13  Hit,,Frank_FS4_Hit_Low_Front_Lite,
+13  Hit,,Frank_FS4_Hit_Low_Left_Lite,
+13  Hit,,Frank_FS4_Hit_Low_Right_Lite,
+13  Hit,,Frank_FS4_Hit_Low_Front,
+13  Hit,,Frank_FS4_Hit_Low_Left,
+13  Hit,,Frank_FS4_Hit_Low_Right,
+13  Hit,,Frank_FS4_Hit_Low_Slip_Front,
+13  Hit,,Frank_FS4_Hit_Low_Slip_Left,
+13  Hit,,Frank_FS4_Hit_Low_Slip_Right,
+13  Hit,,Frank_FS4_Hit_GuardBreak_Stand,
+13  Hit,,Frank_FS4_Hit_GuardBreak_Crouch,
+13  Hit,,Frank_FS4_Hit_Spin_L,
+13  Hit,,Frank_FS4_Hit_Spin_R,
+13  Hit,,Frank_FS4_Hit_Groggy_01,
+13  Hit,,Frank_FS4_Hit_Groggy_02,
+13  Hit,,Frank_FS4_Hit_Stun_Stand,
+13  Hit,,Frank_FS4_Hit_Stumble_01,
+13  Hit,,Frank_FS4_Hit_Stumble_02_Sliding,
+13  Hit,,Frank_FS4_Hit_Bound_01,
+13  Hit,,Frank_FS4_Hit_Bound_02,
+13  Hit,,Frank_FS4_Hit_Air_01,
+13  Hit,,Frank_FS4_Hit_Air_02_Low,
+13  Hit,,Frank_FS4_Hit_Air_03,
+13  Hit,,Frank_FS4_Hit_Air_04,
+13  Hit,,Frank_FS4_Hit_Spiral_CW,
+13  Hit,,Frank_FS4_Hit_Spiral_CCW,
+13  Hit,,Frank_FS4_Hit_Crouch_Back_01,
+13  Hit,,Frank_FS4_Hit_Crouch_Back_02,
+13  Hit,,Frank_FS4_Hit_Back_01,
+13  Hit,,Frank_FS4_Hit_Lay_01,
+13  Hit,,Frank_FS4_Hit_Lay_02,
+13  Hit,,Frank_FS4_Hit_Prone_01,
+13  Hit,,Frank_FS4_Hit_Prone_02,
+14  Jump,,Frank_FS4_Jump_N_Low_All,
+14  Jump,,Frank_FS4_Jump_N_High_All,
+14  Jump,,Frank_FS4_Jump_F_Low_All,
+14  Jump,,Frank_FS4_Jump_F_High_All,
+14  Jump,,Frank_FS4_Jump_B_Low_All,
+14  Jump,,Frank_FS4_Jump_B_High_All,
+15  Air_Atk,,Frank_FS4_Attack_Air_01,
+15  Air_Atk,,Frank_FS4_Attack_Air_02,
+15  Air_Atk,,Frank_FS4_Attack_Air_03,
+15  Air_Atk,,Frank_FS4_Attack_Air_04,
+15  Air_Atk,,Frank_FS4_Attack_Air_05,
+16  Air_Combination,,Frank_FS4_Combination_Air_01_All,
+16  Air_Combination,,Frank_FS4_Combination_Air_02_All,
+16  Air_Combination,,Frank_FS4_Combination_Air_03_All,
+17  GetUp,,Frank_FS4_Getup_1_1,
+17  GetUp,,Frank_FS4_Getup_1_2,
+17  GetUp,,Frank_FS4_Getup_1_3_Crouch,
+17  GetUp,,Frank_FS4_Getup_1_4_Roll_F,
+17  GetUp,,Frank_FS4_Getup_1_5_Roll_B,
+17  GetUp,,Frank_FS4_Getup_2_1,
+17  GetUp,,Frank_FS4_Getup_2_2,
+18  KO,,Frank_FS4_KO_High_01,
+18  KO,,Frank_FS4_KO_High_02,
+18  KO,,Frank_FS4_KO_High_03,
+18  KO,,Frank_FS4_KO_High_04,
+18  KO,,Frank_FS4_KO_Mid_01,
+18  KO,,Frank_FS4_KO_Mid_02,
+18  KO,,Frank_FS4_KO_Low_01,
+19  Soft_Landing,,Frank_FS4_S_Landing_Roll_Back,
+19  Soft_Landing,,Frank_FS4_S_Landing_Roll_Side_L,
+19  Soft_Landing,,Frank_FS4_S_Landing_Roll_Side_R,
+19  Soft_Landing,,Frank_FS4_S_Landing_Handspring,
+19  Soft_Landing,,Frank_FS4_S_Landing_Spring,
+19  Soft_Landing,,Frank_FS4_S_Landing_Tumble_Back,
+19  Soft_Landing,,Frank_FS4_S_Landing_Tumble_Back2,
+20  Atk_Running,,Frank_FS4_Sprint_InPlace,
+20  Atk_Running,,Frank_FS4_Sprint_RootMotion,
+20  Atk_Running,,Frank_FS4_Attack_Running_01_Fail_Sample,
+20  Atk_Running,,Frank_FS4_Attack_Running_01_Fail,
+20  Atk_Running,,Frank_FS4_Attack_Running_01_Success_Sample,
+20  Atk_Running,,Frank_FS4_Attack_Running_01_Success,
+21  Cinematic_Atk,,Frank_FS4_Cinematic_Attack_1,
+21  Cinematic_Atk,,Frank_FS4_Cinematic_Attack_2,
+21  Cinematic_Atk,,Frank_FS4_Cinematic_Attack_3_Wall,
+22  Cinematic_Atk_reAct,,Frank_FS4_Cinematic_Attack_1_reAct,
+22  Cinematic_Atk_reAct,,Frank_FS4_Cinematic_Attack_2_reAct,
+22  Cinematic_Atk_reAct,,Frank_FS4_Cinematic_Attack_3_Wall_reAct,
+23  Locomotion,Dodge_8Way,Frank_FS4_8Way_Dodge_F,
+23  Locomotion,Dodge_8Way,Frank_FS4_8Way_Dodge_B,
+23  Locomotion,Dodge_8Way,Frank_FS4_8Way_Dodge_L,
+23  Locomotion,Dodge_8Way,Frank_FS4_8Way_Dodge_R,
+23  Locomotion,Dodge_8Way,Frank_FS4_8Way_Dodge_FL,
+23  Locomotion,Dodge_8Way,Frank_FS4_8Way_Dodge_FR,
+23  Locomotion,Dodge_8Way,Frank_FS4_8Way_Dodge_BL,
+23  Locomotion,Dodge_8Way,Frank_FS4_8Way_Dodge_BR,
+23  Locomotion,QuickStep_8Way,Frank_FS4_8Way_QuickStep_F,
+23  Locomotion,QuickStep_8Way,Frank_FS4_8Way_QuickStep_B,
+23  Locomotion,QuickStep_8Way,Frank_FS4_8Way_QuickStep_L,
+23  Locomotion,QuickStep_8Way,Frank_FS4_8Way_QuickStep_R,
+23  Locomotion,QuickStep_8Way,Frank_FS4_8Way_QuickStep_FL,
+23  Locomotion,QuickStep_8Way,Frank_FS4_8Way_QuickStep_FR,
+23  Locomotion,QuickStep_8Way,Frank_FS4_8Way_QuickStep_BL,
+23  Locomotion,QuickStep_8Way,Frank_FS4_8Way_QuickStep_BR,
+23  Locomotion,Idle_QuickWalk_8Way,Frank_FS4_8Way_QuickWalk_F,
+23  Locomotion,Idle_QuickWalk_8Way,Frank_FS4_8Way_QuickWalk_B,
+23  Locomotion,Idle_QuickWalk_8Way,Frank_FS4_8Way_QuickWalk_L,
+23  Locomotion,Idle_QuickWalk_8Way,Frank_FS4_8Way_QuickWalk_R,
+23  Locomotion,Idle_QuickWalk_8Way,Frank_FS4_8Way_QuickWalk_FL,
+23  Locomotion,Idle_QuickWalk_8Way,Frank_FS4_8Way_QuickWalk_FR,
+23  Locomotion,Idle_QuickWalk_8Way,Frank_FS4_8Way_QuickWalk_BL,
+23  Locomotion,Idle_QuickWalk_8Way,Frank_FS4_8Way_QuickWalk_BR,
+23  Locomotion,BigStep,Frank_FS4_8Way_BigStep_F,
+23  Locomotion,BigStep,Frank_FS4_8Way_BigStep_B,
+23  Locomotion,BigStep,Frank_FS4_8Way_BigStep_L,
+23  Locomotion,BigStep,Frank_FS4_8Way_BigStep_R,
+23  Locomotion,BigStep,Frank_FS4_8Way_BigStep_FL,
+23  Locomotion,BigStep,Frank_FS4_8Way_BigStep_FR,
+23  Locomotion,BigStep,Frank_FS4_8Way_BigStep_BL,
+23  Locomotion,BigStep,Frank_FS4_8Way_BigStep_BR,
+23  Locomotion,"Turn 45, 90, 180",Frank_FS4_Turn_L_45,
+23  Locomotion,"Turn 45, 90, 180",Frank_FS4_Turn_L_90,
+23  Locomotion,"Turn 45, 90, 180",Frank_FS4_Turn_L_180,
+23  Locomotion,"Turn 45, 90, 180",Frank_FS4_Turn_R_45,
+23  Locomotion,"Turn 45, 90, 180",Frank_FS4_Turn_R_90,
+23  Locomotion,"Turn 45, 90, 180",Frank_FS4_Turn_R_180,
+23  Locomotion,"Turn 45, 90, 180",Frank_FS4_Turn_Sit_to_Stand_L_180,
+23  Locomotion,"Turn 45, 90, 180",Frank_FS4_Turn_Sit_to_Stand_R_180,
+23  Locomotion,ETC,Frank_FS4_Standing,
+23  Locomotion,ETC,Frank_FS4_Crouching,
+24  Combination_Split,,Frank_FS4_Combination_01_1,
+24  Combination_Split,,Frank_FS4_Combination_01_2,
+24  Combination_Split,,Frank_FS4_Combination_01_3,
+24  Combination_Split,,Frank_FS4_Combination_03_1,
+24  Combination_Split,,Frank_FS4_Combination_03_2,
+24  Combination_Split,,Frank_FS4_Combination_04_1,
+24  Combination_Split,,Frank_FS4_Combination_04_2,
+24  Combination_Split,,Frank_FS4_Combination_04_3,
+24  Combination_Split,,Frank_FS4_Combination_04_4,
+24  Combination_Split,,Frank_FS4_Combination_05_1,
+24  Combination_Split,,Frank_FS4_Combination_05_2,
+24  Combination_Split,,Frank_FS4_Combination_05_3,
+24  Combination_Split,,Frank_FS4_Combination_07_1,
+24  Combination_Split,,Frank_FS4_Combination_07_2,
+24  Combination_Split,,Frank_FS4_Combination_07_3,
+24  Combination_Split,,Frank_FS4_Combination_08_1,
+24  Combination_Split,,Frank_FS4_Combination_08_2,
+24  Combination_Split,,Frank_FS4_Combination_09A_1,
+24  Combination_Split,,Frank_FS4_Combination_09A_2,
+24  Combination_Split,,Frank_FS4_Combination_09A_3,
+24  Combination_Split,,Frank_FS4_Combination_09B_2,
+24  Combination_Split,,Frank_FS4_Combination_09B_3,
+24  Combination_Split,,Frank_FS4_Combination_09C_1,
+24  Combination_Split,,Frank_FS4_Combination_09C_2,

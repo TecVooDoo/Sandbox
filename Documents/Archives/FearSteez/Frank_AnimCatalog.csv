@@ -1,0 +1,690 @@
+Pack,Category,ClipName,Role,HitLevel,HitWeight,Context,Notes
+#
+# FRANK FIGHTING SET ANIMATION CATALOG
+# Covers FS3 and FS4. Source of truth for FrankHitReactionDB SO and FSAttackData SO batch creation.
+#
+# Role     : Attack | Reaction | Conditional | KO | Getup | SoftLanding | Grapple_Attacker | Grapple_Victim | Locomotion | Utility
+# HitLevel : High | Mid | Low | Sweep | Launch  (blank = not a hit)
+# HitWeight: Lite | Full                         (blank = not a hit)
+# Context  : Front | Back | Left | Right | Air | Wall | Ground | Spin | Groggy | Stun (blank = Front)
+#
+# HitLevel maps to FSAttackData._hitLevel. HitWeight maps to FSAttackData._hitWeight.
+# Reaction clips are pooled by (HitLevel, HitWeight) in FrankHitReactionDB.
+# Attack clips become FSAttackData SOs; set HitLevel+HitWeight to determine which Reaction pool fires.
+#
+# NOTE: FS3 listing may be incomplete -- glob was truncated. Verify in Project window.
+# NOTE: FS4 clips live inside multi-clip FBX containers (numbered 01-24 FBX files).
+#
+##############################################################################
+# FS3 -- ATTACKS
+##############################################################################
+FS3,Punch,Frank_FS3@Punch01,Attack,High,Full,Front,Jab/cross
+FS3,Punch,Frank_FS3@Punch02,Attack,High,Full,Front,Jab/cross -- verify exists
+FS3,Punch,Frank_FS3@Punch03,Attack,High,Full,Front,Jab/cross -- verify exists
+FS3,Punch,Frank_FS3@Punch04,Attack,High,Lite,Front,Quick jab
+FS3,Punch,Frank_FS3@Punch05,Attack,High,Full,Front,Heavier cross
+FS3,Punch,Frank_FS3@Punch07_Crouch,Attack,Low,Lite,Front,Crouch light punch
+FS3,Punch,Frank_FS3@Punch08_Crouch,Attack,Low,Full,Front,Crouch heavy punch
+FS3,Punch,Frank_FS3@Air_Punch01_Rising,Attack,Launch,Lite,Air,Rising aerial punch
+FS3,Punch,Frank_FS3@Air_Punch01,Attack,Launch,Full,Air,Apex aerial punch
+FS3,Punch,Frank_FS3@Air_Punch01_Falling,Attack,Launch,Lite,Air,Falling aerial punch
+FS3,Kick,Frank_FS3@Kick05,Attack,Mid,Full,Front,Standard mid kick
+FS3,Kick,Frank_FS3@Kick08,Attack,Mid,Full,Front,Heavy mid kick
+FS3,Kick,Frank_FS3@Kick09,Attack,Mid,Full,Front,Heavy mid kick
+FS3,Kick,Frank_FS3@Kick11,Attack,Mid,Full,Front,Heavy mid kick
+FS3,Kick,Frank_FS3@Kick14_Crouch,Attack,Low,Full,Front,Crouch sweep kick
+FS3,Kick,Frank_FS3@Air_Kick01_Rising,Attack,Launch,Lite,Air,Rising aerial kick
+FS3,Kick,Frank_FS3@Air_Kick01_Falling,Attack,Launch,Full,Air,Falling aerial kick
+FS3,Combo,Frank_FS3@Combo01_All,Attack,High,Full,Front,Full combo sequence
+FS3,Combo,Frank_FS3@Combo02_All,Attack,High,Full,Front,Full combo -- verify exists
+FS3,Combo,Frank_FS3@Combo03_All,Attack,High,Full,Front,Full combo -- verify exists
+FS3,Combo,Frank_FS3@Combo04_All,Attack,High,Full,Front,Full combo -- verify exists
+FS3,Combo,Frank_FS3@Combo05_All,Attack,High,Full,Front,Full combo sequence
+FS3,Combo,Frank_FS3@Combo06_All,Attack,High,Full,Front,Full combo sequence
+FS3,Combo,Frank_FS3@Combo07_All,Attack,High,Full,Front,Full combo sequence
+FS3,Combo,Frank_FS3@Combo08_All,Attack,High,Full,Front,Full combo -- verify exists
+FS3,Combo,Frank_FS3@Combo09_All,Attack,High,Full,Front,Full combo -- verify exists
+FS3,Combo,Frank_FS3@Combo10_All,Attack,High,Full,Front,Full combo sequence
+FS3,Combo,Frank_FS3@Combo11_All,Attack,High,Full,Front,Full combo sequence
+FS3,Combo,Frank_FS3@Combo12_All,Attack,High,Full,Front,Full combo -- verify exists
+FS3,Combo_Cut,Frank_FS3@Combo01_3,Attack,High,Full,Front,Combo 01 finisher
+FS3,Combo_Cut,Frank_FS3@Combo02_1,Attack,High,Lite,Front,Combo 02 opener
+FS3,Combo_Cut,Frank_FS3@Combo04_2,Attack,High,Lite,Front,Combo 04 mid
+FS3,Combo_Cut,Frank_FS3@Combo04_3,Attack,High,Full,Front,Combo 04 finisher
+FS3,Combo_Cut,Frank_FS3@Combo06_2,Attack,High,Lite,Front,Combo 06 mid
+FS3,Combo_Cut,Frank_FS3@Combo07_1,Attack,High,Lite,Front,Combo 07 opener
+FS3,Combo_Cut,Frank_FS3@Combo07_3,Attack,High,Full,Front,Combo 07 finisher
+FS3,Combo_Cut,Frank_FS3@Combo08_2,Attack,High,Lite,Front,Combo 08 mid
+FS3,Combo_Cut,Frank_FS3@Combo09_1,Attack,High,Lite,Front,Combo 09 opener
+FS3,Combo_Cut,Frank_FS3@Combo10_2,Attack,High,Lite,Front,Combo 10 mid
+FS3,Combo_Cut,Frank_FS3@Combo10_3,Attack,High,Full,Front,Combo 10 finisher
+FS3,Combo_Cut,Frank_FS3@Combo11_1,Attack,High,Lite,Front,Combo 11 opener
+FS3,Combo_Cut,Frank_FS3@Combo12_1,Attack,High,Lite,Front,Combo 12 opener
+FS3,Combo_Cut,Frank_FS3@Combo12_2,Attack,High,Full,Front,Combo 12 finisher
+FS3,Grapple,Frank_FS3@Grapple_F1,Grapple_Attacker,,,,Front grapple 1
+FS3,Grapple,Frank_FS3@Grapple_F2,Grapple_Attacker,,,,Front grapple 2
+FS3,Grapple,Frank_FS3@Grapple_F3,Grapple_Attacker,,,,Front grapple 3
+FS3,Grapple,Frank_FS3@Grapple_B1,Grapple_Attacker,,,,Back grapple 1
+FS3,Getup,Frank_FS3@Getup02,Getup,,,,Standard getup
+FS3,Getup,Frank_FS3@Getup03_Mid_Atk,Attack,Mid,Full,Ground,Getup attack (rising hit)
+FS3,Getup,Frank_FS3@Getup10_Crouch,Getup,,,,Crouch getup
+FS3,SoftLanding,Frank_FS3@SoftLanding_L,SoftLanding,,,,
+FS3,SoftLanding,Frank_FS3@SoftLanding_R,SoftLanding,,,,
+##############################################################################
+# FS3 -- REACTIONS
+##############################################################################
+FS3,Hit,Frank_FS3@Hit_High_F,Reaction,High,Full,Front,Standard high front flinch
+FS3,Hit,Frank_FS3@Hit_High_B,Reaction,High,Full,Back,Hit from behind
+FS3,Hit,Frank_FS3@Hit_High_L,Reaction,High,Full,Left,Hit from left
+FS3,Hit,Frank_FS3@Hit_High_R,Reaction,High,Full,Right,Hit from right
+FS3,Hit,Frank_FS3@Hit_High_StunDown,Conditional,High,Full,Stun,Heavy stun into stagger -- needs stun system
+FS3,Hit,Frank_FS3@Hit_Mid_R,Reaction,Mid,Full,Right,Mid hit from right
+FS3,Hit,Frank_FS3@Hit_Mid_StunDown,Conditional,Mid,Full,Stun,Mid stun stagger -- needs stun system
+FS3,Hit,Frank_FS3@Hit_Low_F2,Reaction,Low,Full,Front,Low front hit
+FS3,Hit,Frank_FS3@Hit_Low_L,Reaction,Low,Full,Left,Low hit from left
+FS3,Hit,Frank_FS3@Hit_Air,Conditional,Launch,Full,Air,Hit while airborne -- needs launch system
+FS3,Hit,Frank_FS3@Hit_Bound,Conditional,High,Full,Ground,Bounce off ground -- needs OTG system
+FS3,Hit,Frank_FS3@Hit_Wall_B,Conditional,High,Full,Wall,Bounce off wall -- needs wall detect
+FS3,Hit,Frank_FS3@Hit_Spin,Conditional,Sweep,Full,Spin,Spin knockback -- needs sweep system
+FS3,Hit,Frank_FS3@Hit_KnockBack02,Conditional,High,Full,Front,Full knockback -- too extended for stagger
+FS3,Hit,Frank_FS3@Hit_KnockDown02,Conditional,Sweep,Full,Ground,Knocked to ground -- needs OTG system
+FS3,Grapple,Frank_FS3@Hit_Grapple_F1,Grapple_Victim,,,,Front grapple victim 1
+FS3,Grapple,Frank_FS3@Hit_Grapple_F3,Grapple_Victim,,,,Front grapple victim 3
+FS3,Grapple,Frank_FS3@Hit_Grapple_Defence,Grapple_Victim,,,,Grapple break/defence
+##############################################################################
+# FS3 -- KO (death)
+##############################################################################
+FS3,KO,Frank_FS3@KO_Mid_2,KO,High,,Front,Death from high/mid hit
+FS3,KO,Frank_FS3@KO_Low_2,KO,Low,,Front,Death from low hit
+##############################################################################
+# FS3 -- UTILITY (locomotion, idle, etc. -- not combat DB relevant)
+##############################################################################
+FS3,Basic,Frank_FS3@Jump,Locomotion,,,,
+FS3,Basic,Frank_FS3@Jump_Short_F,Locomotion,,,,
+FS3,Basic,Frank_FS3@Jump_Long,Locomotion,,,,
+FS3,Basic,Frank_FS3@Jump_Long_B,Locomotion,,,,
+FS3,Basic,Frank_FS3@Idle_Lie,Utility,,,,Ground idle
+FS3,Basic,Frank_FS3@Crouch_Idle,Utility,,,,
+FS3,Basic,Frank_FS3@Crouch_F,Utility,,,,
+FS3,Basic,Frank_FS3@Guard_Stand_Idle,Utility,,,,Guard stance idle
+FS3,Basic,Frank_FS3@Guard_Stand_Block,Utility,,,,Block standing
+FS3,Basic,Frank_FS3@Guard_Crouch_Block,Utility,,,,Block crouching
+FS3,Basic,Frank_FS3@Tumbling,Utility,,,,Evasive tumble
+FS3,Basic,Frank_FS3@Provoke,Utility,,,,Taunt animation
+FS3,Basic,Frank_FS3@Charge_Loop,Utility,,,,Power charge hold
+FS3,Basic,Frank_FS3@Run_End,Locomotion,,,,Run stop
+FS3,Basic,Frank_FS3@Step_B,Locomotion,,,,Step back
+FS3,Basic,Frank_FS3@Step_L45,Locomotion,,,,Step left-45
+FS3,Basic,Frank_FS3@Turn90R,Locomotion,,,,Turn 90 right
+##############################################################################
+# FS4 -- ATTACKS (HitLevel/HitWeight derived from counter clip naming)
+##############################################################################
+FS4,Punch_L,Frank_FS4_Attack_Punch_L_01,Attack,High,Lite,Front,
+FS4,Punch_L,Frank_FS4_Attack_Punch_L_02,Attack,High,Lite,Front,
+FS4,Punch_L,Frank_FS4_Attack_Punch_L_03,Attack,High,Lite,Front,
+FS4,Punch_L,Frank_FS4_Attack_Punch_L_04,Attack,High,Lite,Front,
+FS4,Punch_L,Frank_FS4_Attack_Punch_L_05,Attack,High,Full,Front,
+FS4,Punch_L,Frank_FS4_Attack_Punch_L_06,Attack,High,Full,Front,
+FS4,Punch_L,Frank_FS4_Attack_Punch_L_07,Attack,High,Full,Front,
+FS4,Punch_L,Frank_FS4_Attack_Punch_L_08,Attack,High,Full,Front,
+FS4,Punch_L,Frank_FS4_Attack_Punch_L_09,Attack,High,Full,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_01,Attack,High,Lite,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_02,Attack,High,Lite,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_03,Attack,High,Lite,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_04,Attack,High,Lite,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_05,Attack,High,Lite,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_06,Attack,High,Full,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_07,Attack,High,Full,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_08,Attack,High,Full,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_09,Attack,High,Full,Front,
+FS4,Punch_R,Frank_FS4_Attack_Punch_R_10,Attack,High,Full,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_01,Attack,Mid,Lite,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_02,Attack,Mid,Lite,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_03,Attack,Mid,Lite,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_04,Attack,Mid,Lite,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_05,Attack,Mid,Lite,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_06,Attack,Mid,Lite,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_07,Attack,Mid,Full,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_08,Attack,Mid,Full,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_09,Attack,Mid,Full,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_10,Attack,Mid,Full,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_11,Attack,Mid,Full,Front,
+FS4,Kick_L,Frank_FS4_Attack_Kick_L_12,Attack,Mid,Full,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_01,Attack,Mid,Lite,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_02,Attack,Mid,Lite,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_03,Attack,Mid,Lite,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_04,Attack,Mid,Lite,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_05,Attack,Mid,Lite,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_06,Attack,Mid,Lite,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_07,Attack,Mid,Lite,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_08,Attack,Mid,Lite,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_09,Attack,Mid,Lite,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_10,Attack,Mid,Full,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_11,Attack,Mid,Full,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_12,Attack,Mid,Full,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_13,Attack,Mid,Full,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_14,Attack,Mid,Full,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_15,Attack,Mid,Full,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_16,Attack,Mid,Full,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_17,Attack,Mid,Full,Front,
+FS4,Kick_R,Frank_FS4_Attack_Kick_R_18,Attack,Mid,Full,Front,
+FS4,Crouch,Frank_FS4_Attack_Crouch_Punch_01,Attack,Low,Lite,Front,
+FS4,Crouch,Frank_FS4_Attack_Crouch_Punch_02,Attack,Low,Lite,Front,
+FS4,Crouch,Frank_FS4_Attack_Crouch_Punch_03,Attack,Low,Full,Front,
+FS4,Crouch,Frank_FS4_Attack_Crouch_Kick_01,Attack,Low,Lite,Front,
+FS4,Crouch,Frank_FS4_Attack_Crouch_Kick_02,Attack,Low,Lite,Front,
+FS4,Crouch,Frank_FS4_Attack_Crouch_Kick_03,Attack,Low,Full,Front,
+FS4,StandingUp,Frank_FS4_Attack_Standing_Up_01,Attack,Mid,Lite,Front,Rising attack
+FS4,StandingUp,Frank_FS4_Attack_Standing_Up_02,Attack,Mid,Lite,Front,
+FS4,StandingUp,Frank_FS4_Attack_Standing_Up_03,Attack,Mid,Lite,Front,
+FS4,StandingUp,Frank_FS4_Attack_Standing_Up_04,Attack,Mid,Full,Front,
+FS4,StandingUp,Frank_FS4_Attack_Standing_Up_05,Attack,Mid,Full,Front,
+FS4,StandingUp,Frank_FS4_Attack_Standing_Up_06,Attack,Mid,Full,Front,
+FS4,Jump,Frank_FS4_Attack_Jump_01,Attack,Launch,Lite,Air,
+FS4,Jump,Frank_FS4_Attack_Jump_02,Attack,Launch,Lite,Air,
+FS4,Jump,Frank_FS4_Attack_Jump_03,Attack,Launch,Lite,Air,
+FS4,Jump,Frank_FS4_Attack_Jump_04,Attack,Launch,Lite,Air,
+FS4,Jump,Frank_FS4_Attack_Jump_05,Attack,Launch,Lite,Air,
+FS4,Jump,Frank_FS4_Attack_Jump_06,Attack,Launch,Lite,Air,
+FS4,Jump,Frank_FS4_Attack_Jump_07,Attack,Launch,Lite,Air,
+FS4,Jump,Frank_FS4_Attack_Jump_08,Attack,Launch,Lite,Air,
+FS4,Jump,Frank_FS4_Attack_Jump_09,Attack,Launch,Full,Air,Heavier -- consider Hit_Air_04
+FS4,Jump,Frank_FS4_Attack_Jump_10,Attack,Launch,Full,Air,Heavier
+FS4,Jump,Frank_FS4_Attack_Jump_11,Attack,Launch,Full,Air,Heavier
+FS4,Jump,Frank_FS4_Attack_Jump_12,Attack,Launch,Full,Air,Heavier
+FS4,Jump,Frank_FS4_Attack_Jump_13,Attack,Launch,Full,Air,Heavier
+FS4,Jump,Frank_FS4_Attack_Jump_14,Attack,Launch,Full,Air,Heavier
+FS4,Jump,Frank_FS4_Attack_Jump_15,Attack,Launch,Full,Air,Heavier
+FS4,Somersault,Frank_FS4_Attack_Somersault_01,Attack,Launch,Full,Air,Hits low-falling
+FS4,Somersault,Frank_FS4_Attack_Somersault_02,Attack,Launch,Full,Air,
+FS4,Somersault,Frank_FS4_Attack_Somersault_03,Attack,Launch,Full,Air,
+FS4,Wall,Frank_FS4_Attack_Wall_01,Attack,High,Full,Wall,
+FS4,Wall,Frank_FS4_Attack_Wall_02,Attack,High,Full,Wall,
+FS4,Wall,Frank_FS4_Attack_Wall_03,Attack,High,Full,Wall,
+FS4,Wall,Frank_FS4_Attack_Wall_04,Attack,High,Full,Wall,
+FS4,Combo,Frank_FS4_Combination_01_All,Attack,High,Full,Front,Verify finisher type
+FS4,Combo,Frank_FS4_Combination_02_All,Attack,High,Full,Front,
+FS4,Combo,Frank_FS4_Combination_03_All,Attack,High,Full,Front,
+FS4,Combo,Frank_FS4_Combination_04_All,Attack,High,Full,Front,
+FS4,Combo,Frank_FS4_Combination_05_All,Attack,High,Full,Front,
+FS4,Combo,Frank_FS4_Combination_06_All,Attack,High,Full,Front,
+FS4,Combo,Frank_FS4_Combination_07_All,Attack,High,Full,Front,
+FS4,Combo,Frank_FS4_Combination_08_All,Attack,High,Full,Front,
+FS4,Combo,Frank_FS4_Combination_09A_All,Attack,High,Full,Front,A/B/C = alt finishers -- verify each
+FS4,Combo,Frank_FS4_Combination_09B_All,Attack,High,Full,Front,May end in Launch or Sweep
+FS4,Combo,Frank_FS4_Combination_09C_All,Attack,High,Full,Front,May end in Launch or Sweep
+FS4,Combo,Frank_FS4_Combination_10A_All,Attack,High,Full,Front,
+FS4,Combo,Frank_FS4_Combination_10B_All,Attack,High,Full,Front,
+FS4,Combo_Split,Frank_FS4_Combination_01_1,Attack,High,Lite,Front,Opener
+FS4,Combo_Split,Frank_FS4_Combination_01_2,Attack,High,Lite,Front,Mid
+FS4,Combo_Split,Frank_FS4_Combination_01_3,Attack,High,Full,Front,Finisher
+FS4,Combo_Split,Frank_FS4_Combination_03_1,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_03_2,Attack,High,Full,Front,
+FS4,Combo_Split,Frank_FS4_Combination_04_1,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_04_2,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_04_3,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_04_4,Attack,High,Full,Front,Finisher
+FS4,Combo_Split,Frank_FS4_Combination_05_1,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_05_2,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_05_3,Attack,High,Full,Front,Finisher
+FS4,Combo_Split,Frank_FS4_Combination_07_1,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_07_2,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_07_3,Attack,High,Full,Front,Finisher
+FS4,Combo_Split,Frank_FS4_Combination_08_1,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_08_2,Attack,High,Full,Front,Finisher
+FS4,Combo_Split,Frank_FS4_Combination_09A_1,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_09A_2,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_09A_3,Attack,High,Full,Front,Finisher
+FS4,Combo_Split,Frank_FS4_Combination_09B_2,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_09B_3,Attack,High,Full,Front,Verify -- may be Launch
+FS4,Combo_Split,Frank_FS4_Combination_09C_1,Attack,High,Lite,Front,
+FS4,Combo_Split,Frank_FS4_Combination_09C_2,Attack,High,Full,Front,Verify -- may be Sweep
+FS4,Atk_Back,Frank_FS4_Attack_Back_01,Attack,High,Full,Back,
+FS4,Atk_Back,Frank_FS4_Attack_Back_02,Attack,High,Full,Back,
+FS4,Atk_Back,Frank_FS4_Attack_Back_03,Attack,High,Full,Back,
+FS4,Atk_Back,Frank_FS4_Attack_Back_04,Attack,Low,Full,Back,Crouch back attack
+FS4,Atk_Back,Frank_FS4_Attack_Back_05,Attack,Low,Full,Back,
+FS4,Atk_Back,Frank_FS4_Attack_Back_06,Attack,Low,Full,Back,
+FS4,Atk_Back,Frank_FS4_Attack_Back_07,Attack,Low,Full,Back,
+FS4,Air_Atk,Frank_FS4_Attack_Air_01,Attack,Launch,Lite,Air,
+FS4,Air_Atk,Frank_FS4_Attack_Air_02,Attack,Launch,Lite,Air,
+FS4,Air_Atk,Frank_FS4_Attack_Air_03,Attack,Launch,Full,Air,
+FS4,Air_Atk,Frank_FS4_Attack_Air_04,Attack,Launch,Full,Air,
+FS4,Air_Atk,Frank_FS4_Attack_Air_05,Attack,Launch,Full,Air,
+FS4,Air_Combo,Frank_FS4_Combination_Air_01_All,Attack,Launch,Full,Air,
+FS4,Air_Combo,Frank_FS4_Combination_Air_02_All,Attack,Launch,Full,Air,
+FS4,Air_Combo,Frank_FS4_Combination_Air_03_All,Attack,Launch,Full,Air,
+FS4,Running,Frank_FS4_Attack_Running_01_Success,Attack,Mid,Full,Front,Running tackle success
+FS4,Running,Frank_FS4_Attack_Running_01_Fail,Utility,,,,Attacker stumbles -- no reaction
+FS4,Running,Frank_FS4_Attack_Running_01_Success_Sample,Utility,,,,Preview/sample clip
+FS4,Running,Frank_FS4_Attack_Running_01_Fail_Sample,Utility,,,,Preview/sample clip
+FS4,Cinematic,Frank_FS4_Cinematic_Attack_1,Attack,High,Full,Front,Scripted finisher
+FS4,Cinematic,Frank_FS4_Cinematic_Attack_2,Attack,High,Full,Front,
+FS4,Cinematic,Frank_FS4_Cinematic_Attack_3_Wall,Attack,High,Full,Wall,
+FS4,Parry,Frank_FS4_Parry_01,Attack,High,Full,Front,Parry counter-attack
+FS4,Parry,Frank_FS4_Parry_02,Attack,High,Full,Front,
+FS4,Parry,Frank_FS4_Parry_03,Attack,High,Full,Front,
+FS4,Parry,Frank_FS4_Parry_04,Attack,High,Full,Front,
+FS4,Parry,Frank_FS4_Parry_05,Attack,High,Full,Front,
+FS4,Parry,Frank_FS4_Parry_06,Attack,High,Full,Front,
+FS4,Parry,Frank_FS4_Parry_07,Attack,High,Full,Front,
+FS4,Parry,Frank_FS4_Parry_08,Attack,High,Full,Front,
+FS4,Parry,Frank_FS4_Parry_09,Attack,High,Full,Front,
+FS4,Grab,Frank_FS4_Grab_01,Grapple_Attacker,,,,
+FS4,Grab,Frank_FS4_Grab_02,Grapple_Attacker,,,,
+FS4,Grab,Frank_FS4_Grab_03,Grapple_Attacker,,,,
+FS4,Grab,Frank_FS4_Grab_04,Grapple_Attacker,,,,
+FS4,Grab,Frank_FS4_Grab_05,Grapple_Attacker,,,,
+FS4,Grab,Frank_FS4_Grab_06,Grapple_Attacker,,,,
+FS4,Grab,Frank_FS4_Grab_07,Grapple_Attacker,,,,
+FS4,Grab,Frank_FS4_Grab_Back_01,Grapple_Attacker,,,Back,
+FS4,Grab,Frank_FS4_Grab_Back_02,Grapple_Attacker,,,Back,
+FS4,Grab,Frank_FS4_Grab_Crouch_01,Grapple_Attacker,,,Ground,
+FS4,Grab,Frank_FS4_Grab_Crouch_02,Grapple_Attacker,,,Ground,
+##############################################################################
+# FS4 -- REACTIONS
+##############################################################################
+FS4,Hit,Frank_FS4_Hit_High_Front_Lite,Reaction,High,Lite,Front,Quick flinch
+FS4,Hit,Frank_FS4_Hit_High_Left_Lite,Reaction,High,Lite,Left,
+FS4,Hit,Frank_FS4_Hit_High_Right_Lite,Reaction,High,Lite,Right,
+FS4,Hit,Frank_FS4_Hit_High_Front,Reaction,High,Full,Front,Full stagger
+FS4,Hit,Frank_FS4_Hit_High_Left,Reaction,High,Full,Left,
+FS4,Hit,Frank_FS4_Hit_High_Right,Reaction,High,Full,Right,
+FS4,Hit,Frank_FS4_Hit_Mid_Front_Lite,Reaction,Mid,Lite,Front,
+FS4,Hit,Frank_FS4_Hit_Mid_Left_Lite,Reaction,Mid,Lite,Left,
+FS4,Hit,Frank_FS4_Hit_Mid_Right_Lite,Reaction,Mid,Lite,Right,
+FS4,Hit,Frank_FS4_Hit_Mid_Front,Reaction,Mid,Full,Front,
+FS4,Hit,Frank_FS4_Hit_Mid_Left,Reaction,Mid,Full,Left,
+FS4,Hit,Frank_FS4_Hit_Mid_Right,Reaction,Mid,Full,Right,
+FS4,Hit,Frank_FS4_Hit_Low_Front_Lite,Reaction,Low,Lite,Front,
+FS4,Hit,Frank_FS4_Hit_Low_Left_Lite,Reaction,Low,Lite,Left,
+FS4,Hit,Frank_FS4_Hit_Low_Right_Lite,Reaction,Low,Lite,Right,
+FS4,Hit,Frank_FS4_Hit_Low_Front,Reaction,Low,Full,Front,
+FS4,Hit,Frank_FS4_Hit_Low_Left,Reaction,Low,Full,Left,
+FS4,Hit,Frank_FS4_Hit_Low_Right,Reaction,Low,Full,Right,
+FS4,Hit,Frank_FS4_Hit_Low_Slip_Front,Conditional,Sweep,Full,Front,Slip/sweep knockdown -- needs sweep system
+FS4,Hit,Frank_FS4_Hit_Low_Slip_Left,Conditional,Sweep,Full,Left,Needs sweep system
+FS4,Hit,Frank_FS4_Hit_Low_Slip_Right,Conditional,Sweep,Full,Right,Needs sweep system
+FS4,Hit,Frank_FS4_Hit_Air_01,Conditional,Launch,Full,Air,Needs launch system
+FS4,Hit,Frank_FS4_Hit_Air_02_Low,Conditional,Launch,Full,Air,Low aerial (somersault target)
+FS4,Hit,Frank_FS4_Hit_Air_03,Conditional,Launch,Full,Air,
+FS4,Hit,Frank_FS4_Hit_Air_04,Conditional,Launch,Full,Air,Heavy aerial
+FS4,Hit,Frank_FS4_Hit_Wall_Bound,Conditional,High,Full,Wall,Needs wall detect
+FS4,Hit,Frank_FS4_Hit_Wall_Stun_Front,Conditional,High,Full,Wall,Pinned to wall front
+FS4,Hit,Frank_FS4_Hit_Wall_Stun_Back,Conditional,High,Full,Wall,
+FS4,Hit,Frank_FS4_Hit_Wall_Stun_Left,Conditional,High,Full,Wall,
+FS4,Hit,Frank_FS4_Hit_Wall_Stun_Right,Conditional,High,Full,Wall,
+FS4,Hit,Frank_FS4_Hit_Back_01,Reaction,High,Full,Back,Hit from behind
+FS4,Hit,Frank_FS4_Hit_Crouch_Back_01,Conditional,Low,Full,Back,Crouching context -- needs crouch system
+FS4,Hit,Frank_FS4_Hit_Crouch_Back_02,Conditional,Low,Full,Back,Crouching context -- needs crouch system
+FS4,Hit,Frank_FS4_Hit_Spin_L,Conditional,Sweep,Full,Spin,Needs sweep system
+FS4,Hit,Frank_FS4_Hit_Spin_R,Conditional,Sweep,Full,Spin,Needs sweep system
+FS4,Hit,Frank_FS4_Hit_Bound_01,Conditional,High,Full,Ground,Ground bounce -- needs OTG
+FS4,Hit,Frank_FS4_Hit_Bound_02,Conditional,High,Full,Ground,Ground bounce variant
+FS4,Hit,Frank_FS4_Hit_Fly_Away,Conditional,High,Full,Front,Full knockback fly -- too extended
+FS4,Hit,Frank_FS4_Hit_Groggy_01,Conditional,High,Full,Stun,Stunned/dazed loop -- needs stun system
+FS4,Hit,Frank_FS4_Hit_Groggy_02,Conditional,High,Full,Stun,Stunned/dazed loop
+FS4,Hit,Frank_FS4_Hit_Stun_Stand,Conditional,High,Full,Stun,Standing stun loop
+FS4,Hit,Frank_FS4_Hit_Stumble_01,Conditional,High,Full,Front,Stumble forward -- extended recovery animation
+FS4,Hit,Frank_FS4_Hit_Stumble_02_Sliding,Conditional,High,Full,Front,Sliding stumble -- root motion slides character
+FS4,Hit,Frank_FS4_Hit_GuardBreak_Stand,Conditional,High,Full,Front,Guard broken standing -- needs guard system
+FS4,Hit,Frank_FS4_Hit_GuardBreak_Crouch,Conditional,Low,Full,Front,Guard broken crouching -- needs guard system
+FS4,Hit,Frank_FS4_Hit_Spiral_CW,Conditional,Sweep,Full,Spin,Spiral fall clockwise -- needs sweep system
+FS4,Hit,Frank_FS4_Hit_Spiral_CCW,Conditional,Sweep,Full,Spin,Spiral fall counter-clockwise -- needs sweep system
+FS4,Hit,Frank_FS4_Hit_Lay_01,Conditional,High,Full,Ground,Hit while lying -- needs OTG
+FS4,Hit,Frank_FS4_Hit_Lay_02,Conditional,High,Full,Ground,
+FS4,Hit,Frank_FS4_Hit_Prone_01,Conditional,Low,Full,Ground,Hit while prone -- needs OTG
+FS4,Hit,Frank_FS4_Hit_Prone_02,Conditional,Low,Full,Ground,
+FS4,Parry,Frank_FS4_Parry_01_reAct,Conditional,High,Full,Front,Parried -- needs parry system
+FS4,Parry,Frank_FS4_Parry_02_reAct,Conditional,High,Full,Front,Needs parry system
+FS4,Parry,Frank_FS4_Parry_03_reAct,Conditional,High,Full,Front,Needs parry system
+FS4,Parry,Frank_FS4_Parry_04_reAct,Conditional,High,Full,Front,Needs parry system
+FS4,Parry,Frank_FS4_Parry_05_reAct,Conditional,High,Full,Front,Needs parry system
+FS4,Parry,Frank_FS4_Parry_06_reAct,Conditional,High,Full,Front,Needs parry system
+FS4,Parry,Frank_FS4_Parry_07_reAct,Conditional,High,Full,Front,Needs parry system
+FS4,Parry,Frank_FS4_Parry_08_reAct,Conditional,High,Full,Front,Needs parry system
+FS4,Parry,Frank_FS4_Parry_09_reAct,Conditional,High,Full,Front,Needs parry system
+FS4,Grab,Frank_FS4_Grab_01_reAct,Grapple_Victim,,,,
+FS4,Grab,Frank_FS4_Grab_02_reAct,Grapple_Victim,,,,
+FS4,Grab,Frank_FS4_Grab_03_reAct,Grapple_Victim,,,,
+FS4,Grab,Frank_FS4_Grab_04_reAct,Grapple_Victim,,,,
+FS4,Grab,Frank_FS4_Grab_05_reAct,Grapple_Victim,,,,
+FS4,Grab,Frank_FS4_Grab_06_reAct,Grapple_Victim,,,,
+FS4,Grab,Frank_FS4_Grab_07_reAct,Grapple_Victim,,,,
+FS4,Grab,Frank_FS4_Grab_Back_01_reAct,Grapple_Victim,,,Back,
+FS4,Grab,Frank_FS4_Grab_Back_02_reAct,Grapple_Victim,,,Back,
+FS4,Grab,Frank_FS4_Grab_Crouch_01_reAct,Grapple_Victim,,,Ground,
+FS4,Grab,Frank_FS4_Grab_Crouch_02_reAct,Grapple_Victim,,,Ground,
+FS4,Cinematic,Frank_FS4_Cinematic_Attack_1_reAct,Grapple_Victim,,,,Scripted finisher victim
+FS4,Cinematic,Frank_FS4_Cinematic_Attack_2_reAct,Grapple_Victim,,,,
+FS4,Cinematic,Frank_FS4_Cinematic_Attack_3_Wall_reAct,Grapple_Victim,,,Wall,
+##############################################################################
+# FS4 -- KO (death)
+##############################################################################
+FS4,KO,Frank_FS4_KO_High_01,KO,High,,Front,
+FS4,KO,Frank_FS4_KO_High_02,KO,High,,Front,
+FS4,KO,Frank_FS4_KO_High_03,KO,High,,Front,
+FS4,KO,Frank_FS4_KO_High_04,KO,High,,Front,
+FS4,KO,Frank_FS4_KO_Mid_01,KO,Mid,,Front,
+FS4,KO,Frank_FS4_KO_Mid_02,KO,Mid,,Front,
+FS4,KO,Frank_FS4_KO_Low_01,KO,Low,,Front,
+##############################################################################
+# FS4 -- UTILITY
+##############################################################################
+FS4,Getup,Frank_FS4_Getup_1_1,Getup,,,,
+FS4,Getup,Frank_FS4_Getup_1_2,Getup,,,,
+FS4,Getup,Frank_FS4_Getup_1_3_Crouch,Getup,,,,
+FS4,Getup,Frank_FS4_Getup_1_4_Roll_F,Getup,,,,
+FS4,Getup,Frank_FS4_Getup_1_5_Roll_B,Getup,,,,
+FS4,Getup,Frank_FS4_Getup_2_1,Getup,,,,
+FS4,Getup,Frank_FS4_Getup_2_2,Getup,,,,
+FS4,SoftLanding,Frank_FS4_S_Landing_Roll_Back,SoftLanding,,,,
+FS4,SoftLanding,Frank_FS4_S_Landing_Roll_Side_L,SoftLanding,,,,
+FS4,SoftLanding,Frank_FS4_S_Landing_Roll_Side_R,SoftLanding,,,,
+FS4,SoftLanding,Frank_FS4_S_Landing_Handspring,SoftLanding,,,,
+FS4,SoftLanding,Frank_FS4_S_Landing_Spring,SoftLanding,,,,
+FS4,SoftLanding,Frank_FS4_S_Landing_Tumble_Back,SoftLanding,,,,
+FS4,SoftLanding,Frank_FS4_S_Landing_Tumble_Back2,SoftLanding,,,,
+##############################################################################
+# FRANK SLASH PACK -- DAMAGE REACTIONS (shared across all weapon character types)
+# Prefix: Frank_Damage_*
+# These supplement FS3/FS4 reactions in FrankHitReactionDB pools.
+# Preview before assigning -- some recovery poses may look weapon-hit-specific.
+##############################################################################
+# -- Damage Normal (High level, directional)
+Slash,Hit,Frank_Damage_High_F,Reaction,High,Lite,Front,Quick flinch forward
+Slash,Hit,Frank_Damage_High_B,Reaction,High,Lite,Back,
+Slash,Hit,Frank_Damage_High_L,Reaction,High,Lite,Left,
+Slash,Hit,Frank_Damage_High_R,Reaction,High,Lite,Right,
+Slash,Hit,Frank_Damage_High_StunDown,Conditional,High,Full,Front,Heavy -- staggers to ground -- needs stun system
+# -- Damage Mid (directional)
+Slash,Hit,Frank_Damage_Mid_F,Reaction,Mid,Lite,Front,
+Slash,Hit,Frank_Damage_Mid_B,Reaction,Mid,Lite,Back,
+Slash,Hit,Frank_Damage_Mid_L,Reaction,Mid,Lite,Left,
+Slash,Hit,Frank_Damage_Mid_R,Reaction,Mid,Lite,Right,
+Slash,Hit,Frank_Damage_Mid_StunDown,Conditional,Mid,Full,Front,Needs stun system
+# -- Damage Low
+Slash,Hit,Frank_Damage_Low_L1,Reaction,Low,Lite,Left,
+Slash,Hit,Frank_Damage_Low_R1,Reaction,Low,Lite,Right,
+Slash,Hit,Frank_Damage_Low_L2,Reaction,Low,Full,Left,
+Slash,Hit,Frank_Damage_Low_R2,Reaction,Low,Full,Right,
+Slash,Hit,Frank_Damage_Low_StunDown,Conditional,Low,Full,Front,Needs stun system
+# -- Damage Strong (heavy full-body stagger -- no knockdown but significant)
+# Strong_F1/F2: body doubles over and lifts off ground -- heavy weapon impact, too dramatic for punches
+Slash,Hit,Frank_Damage_Strong_F1,Conditional,High,Full,Front,Weapon-only -- body folds in air
+Slash,Hit,Frank_Damage_Strong_F2,Conditional,High,Full,Front,Weapon-only -- body folds in air
+Slash,Hit,Frank_Damage_Strong_B1,Reaction,High,Full,Back,
+Slash,Hit,Frank_Damage_Strong_B2,Reaction,High,Full,Back,Variant
+Slash,Hit,Frank_Damage_Strong_L,Reaction,High,Full,Left,
+Slash,Hit,Frank_Damage_Strong_R,Reaction,High,Full,Right,
+Slash,Hit,Frank_Damage_Strong_L_Head,Conditional,High,Full,Left,Head precision -- weapon-specific
+Slash,Hit,Frank_Damage_Strong_R_Head,Conditional,High,Full,Right,Head precision -- weapon-specific
+Slash,Hit,Frank_Damage_Strong_L_Chest,Conditional,High,Full,Left,Chest precision -- weapon-specific
+Slash,Hit,Frank_Damage_Strong_R_Chest,Conditional,High,Full,Right,Chest precision -- weapon-specific
+Slash,Hit,Frank_Damage_Strong_L_Foot,Conditional,Low,Full,Left,Foot/leg -- weapon-specific
+Slash,Hit,Frank_Damage_Strong_R_Foot,Conditional,Low,Full,Right,Foot/leg -- weapon-specific
+# -- Damage KnockDown (sweep/trip result)
+Slash,Hit,Frank_Damage_KnockDown_01,Conditional,Sweep,Full,Front,Needs sweep system
+Slash,Hit,Frank_Damage_KnockDown_02,Conditional,Sweep,Full,Front,Needs sweep system
+Slash,Hit,Frank_Damage_KnockDown_03,Conditional,Sweep,Full,Front,Needs sweep system
+Slash,Hit,Frank_Damage_KnockDown_04,Conditional,Sweep,Full,Front,Needs sweep system
+Slash,Hit,Frank_Damage_KnockDown_05,Conditional,Sweep,Full,Front,Needs sweep system
+# -- Damage Air (juggle reactions -- needs launch system)
+Slash,Hit,Frank_Damage_Air_Screw,Conditional,Launch,Full,Air,Needs launch system
+Slash,Hit,Frank_Damage_Air,Conditional,Launch,Full,Air,
+Slash,Hit,Frank_Damage_Air_Spin,Conditional,Launch,Full,Air,Spin in air
+# -- Damage Wall (future wall-splat mechanic -- needs wall detect)
+Slash,Hit,Frank_Damage_Wall_B,Conditional,High,Full,Wall,Needs wall detect
+Slash,Hit,Frank_Damage_Wall_L,Conditional,High,Full,Wall,
+Slash,Hit,Frank_Damage_Wall_R,Conditional,High,Full,Wall,
+Slash,Hit,Frank_Damage_WallBound,Conditional,High,Full,Wall,Bounce off wall
+# -- Damage Bound (ground bounce after knockdown -- needs OTG system)
+Slash,Hit,Frank_Damage_Bound01,Conditional,Sweep,Full,Ground,Ground bounce -- needs OTG
+Slash,Hit,Frank_Damage_Bound02,Conditional,Sweep,Full,Ground,
+Slash,Hit,Frank_Damage_Bound03,Conditional,Sweep,Full,Ground,
+Slash,Hit,Frank_Damage_Bound04,Conditional,Sweep,Full,Ground,
+Slash,Hit,Frank_Damage_Bound05,Conditional,Sweep,Full,Ground,
+Slash,Hit,Frank_Damage_Bound06,Conditional,Sweep,Full,Ground,
+# -- Damage Sting (quick jab-flinch variant -- good for lite punches)
+Slash,Hit,Frank_Damage_Sting_F,Reaction,Mid,Lite,Front,Sharp jab flinch
+Slash,Hit,Frank_Damage_Sting_B,Reaction,Mid,Lite,Back,
+Slash,Hit,Frank_Damage_Sting_L,Reaction,Mid,Lite,Left,
+Slash,Hit,Frank_Damage_Sting_R,Reaction,Mid,Lite,Right,
+# -- Damage Parrying React (attacker staggers after parry -- future parry system)
+Slash,Hit,Frank_Damage_Parrying01,Conditional,High,Full,Front,Parried stagger -- needs parry system
+Slash,Hit,Frank_Damage_Parrying02,Conditional,High,Full,Front,Needs parry system
+Slash,Hit,Frank_Damage_Parrying03,Conditional,High,Full,Front,Needs parry system
+# -- Damage Critical (weapon-type-specific critical hit reactions)
+Slash,Hit,Frank_Damage_Critical_Assassin,Conditional,High,Full,Front,Critical -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Dual,Conditional,High,Full,Front,Critical -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Warrior,Conditional,High,Full,Front,Critical -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Katana,Conditional,High,Full,Front,Critical -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_2Handed,Conditional,High,Full,Front,Critical -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_GreatSword,Conditional,High,Full,Front,Critical -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Spear,Conditional,High,Full,Front,Critical -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Assassin_Hit,Conditional,High,Full,Front,Critical hit -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Dual_Hit,Conditional,High,Full,Front,Critical hit -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Warrior_Hit,Conditional,High,Full,Front,Critical hit -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Warrior_Hit2,Conditional,High,Full,Front,Critical hit -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Katana_Hit,Conditional,High,Full,Front,Critical hit -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_2Handed_Hit,Conditional,High,Full,Front,Critical hit -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_GreatSword_Hit,Conditional,High,Full,Front,Critical hit -- weapon-specific
+Slash,Hit,Frank_Damage_Critical_Spear_Hit,Conditional,High,Full,Front,Critical hit -- weapon-specific
+# -- Damage Stun state machine (5 severity levels -- start/loop/end triplets)
+# NOTE: not simple one-shot reactions; require a 3-state animator to use properly.
+# Future stun mechanic. Do NOT add to FrankHitReactionDB pools until stun system exists.
+Slash,StunState,Frank_Damage_Stun01_start,Utility,,,,Stun lv1 enter
+Slash,StunState,Frank_Damage_Stun01_loop,Utility,,,,Stun lv1 idle loop
+Slash,StunState,Frank_Damage_Stun01_end,Utility,,,,Stun lv1 exit
+Slash,StunState,Frank_Damage_Stun02_start,Utility,,,,Stun lv2
+Slash,StunState,Frank_Damage_Stun02_loop,Utility,,,,
+Slash,StunState,Frank_Damage_Stun02_end,Utility,,,,
+Slash,StunState,Frank_Damage_Stun03_start,Utility,,,,Stun lv3
+Slash,StunState,Frank_Damage_Stun03_loop,Utility,,,,
+Slash,StunState,Frank_Damage_Stun03_end,Utility,,,,
+Slash,StunState,Frank_Damage_Stun04_start,Utility,,,,Stun lv4
+Slash,StunState,Frank_Damage_Stun04_loop,Utility,,,,
+Slash,StunState,Frank_Damage_Stun04_end,Utility,,,,
+Slash,StunState,Frank_Damage_Stun05_start,Utility,,,,Stun lv5 (heavy)
+Slash,StunState,Frank_Damage_Stun05_loop,Utility,,,,
+Slash,StunState,Frank_Damage_Stun05_end,Utility,,,,
+# -- Electric Shock (future elemental hit)
+Slash,Hit,Frank_Damage_E-Shock_01,Utility,,,,Future elemental reaction
+Slash,Hit,Frank_Damage_E-Shock_02,Utility,,,,
+##############################################################################
+# FRANK SLASH PACK -- KO (death)
+##############################################################################
+Slash,KO,Frank_Damage_KO_High_1,KO,High,,Front,
+Slash,KO,Frank_Damage_KO_High_2,KO,High,,Front,
+Slash,KO,Frank_Damage_KO_Mid_1,KO,Mid,,Front,
+Slash,KO,Frank_Damage_KO_Mid_2,KO,Mid,,Front,
+Slash,KO,Frank_Damage_KO_Low_1,KO,Low,,Front,
+Slash,KO,Frank_Damage_KO_Low_2,KO,Low,,Front,
+##############################################################################
+# FRANK SLASH PACK -- GETUP
+##############################################################################
+Slash,Getup,Frank_Damage_Getup01_P,Getup,,,,Push-up style
+Slash,Getup,Frank_Damage_Getup02_L,Getup,,,,Left roll getup
+Slash,Getup,Frank_Damage_Getup03_L,Getup,,,,Variant
+Slash,Getup,Frank_Damage_Getup04_L,Getup,,,,
+##############################################################################
+# FRANK SLASH PACK -- WHIP SET (PRIMARY: Steez mic cord / meteor hammer / rope dart)
+# 114 motions. Prefix: Frank_Whip@*
+# Normal Steez: mic cord as meteor hammer -- Combo01-05 swing lines.
+# FearSteez mode: rope dart -- Attack01-06 thrusts + Skill01-02 specials.
+# HitLevel/HitWeight marked where determinable; others flagged for in-editor preview.
+##############################################################################
+# -- Equip / Idle
+Slash,Whip,Frank_Whip@Unequip_Idle,Utility,,,,Idle without weapon drawn
+Slash,Whip,Frank_Whip@Equip,Utility,,,,Draw/equip animation
+Slash,Whip,Frank_Whip@Equip_Idle,Utility,,,,Idle with weapon drawn
+Slash,Whip,Frank_Whip@Unequip,Utility,,,,Sheathe/unequip animation
+# -- Evade (weapon equipped)
+Slash,Whip,Frank_Whip@Evade_F,Utility,,,,
+Slash,Whip,Frank_Whip@Evade_L,Utility,,,,
+Slash,Whip,Frank_Whip@Evade_R,Utility,,,,
+Slash,Whip,Frank_Whip@Evade_B,Utility,,,,
+# -- 8-Way Locomotion
+Slash,Whip,Frank_Whip@8Way_Run_F,Locomotion,,,,Root motion run forward
+Slash,Whip,Frank_Whip@8Way_Run_B,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Run_FL,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Run_FR,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Run_L,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Run_R,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Run_BL,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Run_BR,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_F,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_B,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_FL,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_FR,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_L,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_R,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_BL,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_BR,Locomotion,,,,
+Slash,Whip,Frank_Whip@Unequip_Run_Turbo1,Locomotion,,,,Sprint without weapon
+Slash,Whip,Frank_Whip@Unequip_Run_Turbo2,Locomotion,,,,Sprint variant
+# -- Guard Walk (weapon up while moving)
+Slash,Whip,Frank_Whip@8Way_Walk_Guard_F,Locomotion,,,,Armed guard walk
+Slash,Whip,Frank_Whip@8Way_Walk_Guard_B,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_Guard_L,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_Guard_R,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_Guard_FL,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_Guard_FR,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_Guard_BL,Locomotion,,,,
+Slash,Whip,Frank_Whip@8Way_Walk_Guard_BR,Locomotion,,,,
+# -- Jump
+Slash,Whip,Frank_Whip@Jump_01,Utility,,,,
+Slash,Whip,Frank_Whip@Jump_02,Utility,,,,
+Slash,Whip,Frank_Whip@Jump_03,Utility,,,,
+Slash,Whip,Frank_Whip@Jump_Double,Utility,,,,Double jump
+Slash,Whip,Frank_Whip@Jump_01_Start_0Height,Utility,,,,Zero-height jump (in-place)
+Slash,Whip,Frank_Whip@Jump_01_Air_0Height,Utility,,,,
+Slash,Whip,Frank_Whip@Jump_01_End_0Height,Utility,,,,
+Slash,Whip,Frank_Whip@Jump_01_0Height,Utility,,,,
+Slash,Whip,Frank_Whip@Jump_02_0Height,Utility,,,,
+# -- Guard / Block
+Slash,Whip,Frank_Whip@Guard,Utility,,,,Guard stance
+Slash,Whip,Frank_Whip@Block,Utility,,,,Active block
+# -- Hit Reactions (Steez while armed -- also usable on armed enemies)
+Slash,Whip,Frank_Whip@Hit01,Conditional,High,Lite,Front,Armed hit reaction -- weapon-specific
+Slash,Whip,Frank_Whip@Hit02,Conditional,High,Lite,Front,Weapon-specific
+Slash,Whip,Frank_Whip@Hit03,Conditional,High,Full,Front,Weapon-specific
+Slash,Whip,Frank_Whip@Hit04,Conditional,High,Full,Front,Weapon-specific
+Slash,Whip,Frank_Whip@Hit05,Conditional,Mid,Lite,Front,Weapon-specific
+Slash,Whip,Frank_Whip@Hit06,Conditional,Mid,Full,Front,Weapon-specific
+Slash,Whip,Frank_Whip@Hit07,Conditional,High,Full,Front,Heavy stagger -- weapon-specific
+Slash,Whip,Frank_Whip@Hit_Skill01,Conditional,High,Full,Front,Weapon-specific skill reaction
+Slash,Whip,Frank_Whip@Hit_Skill02,Conditional,High,Full,Front,Weapon-specific skill reaction
+Slash,Whip,Frank_Whip@Hit_Critical_Attack,Conditional,High,Full,Front,Critical -- weapon-specific
+# -- Die (armed death)
+Slash,Whip,Frank_Whip@Die01,Conditional,High,,Front,Armed death -- weapon-specific
+Slash,Whip,Frank_Whip@Die02,Conditional,High,,Front,Armed death -- weapon-specific
+Slash,Whip,Frank_Whip@Die03,Conditional,High,,Front,Armed death -- weapon-specific
+Slash,Whip,Frank_Whip@Die04,Conditional,High,,Front,Armed death -- weapon-specific
+# -- Attacks (individual -- rope dart / mic flick style)
+# Preview Attack01-03 for lite flicks vs 04-06 for heavy swings -- adjust HitWeight after viewing.
+Slash,Whip,Frank_Whip@Attack01,Attack,High,Lite,Front,Verify weight in editor
+Slash,Whip,Frank_Whip@Attack02,Attack,High,Lite,Front,
+Slash,Whip,Frank_Whip@Attack03,Attack,Mid,Lite,Front,
+Slash,Whip,Frank_Whip@Attack04,Attack,High,Full,Front,
+Slash,Whip,Frank_Whip@Attack05,Attack,High,Full,Front,
+Slash,Whip,Frank_Whip@Attack06,Attack,High,Full,Front,Heavy swing
+Slash,Whip,Frank_Whip@Critical_Attack,Attack,High,Full,Front,Critical / finisher
+# -- Skills (FearSteez mode specials)
+Slash,Whip,Frank_Whip@Skill01,Attack,High,Full,Front,Special move 1 -- preview
+Slash,Whip,Frank_Whip@Skill02,Attack,High,Full,Front,Special move 2
+# -- Combos All (full baked sequences -- good reference for timing)
+Slash,Whip,Frank_Whip@Combo01_All,Attack,High,Full,Front,Full combo 1 sequence (baked)
+Slash,Whip,Frank_Whip@Combo02_All,Attack,High,Full,Front,
+Slash,Whip,Frank_Whip@Combo03_All,Attack,High,Full,Front,
+Slash,Whip,Frank_Whip@Combo04_All,Attack,High,Full,Front,
+Slash,Whip,Frank_Whip@Combo05_All,Attack,High,Full,Front,
+# -- Combo Splits (individual hits for FSAttackData SO chaining -- use these for gameplay)
+Slash,Whip,Frank_Whip@Combo01_1,Attack,High,Lite,Front,Combo 1 hit 1
+Slash,Whip,Frank_Whip@Combo01_2,Attack,High,Lite,Front,Combo 1 hit 2
+Slash,Whip,Frank_Whip@Combo01_3,Attack,High,Full,Front,Combo 1 finisher
+Slash,Whip,Frank_Whip@Combo02_1,Attack,High,Lite,Front,
+Slash,Whip,Frank_Whip@Combo02_2,Attack,High,Lite,Front,
+Slash,Whip,Frank_Whip@Combo02_3,Attack,High,Full,Front,
+Slash,Whip,Frank_Whip@Combo03_1,Attack,High,Lite,Front,
+Slash,Whip,Frank_Whip@Combo03_2,Attack,High,Lite,Front,
+Slash,Whip,Frank_Whip@Combo03_3,Attack,High,Full,Front,
+Slash,Whip,Frank_Whip@Combo04_1,Attack,High,Lite,Front,
+Slash,Whip,Frank_Whip@Combo04_2,Attack,High,Full,Front,
+Slash,Whip,Frank_Whip@Combo05_1,Attack,Mid,Lite,Front,
+Slash,Whip,Frank_Whip@Combo05_2,Attack,Mid,Lite,Front,
+Slash,Whip,Frank_Whip@Combo05_3,Attack,Mid,Full,Front,
+##############################################################################
+# FRANK SLASH PACK -- 2HANDED SET (enemy bat/crowbar/pipe users)
+# 57 motions. Prefix: Frank_RPG_2Hand_*
+# Best match for blunt two-handed weapons. NOT swords -- the grip and swing weight reads right.
+##############################################################################
+Slash,2Hand,Frank_RPG_2Hand_Idle,Utility,,,,Standing idle armed
+Slash,2Hand,Frank_RPG_2Hand_Run,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_Walk_F,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_Walk_B,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_Walk_L,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_Walk_R,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_Jump,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Jump_Running,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Jump_In_Place,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Guard,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Block,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Evade_F,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Evade_B,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Evade_L,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Evade_R,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Step_F,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Step_B,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Step_L,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Step_R,Utility,,,,
+Slash,2Hand,Frank_RPG_2Hand_Hit01,Conditional,High,Lite,Front,Armed reaction -- weapon-specific
+Slash,2Hand,Frank_RPG_2Hand_Hit02,Conditional,High,Full,Front,Weapon-specific
+Slash,2Hand,Frank_RPG_2Hand_Hit03,Conditional,High,Full,Front,Weapon-specific
+Slash,2Hand,Frank_RPG_2Hand_Hit_Knockback,Conditional,High,Full,Front,Weapon-specific knockback
+Slash,2Hand,Frank_RPG_2Hand_Hit_Knockdown,Conditional,Sweep,Full,Front,Weapon-specific knockdown
+Slash,2Hand,Frank_RPG_2Hand_Hit_Knockdown_Loop,Conditional,Sweep,Full,Ground,Loop while grounded -- needs OTG
+Slash,2Hand,Frank_RPG_2Hand_Getup,Getup,,,,
+Slash,2Hand,Frank_RPG_2Hand_Death01,Conditional,High,,Front,2Handed weapon death -- floats on unarmed enemies
+Slash,2Hand,Frank_RPG_2Hand_Death02,Conditional,High,,Front,2Handed weapon death -- floats on unarmed enemies
+Slash,2Hand,Frank_RPG_2Hand_Combo01_All,Attack,High,Full,Front,Full combo 1 baked
+Slash,2Hand,Frank_RPG_2Hand_Combo02_All,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo03_All,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo04_All,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo05_All,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo01_1,Attack,High,Lite,Front,Combo 1 hit 1
+Slash,2Hand,Frank_RPG_2Hand_Combo01_2,Attack,High,Lite,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo01_3,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo01_4,Attack,High,Full,Front,Finisher
+Slash,2Hand,Frank_RPG_2Hand_Combo02_1,Attack,High,Lite,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo02_2,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo03_1,Attack,High,Lite,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo03_2,Attack,High,Lite,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo03_3,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo04_1,Attack,High,Lite,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo04_2,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo04_3,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo04_4,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo05_1,Attack,High,Lite,Front,
+Slash,2Hand,Frank_RPG_2Hand_Combo05_2,Attack,High,Full,Front,
+Slash,2Hand,Frank_RPG_2Hand_Skill01_WhirlWind,Attack,Sweep,Full,Front,AoE spin -- future
+Slash,2Hand,Frank_RPG_2Hand_Skill02_Rolling,Attack,Launch,Full,Front,Rolling charge -- future
+Slash,2Hand,Frank_RPG_2Hand_8Way_Run_F,Locomotion,,,,Root motion run armed
+Slash,2Hand,Frank_RPG_2Hand_8Way_Run_B,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_8Way_Run_L,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_8Way_Run_R,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_8Way_Run_FL,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_8Way_Run_FR,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_8Way_Run_BL,Locomotion,,,,
+Slash,2Hand,Frank_RPG_2Hand_8Way_Run_BR,Locomotion,,,,
+##############################################################################
+# FRANK SLASH PACK -- OTHER WEAPON SETS (future reference)
+# Assassin(86): daggers, quick light attacks -- future agile enemy type
+# Warrior(101): sword + shield -- future shield-bearer enemy
+# Katana(125): 3 stances (S1/S2/S3), own combo tree each -- future samurai type
+# Dual(88): dual blades, air combos -- future fast dual-wield enemy
+# Spear(84): long reach, 5 combo lines -- future reach-advantage enemy
+# GreatSword(75): slow heavy, 4 combo lines + skills -- future heavy/boss enemy
+# Sword2(175): most complete set, parry system, air attacks, 8 combos -- future top-tier boss
+# NOT catalogued individually. When designing those types, glob their folder in Project window.
+##############################################################################

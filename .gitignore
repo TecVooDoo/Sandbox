@@ -1,0 +1,100 @@
+# Unity generated
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Unity3D generated meta files
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Crashlytics
+crashlytics-build.properties
+
+# Asset Store tools
+/Assets/AssetStoreTools*
+
+# Builds
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# Recordings (Sandbox specific)
+/[Rr]ecordings/
+
+# SKILLS folder (if generated)
+/SKILLS/
+
+# ============================================================
+# Third-party assets (reinstall from Asset Store / Package Manager)
+# Only track: _Sandbox/, Documents/, Scenes/, Settings/, ProjectSettings/, Packages/
+# ============================================================
+/Assets/AnimationPathVisualizer/
+/Assets/AssetInventory/
+/Assets/Boing Kit/
+/Assets/com.IvanMurzak/
+/Assets/CurveMaster/
+/Assets/DamageNumbersPro/
+/Assets/DebugPanel/
+/Assets/DownloadCache/
+/Assets/Editor Default Resources/
+/Assets/Editor/
+/Assets/Feel/
+/Assets/FImpossible Creations/
+/Assets/Flexalon/
+/Assets/Gizmos/
+/Assets/GUPS/
+/Assets/Kamgam/
+/Assets/KINEMATION/
+/Assets/Koreographer/
+/Assets/Plugins/
+/Assets/RayFire/
+/Assets/Resources/
+/Assets/SABI/
+/Assets/TextMesh Pro/
+/Assets/Toolkits/
+/Assets/UIToolkitScriptComponents/
+/Assets/UnityTechnologies/
+/Assets/vFavorites/
+/Assets/vFolders/
+/Assets/vHierarchy/
+/Assets/Voxel Labs/
+/Assets/WarpedImagination/
+/Assets/Wingman/
+
+# ============================================================
+# Packages -- only track manifest.json and packages-lock.json
+# Actual package contents are resolved by Package Manager
+# ============================================================
+/Packages/*/
