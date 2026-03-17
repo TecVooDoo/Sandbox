@@ -4,7 +4,8 @@
       "args": [
         "port=54815",
         "plugin-timeout=10000",
-        "client-transport=stdio"
+        "client-transport=stdio",
+        "authorization=none"
       ],
       "command": "E:/Unity/Sandbox/Library/mcp-server/win-x64/unity-mcp-server.exe"
     }

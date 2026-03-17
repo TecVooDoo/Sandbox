@@ -2,7 +2,7 @@
 
 **Purpose:** Track every asset, package, and technique evaluated in Sandbox. This is the primary document for the project.
 
-**Last Updated:** March 12, 2026 (Session 57)
+**Last Updated:** March 16, 2026 (AQS Session 7 -- merged 4 Sandbox2D evals)
 
 > **NOTE:** This document was reconstructed on Feb 23, 2026 after the Sandbox project became corrupt and the Documents folder was lost. The summary table (all 135 entries) has been fully recovered from session context. Detailed ENTRY blocks for entries 001-115 are pending recovery from session JSONL at `C:\Users\steph\.claude\projects\e--Unity-Sandbox\99250266-b660-4ea0-88f0-61e5b98f52e1.jsonl`. Entries 116-135 (Session 35 UI Toolkit batch) are summarized in the session transcript.
 
@@ -94,7 +94,7 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 
 | # | Asset | Source | Category | Verdict | Label | Date |
 |---|-------|--------|----------|---------|-------|------|
-| 001 | Malbers Inventory System | Asset Store | Other | Conditional | -- | 2026-02-06 |
+| 001 | Malbers Inventory System | Asset Store | UI / Inventory | Conditional | -- | 2026-03-14 |
 | 002 | Procedural Generation Grid (FImpossible Creations) | Asset Store | Tools | Rejected | -- | 2026-02-06 |
 | 003 | vHierarchy 2 | Asset Store | Tools | Approved | Default | 2026-02-06 |
 | 004 | vFolders 2 | Asset Store | Tools | Approved | Default | 2026-02-06 |
@@ -121,15 +121,15 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 025 | UniTask (Cysharp) | GitHub | Tools | Approved | Default | 2026-02-07 |
 | 026 | UModeler X Plus | Asset Store | Tools | Approved | Recommended | 2026-02-07 |
 | 027 | DA PolyPaint - Atlas Color Mapper | Asset Store | Tools | Conditional | -- | 2026-02-07 |
-| 028 | Malbers Animal Controller (AC) | Asset Store | Animation | Approved | -- | 2026-02-07 |
-| 029 | Ultimate Selector | Asset Store | UI | Approved | -- | 2026-02-07 |
+| 028 | Malbers Animal Controller (AC) 4.5.1 | Asset Store | Animation / Character | Approved | Recommended | 2026-03-14 |
+| 029 | Ultimate Selector 3.4.8 (Malbers) | Asset Store | UI | Approved | -- | 2026-03-14 |
 | 030 | Fishing for Animal Controller | Asset Store | Other | Approved | -- | 2026-02-07 |
-| 031 | Poly Art: Raccoon | Asset Store | Animation | Approved | -- | 2026-02-07 |
-| 032 | Horse Animset Pro (Riding System) | Asset Store | Animation | Deferred | -- | 2026-02-07 |
+| 031 | Poly Art: Raccoon 4.0 (Malbers) | Asset Store | Animation / Art | Approved | -- | 2026-03-14 |
+| 032 | Horse Animset Pro 4.5.1 (Riding System) | Asset Store | Animation / Character | Approved | -- | 2026-03-14 |
 | 033 | Fish Alive - Animated Polyart Fish | Asset Store | Animation / AI | Approved | -- | 2026-02-07 |
 | 034 | GanzSe Fantasy Low Poly Fishing Props | Asset Store | Art | Approved | -- | 2026-02-07 |
 | 035 | Poly Universal Pack | Asset Store | Art | Approved | -- | 2026-02-07 |
-| 036 | Low Poly Animated Animals (polyperfect) | Asset Store | Animation / Art | Approved | -- | 2026-02-07 |
+| 036 | Low Poly Animated Animals 4.1.1 (polyperfect) | Asset Store | Animation / Art | Approved | Art | 2026-03-14 |
 | 037 | Low Poly Animated People (polyperfect) | Asset Store | Animation / Art | Approved | -- | 2026-02-07 |
 | 038 | City People Mega-Pack | Asset Store | Animation / Art | Approved | -- | 2026-02-07 |
 | 039 | Stylized Water 3 (Staggart Creations) | Asset Store | Rendering | Approved | Recommended | 2026-02-07 |
@@ -388,6 +388,14 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 291 | SidekickCharacters (Synty) | Synty | Art (Character) | Conditional | Art | 2026-02-17 |
 | 292 | City Characters 1.2 (ITHappy) | Asset Store | Art + Character Customization System | Approved | Character | 2026-03-12 |
 | 293 | Urban Traffic System Full Pack 2.0 (Aglobex) | Asset Store | AI / Simulation (Urban Traffic) | Approved | AI | 2026-03-12 |
+| 294 | Drake the Dragonkin 4.0 (Malbers) | Asset Store | Animation / Art | Approved | -- | 2026-03-14 |
+| 295 | Undead Horse & Knight 4.0 (Malbers) | Asset Store | Animation / Art | Approved | -- | 2026-03-14 |
+| 296 | Low Poly Cowboy 1.1 (Malbers) | Asset Store | Art (Character) | Approved | -- | 2026-03-14 |
+| 297 | Malbers Quest Forge 1.0 | Asset Store | Scripting (Quest/Dialogue/Map) | Approved | -- | 2026-03-14 |
+| 298 | Flare Engine 2D Tools 1.8.5 | Asset Store | Scripting (2D Framework) | Approved | Recommended | 2026-03-16 |
+| 299 | Character Editor 4D 7.6 | Asset Store | Art (Character) | Conditional | -- | 2026-03-16 |
+| 300 | 2D Art Maker Casual Characters 1.0.14 | Asset Store | Art (Character) / Scripting | Approved | Recommended | 2026-03-16 |
+| 301 | TopDown Engine 4.5 (More Mountains) | Asset Store | Scripting (2D/3D Framework) | Approved | Recommended | 2026-03-16 |
 
 ---
 
@@ -3075,6 +3083,484 @@ After evaluating 11 Chris West assets (136-145 + 096), here's how they relate to
 - Alpha Foxtrot Uniform (tactical shooter) -- LOW. No ranged weapon animations
 - A Quokka Story (metroidvania) -- MEDIUM. Assassin/Dual sets for side-scrolling combat
 - Miracle Worker (action horror) -- MEDIUM. Warrior/2Handed sets for horror combat
+
+---
+
+## ENTRY-001: Malbers Inventory System 2.3
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (Malbers Animations)
+**Category:** UI / Inventory
+**Verdict:** Conditional
+**Label:** --
+**Path:** Included in `Assets/Malbers Animations/` (shared Common dependency)
+
+**What it is:** Inventory system designed for the Malbers ecosystem. Item management, equipment slots, drag-and-drop UI. Part of the broader Malbers framework -- shares Common scripts and ScriptableObject architecture with Animal Controller.
+
+**Ecosystem Context:** Malbers sells this standalone, but it's designed to plug into the AC ecosystem. Equipment affects animal/character stats through the shared Stats system. Works best when paired with AC characters that already have the stat framework wired up.
+
+**Why Conditional:**
+- ENTRY-169 (Inventory Framework 2 FREE) uses modern UI Toolkit vs uGUI -- better for new projects
+- However, if a project is already deep in the Malbers ecosystem (using AC, Stats, Modes), this inventory integrates natively with zero adapter code
+- For AQS specifically: Joey pouch management is custom-designed and wouldn't benefit from a generic inventory system
+
+**Project Relevance:**
+- AQS: LOW -- custom pouch/Joey management system planned
+- HOK: N/A -- HOK doesn't use Malbers
+- 3D Action/Adventure concepts using AC: MEDIUM -- native stat integration useful
+- Projects not using AC: LOW -- use ENTRY-169 instead
+
+**Asset Interactions:** Native integration with AC Stats system, MInput, and Malbers ScriptableObject architecture. Competes with ENTRY-169 (Inventory Framework 2) which is more modern but ecosystem-agnostic.
+
+---
+
+## ENTRY-028: Malbers Animal Controller (AC) 4.5.1
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (Malbers Animations)
+**Category:** Animation / Character
+**Verdict:** Approved
+**Label:** Recommended
+**Path:** `Assets/Malbers Animations/Animal Controller/` + `Assets/Malbers Animations/Common/`
+**Namespace:** `MalbersAnimations.Controller`
+
+**What it is:** Scriptable-architecture animation framework controller for any creature or humanoid character. Root-motion or in-place animation support. The core of the entire Malbers ecosystem -- all other Malbers character packs depend on it. v4.5.1 (Jan 17, 2026), Unity 6 compatible (6000.0.60+), 3,067 files, 344.83 MB.
+
+**Package Dependencies:** Cinemachine 3 (Unity 6), Unity Input System, Shader Graph, Spline tools, Text Mesh Pro, AI Navigation.
+
+**Architecture -- Three Pillars:**
+1. **States** (16 built-in): Idle, Locomotion, Jump, JumpBasic, Fall, Fly, Glide, Swim, SwimUnderwater, Climb, WallRun, WallRunVertical, Slide, LedgeGrab, Death. ScriptableObject-based, hot-swappable at runtime via `State_Replace()`. Priority system controls transitions.
+2. **Modes:** Reusable ability containers (attack, action, damage, etc.). Each mode holds multiple Abilities with cooldown, status modifiers, and reactions. Not separate files -- serialized lists on the MAnimal component.
+3. **Stances:** Posture/behavior modifiers (combat stance, crouch, sneak). Affect how States and Modes behave without changing the state itself.
+
+**Core Component:** `MAnimal` (partial class across 3 files: MAnimal.cs, MAnimalCallBacks.cs, MAnimalVariables.cs). Implements IAnimatorListener, ICharacterMove, IGravity, IObjectCore, IMDamagerSet, ILockCharacter, IDeltaRootMotion, and more.
+
+**Scripting API Surface (100+ public methods):**
+- State control: `State_Activate(ID)`, `State_Force(ID)`, `State_TryActivate(ID)`, `State_Enable/Disable(ID)`, `State_Replace(State)`, `State_Get(ID)`
+- Mode control: `Mode_Activate(ID, AbilityIndex)`, `Mode_ForceActivate(ID)`, `Mode_TryActivate(ID)`, `Mode_Stop()`, `Mode_Interrupt()`, `Mode_Enable/Disable(ID)`
+- Stance control: `Stance_Set(ID)`, `Stance_Toggle(ID)`, `Stance_Activate(ID)`, `Stance_Reset()`
+- Movement: `Move(Vector3)`, `Move(Vector2)`, `StopMoving()`, `SpeedUp()`, `SpeedDown()`, `Sprint_Set(bool)`, `Strafe_Toggle()`, `Always_Forward(bool)`
+- Speed: `Speed_CurrentIndex_Set(int)`, `SpeedSet_Set_Active(string, int)`, `Speed_Lock(bool)`, `SetCustomSpeed(MSpeed)`
+- Physics: `Force_Add(Vector3, float)`, `Force_Remove()`, `Gravity_ResetDirection()`, `CheckIfGrounded()`
+- Teleport: `Teleport(Vector3)`, `TeleportRot(Transform)`
+- Animator: `SetAnimatorSpeed(float)`, `SetAnimParameter(hash, value)`, `SetRandom(value, priority)`
+- Events: `State_EnterEvent_AddListener/RemoveListener`, `Stance_EnterEvent_AddListener/RemoveListener`
+- Player: `SetMainPlayer()`, `DisableMainPlayer()`, `ResetInputSource()`
+
+**Key Properties:** `ActiveState`, `ActiveStateID`, `ActiveStance`, `ActiveMode`, `Grounded`, `Sprint`, `Strafe`, `FreeMovement`, `MovementAxis`, `Position`, `Rotation`, `Gravity`, `GravityPower`, `UseGravity`, `IsPlayingMode`, `MovementDetected`
+
+**ID System:** Type-safe ScriptableObject IDs (`StateID`, `ModeID`, `StanceID`) -- avoids magic ints. IDs located in `Common/Scriptable Assets/`.
+
+**Input:** `MInput` component with `RemapInput(name, KeyCode)`, `SetMap(int/string)`, `Enable(bool)`, `ResetInputs()`. Supports Unity New Input System and Rewired.
+
+**Included Characters:** Wolf Lite (quadruped demo), Human (humanoid demo with holster/weapon systems). Empty Controller template for custom characters.
+
+**Demo Scenes (23):** Forest, PlayGround (Empty/Human/Wolf), Interactables, Mobile, Point-Click/Top-Down, **2.5 Platformer**, Timeline, MPath Constraint, Replace States at Runtime, Swap Characters, Stat Health, Ragdoll Death, Surface Effects, Carry Box (IK), Animal Tracker, Ground Aligner.
+
+**2.5D Platformer Demo:** Built-in demo at `1-Demos/-- 01 Main Demos --/5 - 2.5 Platformer/`. Directly relevant to AQS -- demonstrates side-scrolling movement with AC's state machine handling jump, fall, locomotion, and climb on a 3D character constrained to a 2D plane.
+
+**Animator Behaviours:** 5 types that attach to Animator states: Message Behaviour (event dispatch), Random Behaviour (idle variation), IsKinematic Behaviour, Sound Behaviour, Rigid Constraint Behaviour.
+
+**Third-Party Integrations:** Invector, Opsive UCC, Game Kit Controller, A* Pathfinding, Rewired. Integration scripts in dedicated folder + Google Drive.
+
+**Common Folder (shared dependency):** 48+ script categories, extensive human animation library (30+ categories: Actions, Attacks, Balance, Block, Crouch, Deaths, Dodge, Fall, Fly, Free Climb, Glide, Hit, Idle, Jumps, Knock Back, Ladder, Locomotion, PushPull, Recover, Slide, Stances, Swim, Traversal, WallRun, Weapons, Zipline). Shared audio, materials, particles, physics materials, Cinemachine integration, prefabs (AI, environments, interactables, mobile input, UI, weapons, zones).
+
+**Concerns:**
+- Large footprint (344 MB, 3,067 files) -- brings a lot even if you only need basic movement
+- Learning curve -- States/Modes/Stances is a different mental model from typical CharacterController scripts
+- Previous convention was "NOT Malbers AC" for HOK -- that was project-specific, not ecosystem-wide
+- Upgrading: remove `MalbersAnimations/Common/` folder and reimport if scripts cause errors
+
+**Project Relevance:**
+- AQS: **HIGH** -- 2.5D platformer demo directly applicable. Climb, Jump, Fall, Swim states handle core quokka movement. Raccoon AC pack provides ready-to-use character. Would replace custom QuokkaController.
+- HOK: N/A -- HOK explicitly doesn't use AC (custom movement)
+- 3D Action/Adventure concepts: HIGH -- full combat/traversal state machine
+- FearSteez: MEDIUM -- 2.5D beat-em-up could use AC's mode system for attacks
+- VNPC: LOW -- point-and-click doesn't need this complexity
+
+---
+
+## ENTRY-029: Ultimate Selector 3.4.8 (Malbers)
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (Malbers Animations)
+**Category:** UI
+**Verdict:** Approved
+**Label:** --
+**Path:** `Assets/Malbers Animations/Ultimate Selector/`
+
+**What it is:** Radial/carousel character selection system. Animated item transitions, UI overlay, save/lock states. Designed for character select screens or runtime item swapping.
+
+**Key API:**
+- `SelectorController`: `SelectNextItem(bool/int/MItem/string)`, `UpdateLockItems()`, `_PlayAnimation(string)`, `_PlayAnimationPreviousItem(string)`, `_PlayAnimationTransform(TransformAnimation)`
+- `SelectorManager`: manages multiple selector instances
+- `SelectorUI`: UI rendering
+- `MItem`/`MItemSet`: item definitions as ScriptableObjects
+
+**Demo:** Dedicated scene with animated character carousel, transform animations, lock/unlock states.
+
+**Project Relevance:**
+- AQS: LOW -- no character selection needed (Mom is the only playable character, Joey swapping is pouch-based)
+- HOK: LOW -- single playable character
+- 3D Action/Adventure concepts: MEDIUM -- character selection for multi-character games
+- Any project with character/loadout selection: MEDIUM
+
+**Asset Interactions:** Works standalone but integrates with AC for character swapping (see AC Demo 10 - Swap Characters).
+
+---
+
+## ENTRY-030: Fishing for Animal Controller
+
+**Date:** 2026-02-07 (original) / 2026-03-14 (re-eval notes)
+**Source:** Asset Store (Malbers Animations)
+**Category:** Other (Fishing Minigame)
+**Verdict:** Approved
+**Label:** --
+
+**What it is:** Fishing system add-on for Animal Controller. Cast, reel, fish AI, catch mechanics. Requires AC as base.
+
+**Project Relevance:**
+- HOK: Explicitly listed as DON'T USE (HOK has custom fishing system)
+- AQS: N/A -- no fishing
+- 3D Action/Adventure with fishing minigame: HIGH -- drop-in fishing system for AC-based characters
+
+**Note:** No re-evaluation performed this session. Original verdict stands. Included in Malbers ecosystem listing for completeness.
+
+---
+
+## ENTRY-031: Poly Art: Raccoon 4.0 (Malbers)
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (Malbers Animations)
+**Category:** Animation / Art
+**Verdict:** Approved
+**Label:** --
+**Path:** `Assets/Malbers Animations/Animals Packs/01 Forest Pack/`
+
+**What it is:** Low-poly raccoon character pack. Ships as part of the Forest Pack. Includes two implementations:
+
+1. **Raccoon (Legacy/Standard):** Basic model + animations at `Raccoon/Raccoon Demo PolyArt/`. Standalone animations, no AC dependency.
+2. **Raccoon AC (Animal Controller integration):** Full AC-wired character at `_Forest Pack (AC)/Raccoon AC/`. Includes 7 demo scenes: Forest, PlayGround, Mobile, AI Sample (2 variants), Point Click, Callbacks, AI Brain. Also includes `Rideable (Requires HAP) PA/` for mounting.
+
+**Models:** Adult Raccoon (Poly Art style) + **Raccoon Cub** (smaller model, potential Joey placeholder for AQS).
+
+**Animation Set:** Full quadruped set -- Idle, Locomotion (walk/trot/run), Jump, Fall, Swim, Climb, Attack, Death, Sleep, Blink, Semi-closed eyes. Controlled via Raccoon Eyes animator controller.
+
+**Currently in Use:** Installed in Sandbox for AQS. Scorch (HOK placeholder) was the original stand-in, but the Raccoon is closer to quokka movement patterns. Raccoon Cub is a candidate for Joey visual placeholders.
+
+**Project Relevance:**
+- AQS: **HIGH** -- primary placeholder character. Raccoon AC provides complete state machine for 2.5D platformer. Raccoon Cub for Joey placeholders.
+- HOK: N/A -- Scorch is HOK's character
+- Any AC-based project needing quadruped: HIGH
+
+**Asset Interactions:** Requires Common folder. AC integration via UnityPackage in `_Forest Pack (AC)/`. Rideable variant requires Horse Animset Pro (ENTRY-032).
+
+---
+
+## ENTRY-032: Horse Animset Pro 4.5.1 (Riding System)
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (Malbers Animations)
+**Category:** Animation / Character
+**Verdict:** Approved
+**Label:** --
+**Path:** `Assets/Malbers Animations/Horse AnimSet Pro/`
+**Previously:** Deferred (2026-02-07, never tested)
+
+**What it is:** Animation framework + Riding System module for Animal Controller. v4.5.1 (Jan 17, 2026). **Everything in Animal Controller is included in HAP** -- it's a superset. 80+ horse animation clips, rider system with 132 animation clips.
+
+**Key Components:**
+- **Horse:** 3 visual styles (Realistic, Poly Art, MineCraft), multiple texture sets per style with LOD support. Saddle + armor options. Unity Cloth for reins/mane. Swimming, falling, jumping, attacking, death, gaits (walk/trot/canter/gallop/sprint).
+- **Rider:** Cowboy character model with texture variants. 3rd-person and 1st-person. Combat (bows, pistols, melee). Compatible with Invector/Opsive controllers.
+- **Undead Horse:** Add-on variant (see ENTRY-295) with effects and materials.
+- **Wagon System:** Horse-drawn wagon mechanics.
+
+**Demo Scenes (18):** Horse Only, Riding Only, Riding Combat (3 variants: Holsters, Inventory, Assassin Creed), TopDown, AI Sample, FPS, Ragdoll, Mobile (+ Pegasus), AI Pegasus Travel, AI Sample Carriage, Point Click, MineCraft, Wagon, Call Horse.
+
+**Why Approved (previously Deferred):**
+- Now installed and confirmed working in Unity 6
+- AC included -- installing HAP gives you the full Animal Controller
+- Horse is the install vehicle for AC on Asset Store (buy HAP, get AC)
+- Riding system is bonus content even if you only need AC
+
+**Project Relevance:**
+- AQS: LOW direct use (no horses), but **HIGH indirect** -- this is how AC gets installed
+- HOK: N/A
+- 3D Action/Adventure with mounts: HIGH -- complete rideable animal system
+- Any project needing AC: install HAP to get everything
+
+**Asset Interactions:** Superset of AC (ENTRY-028). Raccoon Rideable (ENTRY-031) requires HAP for mounting. Undead Horse (ENTRY-295) requires HAP prefabs.
+
+---
+
+## ENTRY-036: Low Poly Animated Animals 4.1.1 (polyperfect)
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (polyperfect)
+**Category:** Animation / Art
+**Verdict:** Approved
+**Label:** Art
+**Path:** `Assets/polyperfect/Low Poly Animated Animals/`
+**Namespace:** `Polyperfect.Animals` (wraps `Polyperfect.Common`)
+
+**What it is:** Massive low-poly animal collection. 162 prefabs (120 unique animals + color variants + legacy + demo versions), 74 animator controllers, 68 AI stat configurations, 17 demo scenes, 28 scripts. Completely separate ecosystem from Malbers.
+
+**Animal Categories (68 species):**
+- Large Mammals: Bear (4 variants), Lion, Tiger, Leopard, Cheetah, Gorilla (3), Elephant (2), Hippo, Rhino, Giraffe (2), Horse (3), Zebra, Deer (2), Reindeer, Camel (2), Yak, Buffalo, Wildebeest, Cow (6), Boar, Walrus, Seal, Tapir, Panda, Badger, Anteater, Aardvark
+- Small Mammals: Rabbit (2), Squirrel, Rat, Capybara, Meerkat, Porcupine, Hedgehog, Guinea Pig, Fox, Beaver, Wolf
+- Dogs: Chihuahua (2), Golden Retriever, Great Dane (2)
+- Cats: Cat (3 colors)
+- Birds: Eagle, Hawk, Owl, Vulture, Flamingo, Seagull, Penguin, Ostrich, Parrot, Dove, Hen, Rooster, Chick, Goose, Toucan
+- Reptiles: Snake (2), Crocodile, Lizard, Tortoise
+- Insects: Spider (3), Bee (2), Cockroach, Ant
+- Aquatic: Shark (2), Orca, Dolphin, Whale, Jellyfish (3), Octopus, Squid, Seahorse, Starfish, Crab, Stingray, Fish
+
+**AI System:** `Common_WanderScript` (973 lines). 6-state machine: Idle, Wander, Chase, Evade, Attack, Dead. Predator/prey detection via range-based awareness/scent. `AIStats` ScriptableObject per species: dominance (food chain rank), stamina, power, toughness, aggression, attackSpeed, territorial, stealthy.
+
+**Key API:**
+- `Common_WanderScript`: `TakeDamage(float)`, `Die()`, `SetPeaceTime(bool)`, `CurrentState`, `AllAnimals` (static list)
+- Events: `deathEvent`, `attackingEvent`, `idleEvent`, `movementEvent`
+- Movement via CharacterController (or NavMeshAgent if present), NOT root motion
+
+**Animation:** All states controlled via Animator bools (isSleeping, isWalking, isRunning, isAttacking, isDead). Per-animal Animator Controllers (74 total). Abrupt state transitions, no blending.
+
+**Compatibility with Malbers AC:**
+- **NOT designed to work together on same GameObject.** Different movement systems (CharacterController vs Rigidbody), different animator parameter patterns (bools vs AC's hash system), different AI architecture.
+- **Coexistence strategy:** Polyperfect for ambient AI herd/background animals. Malbers AC for player character + key gameplay creatures. Separate layers, no cross-system interaction needed.
+
+**Concerns:**
+- No asmdef, no namespace isolation (wraps Common namespace but scripts compile to Assembly-CSharp area)
+- AI is simplistic -- flat state machine, no line of sight, no pack behavior, no waypoints
+- Animation transitions are abrupt (bool on/off), no blend trees
+- Legacy prefabs present -- indicates some deprecation
+- Low-poly style: great for background, less suitable for close-up hero characters
+
+**Project Relevance:**
+- AQS: **HIGH** -- placeholder enemy models (snake, hawk, dog/cat as predators). GDD Sprint 4 lists "Low Poly Animated Animals (ENTRY-036)" for placeholder enemies. Predator/prey AI is bonus for environmental flavor.
+- HOK: LOW -- wrong art style for fishing sim
+- 3D Action/Adventure: HIGH -- instant wildlife population
+- Any 3D project needing ambient animals: HIGH
+
+**MCP Potential:** Low. Simple API (3 public methods), CharacterController-based movement. Standard component pipeline sufficient -- no custom MCP tools needed. Can spawn/configure via `component-modify` on AIStats fields.
+
+**Asset Interactions:** Independent from Malbers ecosystem. Can coexist in same project without conflicts (different folders, different namespaces). Could pair with Behavior Designer Pro (ENTRY-229) or SensorToolkit2 (ENTRY-231) for more sophisticated enemy AI by replacing the WanderScript.
+
+---
+
+## ENTRY-294: Drake the Dragonkin 4.0 (Malbers)
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (Malbers Animations)
+**Category:** Animation / Art
+**Verdict:** Approved
+**Label:** --
+**Path:** `Assets/Malbers Animations/Dragons/7 - Drake the Dragonkin/`
+
+**What it is:** Dragon character pack for Animal Controller. Includes Drake AC integration, animations, materials/textures, and 3D models. Poly Art style matching the Raccoon pack aesthetic.
+
+**Structure:** `1 - Drake AC/` (AC-integrated prefab), `Animations/`, `Materials & Textures/`, `Models/`.
+
+**Project Relevance:**
+- AQS: LOW -- no dragons in quokka metroidvania (unless future boss/enemy)
+- 3D Action/Adventure: HIGH -- dragon companion, mount, or enemy
+- Fantasy RPG concepts: HIGH
+
+**Asset Interactions:** Requires Common folder + AC. AC states (Fly, Glide, Attack) directly applicable to dragon behavior.
+
+---
+
+## ENTRY-295: Undead Horse & Knight 4.0 (Malbers)
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (Malbers Animations)
+**Category:** Animation / Art
+**Verdict:** Approved
+**Label:** --
+**Path:** `Assets/Malbers Animations/Horse AnimSet Pro/Undead Horse/`
+
+**What it is:** Undead variant of the HAP horse. Includes demo scene, effects, materials/textures, models, and prefabs. Requires Horse Animset Pro (ENTRY-032) for base prefab/animations.
+
+**Structure:** Demo Scene, Effects, Materials & Textures, Models, Prefabs (Requires Horse Animset).
+
+**Project Relevance:**
+- HOK: MEDIUM -- Kharon's ferry could use undead horse aesthetic for supernatural mount
+- 3D Action/Adventure (dark fantasy): HIGH
+- AQS: NONE
+
+**Asset Interactions:** Depends on HAP (ENTRY-032). Uses same riding system and AC states as standard horse.
+
+---
+
+## ENTRY-296: Low Poly Cowboy 1.1 (Malbers)
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (Malbers Animations)
+**Category:** Art (Character)
+**Verdict:** Approved
+**Label:** --
+**Path:** `Assets/Malbers Animations/Cowboy/`
+
+**What it is:** Low-poly cowboy humanoid character. Materials, models, prefabs, textures. Designed as the rider character for HAP demos. Multiple texture variants.
+
+**Structure:** `Materials/`, `Model/`, `Prefabs/`, `Textures/`.
+
+**Note:** This is primarily an art asset -- the character model. The rider animations and controller logic come from HAP (ENTRY-032). The Cowboy model is what you see in HAP's riding demos.
+
+**Project Relevance:**
+- Any project using HAP riding: HIGH -- ready rider character
+- AQS/HOK/FearSteez: LOW -- not needed
+- Western-themed concepts: HIGH
+
+**Asset Interactions:** Pairs with HAP (ENTRY-032) rider system. Humanoid rigged, retargetable to other animation sets.
+
+---
+
+## ENTRY-297: Malbers Quest Forge 1.0
+
+**Date:** 2026-03-14 (Session 58 -- Malbers Ecosystem Re-eval)
+**Source:** Asset Store (Malbers Animations)
+**Category:** Scripting (Quest / Dialogue / Map)
+**Verdict:** Approved
+**Label:** --
+**Path:** `Assets/Malbers Animations/Integrations/Malbers Quest Forge/`
+**Namespace:** `MalbersAnimations.QuestForge`
+
+**What it is:** Full quest, dialogue, minimap/world map, compass, and save/load system built for the Malbers AC ecosystem. 146 C# scripts (65,168 LOC), ~40 prefabs, graph-based dialogue editor. Production-quality, feature-complete system for RPGs and narrative-driven games.
+
+**Five Subsystems:**
+
+1. **Quest System:** `Quest` (SO template), `QuestInstance` (runtime), `QuestManager` (singleton lifecycle). Objective types: Kill, Collect, Visit Location, Talk to NPC, Interact, Reach Waypoint. Quest types: Main, Side, Daily, Repeatable. Prerequisite chains (AND/OR logic). Extensible reward system (`IQuestReward`). Distance-to-objective tracking with color-coded ranges.
+
+2. **Dialogue System:** `DialogueContainerSO` (graph SO), `DialogueManager` (runtime executor), `DialogueUI` (renderer). Graph-based editor with node types: Simple, Choice (branching), Events, Quest Actions (start/complete/fail), Wait, Conditions, Cinemachine, Timeline, Audio, Modal Windows. Speaker definitions with voice/animation settings.
+
+3. **Minimap & World Map:** `MinimapUI`, `POIManager`, `WorldMapUI`. Points of interest with icons, player indicator, camera cone overlay. Fog of war, fast travel, quest marker integration.
+
+4. **Compass Bar:** `CompassBarUI` -- direction indicator showing tracked quest objectives.
+
+5. **Save/Load:** `QuestSaveSystem` + `DialogueSaveSystem`. JSON serialization via Newtonsoft.Json. Custom `Vector3Converter`. Persists quest progress + dialogue state.
+
+**Event Architecture:** `QuestEventBus` (Observer pattern) with `QuestEventType` enum (EnemyKilled, ItemCollected, LocationReached, NPCTalkedTo, etc.). `QuestEventReporter` broadcasts game events to quest system. Decoupled from AC -- communicates via events, not direct references.
+
+**Dependencies:** Cinemachine 3, Newtonsoft.Json, Timeline, Splines, URP, and Malbers Animal Controller.
+
+**Concerns:**
+- First release (v1.0) -- may have rough edges
+- 65K LOC is a large code surface to maintain
+- Competes with established assets: Dialogue System for Unity (ENTRY-214), Adventure Creator (ENTRY-251), Ink (ENTRY-281) for narrative. But those are standalone -- Quest Forge is AC-native.
+- Minimap/world map competes with dedicated map assets (AA Map and Minimap, still unevaluated for AQS)
+
+**Project Relevance:**
+- AQS: MEDIUM -- metroidvania needs quest tracking, map reveal, NPC dialogue. If AC is adopted, Quest Forge integrates natively. But AQS's narrative needs are lighter than a full RPG.
+- VNPC: LOW -- VNPC already uses Dialogue System (ENTRY-214) + Ink (ENTRY-281) + Adventure Creator (ENTRY-251). Quest Forge would be redundant.
+- 3D Action/Adventure concepts using AC: **HIGH** -- complete RPG quest/dialogue/map stack with zero adapter code.
+- HOK: N/A -- doesn't use AC.
+
+**MCP Potential:** Medium-High. `QuestManager` singleton pattern, ScriptableObject quest definitions, event bus architecture -- all scriptable via Roslyn. Dialogue graphs are SO-based and could potentially be built programmatically. Quest creation/tracking/completion all have public API. Worth formal MCP eval if adopted.
+
+**Asset Interactions:** Native AC integration. Competes with but doesn't conflict with ENTRY-214 (Dialogue System), ENTRY-251 (Adventure Creator), ENTRY-281 (Ink). Uses Newtonsoft.Json (already a Unity package dependency). Timeline and Cinemachine integration for cinematic dialogue sequences.
+
+---
+
+## ENTRY-298: Flare Engine 2D Tools 1.8.5
+
+**Date:** 2026-03-16 (Sandbox2D Session 0)
+**Source:** Asset Store
+**Category:** Scripting (2D Framework)
+**Verdict:** Approved
+**Label:** Recommended
+
+**What it is:** Comprehensive 2D game framework covering platformer, RPG, AI, dialogue, inventory, quest, saving, weapons, and camera systems. 30+ player abilities, behavior tree AI, pathfinding, Chronos time-rewind system, dialogue/inventory/quest/saving systems.
+
+**Concerns:**
+- No custom asmdef -- sits in Assembly-CSharp
+- Unity 6 manual setup required
+- Successor asset reportedly in development by publisher
+
+**Project Relevance:**
+- AQS: HIGH -- 2.5D metroidvania platformer; 30+ abilities, weapons, AI brain all directly applicable
+- Bob Christ / Story Weaver: HIGH -- RPG/narrative systems
+- Shift Happens: MEDIUM -- platformer mechanics applicable but top-down physics focus doesn't fully match
+- FearSteez: MEDIUM -- combat/ability systems could inform, but FearSteez uses Malbers AC
+
+**TVG Candidates:**
+- Chronos rewind system -- time manipulation mechanic
+- Reaction Profile game-feel system
+- WorldEvents bus pattern
+- AbilityManager priority system
+
+---
+
+## ENTRY-299: Character Editor 4D 7.6
+
+**Date:** 2026-03-16 (Sandbox2D Session 0)
+**Source:** Asset Store
+**Category:** Art (Character)
+**Verdict:** Conditional
+**Label:** --
+
+**What it is:** 4-directional 2D character editor with sprite art packs. Runtime character customization for 2D top-down or side-view games.
+
+**Critical Blocker:** BiRP ONLY -- URP is NOT supported. All TecVooDoo projects use URP, making the C# runtime system unusable.
+
+**Concerns:**
+- Publisher retroactively removes content from purchased assets
+- Multi-year unresolved bugs reported in reviews
+- Newtonsoft.Json DLL conflict with Unity's built-in package
+
+**Usability:** Art assets (sprites) can be extracted and used independently. Runtime character editor system is dead on arrival for URP projects.
+
+**Project Relevance:** LOW across all projects due to URP blocker. Art extraction only.
+
+---
+
+## ENTRY-300: 2D Art Maker Casual Characters 1.0.14
+
+**Date:** 2026-03-16 (Sandbox2D Session 0)
+**Source:** Asset Store
+**Category:** Art (Character) / Scripting
+**Verdict:** Approved
+**Label:** Recommended
+
+**What it is:** Spine-based runtime character customization system with 16 part slots. Supports dual Spine rendering (SkeletonAnimation for world, SkeletonGraphic for UI). Runtime atlas optimization, color tinting by body zone, prefab export with thumbnail generation, random character generation.
+
+**Concerns:**
+- Tight demo singleton coupling (not production-ready out of box)
+- Per-frame color application (performance concern for many characters)
+- Spine 4.2 dependency required
+
+**Project Relevance:**
+- Bob Christ / Story Weaver: HIGH -- runtime character customization for narrative games
+- AQS: MEDIUM -- Joey visual variants could use part-slot system
+- FearSteez: MEDIUM -- character variety for fighters
+
+**TVG Candidate:** SpineCharacterCustomizer -- extract PartsManager pattern with injectable config interface.
+
+---
+
+## ENTRY-301: TopDown Engine 4.5 (More Mountains)
+
+**Date:** 2026-03-16 (Sandbox2D Session 0)
+**Source:** Asset Store (More Mountains)
+**Category:** Scripting (2D/3D Framework)
+**Verdict:** Approved
+**Label:** Recommended
+
+**What it is:** More Mountains' top-down action framework supporting both 2D and 3D. CharacterAbility composition system, AI Brain/Action/Decision system (30+ Actions, 20+ Decisions), full weapons suite, inventory integration, procedural tilemap generation. Bundles MMFeedbacks (Feel ~$65 value included).
+
+**Architecture Quality:**
+- 9 proper asmdefs (excellent modularity)
+- Explicit typing: only 14 `var` usages across 225 runtime scripts
+- Negligible LINQ in runtime code
+- 12 demo scenes
+
+**Project Relevance:**
+- Bob Christ / Story Weaver / FearSteez: HIGH -- combat, AI, weapons, inventory all directly applicable
+- AQS: MEDIUM -- overworld/hub segments could use top-down mechanics; CharacterAbility pattern is excellent study reference
+- Shift Happens: MEDIUM -- physics focus differs but AI system applicable
+
+**MCP Potential:** HIGH -- automated playtesting via AI Brain system. Character abilities are component-based and inspectable.
+
+**Note:** Same publisher as Corgi Engine (ENTRY-240) and Feel (ENTRY-242). Install BEFORE 3D art assets -- triggers FBX catalog scan on first import (same as Corgi Engine).
 
 ---
 
@@ -9117,6 +9603,9 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 | RayFire 2 | ENTRY-168 | Built | Tools in ENTRY-267 -- DemolishForced/ApplyDamage crash from MCP context |
 | MagicaCloth 2 | ENTRY-095 | Built | Tools in ENTRY-267 |
 | Asset Inventory 4 | ENTRY-252 | Built | Tools in ENTRY-267 |
+| Malbers Animal Controller | ENTRY-028 | Built | 8 tools: query, state, mode, speed, stat, damageable, lock-axis |
+| Malbers Quest Forge | ENTRY-297 | Built | 5 tools: quest CRUD, objectives, POI management |
+| Retarget Pro | ENTRY-243 | Built | 4 tools: batch-bake, create-profile, query-profiles |
 
 ### MCP Controllability Evaluated -- Audio (AudioProject Sessions 6 + 8)
 
@@ -9144,7 +9633,28 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 | Verlet Motion 2026 | ENTRY-272 | Partial | VerletTransforms works; VerletLine crashes serializer (NativeArray) |
 | FS Grappling Hook | ENTRY-272 | Low | Components add/read/modify fine but useless without Fantacode full stack |
 | FS Rope Swinging | ENTRY-272 | Low | Same -- requires full Fantacode stack |
-| Retarget Pro | ENTRY-243 | No | Only batch-bake useful; profile setup requires UI; not worth 1 tool |
+| Retarget Pro | ENTRY-243 | Built | **Re-evaluated Session 58.** 4 tools: batch-bake, create-profile, query-profiles. Profile creation now scriptable; batch bake fills workflow gap (no batch UI). Key use: polyperfect-to-AC animation retargeting. |
+
+### MCP Controllability Evaluated -- Malbers Ecosystem (Session 58)
+
+| Asset | ENTRY | Rating | Key API Pattern | Notes |
+|-------|-------|--------|-----------------|-------|
+| Malbers Animal Controller (AC) | ENTRY-028 | High | `MAnimal` partial class, 100+ public methods, ScriptableObject IDs | **BUILT** -- 8 tools in `MCPTools.MalbersAC.Editor`. State/Mode/Stance/Speed/Stats/Damageable/LockAxis configuration. |
+| Poly Art: Raccoon (AC) | ENTRY-031 | High | Same as AC -- raccoon is an AC character | Covered by AC tools. |
+| Horse Animset Pro | ENTRY-032 | High | AC superset + riding system | Covered by AC tools. |
+| Ultimate Selector | ENTRY-029 | Medium | `SelectorController.SelectNextItem()`, `MItem` SOs | Simple API, mainly UI -- not worth custom tools. |
+| Malbers Inventory System | ENTRY-001 | Medium | Integrates with AC Stats | Covered by AC stats tools. |
+| Low Poly Animated Animals | ENTRY-036 | Low | 3 public methods on `Common_WanderScript` | Spawn + configure via component-modify. No custom tools needed. |
+| Drake the Dragonkin | ENTRY-294 | High | AC character -- full AC API | Covered by AC tools. |
+| Undead Horse & Knight | ENTRY-295 | High | AC character -- full AC API | Covered by AC tools. |
+| Cowboy | ENTRY-296 | N/A | Art asset only | No scriptable components. |
+| Malbers Quest Forge | ENTRY-297 | Medium-High | `QuestManager` singleton, SO quest defs, `QuestEventBus` | **BUILT** -- 5 tools in `QuestForge/Editor/`. Quest/Objective/POI creation and querying. |
+
+**Malbers AC MCP Tools (Built Session 58):** 8 tools: `ac-query-animal`, `ac-query-stats`, `ac-configure-state`, `ac-configure-mode`, `ac-configure-speed`, `ac-configure-stat`, `ac-configure-damageable`, `ac-add-lock-axis`. Asmdef pattern with `HAS_MALBERS_AC` define.
+
+**Quest Forge MCP Tools (Built Session 58):** 5 tools: `qf-create-quest`, `qf-query-quests`, `qf-add-objective`, `qf-create-poi`, `qf-query-pois`. `#if HAS_MALBERS_QUESTFORGE` guards (no asmdef, Assembly-CSharp).
+
+---
 
 ### AI-Friendliness Evaluated -- VNPC (Session 1)
 

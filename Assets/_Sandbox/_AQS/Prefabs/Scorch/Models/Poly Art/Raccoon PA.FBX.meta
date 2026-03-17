@@ -964,6 +964,5 @@ AssetOrigin:
   productId: 90110
   packageName: 'Poly Art: Raccoon'
   packageVersion: 4.0
-  assetPath: Assets/Malbers Animations/Animals Packs/01 Forest Pack/Raccoon/Models/Poly
-    Art/Raccoon PA.FBX
+  assetPath: Assets/_Sandbox/_AQS/Prefabs/Scorch/Models/Poly Art/Raccoon PA.FBX
   uploadId: 781998

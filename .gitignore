@@ -92,6 +92,12 @@ crashlytics-build.properties
 /Assets/Voxel Labs/
 /Assets/WarpedImagination/
 /Assets/Wingman/
+/Assets/Malbers Animations/
+/Assets/Malbers Animations.meta
+/Assets/polyperfect/
+/Assets/polyperfect.meta
+/Assets/ThirdParty/
+/Assets/ThirdParty.meta
 
 # ============================================================
 # Packages -- only track manifest.json and packages-lock.json

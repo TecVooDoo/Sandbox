@@ -4,29 +4,56 @@ using UnityEngine.InputSystem;
 namespace AQS.Player
 {
     /// <summary>
-    /// Wires Input System actions to QuokkaController.
-    /// Attach to the same GameObject as QuokkaController.
-    /// Assign the AQS_InputActions asset in the PlayerInput component.
+    /// Polls input each frame instead of using callbacks.
+    /// More reliable for composite bindings (WASD) and direction changes.
     /// </summary>
     [RequireComponent(typeof(QuokkaController))]
     [RequireComponent(typeof(PlayerInput))]
     public class QuokkaInputHandler : MonoBehaviour
     {
         private QuokkaController controller;
+        private PlayerInput playerInput;
+        private InputAction moveAction;
+        private InputAction jumpAction;
 
         private void Awake()
         {
             controller = GetComponent<QuokkaController>();
+            playerInput = GetComponent<PlayerInput>();
         }
 
-        public void OnMove(InputAction.CallbackContext context)
+        private void OnEnable()
         {
-            controller.OnMove(context);
+            moveAction = playerInput.actions["Move"];
+            jumpAction = playerInput.actions["Jump"];
+
+            jumpAction.started += OnJumpStarted;
+            jumpAction.canceled += OnJumpCanceled;
         }
 
-        public void OnJump(InputAction.CallbackContext context)
+        private void OnDisable()
         {
-            controller.OnJump(context);
+            if (jumpAction != null)
+            {
+                jumpAction.started -= OnJumpStarted;
+                jumpAction.canceled -= OnJumpCanceled;
+            }
+        }
+
+        private void Update()
+        {
+            Vector2 moveValue = moveAction.ReadValue<Vector2>();
+            controller.SetMoveInput(moveValue.x);
+        }
+
+        private void OnJumpStarted(InputAction.CallbackContext context)
+        {
+            controller.OnJumpPressed();
+        }
+
+        private void OnJumpCanceled(InputAction.CallbackContext context)
+        {
+            controller.OnJumpReleased();
         }
     }
 }

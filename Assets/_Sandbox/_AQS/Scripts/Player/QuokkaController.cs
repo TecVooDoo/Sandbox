@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace AQS.Player
 {
@@ -25,6 +24,7 @@ namespace AQS.Player
         [SerializeField] private LayerMask groundLayers;
 
         [Header("Facing")]
+        [SerializeField] private Transform modelTransform;
         [SerializeField] private bool startFacingRight = true;
 
         private Rigidbody rb;
@@ -48,6 +48,14 @@ namespace AQS.Player
             animator = GetComponentInChildren<Animator>();
             isFacingRight = startFacingRight;
             rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
+
+            if (modelTransform == null)
+            {
+                modelTransform = transform.GetChild(0);
+            }
+
+            float startYAngle = startFacingRight ? 90f : -90f;
+            modelTransform.localRotation = Quaternion.Euler(0f, startYAngle, 0f);
         }
 
         private void Update()
@@ -65,29 +73,26 @@ namespace AQS.Player
 
         #region Input
 
-        public void OnMove(InputAction.CallbackContext context)
+        public void SetMoveInput(float horizontal)
         {
-            moveInput = context.ReadValue<Vector2>().x;
+            moveInput = horizontal;
         }
 
-        public void OnJump(InputAction.CallbackContext context)
+        public void OnJumpPressed()
         {
-            if (context.started)
-            {
-                jumpPressed = true;
-                jumpHeld = true;
-                lastJumpPressTime = Time.time;
-            }
+            jumpPressed = true;
+            jumpHeld = true;
+            lastJumpPressTime = Time.time;
+        }
 
-            if (context.canceled)
+        public void OnJumpReleased()
+        {
+            jumpHeld = false;
+            Vector3 vel = rb.linearVelocity;
+            if (vel.y > 0f)
             {
-                jumpHeld = false;
-                Vector3 vel = rb.linearVelocity;
-                if (vel.y > 0f)
-                {
-                    vel.y *= jumpCutMultiplier;
-                    rb.linearVelocity = vel;
-                }
+                vel.y *= jumpCutMultiplier;
+                rb.linearVelocity = vel;
             }
         }
 
@@ -262,9 +267,8 @@ namespace AQS.Player
         private void Flip()
         {
             isFacingRight = !isFacingRight;
-            Vector3 scale = transform.localScale;
-            scale.x *= -1f;
-            transform.localScale = scale;
+            float yAngle = isFacingRight ? 90f : -90f;
+            modelTransform.localRotation = Quaternion.Euler(0f, yAngle, 0f);
         }
 
         #endregion

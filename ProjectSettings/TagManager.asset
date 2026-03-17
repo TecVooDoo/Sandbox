@@ -2,12 +2,18 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags:
+  - Stair
+  - WallRun
+  - Climb
+  - Fly
   - People
   - Car
   - PeopleSemaphore
   - Bcycle
+  - Animal
+  - Water
   layers:
   - Default
   - TransparentFX
@@ -15,33 +21,35 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Ground
+  - Player
   - posteffects
+  - Climbable
+  - 
+  - 
+  - 
+  - 
+  - 
+  - BodyPart
+  - 
+  - 
+  - 
+  - 
+  - Animal
+  - 
+  - 
+  - Enemy
   - 
   - 
   - 
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Item
   - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0
     locked: 0
+  m_RenderingLayers:
+  - Default

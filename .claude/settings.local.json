@@ -50,7 +50,13 @@
       "mcp__ai-game-developer__assets-prefab-instantiate",
       "mcp__ai-game-developer__screenshot-scene-view",
       "mcp__ai-game-developer__editor-selection-set",
-      "mcp__ai-game-developer__screenshot-game-view"
+      "mcp__ai-game-developer__screenshot-game-view",
+      "mcp__ai-game-developer__scene-open",
+      "mcp__ai-game-developer__ac-query-animal",
+      "mcp__ai-game-developer__ac-query-stats",
+      "mcp__ai-game-developer__assets-get-data",
+      "mcp__ai-game-developer__animator-get-data",
+      "mcp__ai-game-developer__assets-copy"
     ]
   },
   "enableAllProjectMcpServers": true,

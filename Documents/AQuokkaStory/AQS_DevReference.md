@@ -1,7 +1,7 @@
 # A Quokka Story -- Dev Reference
 
 **Purpose:** Architecture, coding standards, and AI rules for A Quokka Story. Read on demand -- primary doc is `AQS_Status.md`.
-**Last Updated:** March 12, 2026 (Session 1 -- Sprint 1 Start)
+**Last Updated:** March 15, 2026 (Sessions 3-5 -- Malbers AC Pivot + Rabbit Integration)
 
 ---
 
@@ -219,7 +219,7 @@ Same as all TecVooDoo projects:
 - **No per-frame allocations/LINQ** -- cache, pool, reuse
 - **ASCII only** in docs and identifiers
 - **Vanilla SO architecture** -- GameEvent/GameEventListener for events (NOT SOAP)
-- **Custom Animator Controllers** via Animancer Pro (NOT Malbers AC)
+- **Malbers Animal Controller** for player movement (MAnimal + LockAxis for 2.5D). Animancer Pro may still be used for non-AC characters/VFX.
 - **Keep scripts focused** -- extract when a class has more than one clear responsibility. No hard line limit. A 3000-line class that does one thing well is fine.
 - **Prefer interfaces and generics** -- decouple systems, reduce duplication
 - **Collision-based ground detection** -- NOT raycasts (design decision from original project, works better with 2.5D slopes and moving platforms)
@@ -252,6 +252,18 @@ Music is the heart of AQS identity. The soundtrack is layered audio stems that d
 | Airstrip | E minor | 140 |
 
 **Max simultaneous stems:** 12 (performance constraint)
+
+---
+
+## Malbers AC Integration
+
+Full step-by-step recipe in `AQS_MalbersRecipe.md`. Key rules summarized here:
+
+- **states[Count-1] = startup state** -- Idle must always be last in the MAnimal states list. Malbers activates the last element at startup via `CleanStateStart()`, bypassing `TryActivate()`.
+- **State ordering:** highest priority first, Idle (Priority=1) last.
+- **JumpBasic GravityPower must be > 0** -- GravityPower=0 means no downward force during jump. Raccoon's JumpBasic asset ships with 0 (raccoon uses Jump RM, not JumpBasic -- those defaults are untested).
+- **AnyState->Idles canTransitionToSelf=True** -- required for Fall->Idle re-entry.
+- **Sub-State Machines only** -- do not use flat states at the animator root level.
 
 ---
 
