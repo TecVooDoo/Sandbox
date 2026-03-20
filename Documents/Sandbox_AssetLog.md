@@ -396,6 +396,11 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 299 | Character Editor 4D 7.6 | Asset Store | Art (Character) | Conditional | -- | 2026-03-16 |
 | 300 | 2D Art Maker Casual Characters 1.0.14 | Asset Store | Art (Character) / Scripting | Approved | Recommended | 2026-03-16 |
 | 301 | TopDown Engine 4.5 (More Mountains) | Asset Store | Scripting (2D/3D Framework) | Approved | Recommended | 2026-03-16 |
+| 302 | com.unity.charactercontroller 1.4.2 (Unity / Philippe St-Amand) | Registry | Character Controller (ECS/DOTS Kinematic) | Approved | Recommended | 2026-03-19 |
+| 303 | KINERACTIVE 1.11 (Clean Shirt Labs) | Asset Store | Scripting (IK Interaction System) | Approved | -- | 2026-03-19 |
+| 304 | customized objects gravity 1.0 (YAHYABK) | Asset Store | Scripting (Surface Gravity) | Rejected | Don't Use | 2026-03-19 |
+| 305 | Camera System 1.6.4 (Gaskellgames) | Asset Store | Scripting (Camera) | Rejected | Don't Use | 2026-03-19 |
+| 306 | ECS N-Body Orbit Simulation 1.0.0 (Parallel Cascades) | Asset Store | Scripting (ECS Physics Simulation) | Conditional | -- | 2026-03-19 |
 
 ---
 
@@ -9578,6 +9583,366 @@ TecVooDoo's custom adaptive music system. Singleton pattern (`MusicDirector.Inst
 
 ---
 
+## ENTRY-302: Genies Avatar SDK 2.8.5
+
+**Date:** 2026-03-17 (GeniesTest Session 1)
+**Source:** Genies Inc. (via Genies Developer Portal / Unity Package Manager)
+**Category:** Character Customization + Avatar System (Cloud-Connected)
+**Verdict:** Approved
+**Label:** Character
+**Path:** `Packages/com.genies.avatar-sdk.client/` (UPM package)
+
+**What it is:** Cloud-connected avatar customization SDK. 3,072 C# scripts across 89 asmdefs, ~60 internal modules. Provides full avatar lifecycle: authentication (Email OTP, password, anonymous), avatar loading (default, user, by definition, by userId, test), real-time customization (wearables, hair, tattoos, makeup, body morphs, colors), and a built-in avatar editor UI. Avatars are humanoid with Animator, CharacterController support, and Cinemachine camera integration. Uses UMA (Unified Multipurpose Avatar) internally for mesh generation. Includes UniTask, VContainer, xNode, UnityGLTF, NAF Plugin (KTX textures) as vendored internal dependencies.
+
+**Architecture:**
+- Singleton static API: `AvatarSdk.*` -- all public methods are static on a partial class split across 6 files (core, login, loginOtp, loginPassword, loginAnonymous, avatarEditor)
+- `ManagedAvatar` -- primary handle returned from all Load* methods. Contains `.Root` (GameObject), `.Component` (ManagedAvatarComponent MonoBehaviour), `.GetDefinition()` (JSON string), `.Dispose()`
+- Avatar definition is a JSON blob that fully describes an avatar's appearance -- cacheable, transferable between sessions, loadable via `LoadAvatarByDefinitionAsync`
+- `AvatarLoadedNotifier` -- static event bus for Loaded/Destroyed events
+- Internal DI via VContainer, service management via `ServiceManager` scopes
+- Authentication required for most operations (demo mode available for testing without credentials)
+- 89 asmdef files -- excellent assembly isolation, no Assembly-CSharp pollution
+- Requires IL2CPP, .NET 4.8, Vulkan (Windows) -- enforced by Bootstrap Wizard
+
+**Key API (all on `AvatarSdk` static class):**
+- **Init:** `InitializeAsync()`, `InitializeDemoModeAsync()`
+- **Auth:** `TryInstantLoginAsync()`, `StartLoginEmailOtpAsync(email)`, `SubmitEmailOtpCodeAsync(code)`, `StartLoginPasswordAsync(email, password)`, `StartLoginAnonymousAsync(appId)`, `LogOutAsync()`, `IsLoggedIn`, `GetUserIdAsync()`, `GetUserNameAsync()`
+- **Avatar Loading:** `LoadDefaultAvatarAsync()`, `LoadUserAvatarAsync()`, `LoadUserAvatarByUserIdAsync(userId)`, `LoadAvatarByDefinitionAsync(json)`, `LoadTestAvatarAsync()`, `PrecacheUserAvatarAssetsAsync()`
+- **Avatar Definition:** `GetUserAvatarDefinition()`, `GetUserAvatarDefinition(userId)`, `SaveAvatarDefinitionLocallyAsync()`, `SaveUserAvatarDefinitionAsync()`, `LoadFromLocalAvatarDefinitionAsync(profileId)`
+- **Wearables:** `GetDefaultWearablesByCategoryAsync(WearablesCategory)`, `GetUserWearablesByCategoryAsync(UserWearablesCategory)`, `EquipWearableByWearableIdAsync(avatar, id)`, `UnEquipWearableByWearableIdAsync(avatar, id)`, `EquipOutfitAsync()`, `UnEquipOutfitAsync()`, `GetUsersAssetsAsync()`, `GiveAssetToUserAsync(assetId)`
+- **Hair:** `GetDefaultHairAssets(HairType)`, `EquipHairAsync()`, `EquipHairByHairAssetIdAsync()`, `UnEquipHairAsync()` -- HairType: Hair, FacialHair, Eyebrows, Eyelashes
+- **Tattoos:** `GetDefaultTattoosAsync()`, `EquipTattooAsync(avatar, tattoo, slot)`, `UnEquipTattooAsync(avatar, slot)` -- MegaSkinTattooSlot enum for body regions
+- **Makeup:** `GetDefaultMakeupByCategoryAsync(AvatarMakeupCategory)`, `EquipMakeupAsync()`, `UnEquipMakeupAsync()` -- Categories: Lipstick, etc.
+- **Body Morphs:** `SetAvatarBodyTypeAsync(avatar, GenderType, BodySize)`, `ModifyAvatarFeatureStat(avatar, stat, float)`, `ModifyAvatarFeatureStats(avatar, Dictionary<stat,float>)`, `GetAvatarFeatureStats(avatar, statType)`
+- **Feature Stats:** EyeBrows (Thickness/Length/VerticalPosition/Spacing), Eyes (Size/VerticalPosition/Spacing/Rotation), Jaw (Width/Length), Lips (Width/Fullness/VerticalPosition), Nose (Width/Length/VerticalPosition/Tilt/Projection), Body (NeckThickness/ShoulderBroadness/ChestBustline/ArmsThickness/WaistThickness/BellyFullness/HipsThickness/LegsThickness)
+- **Colors:** `SetColorAsync(avatar, IAvatarColor)`, `GetColorAsync(avatar, AvatarColorKind)`, `GetDefaultColorsAsync(ColorType)`, `GetUserColorsAsync(UserColorType)`, `SetSkinColorAsync(avatar, Color)`, `CreateSkinColor()`, `CreateHairColor()`, `CreateFacialHairColor()`, `CreateEyeBrowsColor()`, `CreateEyeLashColor()`, `CreateMakeupColor()`
+- **Avatar Features:** `GetDefaultAvatarFeaturesByCategory(AvatarFeatureCategory)`, `SetAvatarFeatureAsync()` -- Categories: Eyes, Jaw, Lips, Nose
+- **Avatar Editor (built-in UI):** `OpenAvatarEditorAsync(avatar, camera)`, `CloseAvatarEditorAsync(revertAvatar)`, `IsAvatarEditorOpen`, `SetEditorSaveLocallyAndContinueAsync()`, `SetEditorSaveRemotelyAndExitAsync()`
+- **Events:** `Events.UserLoggedIn`, `Events.UserLoggedOut`, `Events.AvatarEditorOpened`, `Events.AvatarEditorClosed`, `Events.EmailOtpSent`, `Events.PasswordVerificationCodeSent`
+
+**Sample Scenes (imported):**
+- **DemoMode** -- loads test avatar without login, CharacterController movement, Cinemachine FreeLook, mobile touch UI (virtual joystick + buttons). 9 root objects.
+- **Avatar Starter** -- `CreateGeniesAvatar` MonoBehaviour, auto-spawns user avatar on Start
+- **Using Multiple Avatars** -- multi-avatar spawn/destroy with avatar editor integration
+- **Creating an Avatar Editor** -- full custom avatar editor UI sample
+
+**Dependencies (package.json):**
+- Addressables 1.19.19, Animation Rigging 1.2.1, Burst 1.8.15, Cinemachine 3.1.5, KTX 3.5.0, Input System 1.14.0, Mathematics 1.2.6, Newtonsoft JSON 3.2.1, URP 14.0.11, ShaderGraph 12.1.9, TextMeshPro 3.0.9, Timeline 1.7.6, uGUI 1.0.0
+
+**Concerns:**
+- **Cloud dependency:** All avatar loading and most customization requires active internet + Genies API server. Avatars are downloaded at runtime, not stored as local assets. Offline-first games can't use this.
+- **Authentication wall:** Most API calls require login (demo mode is limited to test avatars). User account system is Genies-owned, not your own auth.
+- **Vendor lock-in:** Avatar meshes generated via UMA pipeline internal to SDK. Can't export/modify meshes outside the SDK. Clothing/wearable assets are Genies marketplace items, not standard FBX/prefabs.
+- **3,072 scripts:** Massive codebase. Compile time impact is mitigated by 89 asmdefs, but the package is heavy.
+- **Vendored UniTask:** SDK bundles its own UniTask internally -- potential conflict if project also has Cysharp UniTask (namespace collision). GeniesTest doesn't have standalone UniTask so no issue here, but Sandbox would conflict.
+- **Build requirements:** IL2CPP + .NET 4.8 + Vulkan enforced. Mono backend not supported.
+- **Art style:** Genies avatars have their own stylized look -- won't match Synty Polygon or other art pipelines. For FearSteez, this is the avatar system, not a supplement.
+- **Clothing packs** (Endless Summer, Campus Comeback, Alpine Winter, After Dark) show in Package Manager but resolve as part of the Genies wearable system, not as standalone packages with local prefabs.
+
+**Project Relevance:**
+- FearSteez: LOW -- evaluated for clothing monetization but rejected. Beat 'em up needs local meshes, full rig control, offline combat. Synty Sidekick slot-based mesh swapping + Unity IAP is the correct path for FearSteez branded clothing.
+- HOK: LOW -- different character pipeline (Synty + custom)
+- VNPC: MEDIUM -- could work for social/lobby NPC avatars with user identity in point-and-click scenes
+- DLYH: LOW -- wrong genre
+- Social/Metaverse concepts: HIGH -- this is the SDK's sweet spot. User-owned avatars with cloud persistence, wearable marketplace, customization editor.
+- 3D Action/Adventure concepts: LOW -- cloud dependency and lack of mesh control make it unsuitable for action games
+
+**MCP Potential:** High. The entire public API is static methods on `AvatarSdk` -- ideal for `script-execute`. Wearable/hair/tattoo/color operations use string IDs and enums. Body morph stats use `Dictionary<AvatarFeatureStat, float>` with -1 to 1 range. All async operations return UniTask. Could build MCP tools for: avatar spawning, wearable cycling, body morph sliders, color preset application, avatar definition save/load. The avatar editor UI is also scriptable (open/close/save).
+
+**Asset Interactions:** UniTask vendored internally -- will conflict with standalone Cysharp UniTask in Sandbox. Cinemachine 3.x and Input System already in Sandbox. No asmdef conflicts expected since SDK uses its own `Genies.*` namespace throughout.
+
+---
+
+## ENTRY-303: Genies Art Forge SDK 1.12.0
+
+**Date:** 2026-03-17 (GeniesTest Session 1)
+**Source:** Genies Inc. (via Genies Developer Portal)
+**Category:** AI Asset Generation (Editor Tool)
+**Verdict:** Conditional
+**Label:** --
+**Path:** `Packages/com.genies.artforge-sdk.client/`
+
+**What it is:** AI-powered 3D asset generation tool. 140 C# scripts. Editor-only tool for generating 3D models and textures using AI (keywords: "rodin", "openai"). Uses WorkOS OAuth for authentication (separate from Avatar SDK auth). Depends on glTFast 6.14.1 and FBX Exporter 5.1.5 for asset import/export. Includes history view, generation parameters UI, and asset preview.
+
+**Architecture:**
+- Editor-only tool (not runtime)
+- WorkOS OAuth authentication (separate from Avatar SDK login)
+- Uses Rodin AI backend for 3D generation
+- glTF/FBX pipeline for asset import into Unity
+- History tracking for generated assets
+
+**Concerns:**
+- Editor-only -- no runtime use
+- Separate authentication from Avatar SDK
+- AI generation quality and cost unknown without testing
+- Partial eval -- not deeply tested in this session
+
+**Project Relevance:**
+- FearSteez: LOW -- character assets come from Genies Avatar SDK, not generated
+- General: MEDIUM -- could be useful for quick prototyping props/environment pieces
+
+**MCP Potential:** Low. Editor-only tool with OAuth flow that requires browser interaction.
+
+---
+
+## ENTRY-302: com.unity.charactercontroller 1.4.2 (Unity / Philippe St-Amand)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | com.unity.charactercontroller |
+| **Publisher** | Unity (authored by Philippe St-Amand, creator of Kinematic Character Controller / Rival) |
+| **Source** | Unity Registry Package |
+| **Category** | Character Controller (ECS/DOTS Kinematic) |
+| **Version** | 1.4.2 |
+| **Session** | SpaceSucks Session 1 (2026-03-19) |
+| **Verdict** | Approved |
+| **Label** | Recommended |
+
+**What It Does:** Pure ECS kinematic character controller for Unity DOTS. The character is a kinematic physics body that moves itself through collider casts and overlap resolution. Provides ground detection, slope handling, step detection, moving platform support, deferred impulses, and state save/restore for rollback. Camera-agnostic -- FP and TP implementations provided as importable samples only.
+
+**Package:** `Library/PackageCache/com.unity.charactercontroller@*/`
+
+**Scale:** 60 C# files (18 core, 28 samples, 14 tests), ~11,774 LOC, 2 asmdefs. Namespace: `Unity.CharacterController`.
+
+**Architecture:** Pure ECS (`partial struct : ISystem`), all Burst-compiled, uses `IJobEntity` with `ScheduleParallel()`. No SystemBase or managed code in runtime. Hard dependency on `com.unity.physics` 1.3.15 and `com.unity.entities` 1.3.15.
+
+**Key Components:**
+- `KinematicCharacterProperties` (IComponentData) -- config: slope angle, collision iterations, mass, snap-to-ground, grounding toggles
+- `KinematicCharacterBody` (IComponentData) -- state: `IsGrounded`, `RelativeVelocity`, `GroundingUp`, `GroundHit`, parent entity
+- `KinematicCharacterHit` / `StatefulKinematicCharacterHit` (IBufferElementData) -- hit tracking with Enter/Stay/Exit states
+- `KinematicCharacterDeferredImpulse` (IBufferElementData) -- deferred impulses to other bodies
+
+**Key API:**
+- Implement `IKinematicCharacterProcessor` interface with callbacks: `UpdateGroundingUp`, `CanCollideWithHit`, `IsGroundedOnHit`, `OnMovementHit`
+- `CharacterControlUtilities`: `StandardGroundMove_Interpolated/Accelerated`, `StandardAirMove`, `StandardJump`, `SlerpCharacterUpTowardsDirection`, `ApplyDragToVelocity`
+- Toggle `EvaluateGrounding` / `SnapToGround` at runtime to switch between grounded and floating states
+
+**Gravity Direction:** `GroundingUp` is a per-entity `float3` on `KinematicCharacterBody`, recalculated every frame via `UpdateGroundingUp` callback. **Arbitrary gravity is fully supported** -- all grounding, slope detection, step handling use `GroundingUp` (appears 60+ times in core utilities). Wall/ceiling walking works by setting `GroundingUp` to surface normal.
+
+**Zero-G Support:** No built-in zero-G mode, but architecture fully supports it. Disable `EvaluateGrounding` and `SnapToGround` for floating state. `StandardAirMove` requires a `movementPlaneUp` parameter, so true 6DOF needs custom velocity handling. The character always has a concept of "up" -- true spinning 6DOF requires bypassing grounding entirely.
+
+**Samples:** "Standard Characters" -- FirstPerson (processor, view pitch, systems) and ThirdPerson (processor, orbit camera with obstruction). Prefabs included, no sample scenes.
+
+**Concerns:**
+- No built-in 6DOF floating mode -- must implement custom
+- Ground snapping assumes single "down" direction -- mag-boot attachment needs custom surface detection logic
+- `KinematicCharacterAspect` deprecated in Unity 6000.5+ -- use `KinematicCharacterDataAccess` instead
+- Moving platforms require `TrackedTransform` component on the platform
+- Tightly coupled to `com.unity.physics` -- cannot use without it
+
+**Overlap Analysis:**
+- **vs Opsive UCC (ENTRY-165):** Not comparable. UCC is MonoBehaviour, no Burst/Jobs, 58K LOC. This is pure ECS, Burst-compiled, ~12K LOC. UCC has richer built-in abilities (39+) but fights ECS architecture.
+- **vs Kinematic Character Controller (Asset Store, same author):** KCC is the MonoBehaviour version. Same author, same design philosophy, different architecture. KCC is mature (v3.4.4, last updated 2022) but MonoBehaviour-only.
+- **vs Unity CharacterController (built-in):** Built-in is PhysX-based, no ECS, no custom gravity. This replaces it entirely for DOTS projects.
+
+**Verdict Rationale:** Approved with **Recommended** label. This is the correct character controller foundation for any ECS/DOTS project. Same author as the Asset Store KCC (proven design), pure Burst/Jobs architecture, arbitrary gravity direction support via `GroundingUp`. For SpaceSucks specifically, the per-entity per-frame gravity direction is exactly what mag boots need, and the ability to toggle grounding evaluation enables clean grounded/floating state switching. The main work is implementing custom zero-G movement and mag-boot attachment logic on top of this foundation.
+
+**SpaceSucks Relevance:** CRITICAL. Foundation character controller for the project. Replaces Opsive UCC.
+
+**Other 3D Project Relevance:** HIGH for any ECS/DOTS title. Not applicable to MonoBehaviour projects (use KCC Asset Store version instead).
+
+**TecVooDoo Utilities Candidate:** No -- this is a Unity first-party package, not redistributable.
+**TecVooDoo Games Candidate:** No -- same reason.
+**MCP Candidate:** Low -- ECS components are not standard MonoBehaviours. The existing MCP `component-add/modify` tools work with MonoBehaviour components. ECS entity configuration would need `script-execute` or custom tooling.
+
+---
+
+## ENTRY-303: KINERACTIVE 1.11 (Clean Shirt Labs)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | KINERACTIVE |
+| **Publisher** | Clean Shirt Labs |
+| **Source** | Asset Store |
+| **Category** | Scripting (IK Interaction System) |
+| **Version** | 1.11 |
+| **Session** | SpaceSucks Session 1 (2026-03-19) |
+| **Verdict** | Approved |
+| **Label** | -- |
+
+**What It Does:** First-person IK-based physical interaction system. Player looks at interactable objects (buttons, switches, levers, dials, sliders, wheels) and presses input to reach out with IK-driven hands and physically interact. Uses Unity's built-in `OnAnimatorIK()` -- does NOT depend on Final IK.
+
+**Package:** `Assets/KINERACTIVE/`
+
+**Scale:** 51 C# files (37 runtime, 14 editor). Namespace: `Kineractive`. No asmdefs.
+
+**Interaction Types:**
+- `ButtonTouchable` -- press/toggle buttons with In/Out/Pressed states
+- `Rotator` -- discrete rotation steps (on/off switches, door hinges)
+- `Mover` -- discrete linear position steps (levers)
+- `MoverAnalog` -- continuous linear movement with min/max
+- `RotatorAnalog` -- continuous rotation with min/max (dials, wheels, valves)
+- `ItemGrabber` -- grab/drop/throw physics objects
+- Prefab models: Button Box, Cover Hinge, Rotary Dial Box, Slider Box, Switch Box, Wheel
+
+**Architecture:** MonoBehaviour with `Singleton<T>` manager pattern. Raycast-based detection (configurable rate, distance, layer mask). `InputHandler` component bridges detection to `KineractiveInput` subclasses (ButtonInput, KeycodeInput, AxisInput, AnalogInput, SelfActivatedInput). All Touchable subclasses fire UnityEvents for wiring to game systems.
+
+**Dependencies:** Zero external dependencies. Uses only Unity built-in IK, legacy Input Manager, UnityEngine.UI.
+
+**Zero-G Assessment:** The interaction core (touchables, IK targeting, input) is gravity-agnostic -- all transform-based. The bundled FPS controller (`Player_Gravity.cs`, `Player_Movement.cs`) applies hardcoded downward gravity and uses CharacterController -- must be ignored in SpaceSucks. `Repositioner.cs` only lerps X/Z (ignores Y) -- needs fix for zero-G approach from any angle.
+
+**Concerns:**
+- No asmdefs -- compiles in Assembly-CSharp
+- Uses legacy Input Manager exclusively -- no New Input System support
+- `ItemGrabber` hardcodes `useGravity = true` on drop -- breaks zero-G
+- Single shared AudioSource on manager limits simultaneous interaction sounds
+- Bundled FPS controller is demo-quality, not production-ready
+
+**Overlap Analysis:**
+- **vs GrabMaster (ENTRY-239):** Overlaps on object grab/throw. KINERACTIVE's ItemGrabber is simpler; GrabMaster's grab system is more physics-complete (charge throw, rotation, sockets). Use GrabMaster for physics grab, KINERACTIVE for IK switch/lever/button interactions.
+- **vs Final IK + KINERACTIVE (ENTRY-153):** KINERACTIVE has its own IK via `OnAnimatorIK`. Final IK is not required. If both are installed, they can conflict on IK targets.
+
+**Verdict Rationale:** Approved with no special label. The touchable/input/IK interaction layer is solid and directly useful for any game with physical controls (buttons, switches, levers, dials). The UnityEvent-based API is designer-friendly. For SpaceSucks specifically, space station controls (gravity generators, airlock switches, system panels) map directly to KINERACTIVE's interaction model. The bundled FPS controller should be ignored.
+
+**SpaceSucks Relevance:** HIGH. Space station switches, levers, doors, gravity generator controls, airlock panels.
+**Other Project Relevance:** HIGH for any FP game with environmental interactions (horror, sim, puzzle).
+
+**TecVooDoo Utilities Candidate:** No -- too large and too specific (interaction system, not a utility).
+**TecVooDoo Games Candidate:** Potential. The Touchable hierarchy + InputHandler + IK layer could be extracted as a reusable interaction module with asmdef isolation and New Input System support added. Would need: asmdef, New Input System adapter, zero-G compatible Repositioner, fix ItemGrabber gravity restore.
+**MCP Candidate:** Medium. Components are standard MonoBehaviours -- `component-add/modify` works for Touchables and InputHandlers. Main value would be batch setup tools (create interactive objects with proper InputHandler + KineractiveInput + Touchable chains + IK target positioning).
+
+---
+
+## ENTRY-304: customized objects gravity 1.0 (YAHYABK)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | customized objects gravity |
+| **Publisher** | YAHYABK |
+| **Source** | Asset Store (free) |
+| **Category** | Scripting (Surface Gravity) |
+| **Version** | 1.0 |
+| **Session** | SpaceSucks Session 1 (2026-03-19) |
+| **Verdict** | Rejected |
+| **Label** | Don't Use |
+
+**What It Does:** Single 60-line MonoBehaviour that attracts objects toward the nearest surface. Every 5 physics frames, calls `Physics.OverlapSphere()` to find nearby colliders, raycasts to the closest point, and applies `ConstantForce` in the opposite direction of the surface normal.
+
+**Package:** `Assets/cusomized objects gravity/` (publisher typo in folder name)
+
+**Scale:** 1 C# file (~60 lines), no namespace, no asmdef. 4 demo meshes, 1 demo scene.
+
+**Concerns:**
+- Single script, no architecture, no events, no API surface
+- Hobbyist-quality code (no comments, hardcoded magic numbers, typo in folder name)
+- Only supports "attract to nearest surface" -- no gravity zones, directional gravity, zero-G regions, or per-area configuration
+- No character controller integration (uses `ConstantForce`, not character motor gravity)
+- No transition logic between gravity zones
+- `OverlapSphere` every 5 frames is crude and won't scale
+- Free but adds zero value over Heathen Unity Physics (ENTRY-209) which is already installed
+
+**Overlap Analysis:**
+- **vs Heathen Unity Physics 2026 (ENTRY-209):** Completely superseded. Heathen provides `GravityEffect` (per-object gravity override including zero-G), `ForceEffectField` + `ForceEffectReceiver` (configurable force zones with shapes, strengths, curves), and `AttractEffect` (magnetic pull). All MCP-controllable. Professional architecture (62 scripts, 4 asmdefs, clean namespace).
+
+**Verdict Rationale:** Rejected with **Don't Use** label. Entirely redundant with ENTRY-209 (Heathen Unity Physics 2026), which is already installed in SpaceSucks and provides every feature this asset has plus vastly more. Remove from project.
+
+**SpaceSucks Relevance:** NONE. Use Heathen Unity Physics instead.
+
+**TecVooDoo Candidates:** No (all three). Superseded by existing asset.
+
+---
+
+## ENTRY-305: Camera System 1.6.4 (Gaskellgames)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Camera System |
+| **Publisher** | Gaskellgames |
+| **Source** | Asset Store |
+| **Category** | Scripting (Camera) |
+| **Version** | 1.6.4 |
+| **Session** | SpaceSucks Session 1 (2026-03-19) |
+| **Verdict** | Rejected |
+| **Label** | Don't Use |
+
+**What It Does:** MonoBehaviour-based camera system with follow, freelook orbit, free-fly, multi-target, and trigger zone switching modes. CameraBrain manages active camera with blend styles (cut, fade, lerp).
+
+**Package:** `Assets/Gaskellgames/CameraSystem/`
+
+**Scale:** 26 C# files (11 runtime, 8 editor). Namespace: `Gaskellgames.CameraSystem`. 1 asmdef with GUID refs to GgCore + InputEventSystem.
+
+**Critical Issue: Non-functional.** Entire codebase wrapped in `#if GASKELLGAMES` and `#if GASKELLGAMES_INPUTEVENTSYSTEM` preprocessor guards. Both required dependencies (GgCore, Input Event System -- separate free Gaskellgames packages) are not installed. All scripts compile to nothing. The package is dead code.
+
+**Missing Features for SpaceSucks:**
+- No first-person camera mode (free-fly is detached spectator, not head-mounted)
+- No 2.5D camera mode
+- No zero-G orientation support (orbit system assumes fixed world-up)
+- FreeLook clamps rotation based on fixed height/radius ratios
+
+**Overlap with Cinemachine:** Near-total. CameraBrain ≈ CinemachineBrain, CameraRig ≈ CinemachineCamera, FreelookRig ≈ OrbitalFollow, CameraSwitcher ≈ Priority system, CameraTriggerZone ≈ CinemachineVolume, CameraShaker ≈ CinemachineImpulse, multi-target ≈ CinemachineTargetGroup. Cinemachine also provides: noise profiles, impulse channels, dolly tracks, state-driven cameras, `CinemachineExtension` base class for custom logic (e.g., zero-G up-vector recalculation).
+
+**Verdict Rationale:** Rejected with **Don't Use** label. Non-functional without two additional Gaskellgames package installs. Even if functional, it is a less capable subset of Cinemachine (already installed) with no zero-G support, no FP mode, no 2.5D mode. Use Cinemachine with custom extensions for SpaceSucks camera needs. Remove from project.
+
+**SpaceSucks Relevance:** NONE.
+
+**TecVooDoo Candidates:** No (all three). Redundant with Cinemachine.
+
+---
+
+## ENTRY-306: ECS N-Body Orbit Simulation 1.0.0 (Parallel Cascades)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | ECS N-Body Orbit Simulation |
+| **Publisher** | Parallel Cascades |
+| **Source** | Asset Store |
+| **Category** | Scripting (ECS Physics Simulation) |
+| **Version** | 1.0.0 |
+| **Session** | SpaceSucks Session 1 (2026-03-19) |
+| **Verdict** | Conditional |
+| **Label** | -- |
+
+**What It Does:** Working N-body gravitational simulation built on Unity DOTS. Computes gravitational attraction between all bodies each physics tick, applies velocity changes, handles collisions (smaller body destroyed with momentum transfer), includes VFX explosions, orbit path preview, procedural planet shaders, and a procedural space skybox.
+
+**Package:** `Assets/ParallelCascades/ECSNBodySimulation/` + `Common/` + `ProceduralShaders/` + `ProceduralSpaceSkybox/`
+
+**Scale:** 36 C# files, 6 asmdefs. Namespaces: `ParallelCascades.ECSNBodySimulation.Runtime.*`, `ParallelCascades.Common.Runtime`.
+
+**Architecture:** Pure ECS (`partial struct : ISystem`), all Burst-compiled, uses `IJobEntity` with `ScheduleParallel`. Built on Unity Physics -- uses `PhysicsVelocity` and `PhysicsMass` for integration. O(N^2) brute-force gravity calculation (no Barnes-Hut or spatial partitioning).
+
+**Key Components:**
+- `NBodyEntity` -- tag marking participation in N-body sim
+- `NBodyDoNotReceiveGravityTag` -- entity exerts gravity but is unaffected (static attractors)
+- `NBodyDoNotContributeToGravityTag` -- entity affected by gravity but does not exert it (small satellites)
+- `NBodySimulationSettingsSingleton` -- GravitationalConstant, FixedDeltaTime, SimulationBounds
+- `SatelliteSpawnerData` -- mass spawning config with Poisson-disk-like placement
+
+**Key Systems:**
+- `NBodyGravitySystem` -- core gravity: all-pairs force accumulation, velocity delta application
+- `NBodyTriggerCollisionSystem` -- collision handling with momentum transfer
+- `NBodyOutOfBoundsSystem` -- soft boundary containment
+- `SpawnSatellitesOnInitializeSystem` -- batch entity spawning
+- `VFXSystem` -- ECS-to-VFX Graph bridge via GraphicsBuffers
+
+**Scale Limits:** O(N^2) brute force. Excellent <100 bodies, fine 100-500 with Burst, bottlenecks at 1000+. No spatial optimization.
+
+**Extractable Patterns (cherry-pick value):**
+1. `VFXManager<T>` / `VFXManagerParented<T>` -- generic ECS-to-VFX Graph bridge via GraphicsBuffers. Not N-body-specific. Reusable for any ECS game needing particle effects.
+2. Force accumulation job pattern (collect entities into arrays, iterate, accumulate, apply velocity deltas)
+3. Tag-based asymmetric interaction filtering (`DoNotReceive`/`DoNotContribute`)
+4. Singleton settings pattern with authoring component + baker
+5. Best-candidate spatial distribution algorithm for entity placement
+6. Out-of-bounds soft containment system
+
+**Concerns:**
+- V1.0.0, single release (Oct 2025), no iteration history
+- Self-identity check uses position equality instead of entity index (fragile)
+- No repulsion support -- forces are strictly attractive
+- No force falloff curve control (inverse-square only)
+- No force caps -- extreme forces at close range
+- No damping/drag built in
+- Primarily a learning resource, not production-ready for gameplay
+
+**Verdict Rationale:** Conditional. Well-structured educational asset demonstrating solid DOTS patterns (proper ISystem, Burst, Jobs, EntityCommandBuffer usage). The N-body simulation itself is unlikely to be used directly in SpaceSucks, but the **cherry-pick patterns are genuinely valuable**: the VFX bridge, force accumulation job, tag-based filtering, and out-of-bounds containment are all reusable in any ECS game. Worth keeping installed as a reference implementation.
+
+**SpaceSucks Relevance:** LOW-MEDIUM. The gravity simulation is not what SpaceSucks needs (it needs localized force zones, not universal gravitational attraction). However, the DOTS architectural patterns are directly applicable -- this is the best ECS reference code in the project. The VFX bridge pattern is HIGH value for ECS-driven dust particle effects.
+
+**TecVooDoo Utilities Candidate:** No -- too domain-specific.
+**TecVooDoo Games Candidate:** Potential cherry-picks: VFXManager<T> (ECS-to-VFX bridge), force accumulation job template, out-of-bounds containment system. These are generic ECS gameplay patterns, not N-body-specific.
+**MCP Candidate:** Low. Self-contained simulation with no editor tooling API surface. Existing MCP tools could modify authoring components but there is nothing N-body-specific to expose.
+
+---
+
 ## MCP Candidates
 
 Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evaluated for MCP use.
@@ -9606,6 +9971,14 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 | Malbers Animal Controller | ENTRY-028 | Built | 8 tools: query, state, mode, speed, stat, damageable, lock-axis |
 | Malbers Quest Forge | ENTRY-297 | Built | 5 tools: quest CRUD, objectives, POI management |
 | Retarget Pro | ENTRY-243 | Built | 4 tools: batch-bake, create-profile, query-profiles |
+| Rope Toolkit | ENTRY-271 | Built | 5 tools: query, simulation, collision, appearance, connection. `#if HAS_ROPE_TOOLKIT` |
+| Heathen Unity Physics 2026 | ENTRY-272 | Built | 5 tools: query, physics-data, buoyancy, force-field, force-receiver. `MCPTools.HeathenPhysics.Editor` |
+| Heathen Ballistics 2026 | ENTRY-208 | Built | 5 tools: query, aim, trickshot, calculate-solution, visualize. `MCPTools.HeathenBallistics.Editor` |
+| Feel | ENTRY-241 | Built | 4 tools: query, configure-player, add-feedback, play. `#if HAS_FEEL` |
+| Damage Numbers Pro | ENTRY-235 | Built | 4 tools: query, display, animation, performance. `MCPTools.DamageNumbersPro.Editor` |
+| Cinemachine 3.1.6 | ENTRY-176 | Built | 5 tools: cm-query, cm-configure-camera, cm-configure-follow, cm-configure-noise, cm-configure-brain. `MCPTools.Cinemachine.Editor` |
+| Animation Rigging 1.4.1 | -- | Built | 5 tools: rig-query, rig-configure-twoboneik, rig-configure-aim, rig-configure-weights. `MCPTools.AnimationRigging.Editor` |
+| ALINE | -- | Built | 4 tools: aline-draw-line, aline-draw-sphere, aline-draw-box, aline-label. `MCPTools.ALINE.Editor` |
 
 ### MCP Controllability Evaluated -- Audio (AudioProject Sessions 6 + 8)
 
@@ -9628,8 +10001,8 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 
 | Asset | ENTRY | Rating | Notes |
 |-------|-------|--------|-------|
-| Rope Toolkit | ENTRY-271 | High | Full control via script-execute; component-get crashes (NativeArray). **Best MCP candidate.** |
-| Unity Physics 2026 | ENTRY-272 | High | All 4 components fully MCP-controllable via standard pipeline |
+| Rope Toolkit | ENTRY-271 | Built | Full control via script-execute; component-get crashes (NativeArray). **Built Session 2 -- 5 tools.** |
+| Unity Physics 2026 | ENTRY-272 | Built | All 4 components fully MCP-controllable via standard pipeline. **Built Session 2 -- 5 tools.** |
 | Verlet Motion 2026 | ENTRY-272 | Partial | VerletTransforms works; VerletLine crashes serializer (NativeArray) |
 | FS Grappling Hook | ENTRY-272 | Low | Components add/read/modify fine but useless without Fantacode full stack |
 | FS Rope Swinging | ENTRY-272 | Low | Same -- requires full Fantacode stack |
@@ -9654,7 +10027,55 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 
 **Quest Forge MCP Tools (Built Session 58):** 5 tools: `qf-create-quest`, `qf-query-quests`, `qf-add-objective`, `qf-create-poi`, `qf-query-pois`. `#if HAS_MALBERS_QUESTFORGE` guards (no asmdef, Assembly-CSharp).
 
+### MCP Controllability Evaluated -- Sandbox Session 2 (Mar 20, 2026)
+
+New tools built from Sandbox installed assets. Rope Toolkit and Heathen Physics were evaluated in Session 56; Ballistics, Feel, and DNP are newly assessed.
+
+| Asset | ENTRY | Rating | Key API Pattern | Notes |
+|-------|-------|--------|-----------------|-------|
+| Heathen Ballistics 2026 | ENTRY-208 | High | `BallisticAim`, `TrickShot`, `BallisticPathLineRender` components + static `Ballistics.Solution()` | Clean dual-mode design: `BallisticAim` for turrets, `TrickShot` for bounce projectiles. Static solver is pure math -- usable in Editor. **BUILT -- 5 tools.** |
+| Feel | ENTRY-241 | High | `MMF_Player` component, polymorphic `MMF_Feedback` list via `[SerializeReference]` | 82 feedback types, all addable programmatically via reflection on type name. `MoreMountains.Tools` assembly (via .asmref). `feel-add-feedback` uses `System.Activator.CreateInstance` to support any type string. **BUILT -- 4 tools.** |
+| Damage Numbers Pro | ENTRY-235 | High | `DamageNumber` (abstract) → `DamageNumberMesh` (3D) / `DamageNumberGUI` (UI). `DamageNumbersPro` asmdef | All key properties public/serialized: lifetime, fade timing/offsets, movement mode, pooling, spam control. `SetColor()` convenience method. **BUILT -- 4 tools.** |
+
+**Rope Toolkit MCP Tools (Built Session 2):** 5 tools: `rope-query`, `rope-configure-simulation`, `rope-configure-collision`, `rope-configure-appearance`, `rope-add-connection`. `#if HAS_ROPE_TOOLKIT` guards, `Rope.simulation` and `Rope.collisions` are structs (read-modify-write pattern).
+
+**Heathen Physics MCP Tools (Built Session 2):** 5 tools: `hphys-query`, `hphys-configure-physics-data`, `hphys-configure-buoyancy`, `hphys-configure-force-field`, `hphys-configure-force-receiver`. `MCPTools.HeathenPhysics.Editor` asmdef, `defineConstraints: HAS_HEATHEN_PHYSICS`.
+
+**Heathen Ballistics MCP Tools (Built Session 2):** 5 tools: `ballistic-query`, `ballistic-configure-aim`, `ballistic-configure-trickshot`, `ballistic-calculate-solution`, `ballistic-visualize`. `MCPTools.HeathenBallistics.Editor` asmdef, `defineConstraints: HAS_HEATHEN_BALLISTICS`.
+
+**Feel MCP Tools (Built Session 2):** 4 tools: `feel-query`, `feel-configure-player`, `feel-add-feedback`, `feel-play`. `#if HAS_FEEL` guards. Detection: `MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools`.
+
+**Damage Numbers Pro MCP Tools (Built Session 2):** 4 tools: `dnp-query`, `dnp-configure-display`, `dnp-configure-animation`, `dnp-configure-performance`. `MCPTools.DamageNumbersPro.Editor` asmdef, `defineConstraints: HAS_DAMAGE_NUMBERS_PRO`.
+
+### MCP Controllability Evaluated -- Sandbox Installed Asset Scan (Session 2, Mar 20, 2026)
+
+Full scan of remaining installed Sandbox assets not previously evaluated for MCP candidacy.
+
+| Asset | ENTRY | Rating | Key API Pattern | Notes |
+|-------|-------|--------|-----------------|-------|
+| Cinemachine 3.1.6 | ENTRY-176 | **Built** | `CinemachineCamera`, `CinemachineFollow`, `CinemachinePositionComposer`, `CinemachineBasicMultiChannelPerlin` components. `Unity.Cinemachine` namespace, Unity package | 5 tools built Session 3: cm-query, cm-configure-camera, cm-configure-follow, cm-configure-noise, cm-configure-brain. |
+| Animation Rigging 1.4.1 | -- | **Built** | `TwoBoneIKConstraint`, `MultiAimConstraint`, `MultiParentConstraint`. `UnityEngine.Animations.Rigging` namespace, Unity package | 5 tools built Session 3: rig-query, rig-configure-twoboneik, rig-configure-aim, rig-configure-weights. |
+| ALINE | -- | **Built** | `Drawing.Draw` static API, `Drawing.CommandBuilder`. `com.arongranberg.aline` package | 4 tools built Session 3: aline-draw-line, aline-draw-sphere, aline-draw-box, aline-label. Persist via `Draw.WithDuration(N)`. |
+| Boing Kit 1.2.47 | ENTRY-260 | Medium | `BoingKit.BoingBones`, `BoingKit.BoingEffector`, `BoingKit.BoingReactorField`. `BoingKit` namespace | Component-based spring physics. BoingBones: lengthStiffness, poseStiffness, collisionRadius, squash/stretch, bendAngleCap. BoingEffector: radius, linearImpulse, angularImpulse, maxImpulseSpeed. Many tunable props but secondary system -- setup usually done once in Inspector. Medium priority. |
+| AI Navigation 2.0.12 | -- | Medium | `NavMeshSurface`, `NavMeshModifier`, `NavMeshLink`. `Unity.AI.Navigation` namespace, Unity package | Baking is editor-time (requires filesystem). NavMeshAgent is built-in runtime. NavMeshSurface has clean properties (layerMask, collectObjects, size, useGeometry, defaultArea) but limited runtime value. Best path: `script-execute` for bake triggering. |
+| EasyPooling v2025 | -- | Medium | `GUPS.EasyPooling.GlobalPool`, `AGamePool<T>`, `BlueprintPoolDefinition`. `GUPS.EasyPooling` namespace | Method-driven API (Spawn/Despawn). Pool configuration via BlueprintPoolDefinitions (SOs). Not property-dense enough for dedicated MCP tools -- `script-execute` covers the use cases. |
+| Toolkit for UX 2026 (Heathen) | -- | Medium | `Heathen.UX.ButtonCursorState`, `CursorAnimator`, `CommandDirector`, `DragItem`, `DropContainer` | Event-driven, UnityEvent-heavy. Cursor state, drag thresholds, drop targets. UI-focused; most config is Inspector-only callbacks. `component-modify` via standard MCP tools covers it. |
+| Master Audio 2024 | ENTRY-103 | Medium | `DarkTonic.MasterAudio.MasterAudio` static singleton, 258 methods | Previously rated High in audio eval (MCP-EVAL-002). Revisited: runtime config (volume, mute, pitch) useful but most bus/mixer setup is editor-time. `script-execute` adequate. Audio-specific tools may be better placed in AudioProject context. |
+| 3D Object Image for UI Toolkit | -- | Low | `Kamgam.UIToolkitWorldImage.WorldObjectRenderer`, `WorldObjectCamera`, `WorldImage` | Display component -- renders world objects to texture for UI. Setup is hierarchical (AddWorldObject list). Limited numeric config. `component-add/modify` via standard tools is sufficient. |
+
 ---
+
+### MCP Controllability Evaluated -- SpaceSucks (Session 1)
+
+| Asset | ENTRY | Rating | Notes |
+|-------|-------|--------|-------|
+| com.unity.charactercontroller | ENTRY-302 | Low | ECS components, not MonoBehaviour. Needs `script-execute` or custom tooling. |
+| KINERACTIVE | ENTRY-303 | Medium | Standard MonoBehaviour components. Batch setup tools would add value. |
+| customized objects gravity | ENTRY-304 | N/A | Rejected -- superseded by ENTRY-209. |
+| Camera System Gaskellgames | ENTRY-305 | N/A | Rejected -- non-functional, use Cinemachine. |
+| GrabMaster | ENTRY-239 | Medium | Standard MonoBehaviour components. `component-add/modify` works for GrabbableObject setup. |
+| SensorToolkit 2 | ENTRY-231 | Medium-High | Clean component model maps 1:1 to `component-add/modify`. SignalProcessor chain also MCP-configurable. |
+| ECS N-Body Orbit Sim | ENTRY-306 | Low | Self-contained sim, no editor API surface. Authoring components modifiable via standard tools. |
 
 ### AI-Friendliness Evaluated -- VNPC (Session 1)
 
@@ -9674,6 +10095,30 @@ AI-Friendliness assessments from VNPC project. These rate how well Claude can wo
 
 ---
 
+## TecVooDoo Games Candidates
+
+Tracks game systems identified as candidates for `com.tecvoodoo.games`. "Not listed" means not evaluated as a games candidate. Current package contents: SimpleBoids, BulletHoleSpawner, ProcessorChain, CharacterStateMachine/Transition.
+
+**Status values:**
+- **Added** -- Already in TecVooDoo Games
+- **Pending** -- Identified candidate, not yet added
+- **No** -- Evaluated, decided against
+
+| System | Source | Est. Size | Status | Notes |
+|--------|--------|-----------|--------|-------|
+| SimpleBoids | Session 34 | ~200 lines | Added | In TVG v1.2.0 Simulation module |
+| BulletHoleSpawner | -- | -- | Added | In TVG v1.2.0 Pooling module |
+| ProcessorChain | -- | -- | Added | In TVG v1.2.0 Processing module |
+| CharacterStateMachine / Transition | -- | -- | Added | In TVG v1.2.0 StateMachine module |
+| KINERACTIVE Touchable layer | ENTRY-303 | ~20 scripts | Pending | IK interaction system (buttons, switches, levers, dials). Needs: asmdef, New Input System adapter, zero-G Repositioner fix, gravity restore fix on ItemGrabber. |
+| GrabMaster socket/puzzle system | ENTRY-239 | ~8 scripts | Pending | SocketType SO matching, PuzzleSocketGroup coordination, SocketEjector. Clean architecture. Needs: asmdef, zero-G gravity restore fix. |
+| GrabMaster AudioClipSettings pattern | ENTRY-239 | ~3 scripts | Pending | AudioClipSettings SO + AudioEventPlayer + ImpactSound. Randomized volume/pitch per clip. Cherry-pick candidate for TVU Audio module. |
+| ECS VFXManager<T> bridge | ENTRY-306 | ~2 scripts | Pending | Generic ECS-to-VFX Graph bridge via GraphicsBuffers. Reusable for any ECS game needing particle effects from entities. Cherry-pick from N-Body. |
+| ECS force accumulation job template | ENTRY-306 | ~1 script | Pending | Job pattern: collect entities, iterate pairs, accumulate forces, apply velocity deltas. Template for any ECS force system. |
+| ECS out-of-bounds containment | ENTRY-306 | ~1 script | Pending | Soft boundary system pushing escaped entities back toward center. Reusable for any ECS game. |
+
+---
+
 ## TecVooDoo Utilities Candidates
 
 Tracks utilities identified as candidates for `com.tecvoodoo.utilities`. "Not listed" means not evaluated as a utilities candidate. See `TVU_Status.md` for the add process and current package contents.
@@ -9690,6 +10135,7 @@ Tracks utilities identified as candidates for `com.tecvoodoo.utilities`. "Not li
 | InRangeOf, Quantize, Transform resets, DestroyChildren, HierarchyPath, ToVector2XY/XZ, RoundToInt, SetLayerRecursively, ToHexRGB, TryFromHex | Session 35 retroactive scan | ~15 lines | Pending | Tier 1 -- small, zero-dep, high reuse |
 | SlowMotion, CameraShake | Session 35 retroactive scan | ~55 lines | Pending | Tier 2 -- useful but slightly higher complexity |
 | GridSystem, Observable\<T\>, EventBus\<T\> | Session 35 retroactive scan | ~440 lines | Pending | Tier 3 -- larger scope, evaluate individually |
+| GrabMaster AudioClipSettings/AudioEventPlayer | ENTRY-239 (Session 59) | ~3 scripts | Pending | Randomized clip playback with SO-defined volume/pitch ranges. Good Audio utility candidate. |
 
 ---
 
