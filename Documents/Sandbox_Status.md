@@ -21,6 +21,40 @@ Sandbox is a dedicated asset evaluation environment for ALL TecVooDoo projects. 
 
 ---
 
+## Session 60 (Mar 20, 2026) -- MCP Tools Session 4: Evals + Build
+
+**Status:** MCP controllability evals for 13 assets + built 7 new tool groups (36 tools). Package now at v1.3.0 with ~126 tools across 24 groups.
+
+**MCP Evals Completed:**
+- **Candidates built:** DOTween Pro (4), Behavior Designer Pro (4), SensorToolkit 2 (5), UCC (5), A* Pathfinding Pro (6), Master Audio 2024 (6), Dialogue System for Unity (6)
+- **Deferred:** GOAP v3 (Medium, revisit when adopted), Breeze (Medium-High, revisit when adopted)
+- **Not candidates:** BD Senses Pack (task nodes), Procedural Dialogue Addon (auto-hooks), Follow & Protect Agent (ML black box, removed due to missing ml-agents dependency)
+- **Also evaluated:** GOAP v3 3.1.1, Breeze 1.0.2, Follow & Protect Agent 1.0 (first evals for all three)
+
+**Tools Built (36 new):** Master Audio (6: ma-query/play/group-control/bus-control/playlist/configure-ducking), A* Pathfinding (6: astar-query/configure-grid/configure-recast/configure-agent/scan/configure-seeker), Dialogue System (6: ds-query/conversation/quest/variable/bark/lua), SensorToolkit 2 (5: sensor-query/add-range/add-los/configure-steering/query-detections), UCC (5: uc-query/configure-locomotion/ability-control/configure-attribute/item-control), Behavior Designer (4: bd-query/set-variable/control/list-trees), DOTween Pro (4: dotween-query/add-animation/play/global).
+
+**Compile fixes:** BD Pro tools rewritten against actual v2.x API after agents assumed v1.x methods. Lesson learned: agents must verify actual source before writing code.
+
+**Key lesson saved to memory:** Never assume any API -- always verify against actual installed source code before writing code or making claims.
+
+**ECS/DOTS tools (Session 4b):** Unity Entities (5 tools: ecs-query-worlds/query-entities/inspect-entity/modify-entity/create-destroy) + Unity Physics (4 tools: uphys-query/configure-body/configure-step/configure-shape). Package at v1.4.0, ~135 tools across 26 groups.
+
+---
+
+## Session 59 (Mar 19, 2026) -- SpaceSucks Asset Evals
+
+**Status:** Asset evaluations for SpaceSucks project (zero-G ECS/DOTS puzzle platformer). Evals performed in SpaceSucks project, logged here.
+
+**Session 59 Work:**
+- 4 new asset evaluations: com.unity.charactercontroller 1.4.2 (ENTRY-302, Approved Recommended -- ECS character controller foundation for SpaceSucks), KINERACTIVE 1.11 (ENTRY-303, Approved -- IK interaction for station controls), customized objects gravity (ENTRY-304, Rejected -- superseded by Heathen ENTRY-209), Camera System Gaskellgames (ENTRY-305, Rejected -- non-functional, redundant with Cinemachine).
+- MCP controllability assessed for 6 assets (ENTRY-302 through 305 + GrabMaster ENTRY-239 + SensorToolkit 2 ENTRY-231).
+- Research completed on Kinematic Character Controller (Asset Store, same author as ENTRY-302) -- MonoBehaviour-only, not suitable for SpaceSucks ECS architecture.
+- SpaceSucks architecture decision: dropped Opsive UCC (ENTRY-165) in favor of com.unity.charactercontroller for pure ECS/DOTS stack.
+
+**Asset Log:** 306 entries (5 new: ENTRY-302 through 306). TecVooDoo Games Candidates section created with 7 candidates identified. TecVooDoo Utilities Candidates updated with 1 new entry (GrabMaster AudioClipSettings).
+
+---
+
 ## Session 58 (Mar 12, 2026) -- COMPLETE
 
 **Status:** A Quokka Story Sprint 1 foundation -- scripts, input, placeholder character, GitHub setup.
