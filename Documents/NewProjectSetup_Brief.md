@@ -1,0 +1,283 @@
+# New Project Setup Brief
+
+**Purpose:** Standard setup checklist for any new TecVooDoo Unity project.
+**Last Updated:** March 28, 2026
+
+---
+
+## 1. Unity Project Creation
+
+- **Engine:** Unity 6 (6000.x)
+- **Render Pipeline:** URP (Universal Render Pipeline) unless project-specific reason for HDRP
+- **Root folder:** `Assets/_<ProjectName>/` (underscore prefix sorts to top in Project window)
+
+---
+
+## 2. OpenUPM Registry Setup
+
+Add this to `Packages/manifest.json` under `scopedRegistries` (or verify it exists):
+
+```json
+"scopedRegistries": [
+  {
+    "name": "package.openupm.com",
+    "url": "https://package.openupm.com",
+    "scopes": [
+      "com.cysharp.unitask",
+      "com.ivanmurzak",
+      "extensions.unity",
+      "org.nuget.com.ivanmurzak",
+      "org.nuget.microsoft",
+      "org.nuget.system",
+      "org.nuget.r3"
+    ]
+  }
+]
+```
+
+**Packages from OpenUPM:**
+
+| Package | ID | Notes |
+|---------|----|-------|
+| UniTask | `com.cysharp.unitask` | Prefer over local file copy -- OpenUPM stays updated |
+| MCP for Unity | `com.ivanmurzak.unity.mcp` | Check latest version, updates frequently |
+| MCP Animation | `com.ivanmurzak.unity.mcp.animation` | Optional, for animation tools |
+| MCP ProBuilder | `com.ivanmurzak.unity.mcp.probuilder` | Optional, for ProBuilder tools |
+
+**DO NOT install:** `com.ivanmurzak.unity.mcp.particlesystem` -- McpPlugin.Instance API mismatch causes CS0117 errors.
+
+---
+
+## 3. Package Installation Order
+
+**Order matters.** Some packages scan all FBX files on first import or depend on packages that must exist first.
+
+### Phase 1: Prerequisites (install FIRST)
+
+| Package | Why First |
+|---------|-----------|
+| Addressables | Master Audio 2024 depends on it |
+| TextMesh Pro | DOTween Pro depends on it |
+
+### Phase 2: Core Infrastructure
+
+| Package | Source | Notes |
+|---------|--------|-------|
+| UniTask | OpenUPM (`com.cysharp.unitask`) | async/await over coroutines |
+| com.tecvoodoo.utilities | Local file ref | Shared utility library |
+| com.tecvoodoo.mcp-tools | Local file ref | Custom MCP tools (35 tools) |
+| com.tecvoodoo.games | Local file ref | Shared gameplay library (depends on utilities) |
+| MCP for Unity | OpenUPM | AI agent bridge |
+
+**Local file references** in manifest.json:
+```json
+"com.tecvoodoo.utilities": "file:../../DefaultUnityPackages/com.tecvoodoo.utilities",
+"com.tecvoodoo.mcp-tools": "file:../../DefaultUnityPackages/com.tecvoodoo.mcp-tools",
+"com.tecvoodoo.games": "file:../../DefaultUnityPackages/com.tecvoodoo.games"
+```
+
+Path assumes project is at `E:\Unity\<ProjectName>`. Adjust `../../` depth if project is nested differently (e.g., VNPC is at `E:\Unity\VNPC\VisualNovelPointClick` -- needs `../../../`).
+
+### Phase 3: Animation Tools (install BEFORE 3D art assets)
+
+| Package | Why Before Art |
+|---------|----------------|
+| Animancer Pro | Catalogs every .fbx on first import -- very slow with large art libraries |
+| More Mountains engines (Corgi, TopDown, etc.) | Same FBX catalog scan. **Feel does NOT trigger this** |
+
+### Phase 4: Standard Game Packages (any order within this phase)
+
+| Package | Version | Notes |
+|---------|---------|-------|
+| Cinemachine | 3.1.5+ | Unity 6 package |
+| Input System | 1.18.0+ | New Input System, not legacy |
+| AI Navigation | 2.0.12+ | NavMesh |
+| Splines | 2.8.2+ | Path/track authoring |
+| ProBuilder | 6.x | Level blockout |
+| DOTween Pro | 1.0.410+ | Requires TextMesh Pro |
+| Master Audio 2024 | 1.0.3+ | Requires Addressables |
+
+### Phase 5: Specialized (as needed per project)
+
+Feel, Final IK, RayFire, Odin Inspector, Damage Numbers Pro, ALINE, Koreographer Pro, Rope Toolkit, Behavior Designer, Sensor Toolkit, A* Pathfinding, Malbers AC, etc.
+
+**Odin Inspector warning:** Once installed, NEVER remove from the project. Causes cascading errors.
+
+---
+
+## 4. MCP Setup
+
+See [MCP_ConnectionBrief.md](MCP_ConnectionBrief.md) for full details.
+
+**Quick version:**
+1. MCP plugin installs server exe to `Library/mcp-server/win-x64/`
+2. Note port from AI Game Developer panel in Unity Editor
+3. Create `.vscode/mcp.json` (Unity MCP + Blender)
+4. Create `.claude/mcp.json` manually (Unity MCP + Blender)
+5. Add project path to `additionalDirectories` in global `~/.claude/settings.json`
+6. Update port registry in MCP_ConnectionBrief.md
+
+---
+
+## 5. Folder Structure
+
+```
+Assets/
+  _<ProjectName>/
+    Scripts/
+      Core/           -- Event system, managers, singletons
+      Player/         -- Player controller, input, abilities
+      Enemy/          -- AI, spawning, behavior
+      Combat/         -- Damage, weapons, projectiles
+      UI/             -- UI controllers (UI Toolkit preferred)
+      Data/           -- ScriptableObject definitions
+      Editor/         -- Editor-only tools
+      Test/           -- Debug/test scripts (production quality)
+    Art/
+      Animations/
+      Materials/
+      Models/
+      Textures/
+      VFX/
+    Audio/
+      Music/
+      SFX/
+    Data/             -- ScriptableObject instances
+    Prefabs/
+    Scenes/
+    Settings/         -- Input actions, render settings
+    UI/               -- UXML/USS files (UI Toolkit)
+
+Documents/
+  <ProjectName>/
+    <Name>_Status.md
+    <Name>_StatusArchive.md
+    <Name>_DevReference.md
+    <Name>_CodeReference.md
+    GDD/
+      <Name>_GDD.md
+```
+
+---
+
+## 6. Documentation Structure
+
+Every project needs these docs. Create them at project start, not after.
+
+| Doc | Purpose | Who Updates |
+|-----|---------|-------------|
+| `<Name>_Status.md` | Current state, last ~2 sessions, what's next | AI after each session |
+| `<Name>_StatusArchive.md` | Full session history (older sessions moved here) | AI when Status.md grows |
+| `<Name>_DevReference.md` | Architecture, standards, AI rules, lessons | AI when patterns emerge |
+| `<Name>_CodeReference.md` | Script inventory, API reference | AI when code changes |
+| `GDD/<Name>_GDD.md` | Game design document | **User only** (AI updates when asked) |
+
+**"Where are we at?" always points to Status.md.**
+
+### Status Doc / Archive Pattern
+
+The Status doc should stay **small and focused** -- only the current state and last ~2 sessions. When a new session starts:
+
+1. Move older session entries from `<Name>_Status.md` to `<Name>_StatusArchive.md`
+2. Keep only the most recent 2 sessions in Status.md
+3. Archive entries go at the **top** of StatusArchive.md (newest first)
+
+This keeps the Status doc quick to read while preserving full session history in the archive. Both docs must exist from project start -- create the StatusArchive.md stub when creating the project.
+
+---
+
+## 7. Asset Evaluation
+
+**All asset evaluations live in Sandbox**, regardless of which project triggered the need.
+
+| Resource | Location |
+|----------|----------|
+| Asset evaluation log | `E:\Unity\Sandbox\Documents\Sandbox_AssetLog.md` |
+| MCP tool candidates | `Sandbox_AssetLog.md` -- MCP Candidates section (end of doc) |
+| TecVooDoo Utilities candidates | `Sandbox_AssetLog.md` -- TecVooDoo Utilities Candidates section (end of doc) |
+| Full asset inventory CSV | `E:\Unity\03UnityAssetInventory\Documents\assets02272026.csv` (~2,331 assets) |
+
+**Sandbox is the single source of truth** for all asset evals, MCP candidate evals, and TecVooDoo Utilities candidate tracking. Other projects reference Sandbox docs for asset decisions -- they do not maintain their own eval logs (except VNPC and AudioProject which have project-specific eval sections).
+
+When evaluating a new asset for any project:
+1. Check `Sandbox_AssetLog.md` first -- it may already be evaluated (301+ entries)
+2. Add new evals to Sandbox AssetLog with the entry number convention (ENTRY-XXX)
+3. Note which project triggered the eval
+
+---
+
+## 8. Coding Conventions
+
+These apply to ALL TecVooDoo projects:
+
+| Rule | Rationale |
+|------|-----------|
+| No `var` keyword | Explicit types always |
+| No per-frame allocations | No `new`, no LINQ in Update/FixedUpdate |
+| ASCII only | No smart quotes, em-dashes, or special characters in code or docs |
+| `sealed` on MonoBehaviours | Unless inheritance is specifically intended |
+| Prefer async/await (UniTask) | Over coroutines |
+| Prefer interfaces and generics | Decouple systems, reduce duplication |
+| GameEvent/GameEventListener | Custom event system (NOT SOAP) |
+| Vanilla ScriptableObject architecture | For data, config, and events |
+| Set state BEFORE firing events | Handlers check state immediately |
+| Extract by responsibility | Not by line count. One responsibility per class. |
+| Production-quality test code | Even in Sandbox |
+
+### Unity 6 Specifics
+
+| Old API | Unity 6 API |
+|---------|-------------|
+| `rb.velocity` | `rb.linearVelocity` |
+| `rb.angularVelocity` | `rb.angularVelocity` (unchanged) |
+| `collider.material` | `collider.sharedMaterial` (context-dependent) |
+
+### Assembly Definition Rules
+
+- Scripts without asmdef compile to `Assembly-CSharp`
+- Named asmdef code **cannot see** Assembly-CSharp types
+- Fix: give target folder its own asmdef with GUID reference
+- Custom MCP tools asmdef needs `overrideReferences: true` + `ReflectorNet.dll`
+
+---
+
+## 9. Source Control
+
+- **GitHub** for all projects
+- **UPM Git URLs don't work on this machine** -- clone repos and use `file:` references
+- `Library/` is git-ignored (each machine downloads its own)
+- `.claude/mcp.json` should be committed (project-specific config)
+- `.claude/settings.json` should be committed if it has project-specific settings
+- Never commit `.env`, credentials, or API keys
+
+---
+
+## 10. Project-Specific Standards
+
+Some projects override or extend the universal conventions:
+
+| Project | Override |
+|---------|----------|
+| HOK | Custom Animator Controllers only (no Malbers AC). 8 namespaces. |
+| AQS | Malbers AC for player movement. 3D physics with LockAxis for 2.5D. |
+| FearSteez | UI Toolkit only (no uGUI). Collision-based ground detection. |
+| VNPC | Adventure Creator integration. |
+
+Document project-specific rules in that project's `DevReference.md`.
+
+---
+
+## Quick Setup Checklist
+
+- [ ] Unity 6 project created with URP
+- [ ] Root folder: `Assets/_<ProjectName>/`
+- [ ] OpenUPM scoped registry added to manifest.json
+- [ ] Phase 1 prerequisites installed (Addressables, TextMesh Pro)
+- [ ] Phase 2 core packages installed (UniTask, TecVooDoo packages, MCP)
+- [ ] Phase 3 animation tools installed (if using 3D art)
+- [ ] Phase 4+ game packages installed as needed
+- [ ] MCP configured (see MCP_ConnectionBrief.md)
+- [ ] GitHub repo created
+- [ ] Documents folder created with Status, DevReference, CodeReference, GDD stubs
+- [ ] Project added to global `~/.claude/settings.json` additionalDirectories
+- [ ] Port added to MCP_ConnectionBrief.md port registry

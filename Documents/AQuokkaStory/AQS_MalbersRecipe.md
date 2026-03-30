@@ -61,10 +61,12 @@ Add these parameters in this exact order (Malbers AC requires them by name):
 - **States** layer: Override blending, weight=0 (AC drives it), iKPass=off
 - **Modes** layer: Override blending, weight=1, iKPass=off. Add one state "Empty" tagged "Empty" with no motion. No transitions needed.
 
-### Sub-State Machines
+### Sub-State Machines (optional -- flat states also work)
 
-In the States layer, create one Sub-State Machine per state group. Do NOT use flat states
-at the root level -- Malbers routes via AnyState -> sub-SM.
+In the States layer, you can either use Sub-State Machines per state group OR flat root
+states. Both work with Malbers AC. The sub-SM pattern groups states visually; flat states
+are simpler and avoid DefaultState misconfiguration. See Snake-Specific Notes section for
+flat state gotchas. AnyState transitions are the same either way.
 
 | Sub-SM Name | Internal State | Tag | Motion |
 |-------------|---------------|-----|--------|
@@ -331,6 +333,74 @@ Not a Malbers bug per se, but a setup gotcha: if the bone hierarchy parent is di
 | "Holster does not exit on list" warning | UseHolsters=false but holster ID still referenced | Harmless -- ignore |
 | Bolt fires into ground | Aim Point forward direction != world forward | Rotate Aim Point transform so +Z faces desired fire direction |
 | LMB doesn't fire (T key works) | MInputLink ConnectInput routing issue | Under investigation -- use WeaponDebug T key workaround |
+
+---
+
+## Snake-Specific Notes (Sessions 9-10, Mar 2026) -- EXPERIMENT PARKED
+
+Experiment to apply this recipe to Polyperfect Snake_Yellow2 (generic rig, 28-bone spine,
+no legs) was parked after hitting an unresolved IsPending initialization bug. The snake
+was removed from the scene. Key finding: **start from a working Malbers demo prefab and
+swap clips/model, rather than building MAnimal from scratch on a blank GameObject.**
+
+The IsPending bug: MAnimal's `CacheAnimatorState()` uses a fullPathHash comparison to
+detect animator state changes. When building from scratch, the initialization sequence
+can cause the hash cache to match before the first tag detection fires, leaving
+`AnimStateTag=0` permanently. This prevents IsPending from ever clearing, which blocks
+all state transitions. The rabbit (built differently) does not have this issue.
+
+Original gotchas discovered (still valid for reference):
+
+### No Jump state
+Snakes don't jump. Only Idle (ID=0), Locomotion (ID=1), Fall (ID=3) are needed. States
+list ordering: Fall[0], Locomotion[1], Idle[2] (Idle must remain last = startup state).
+
+### Flat root states vs sub-state machines
+The recipe's Step 1 describes sub-state machines (Idles, Locomotion, Fall sub-SMs). For
+snakes (and possibly other models), **flat root states work equally well.** The AnyState
+-> flat state transitions use the same StateOn+State conditions. If the sub-SM pattern
+produces "Animator is not playing an AnimatorController" errors, rebuild with flat states
+at root level.
+
+Root cause of the sub-SM failure: if `DefaultState` gets set to point INTO a sub-SM
+rather than the sub-SM's internal state, Unity can't resolve the starting state and throws
+the error. Flat states avoid this ambiguity entirely.
+
+### Mesh child Y=180 rotation
+Polyperfect snake model has a mesh child named "snake" with LocalRotation Y=180°. This
+makes the mesh face -Z (backward), while MAnimal expects +Z as forward. Symptom: snake
+spins in place on any movement input, never translates forward.
+
+**Fix:** Set the mesh child's localEulerAngles to (0,0,0) before running Play. Check any
+Polyperfect mesh child's local rotation before wiring AC -- they aren't always zeroed.
+
+### Copy-paste MAnimal contamination
+If you copy the MAnimal component from an existing animal (e.g., rabbit) to start faster,
+all state SOs and mode SOs transfer with it. You'll get:
+- Rabbit/raccoon state ScriptableObjects in the states list instead of your new animal's
+- Jump state (ID=2, Priority=8) if the source had it -- must remove for non-jumping animals
+- Weapon modes (Pistol, etc.) if source had MWeaponManager set up
+
+Always audit the states list and modes list after a component copy. Remove anything that
+doesn't apply to the target animal.
+
+### SnakeInputDebug script
+`Assets/_Sandbox/_AQS/Scripts/Test/SnakeInputDebug.cs` -- equivalent of RabbitACDebug for
+the snake. Logs NewInputSystem key state, OldInputSystem axes, PlayerInput Move value, and
+MAnimal state changes. Press Tab (or configured dumpKey) for a full snapshot.
+
+**Known issue:** In Unity Editor, New Input System only receives keyboard when Game View
+has focus. If SnakeInputDebug shows W=False while pressing W, click inside Game View first.
+
+### Troubleshooting (snake-specific)
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| "Animator is not playing an AnimatorController" | DefaultState points into sub-SM | Rebuild with flat root states |
+| Snake spins in place, no forward movement | Mesh child LocalRotation Y=180° | Zero the mesh child's localEulerAngles |
+| Wrong animations (rabbit clips playing) | MAnimal copy-paste brought rabbit state SOs | Reassign state SOs to snake-specific assets |
+| Jump state activates at startup | Jump state copied from rabbit, is last in list | Remove Jump state from states list |
+| W=False in SnakeInputDebug | Game View doesn't have focus | Click inside Game View before pressing keys |
 
 ---
 

@@ -8,6 +8,13 @@
         "client-transport=stdio",
         "authorization=none"
       ]
+    },
+    "blender": {
+      "command": "cmd",
+      "args": ["/c", "uvx", "blender-mcp"],
+      "env": {
+        "DISABLE_TELEMETRY": "true"
+      }
     }
   }
 }

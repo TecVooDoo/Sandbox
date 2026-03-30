@@ -401,6 +401,10 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 304 | customized objects gravity 1.0 (YAHYABK) | Asset Store | Scripting (Surface Gravity) | Rejected | Don't Use | 2026-03-19 |
 | 305 | Camera System 1.6.4 (Gaskellgames) | Asset Store | Scripting (Camera) | Rejected | Don't Use | 2026-03-19 |
 | 306 | ECS N-Body Orbit Simulation 1.0.0 (Parallel Cascades) | Asset Store | Scripting (ECS Physics Simulation) | Conditional | -- | 2026-03-19 |
+| 307 | Polygon Arsenal 2.07 (Archanor VFX) | Asset Store | VFX (Comprehensive Particle FX Library) | Approved | Recommended | 2026-03-26 |
+| 308 | Projectile Factory 1.1.2 (InfinityPBR / Magic Pig Games) | Asset Store | VFX (Projectile System for Polygon Arsenal) | Approved | -- | 2026-03-26 |
+| 309 | Effect Collection Megapack 9 + Vol2 (CartoonVFX9x) | Asset Store | VFX (Stylized Particle FX Bundle) | Conditional | -- | 2026-03-26 |
+| 310 | 2D Trail Effect 2.0 (The Black Cat) | Asset Store | VFX (Ghost Trail Spawner) | Conditional | -- | 2026-03-26 |
 
 ---
 
@@ -9979,6 +9983,10 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 | Cinemachine 3.1.6 | ENTRY-176 | Built | 5 tools: cm-query, cm-configure-camera, cm-configure-follow, cm-configure-noise, cm-configure-brain. `MCPTools.Cinemachine.Editor` |
 | Animation Rigging 1.4.1 | -- | Built | 5 tools: rig-query, rig-configure-twoboneik, rig-configure-aim, rig-configure-weights. `MCPTools.AnimationRigging.Editor` |
 | ALINE | -- | Built | 4 tools: aline-draw-line, aline-draw-sphere, aline-draw-box, aline-label. `MCPTools.ALINE.Editor` |
+| Naninovel | ENTRY-273 | Built | 5 tools: nani-list-characters, nani-list-backgrounds, nani-list-commands, nani-list-scripts, nani-read-script. `MCPTools.Naninovel.Editor` |
+| Adventure Creator | ENTRY-251 | Built | 5 tools: ac-query-managers, ac-list-actions, ac-list-inventory, ac-list-variables, ac-find-scene-objects. `MCPTools.AdventureCreator.Editor` |
+| Text Animator | ENTRY-117 | Built | 4 tools: ta-list-effects, ta-find-components, ta-get-settings, ta-list-databases. `MCPTools.TextAnimator.Editor` |
+| Ink Integration | ENTRY-281 | Built | 3 tools: ink-list-files, ink-compile, ink-get-story-info. `MCPTools.InkIntegration.Editor` |
 
 ### MCP Controllability Evaluated -- Audio (AudioProject Sessions 6 + 8)
 
@@ -9986,13 +9994,13 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 |-------|----------|--------|-----------------|-------|
 | PATWA (ENTRY-282) | MCP-EVAL-001 | Exceptionally High | Singleton `MusicDirector.Instance`, 22 tools across 6 tiers | Purpose-built for MCP |
 | Master Audio 2024 (ENTRY-103) | MCP-EVAL-002 | High | 258 static methods on `MasterAudio` class | Pure static API, string-based IDs |
-| Koreographer Professional (ENTRY-101) | MCP-EVAL-003 | High | Singleton `Koreographer.Instance` | Sample-accurate timing, event registration |
-| Procedural Music Generator (ENTRY-275) | MCP-EVAL-004 | High | Singleton `MusicGenerator`, 40+ properties | Real-time key/scale/mode/tempo changes |
-| Maestro MIDI (ENTRY-276) | MCP-EVAL-005 | High | Component-based `MidiFilePlayer`/`MidiStreamPlayer` | 16-channel control, real-time MIDI injection |
-| DryWetMIDI (ENTRY-115) | MCP-EVAL-006 | High | Library classes, fluent `PatternBuilder` | Full MIDI manipulation, event callbacks |
-| Bro Audio (ENTRY-274) | MCP-EVAL-007 | High | 49 static methods on `BroAudio` class | Cleanest static API of all audio assets |
-| FMOD Studio (ENTRY-113) | MCP-EVAL-008 | High | 62+ static methods on `RuntimeManager` | Dual high/low-level API, VCA routing |
-| Chunity (ENTRY-112) | MCP-EVAL-009 | High | 143 methods on `Chuck` class | Real-time audio code execution via MCP |
+| Koreographer Professional (ENTRY-101) | MCP-EVAL-003 | High | Singleton `Koreographer.Instance` | Sample-accurate timing, event registration. **Built AudioProject S13 -- 2 tools: koreo-query, koreo-beattime. `MCPTools.Koreographer.Editor`** |
+| Procedural Music Generator (ENTRY-275) | MCP-EVAL-004 | High | Singleton `MusicGenerator`, 40+ properties | Real-time key/scale/mode/tempo changes. **Built AudioProject S13 -- 4 tools: pmg-query, pmg-play, pmg-stop, pmg-configure. `#if HAS_PMG`** |
+| Maestro MIDI (ENTRY-276) | MCP-EVAL-005 | High | Component-based `MidiFilePlayer`/`MidiStreamPlayer` | 16-channel control, real-time MIDI injection. **Built AudioProject S13 -- 4 tools: maestro-query, maestro-play, maestro-stop, maestro-send-note. `MCPTools.Maestro.Editor`** |
+| DryWetMIDI (ENTRY-115) | MCP-EVAL-006 | High | Library classes, fluent `PatternBuilder` | Full MIDI manipulation, event callbacks. **Built AudioProject S13 -- 1 tool: midi-query-devices. `MCPTools.DryWetMIDI.Editor`** |
+| Bro Audio (ENTRY-274) | MCP-EVAL-007 | High | 49 static methods on `BroAudio` class | Cleanest static API of all audio assets. **Built AudioProject S13 -- 4 tools: bro-query, bro-play, bro-stop, bro-volume. `MCPTools.BroAudio.Editor`** |
+| FMOD Studio (ENTRY-113) | MCP-EVAL-008 | High | 62+ static methods on `RuntimeManager` | Dual high/low-level API, VCA routing. **Built AudioProject S13 -- 5 tools: fmod-query, fmod-play, fmod-parameter, fmod-vca, fmod-bus. `MCPTools.FMOD.Editor`** |
+| Chunity (ENTRY-112) | MCP-EVAL-009 | High | 143 methods on `Chuck` class | Real-time audio code execution via MCP. **Built AudioProject S13 -- 4 tools: chuck-query, chuck-run, chuck-set-float, chuck-set-int. `#if HAS_CHUNITY`** |
 | UI Toolkit Sound Effects (ENTRY-125) | MCP-EVAL-010 | Medium | ScriptableObject-based + static pool | Inspector-first design, monitoring use |
 | Native Audio (ENTRY-105) | MCP-EVAL-011 | Medium | 16 static methods on `NativeAudio` | iOS/Android only, not usable in Editor |
 | Audio Preview Tool | -- | Deferred | -- | Editor QoL, low priority |
@@ -10163,6 +10171,111 @@ Tracks utilities identified as candidates for `com.tecvoodoo.utilities`. "Not li
 | SlowMotion, CameraShake | Session 35 retroactive scan | ~55 lines | Pending | Tier 2 -- useful but slightly higher complexity |
 | GridSystem, Observable\<T\>, EventBus\<T\> | Session 35 retroactive scan | ~440 lines | Pending | Tier 3 -- larger scope, evaluate individually |
 | GrabMaster AudioClipSettings/AudioEventPlayer | ENTRY-239 (Session 59) | ~3 scripts | Pending | Randomized clip playback with SO-defined volume/pitch ranges. Good Audio utility candidate. |
+
+---
+
+## ENTRY-307: Polygon Arsenal 2.07 (Archanor VFX)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Polygon Arsenal |
+| **Version** | 2.07 |
+| **Developer** | Archanor VFX |
+| **Source** | Asset Store (`Assets/Polygon Arsenal/`) |
+| **Primary Label** | Recommended |
+| **Secondary Labels** | VFX |
+| **Verdict** | Approved |
+| **Date** | 2026-03-26 |
+| **Evaluated in** | AnimationProject |
+
+**What It Is:** Comprehensive low-poly particle effects library with ~1,400 prefabs covering combat, environment, and interactive VFX. All effects use Unity Particle System (Shuriken). Organized into Combat (~867 prefabs: auras, explosions, missiles, muzzleflash, melee, ground spikes, barrage, chains, gore, necromancy, curses, beams, nova, orbital beam), Environment (~185 prefabs: fire, smoke, dust, sparks, liquid, weather, tornado, godrays, fireflies), and Interactive (~325 prefabs: portals, powerups, loot, healing, spawn, trails, lightning, black holes, mining, treasure, checkpoints, zones).
+
+**Technical Details:** 5 utility scripts (PolygonBeamStatic, PolygonLightFade, PolygonLightFlicker, PolygonRotation, PolygonSoundSpawn). 104 materials. 61 demo scenes organized by category. ~1.1 GB total. Hierarchy scaling mode for easy resizing. URP upgrade pack included.
+
+**Missile Types:** Antimatter, Arrow, Bone, Bullet, Crystal, Fireball, Grenade, Holy, Ice, Laser, Lightning, Liquid, Nature, Nuke, Plasma, Proton, Rocket, Shadow, Skull, Smoke, Spirit, Star, Steam, Stone, Thunder, Tornado, Venom, Void, Water, Wind.
+
+**vs PolygonParticleFX (ENTRY-266):** Polygon Arsenal is the comprehensive RPG/Action VFX suite (~1,400 prefabs) while PolygonParticleFX is the gameplay essentials pack (~170 prefabs). Arsenal has 8x the content with specialized categories (necromancy, chains, orbital beams, zones). PolygonParticleFX focuses on common effects (fire, explosions, pickups, weather). Complementary -- Arsenal for variety, ParticleFX for quick prototyping.
+
+**HOK Relevance:** HIGH. Shadow/spirit missiles for ghost-fish effects, necromancy effects for Acheron atmosphere, fire effects for Phlegethon, ice/crystal for Cocytus/Styx, portal effects for underworld transitions, healing circles for Lethe. The aura category (55 prefabs) is directly applicable to fish -- attach an aura prefab as a child of a fish prefab for per-river visual identity.
+
+**Verdict Rationale:** Approved/Recommended. The largest and most versatile VFX library evaluated. 1,400 prefabs across every gameplay category. Low-poly style matches Synty art. The 30 missile types alone provide enough variety for 5 rivers of fish effects. The aura, fire, ice, spirit, and shadow categories are directly applicable to HOK's underworld fish differentiation problem. Companion asset Projectile Factory (ENTRY-308) adds a projectile system on top.
+
+---
+
+## ENTRY-308: Projectile Factory 1.1.2 (InfinityPBR / Magic Pig Games)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Projectile Factory for Polygon Arsenal |
+| **Version** | 1.1.2 |
+| **Developer** | InfinityPBR / Magic Pig Games |
+| **Source** | Asset Store (`Assets/InfinityPBR - Magic Pig Games/Projectile Factory/`) |
+| **Primary Label** | -- |
+| **Verdict** | Approved |
+| **Date** | 2026-03-26 |
+| **Evaluated in** | AnimationProject |
+
+**What It Is:** Companion system for Polygon Arsenal that provides 620 pre-configured projectile prefabs with integration scripts. Adds projectile behavior (launch, travel, impact) on top of Polygon Arsenal's visual effects. Includes an integration bridge script (`PolygonSoundSpawnMod.cs`) specifically for Polygon Arsenal compatibility.
+
+**Technical Details:** 620 prefabs. Single integration script. No demo scenes beyond Polygon Arsenal's own. ~118 MB. Organized by effect type categories matching Polygon Arsenal's structure.
+
+**HOK Relevance:** LOW for fish effects (fish don't fire projectiles). MEDIUM for future gameplay -- could be used for Kharon's ferry mechanics, soul pickup effects, or fishing line cast VFX.
+
+**Verdict Rationale:** Approved without label. Useful companion to Polygon Arsenal for any project needing projectile mechanics. Not directly relevant to the current fish shader/VFX work but valuable for broader HOK gameplay. No conflicts with other installed packages.
+
+---
+
+## ENTRY-309: Effect Collection Megapack 9 + Vol2 (CartoonVFX9x)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Effect Collection Megapack 9 + Vol2 |
+| **Version** | 1.0 (both) |
+| **Developer** | CartoonVFX9x |
+| **Source** | Asset Store (`Assets/CartoonVFX9X/`) |
+| **Primary Label** | -- |
+| **Verdict** | Conditional |
+| **Date** | 2026-03-26 |
+| **Evaluated in** | AnimationProject |
+
+**What It Is:** Two-volume stylized/cartoon particle effects bundle totaling 394 prefabs. All Shuriken particle systems. Vol1 (154 prefabs): Hit_Impact (30), Magic_Circle_FX (10), Magic_Effect (15), Open_BoxGift (20), Projectile (38), Select_Box_Effect (30), Win_Effect (11). Megapack9/Vol2 (240 prefabs): Eating_Item (36), Explosion (36), Fire (6), GiftBox_Effect (18), Glow_FX (60), HitAttack (54), Muzzle_FX (18), PortalGate_Effect (12).
+
+**Technical Details:** No scripts. 291 materials. 2 demo scenes. ~475 MB combined. URP support folder included. Numbered naming convention (Explosion_1 through Explosion_36) -- no descriptive names, must preview each to identify.
+
+**Content Quality:** The Glow_FX category (60 prefabs) is the standout -- looping glow/aura effects usable as persistent fish auras. Explosions and HitAttacks are combat-oriented. Magic_Circle and PortalGate effects could work for underworld atmosphere. Eating_Item and GiftBox categories are mobile-game focused.
+
+**vs Polygon Arsenal (ENTRY-307):** Polygon Arsenal is superior in organization (descriptive names vs numbered), variety (1,400 vs 394), documentation (61 demo scenes vs 2), and utility scripts. CartoonVFX9x's advantage is the Glow_FX category -- 60 dedicated glow effects that Arsenal lacks in concentrated form.
+
+**HOK Relevance:** MEDIUM. The 60 Glow_FX prefabs are directly useful as fish auras. Portal effects for underworld transitions. Fire effects for Phlegethon. Everything else is mobile-game oriented (eating items, gift boxes, select boxes) and less relevant.
+
+**Code Concerns:** No namespacing. Numbered-only prefab names make discovery painful without previewing each one. No documentation beyond demo scenes.
+
+**Verdict Rationale:** Conditional. The Glow_FX category alone justifies keeping installed for the fish aura use case. However, the numbered naming, lack of documentation, mobile-game focus of most categories, and overlap with Polygon Arsenal mean this is a secondary VFX source. Use Polygon Arsenal first, CartoonVFX9x for supplementary glow effects.
+
+---
+
+## ENTRY-310: 2D Trail Effect 2.0 (The Black Cat)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | 2D Trail Effect (Ghost Trail Spawner) |
+| **Version** | 2.0 |
+| **Developer** | The Black Cat |
+| **Source** | Asset Store (`Assets/The Black Cat/2D Trail Effect/`) |
+| **Primary Label** | -- |
+| **Verdict** | Conditional |
+| **Date** | 2026-03-26 |
+| **Evaluated in** | AnimationProject |
+
+**What It Is:** Ghost trail spawner system that creates fading afterimage copies of a sprite/mesh as it moves. Runtime component: `TrailManager` (MonoBehaviour) manages `TrailInstance` objects with configurable easing, fade duration, color tinting, and spawn rate. 1 demo prefab. Editor: custom inspectors for TrailManager and TrailInstance configuration.
+
+**Technical Details:** 3 runtime scripts (TrailManager, TrailInstance, TrailObject), 3 editor scripts, easing system (EasingManager + Equations). Namespace: none visible. No shaders -- uses SpriteRenderer/MeshRenderer duplication with material property animation for fade. ~2 MB total.
+
+**3D Compatibility:** Designed for 2D (SpriteRenderer focus), but the TrailObject/TrailManager pattern could work with 3D MeshRenderers if adapted. The core concept (spawn copies, fade them out) is renderer-agnostic. Would require modification for SkinnedMeshRenderer (animated fish) -- needs to capture mesh pose at spawn time.
+
+**HOK Relevance:** LOW-MEDIUM. The ghost trail concept is appealing for Acheron shadow-fish (afterimages trailing behind as they swim) and Lethe fish (fading memories). However, adapting it for 3D animated fish requires custom work. The easing system is reusable. The concept is more valuable than the implementation -- better to write a custom 3D ghost trail script inspired by this approach.
+
+**Verdict Rationale:** Conditional. The 2D focus limits direct applicability to HOK's 3D fish. The ghost trail concept is excellent for underworld aesthetics but would need a custom 3D implementation. Keep installed as reference/inspiration. For production use, write a `FishGhostTrail` script that spawns fading mesh copies behind swimming fish, using this asset's easing system as a reference.
 
 ---
 
