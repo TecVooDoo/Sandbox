@@ -45,8 +45,10 @@ Three issues resolved from Session 11's "bolt fires but direction wrong":
 
 **Scene state:** BlankTest scene -- Raccoon_Weapon_Test active at origin with LockAxis, GreyBox_TestLevel parent with 11 children, CM_2_5D_Follow virtual camera, old Ground plane deactivated. Camera follows raccoon from +X side.
 
+**Zones status:** Swim WORKS (Water layer 4 trigger). Climb/LedgeGrab NOT WORKING -- ClimbHit/LedgeHit child objects on raccoon are corrupted (bad positions, deactivated) from duplicate Player Core deletion. Climb walls have correct setup (tag=Climb, Climbable physics material, thick BoxColliders). The raccoon prefab hierarchy needs repair -- recommend re-instantiating from original Raccoon PA Player prefab and re-applying weapon changes.
+
 **Next:**
-- Malbers zones on greybox: climb zones on walls, water zone on pool, ledge detection
+- **Fix climb/ledge:** Load Raccoon PlayGround demo side-by-side, compare working prefab hierarchy against Raccoon_Weapon_Test. Likely need to re-instantiate from clean prefab.
 - Far-side climb + LockAxis interaction investigation (X-lock may block depth climbing)
 - Mortar tuning with level geometry
 - Stand stance toggle vs hold decision
