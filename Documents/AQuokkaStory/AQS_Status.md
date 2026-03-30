@@ -17,7 +17,7 @@
 
 ## Current State
 
-**Phase:** Sprint 1 -- Core Feel. Raccoon belly weapon fires mortar-arc bolts forward. Direction, arc, and duplicate cleanup all resolved. Standing stance restriction TODO. Recipe in `AQS_MalbersRecipe.md`.
+**Phase:** Sprint 1 -- Core Feel. Raccoon belly weapon fires mortar-arc bolts, stance-gated. 2.5D greybox level with Cinemachine follow camera. Malbers zones next. Recipe in `AQS_MalbersRecipe.md`.
 
 **Session 12 (Mar 30, 2026) -- Projectile Direction Fix + Mortar Arc:**
 Three issues resolved from Session 11's "bolt fires but direction wrong":
@@ -36,13 +36,16 @@ Three issues resolved from Session 11's "bolt fires but direction wrong":
 - Mortar tuning values (Force, AimAngle) need adjustment once level geometry exists. Current values arc a bit high/far for 2.5D side-view.
 - Toolkit for Ballistics (Heathen) installed for future trajectory visualization (Sprint 2 Joey launch).
 
-- **Greybox test level built.** ProBuilder geometry: start platform, water pool with ramps, mid platform, side climb wall (profile), upper platform, far-side climb wall (back to camera), ledge platform, end ground. All along Z axis. LockAxis (LockX=true) added to raccoon. Camera repositioned to side view (+X looking -X). 2.5D movement confirmed working (left/right = Z axis).
+- **Greybox test level built.** ProBuilder geometry: start platform, water pool with ramps, mid platform, side climb wall (profile), upper platform, far-side climb wall (back to camera), ledge platform, end ground. All along Z axis. LockAxis (LockX=true) added to raccoon.
+- **Cinemachine 2.5D follow camera.** CinemachineBrain on Main Camera, CM_2_5D_Follow virtual camera with CinemachineFollow: offset=(4,2,0) WorldSpace, damping=(1,0.5,1), rotation=(10,270,0). Camera on +X side looking -X for natural left-to-right platformer direction. RotationComposer removed (fixed angle, not dynamic look-at). Rotation damping zeroed to prevent drift.
+- **Z-fighting fixed.** Old "Ground" plane (100x100 at Y=0) was overlapping ProBuilder ground meshes. Deactivated.
+- **Water volume transparent.** URP Lit material with alpha=0.3 blue so raccoon is visible while swimming.
+- **Shadow settings tuned.** Distance reduced from 50 to 20, cascades from 4 to 2 to reduce flicker during camera movement.
+- **Artist package created.** QuokkaMom_ArtistPackage.zip (22MB) with FBX reference model, concept art, GDD, and technical brief for 3D artist.
 
-**Scene state:** BlankTest scene -- Raccoon_Weapon_Test active at origin with LockAxis, GreyBox_TestLevel parent with 10 ProBuilder meshes, Rabbit_AC_Test deactivated, Raccoon_Reference deactivated. Camera at (12,3,15) side view.
+**Scene state:** BlankTest scene -- Raccoon_Weapon_Test active at origin with LockAxis, GreyBox_TestLevel parent with 11 children, CM_2_5D_Follow virtual camera, old Ground plane deactivated. Camera follows raccoon from +X side.
 
-**Next (Session 13):**
-- Cinemachine follow camera for 2.5D (reference: Malbers "5 - 2.5 Platformer" demo)
-- Camera distance tuning
+**Next:**
 - Malbers zones on greybox: climb zones on walls, water zone on pool, ledge detection
 - Far-side climb + LockAxis interaction investigation (X-lock may block depth climbing)
 - Mortar tuning with level geometry
@@ -72,7 +75,7 @@ These items were completed before the crash and need to be rebuilt:
 | Item | Old Status | New Status |
 |------|-----------|------------|
 | Project setup (Unity 6, URP, GitHub) | Was DONE | DONE |
-| Core player movement (hop, jump) | Was DONE | IN PROGRESS -- pivoting to Malbers AC. Raccoon PA Player prefab ready, needs LockAxis for 2.5D |
+| Core player movement (hop, jump) | Was DONE | IN PROGRESS -- Malbers AC with LockAxis 2.5D, Cinemachine follow camera, mortar weapon working |
 | Climbing system with stamina | Was DONE | TODO |
 | Input System integration | Was DONE | DONE -- AQS_InputActions asset + QuokkaInputHandler |
 | Ground detection (collision-based) | Was DONE | DONE -- collision enter/stay/exit with normal check |
