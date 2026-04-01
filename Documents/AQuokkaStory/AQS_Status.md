@@ -45,14 +45,25 @@ Three issues resolved from Session 11's "bolt fires but direction wrong":
 
 **Scene state:** BlankTest scene -- Raccoon_Weapon_Test active at origin with LockAxis, GreyBox_TestLevel parent with 11 children, CM_2_5D_Follow virtual camera, old Ground plane deactivated. Camera follows raccoon from +X side.
 
-**Zones status:** Swim WORKS (Water layer 4 trigger). Climb/LedgeGrab NOT WORKING -- ClimbHit/LedgeHit child objects on raccoon are corrupted (bad positions, deactivated) from duplicate Player Core deletion. Climb walls have correct setup (tag=Climb, Climbable physics material, thick BoxColliders). The raccoon prefab hierarchy needs repair -- recommend re-instantiating from original Raccoon PA Player prefab and re-applying weapon changes.
+**Zones status:** All core zones WORKING.
+- **Swim:** Water_Volume trigger on layer 4 (Water) -- auto-triggers Swim state.
+- **Climb:** Walls need tag=Climb + Climbable physics material + BoxCollider on Default layer. Press E (Interact) to start climbing. The missing Climbable physmat was the root cause of earlier failures -- NOT corrupted prefab hierarchy. Raccoon prefab hierarchy matches original exactly (ClimbHit/LedgeHit positions and inactive state are normal -- MAnimal manages them at runtime).
+- **LedgeGrab:** Triggers at top of climb wall (not from below). Drop-down from above also works.
+- **Far-side climb:** Works when wall is repositioned off the travel path. User manually positioned ClimbWall_FarSide for side approach.
+
+**Key Malbers zone learnings:**
+- Climb state uses THREE detection requirements: (1) ClimbLayer mask matches surface layer, (2) Surface physmat matches collider physmat, (3) tag=Climb on surface. ALL THREE must be present.
+- ClimbHit/LedgeHit children on the raccoon are INACTIVE in editor and have "garbage" positions -- this is NORMAL. MAnimal activates and positions them at runtime.
+- LedgeGrab is NOT a "jump up and grab from below" mechanic -- it detects the top edge of a climb surface while climbing.
+- Original Raccoon PA Player prefab has TWO Player Core children -- this is the intended structure, not duplication.
+- Raccoon_Fresh_Test instantiated from clean prefab confirmed same behavior as Raccoon_Weapon_Test -- proved issue was greybox geometry, not raccoon.
 
 **Next:**
-- **Fix climb/ledge:** Load Raccoon PlayGround demo side-by-side, compare working prefab hierarchy against Raccoon_Weapon_Test. Likely need to re-instantiate from clean prefab.
-- Far-side climb + LockAxis interaction investigation (X-lock may block depth climbing)
+- Re-apply weapon changes to fresh raccoon (or keep Raccoon_Weapon_Test since hierarchy is fine)
 - Mortar tuning with level geometry
 - Stand stance toggle vs hold decision
 - Remove remaining CustomPatch debug logs from MShootable.cs
+- Far-side climb in 2.5D design investigation (works with manual positioning, but LockAxis interaction TBD)
 
 **What survived the crash:**
 - Full GDD (multiple versions, latest Dec 2025)
