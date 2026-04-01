@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.11f1 (Unity 6, URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **AQS Root:** `Assets/_Sandbox/_AQS/`
-**Last Updated:** March 30, 2026 (Session 12 -- Projectile direction fix + mortar arc)
+**Last Updated:** March 31, 2026 (Sessions 12-14 -- Mortar weapon, 2.5D greybox, zones working)
 
 > **NOTE:** Original project lost to crash (pre-GitHub backup era). Resurrecting from archived docs at `Documents/Archives/`. All code is lost -- starting from scratch. Concept art and design docs survived.
 
@@ -58,12 +58,18 @@ Three issues resolved from Session 11's "bolt fires but direction wrong":
 - Original Raccoon PA Player prefab has TWO Player Core children -- this is the intended structure, not duplication.
 - Raccoon_Fresh_Test instantiated from clean prefab confirmed same behavior as Raccoon_Weapon_Test -- proved issue was greybox geometry, not raccoon.
 
-**Next:**
-- Re-apply weapon changes to fresh raccoon (or keep Raccoon_Weapon_Test since hierarchy is fine)
-- Mortar tuning with level geometry
+**Next (Session 15 -- Sprint 1 wrap-up):**
+- Climbing stamina -- wire Stamina stat to Climb state (drain while climbing, release when depleted)
+- Mortar tuning -- adjust Force/AimAngle with level geometry (currently arcs too high/far)
 - Stand stance toggle vs hold decision
 - Remove remaining CustomPatch debug logs from MShootable.cs
-- Far-side climb in 2.5D design investigation (works with manual positioning, but LockAxis interaction TBD)
+- Clean up: delete Raccoon_Fresh_Test from scene, Temp/ folder cleanup
+
+**Sprint 2 prep (after Sprint 1 wrap-up):**
+- Raccoon cub prefab as Joey prototype -- follow mom like lemmings
+- Replace bolt projectile with cub launch mechanic
+- JoeyDefinition/AbilityDefinition ScriptableObjects
+- Toolkit for Ballistics trajectory visualization for launch arc
 
 **What survived the crash:**
 - Full GDD (multiple versions, latest Dec 2025)
