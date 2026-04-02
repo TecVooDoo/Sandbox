@@ -1,6 +1,6 @@
 ---
 name: bd-control
-description: "Control behavior tree execution: start, stop, or restart a BehaviorTree on a GameObject."
+description: "Control behavior tree execution: start, stop, pause, unpause, or restart a BehaviorTree on a GameObject."
 ---
 
 # Behavior Designer / Control Tree
@@ -38,7 +38,7 @@ Read the /unity-initial-setup skill for detailed installation instructions.
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `gameObjectName` | `string` | Yes | Name of the GameObject with BehaviorTree component(s). |
-| `action` | `string` | Yes | Action to perform: 'start', 'stop', or 'restart'. |
+| `action` | `string` | Yes | Action to perform: 'start', 'stop', 'pause', 'unpause', or 'restart'. |
 | `treeIndex` | `any` | No | Index of the tree if multiple BehaviorTree components exist. Default 0. |
 
 ### Input JSON Schema

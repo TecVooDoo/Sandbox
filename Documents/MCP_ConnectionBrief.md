@@ -12,7 +12,7 @@ Each Unity project runs its own MCP server exe, located at:
 {ProjectRoot}/Library/mcp-server/win-x64/unity-mcp-server.exe
 ```
 
-The server is a bridge between Claude Code and the Unity Editor plugin. Two config files tell Claude Code where to find that server. Both must exist and both must point to the **same project's** Library folder.
+The server is a bridge between Claude Code and the Unity Editor plugin. The primary config file is `.mcp.json` at the project root -- this is the file Claude Code actually reads for server discovery.
 
 Blender MCP is separate -- it runs via `uvx` and always uses port 9876 regardless of project.
 
@@ -20,36 +20,10 @@ Blender MCP is separate -- it runs via `uvx` and always uses port 9876 regardles
 
 ## Required Config Files (per project)
 
-### File 1: `.vscode/mcp.json`
-Used by the VS Code extension. Replace `YOUR_PROJECT` with project path and `XXXXX` with port from Unity Editor.
-```json
-{
-    "servers": {
-        "ai-game-developer": {
-            "command": "E:/Unity/YOUR_PROJECT/Library/mcp-server/win-x64/unity-mcp-server.exe",
-            "args": [
-                "port=XXXXX",
-                "plugin-timeout=10000",
-                "client-transport=stdio",
-                "authorization=none"
-            ],
-            "type": "stdio"
-        },
-        "blender": {
-            "command": "cmd",
-            "args": ["/c", "uvx", "blender-mcp"],
-            "env": {
-                "DISABLE_TELEMETRY": "true"
-            },
-            "type": "stdio"
-        }
-    },
-    "inputs": []
-}
-```
+### Primary: `.mcp.json` (project root)
+**This is the file Claude Code VS Code extension actually reads.** The Unity MCP plugin auto-generates this file with `ai-game-developer`, but you must manually add Blender (or any other MCP server) to it. Uses the `mcpServers` key.
 
-### File 2: `.claude/mcp.json`
-Used by the Claude Code CLI. **Must be created manually** -- Claude Code does not create this automatically.
+Replace `YOUR_PROJECT` with project path and `XXXXX` with port from Unity Editor.
 ```json
 {
   "mcpServers": {
@@ -73,14 +47,23 @@ Used by the Claude Code CLI. **Must be created manually** -- Claude Code does no
 }
 ```
 
-### Key Differences Between the Two Files
+### Secondary: `.claude/mcp.json`
+Used by the Claude Code CLI (terminal mode). **Must be created manually.** Same format as `.mcp.json` above (`mcpServers` key). Keep both files in sync.
 
-| | `.vscode/mcp.json` | `.claude/mcp.json` |
-|---|---|---|
-| Outer key | `"servers"` | `"mcpServers"` |
-| `"type": "stdio"` | Required on each server | Not used |
-| `"inputs": []` | Required at root | Not used |
-| Created by | VS Code / MCP plugin | **You, manually** |
+### Legacy: `.vscode/mcp.json`
+Used by VS Code Copilot Chat MCP, NOT by Claude Code. Uses `"servers"` key (not `"mcpServers"`) and requires `"type": "stdio"` on each entry. The Unity MCP plugin auto-generates this file. **Claude Code ignores this file for server discovery.**
+
+### Key Differences
+
+| | `.mcp.json` (root) | `.claude/mcp.json` | `.vscode/mcp.json` |
+|---|---|---|---|
+| Read by | **Claude Code VS Code ext** | Claude Code CLI | VS Code Copilot Chat |
+| Outer key | `"mcpServers"` | `"mcpServers"` | `"servers"` |
+| `"type": "stdio"` | Not used | Not used | Required |
+| Created by | Unity MCP plugin (partial) | **You, manually** | Unity MCP plugin |
+| Blender entry | **Must add manually** | Must add manually | Must add manually |
+
+**IMPORTANT:** The Unity MCP plugin auto-generates `.mcp.json` but only adds `ai-game-developer`. You must manually add Blender (and any other servers) to this file. If you only add Blender to `.claude/mcp.json`, the VS Code extension will not see it.
 
 ---
 
@@ -182,7 +165,9 @@ If a project connects (shows green) but the tools aren't visible in the old way,
 
 | Symptom | Likely Cause | Fix |
 |---------|-------------|-----|
-| Shows orange immediately | `.claude/mcp.json` missing | Create it manually (see above) |
+| Shows orange immediately | `.mcp.json` missing or misconfigured | Check `.mcp.json` at project root (see above) |
+| Server in config but not in `/mcp` list | Server only in `.claude/mcp.json`, not `.mcp.json` | Add server to `.mcp.json` at project root |
+| Blender not connecting | Blender entry missing from `.mcp.json` | Add blender entry to `.mcp.json` (Unity plugin only auto-adds `ai-game-developer`) |
 | Connects briefly then drops | Port already in use (zombie process) | Kill `unity-mcp-server.exe` processes in Task Manager |
 | Two projects share a port | Port collision | Check AI Game Developer panel for each project's actual port |
 | Never connects | Server exe not downloaded yet | Open project in Unity, wait for import |
@@ -191,7 +176,7 @@ If a project connects (shows green) but the tools aren't visible in the old way,
 | Backslashes in path | Windows path separators | Use forward slashes: `E:/Unity/...` not `E:\Unity\...` |
 | Missing `authorization=none` | Auth blocking connection | Add `"authorization=none"` to args |
 
-**The most common miss:** `.claude/mcp.json` does not exist. Claude Code will not find the server without it. `.vscode/mcp.json` alone is not enough.
+**The most common miss:** Blender (or other non-Unity servers) only added to `.claude/mcp.json` but not to `.mcp.json` at the project root. The VS Code extension reads `.mcp.json` -- it ignores `.claude/mcp.json` for server discovery.
 
 ---
 
@@ -287,9 +272,9 @@ The global `"mcp__*"` permission already covers tool execution -- this list just
 - [ ] `com.ivanmurzak.unity.mcp` added to `manifest.json`
 - [ ] Unity opened and import completed (server exe appears in Library)
 - [ ] Port noted from AI Game Developer panel in Unity Editor
-- [ ] `.vscode/mcp.json` created with correct project path + port + Blender (copy template above)
-- [ ] `.claude/mcp.json` created manually with correct project path + port + Blender (copy template above)
-- [ ] Both files use forward slashes in the path (`E:/Unity/...` not `E:\Unity\...`)
-- [ ] Both files point to **this project's** Library, not another project's
+- [ ] `.mcp.json` at project root has correct path + port + Blender (Unity plugin auto-creates with `ai-game-developer` only -- add Blender manually)
+- [ ] `.claude/mcp.json` created manually with same servers (for CLI usage)
+- [ ] All config files use forward slashes in paths (`E:/Unity/...` not `E:\Unity\...`)
+- [ ] All config files point to **this project's** Library, not another project's
 - [ ] `authorization=none` present in args
 - [ ] Project path added to `additionalDirectories` in global `~/.claude/settings.json`

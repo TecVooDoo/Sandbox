@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Project Path:** `E:\Unity\Sandbox`
 **Document Version:** Reconstructed Feb 23, 2026 (after data loss)
-**Last Updated:** March 28, 2026 (Session 61)
+**Last Updated:** April 1, 2026 (Session 65)
 
 > **NOTE:** This document was reconstructed after the Sandbox project became corrupt on Feb 23, 2026. Content recovered from session context and MEMORY.md.
 
@@ -15,71 +15,113 @@
 
 ## Purpose
 
-Sandbox is a dedicated asset evaluation environment for ALL TecVooDoo projects. It is NOT a game project. Assets are imported, tested, and evaluated here before being used in actual projects (HOK, DLYH, FearSteez, etc.).
+Sandbox is a dedicated asset evaluation environment AND game incubator for ALL TecVooDoo projects. Assets are imported, tested, and evaluated here before being used in actual projects. New game projects bootstrap here with on-demand asset loading, then migrate to standalone when proven.
 
-**Primary output:** `Sandbox_AssetLog.md` -- 291 asset evaluations as of Session 57.
+**Primary output:** `Sandbox_AssetLog.md` -- 315 asset evaluations as of Session 63.
 
 **Reference doc:** `Sandbox_DevReference.md` -- coding standards, MCP gotchas, eval standards, AI rules. Read on demand.
 
 ---
 
-## Session 60 (Mar 20, 2026) -- MCP Tools Session 4: Evals + Build
+## Session 65 (Apr 1, 2026) -- Hide 'N Reap Bootstrap + TMCP Fix
 
-**Status:** MCP controllability evals for 13 assets + built 7 new tool groups (36 tools). Package now at v1.3.0 with ~126 tools across 24 groups.
+**Status:** Hide 'N Reap bootstrapped as new Sandbox incubation project. TMCP stale defines bug fixed.
 
-**MCP Evals Completed:**
-- **Candidates built:** DOTween Pro (4), Behavior Designer Pro (4), SensorToolkit 2 (5), UCC (5), A* Pathfinding Pro (6), Master Audio 2024 (6), Dialogue System for Unity (6)
-- **Deferred:** GOAP v3 (Medium, revisit when adopted), Breeze (Medium-High, revisit when adopted)
-- **Not candidates:** BD Senses Pack (task nodes), Procedural Dialogue Addon (auto-hooks), Follow & Protect Agent (ML black box, removed due to missing ml-agents dependency)
-- **Also evaluated:** GOAP v3 3.1.1, Breeze 1.0.2, Follow & Protect Agent 1.0 (first evals for all three)
+**Hide 'N Reap Bootstrap:**
+- GDD v1.0 created (phase-driven competitive deception, 2.5D, 3-6 players)
+- Folder structure: `Assets/_Sandbox/_HNR/` (Scripts, Art, Audio, Data, Prefabs, Scenes)
+- Docs: Status, DevReference, CodeReference, StatusArchive, GDD
+- 8 namespaces planned: Core, Player, Reaper, Ghost, Possession, NPC, Network, UI, Audio
+- Sprint 1 priority: netcode evaluation (NGO vs FishNet vs Mirror)
+- No packages installed yet -- on-demand per new Sandbox approach
 
-**Tools Built (36 new):** Master Audio (6: ma-query/play/group-control/bus-control/playlist/configure-ducking), A* Pathfinding (6: astar-query/configure-grid/configure-recast/configure-agent/scan/configure-seeker), Dialogue System (6: ds-query/conversation/quest/variable/bark/lua), SensorToolkit 2 (5: sensor-query/add-range/add-los/configure-steering/query-detections), UCC (5: uc-query/configure-locomotion/ability-control/configure-attribute/item-control), Behavior Designer (4: bd-query/set-variable/control/list-trees), DOTween Pro (4: dotween-query/add-animation/play/global).
+**TMCP Stale Defines Fix:**
+- Root cause: `MCPToolsDefineManager` added `HAS_*` defines but couldn't clean them when assets removed (compilation errors blocked domain reload)
+- Fix: Added `RemoveStaleDefines()` method + `MCPToolsAssetPostprocessor` (`OnPostprocessAllAssets`) to catch deletions BEFORE recompilation
+- Added `#if HAS_MALBERS_AC` guards to all 8 MalbersAC tool files
+- Converted MalbersAC asmdef to GUID reference
+- Manually removed stale defines from both Sandbox and AQS ProjectSettings
+- Memory: `feedback_tmcp_stale_defines.md`
 
-**Compile fixes:** BD Pro tools rewritten against actual v2.x API after agents assumed v1.x methods. Lesson learned: agents must verify actual source before writing code.
-
-**Key lesson saved to memory:** Never assume any API -- always verify against actual installed source code before writing code or making claims.
-
-**ECS/DOTS tools (Session 4b):** Unity Entities (5 tools: ecs-query-worlds/query-entities/inspect-entity/modify-entity/create-destroy) + Unity Physics (4 tools: uphys-query/configure-body/configure-step/configure-shape). Package at v1.4.0, ~135 tools across 26 groups.
+**NewProjectSetup_Brief.md updated:**
+- 3-tier package structure: Default (15 packages) / Animation / Project-Specific
 
 ---
 
-## Session 61 (Mar 28, 2026) -- Infrastructure Standardization
+## Session 64 (Apr 1, 2026) -- AQS Migration + Sandbox Cleanup
 
-**Status:** Cross-project infrastructure audit and standardization. MCP configs, permissions, docs, and package management unified across all active projects.
+**Status:** AQS migrated to standalone project at `E:\Unity\AQuokkaStory`. Sandbox bloat cleanup: ~735 MB removed.
 
-**Session 61 Work:**
+**AQS Migration COMPLETE:**
+- AQS standalone at `E:\Unity\AQuokkaStory` (Unity 6, 6000.3.11f1, URP)
+- GitHub: TecVooDoo/AQuokkaStory (private)
+- All docs migrated, CLAUDE.md created, MCP configured
+- Playtest confirmed working -- Sprint 1 complete, Sprint 2 starting
+- Sandbox AQS docs archived to `Documents/Archives/AQuokkaStory/`
 
-*AQS Snake AC Experiment (parked) + Raccoon Belly Weapon:*
-- Snake AC experiment parked -- IsPending blocker, enemies don't need Malbers AC.
-- Raccoon_Weapon_Test created from PA Player prefab. Belly weapon system wired: Belly_WeaponPoint on Spine1, Belly_Weapon_Test prefab (Bolt projectile), MWeaponManager configured, Pistol mode (ID=300) added. Weapon equips successfully. LMB routing still blocked (Attack1 melee intercepts) -- same issue from rabbit Session 8. Next session: fix input routing.
+**Sandbox Cleanup (~735 MB removed):**
+- `Assets/_Sandbox/_AQS/` (28 MB) -- migrated to standalone
+- `Assets/2.5D Terrain/` (60 MB) -- evaluated (ENTRY-311), MCP tools built, removed
+- `Assets/2.5D Looping/` (20 MB) -- evaluated (ENTRY-313), removed
+- `Assets/BridgeBuilder2.5D/` (23 MB) -- evaluated (ENTRY-312), MCP tools built, removed
+- `Assets/Suriyun/` (501 MB) -- evaluated (ENTRY-314), removed
+- `Assets/Ghost and Shaders PRO/` (103 MB) -- evaluated (ENTRY-315), removed
+- Orphaned settings assets (2.5DTerrainSettings, 2.5D Looping Settings) removed
+- `QuokkaMom_ArtistPackage.zip` removed
+- Export unitypackage removed
 
-*MCP Connection Standardization:*
-- Created `MCP_ConnectionBrief.md` -- complete reference for MCP setup across all projects.
-- Audited all 8 projects: fixed FearSteez port collision (54815 -> 59431), fixed missing `authorization=none`, fixed backslashes, created missing `.claude/mcp.json` for AudioProject.
-- Added Blender MCP (`uvx blender-mcp`, port 9876) to all projects: Sandbox, HOK, FearSteez, SpaceSucks, AudioProject, AnimationProject.
-- Port registry documented: Sandbox=54815, FearSteez=59431, HOK=54111, AudioProject=50774, AnimationProject=52516, SpaceSucks=29794, DLYH=51240.
-- MCP plugin updated to v0.62.0. Documented v0.61.0+ behavior change (tools surface as skills/deferred tools).
+All removed assets can be reinstalled from Asset Store cache when needed for future evals.
 
-*Global Permissions Cleanup:*
-- Cleaned global `~/.claude/settings.json`: removed 12 redundant individual MCP entries (covered by `mcp__*` wildcard).
-- Added all 8 active projects to `additionalDirectories`.
+**NewProjectSetup_Brief.md updated:**
+- New 3-tier package structure: Default (15 packages) / Animation / Project-Specific
+- Old monolithic default set replaced with minimum-install approach
 
-*Package Management:*
-- Switched UniTask from local file to OpenUPM (`com.cysharp.unitask` v2.5.10).
-- Switched Image Loader from local file to OpenUPM (`extensions.unity.imageloader` v7.0.1).
-- Switched Unity Theme from local file to OpenUPM (`extensions.unity.theme` v4.2.0).
-- Added `com.cysharp.unitask` to OpenUPM scoped registry.
+---
 
-*New Project Setup Brief:*
-- Created `NewProjectSetup_Brief.md` -- standard setup checklist for any new TecVooDoo Unity project.
-- Covers: OpenUPM registry, package install order (with dependency chains), MCP setup, folder structure, doc structure, asset evaluation workflow, coding conventions, source control.
-- References Sandbox AssetLog as single source of truth for all asset evaluations.
+## Session 63 (Mar 31, 2026) -- Asset Evals + TMCP 2.5D Tools
 
-*Status Doc Archive System:*
-- Created StatusArchive files for 4 projects: Sandbox (571 lines), AQS (360 lines), AudioProject (600 lines), AnimationProject (stub).
-- Trimmed status docs: Sandbox 665->104, AQS 561->211, AudioProject 782->192.
-- Added ARCHIVE RULE instruction to all 4 status docs so future sessions maintain the pattern.
-- Updated NewProjectSetup_Brief.md with StatusArchive pattern documentation.
+**Status:** 5 new asset evaluations (ENTRY-311 through 315). 7 new MCP tools built for Kamgam 2.5D Terrain and Bridge Builder. MCP plugin updated to v0.63.2.
+
+**Asset Evaluations (5 new, 315 total):**
+
+| # | Asset | Verdict | Key Finding |
+|---|-------|---------|-------------|
+| 311 | 2.5D Terrain 2.2.1 (Kamgam) | Approved | Spline-to-mesh pipeline with ClipperLib/Poly2Tri. Beveled terrain, 2D colliders, foliage scattering. HIGH MCP compatibility. AQS primary target. |
+| 312 | 2.5D Bridge Builder 1.1.0 (Kamgam) | Approved | Destructible rope bridge with HingeJoint2D/SpringJoint2D chain, damage, proximity, checkpoint/reset. Uses Unity 6 API correctly. |
+| 313 | 2.5D Looping 1.2.0 (Kamgam) | Conditional | Z-depth management for looping paths. Niche mechanic. Complex 7+ trigger setup. Import only when specifically needed. |
+| 314 | Mega Cute Pet Zoo 3.3 (Suriyun) | Approved | 65 species, ~280 FBX, 191 prefabs. Low-poly cute animals + basic NavMesh AI. AQS animal source (Koala, Platypus, Kangaroo, Possum, Raccoon, Fox). |
+| 315 | Ghost and Shaders PRO 1.0 (SR Studios) | Approved | Shader Graph ghost effect (URP), 100+ material presets, Fresnel+dual overlay+distortion. Build-breaking `using UnityEditor;` without guard. HOK underworld fit. |
+
+**TMCP 2.5D Tools Built (7 new tools, 2 new groups):**
+
+| Tool | What It Does |
+|------|-------------|
+| `terrain25d-query` | Full terrain state: mesh gen settings, collider, foliage, spline count |
+| `terrain25d-configure-mesh` | 27 params: bevel, middle, erosion, snow, mesh properties, 3D collider |
+| `terrain25d-generate` | Trigger mesh + optional collider/foliage generation |
+| `bridge25d-query` | Full bridge state: physics, prefabs, parts, edges, proximity |
+| `bridge25d-configure` | 19 params: physics, damage, visuals, broken-state physics |
+| `bridge25d-control` | Actions: recreate, break, physics-on/off, add/remove proximity |
+
+**MCP audit:** All prior candidate tool groups (37) already built. 2.5D Looping rated Low (no tools). Mega Cute Pet Zoo and Ghost Shaders PRO are art/shader assets (no tools needed).
+
+**Package:** `com.tecvoodoo.mcp-tools` v1.5.0, ~184 tools across 39 groups. MCP plugin v0.63.2.
+
+---
+
+## Session 62 (Mar 30, 2026) -- BD Pro 3 Upgrade + TMCP Fix
+
+**Status:** Behavior Designer Pro 2 removed, Pro 3.0.0 installed. TMCP tools updated for BD3 API. Asmdef crash bug fixed.
+
+**Behavior Designer Pro 3 upgrade:**
+- BD Pro 2.1.12 removed, BD Pro 3.0.0 installed via UPM (`com.opsive.behaviordesigner`).
+- DOTS-powered: behavior trees run on ECS entities. MonoBehaviour API backward compatible with v2.
+
+**TMCP BD tool updates (5 tools, was 4):**
+- `bd-control` -- added `pause`/`unpause`/`resume` actions
+- `bd-query` -- added UpdateMode, runtime state queries
+- `bd-tick` -- NEW: manual tick for Manual update mode trees
+- BD asmdef crash bug fixed (converted to `#if HAS_BEHAVIOR_DESIGNER` pattern)
 
 ---
 

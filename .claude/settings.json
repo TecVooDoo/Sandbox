@@ -1,5 +1,10 @@
 {
   "permissions": {
+    "allow": [
+      "mcp__blender__get_scene_info",
+      "mcp__blender__execute_blender_code",
+      "mcp__blender__get_viewport_screenshot"
+    ],
     "additionalDirectories": [
       "C:\\Users\\steph\\.claude",
       "E:\\Unity\\HookedOnKharon\\.claude",
@@ -7,7 +12,9 @@
       "E:\\Unity\\FearSteez\\.vscode",
       "E:\\Unity\\AudioProject\\.claude",
       "E:\\Unity\\SpaceSucks\\.claude",
-      "E:\\Unity\\AnimationProject\\.vscode"
+      "E:\\Unity\\AnimationProject\\.vscode",
+      "E:\\Unity\\AQuokkaStory\\.claude",
+      "E:\\Unity\\AQuokkaStory\\.vscode"
     ]
   }
 }

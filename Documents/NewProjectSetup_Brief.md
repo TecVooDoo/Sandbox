@@ -1,7 +1,7 @@
 # New Project Setup Brief
 
 **Purpose:** Standard setup checklist for any new TecVooDoo Unity project.
-**Last Updated:** March 28, 2026
+**Last Updated:** April 1, 2026 (default package list reevaluated)
 
 ---
 
@@ -78,30 +78,53 @@ Add this to `Packages/manifest.json` under `scopedRegistries` (or verify it exis
 
 Path assumes project is at `E:\Unity\<ProjectName>`. Adjust `../../` depth if project is nested differently (e.g., VNPC is at `E:\Unity\VNPC\VisualNovelPointClick` -- needs `../../../`).
 
-### Phase 3: Animation Tools (install BEFORE 3D art assets)
+### Phase 3: Default Asset Store Packages
+
+These 15 packages are used consistently across all TecVooDoo projects. Install in every new project.
+
+**Prerequisites first:** Addressables before Master Audio 2024. TextMesh Pro before DOTween Pro.
+
+| Package | Version | Notes |
+|---------|---------|-------|
+| Odin Inspector and Serializer | 4.0.1.4 | **Never remove once installed.** Cascading errors. |
+| DOTween Pro | 1.0.410 | Requires TextMesh Pro |
+| Easy Save 3 | 3.5.25 | Save/load |
+| Master Audio 2024 | 1.0.4 | Requires Addressables |
+| ALINE | 1.7.9 | Debug visualization |
+| Flexalon Pro | 4.4.0 | 3D & UI layouts |
+| Text Animator | 3.5.0 | UI Toolkit + TMP text effects |
+| Asset Inventory 4 | 4.1.1 | Asset management |
+| vHierarchy 2 | 2.1.8 | Editor QoL |
+| vFolders 2 | 2.1.14 | Editor QoL |
+| vFavorites 2 | 2.0.14 | Editor QoL |
+| Wingman | 1.3.0 | Inspector tool |
+| Ultimate Preview Window Pro | 1.3.2 | Editor preview |
+| Audio Preview Tool | 1.1.0 | Audio preview |
+| Markdown for Unity | 1.0.0 | Markdown rendering |
+
+### Phase 4: Animation Tools (install BEFORE 3D art assets)
+
+Only install if the project uses 3D art with FBX files.
 
 | Package | Why Before Art |
 |---------|----------------|
 | Animancer Pro | Catalogs every .fbx on first import -- very slow with large art libraries |
 | More Mountains engines (Corgi, TopDown, etc.) | Same FBX catalog scan. **Feel does NOT trigger this** |
 
-### Phase 4: Standard Game Packages (any order within this phase)
+### Phase 5: Project-Specific Packages
 
-| Package | Version | Notes |
-|---------|---------|-------|
-| Cinemachine | 3.1.5+ | Unity 6 package |
-| Input System | 1.18.0+ | New Input System, not legacy |
-| AI Navigation | 2.0.12+ | NavMesh |
-| Splines | 2.8.2+ | Path/track authoring |
-| ProBuilder | 6.x | Level blockout |
-| DOTween Pro | 1.0.410+ | Requires TextMesh Pro |
-| Master Audio 2024 | 1.0.3+ | Requires Addressables |
+Install only what the specific project needs. These are NOT defaults.
 
-### Phase 5: Specialized (as needed per project)
+**Gameplay / Combat:** Feel, Damage Numbers Pro, EasyPooling 2025, Boing Kit, RayFire 2, Rope Toolkit
+**Character / Animation:** Final IK, Malbers AC (Horse Animset Pro), Ragdoll Animator 2, Retarget Pro
+**AI / Navigation:** Behavior Designer Pro, SensorToolkit2, A* Pathfinding Pro
+**Audio:** Koreographer Pro
+**Shaders / VFX:** Toon Kit 2, Outlines Post-Process, Advanced Dissolve, Buto, Weather Maker
+**UI:** Kamgam UI Toolkit suite, Flow UI Toolkit Extended, Inventory Framework 2
+**Dialogue:** Dialogue System for Unity
+**2.5D:** Kamgam 2.5D Terrain, Bridge Builder, Looping
 
-Feel, Final IK, RayFire, Odin Inspector, Damage Numbers Pro, ALINE, Koreographer Pro, Rope Toolkit, Behavior Designer, Sensor Toolkit, A* Pathfinding, Malbers AC, etc.
-
-**Odin Inspector warning:** Once installed, NEVER remove from the project. Causes cascading errors.
+See `Sandbox_AssetLog.md` (315+ entries) for full eval details on any package.
 
 ---
 
@@ -274,8 +297,9 @@ Document project-specific rules in that project's `DevReference.md`.
 - [ ] OpenUPM scoped registry added to manifest.json
 - [ ] Phase 1 prerequisites installed (Addressables, TextMesh Pro)
 - [ ] Phase 2 core packages installed (UniTask, TecVooDoo packages, MCP)
-- [ ] Phase 3 animation tools installed (if using 3D art)
-- [ ] Phase 4+ game packages installed as needed
+- [ ] Phase 3 default Asset Store packages installed (15 packages)
+- [ ] Phase 4 animation tools installed (if using 3D art -- BEFORE importing FBX)
+- [ ] Phase 5 project-specific packages installed as needed
 - [ ] MCP configured (see MCP_ConnectionBrief.md)
 - [ ] GitHub repo created
 - [ ] Documents folder created with Status, DevReference, CodeReference, GDD stubs

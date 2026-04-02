@@ -8,6 +8,13 @@
         "authorization=none"
       ],
       "command": "E:/Unity/Sandbox/Library/mcp-server/win-x64/unity-mcp-server.exe"
+    },
+    "blender": {
+      "command": "cmd",
+      "args": ["/c", "uvx", "blender-mcp"],
+      "env": {
+        "DISABLE_TELEMETRY": "true"
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
 
 **Purpose:** Track every asset, package, and technique evaluated in Sandbox. This is the primary document for the project.
 
-**Last Updated:** March 16, 2026 (AQS Session 7 -- merged 4 Sandbox2D evals)
+**Last Updated:** March 31, 2026 (Session 63 -- Kamgam 2.5D trilogy + Mega Cute Pet Zoo + Ghost Shaders PRO)
 
 > **NOTE:** This document was reconstructed on Feb 23, 2026 after the Sandbox project became corrupt and the Documents folder was lost. The summary table (all 135 entries) has been fully recovered from session context. Detailed ENTRY blocks for entries 001-115 are pending recovery from session JSONL at `C:\Users\steph\.claude\projects\e--Unity-Sandbox\99250266-b660-4ea0-88f0-61e5b98f52e1.jsonl`. Entries 116-135 (Session 35 UI Toolkit batch) are summarized in the session transcript.
 
@@ -323,7 +323,7 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 226 | Flexalon 3D Layouts 4.4.1 (Virtual Maker) | Asset Store | Scripting (3D + UI Layout System) | Approved | Recommended | 2026-02-28 |
 | 227 | Aline 1.7.9 (Aron Granberg) | Packages/ UPM | Editor Tool (In-Game Debug Drawing / Gizmos) | Approved | Default | 2026-02-28 |
 | 228 | Photon PUN 2+ 2.5.2 (Exit Games) | Asset Store | Scripting (Online Multiplayer Networking SDK) | Approved | Recommended | 2026-02-28 |
-| 229 | Behavior Designer Pro 2.1.12 (Opsive) | Packages/ UPM | AI (DOTS-Based Behavior Tree System) | Approved | Recommended | 2026-02-28 |
+| 229 | Behavior Designer Pro 3.0.0 (Opsive) | Packages/ UPM | AI (DOTS-Based Behavior Tree System) | Approved | Recommended | 2026-03-30 |
 | 230 | Senses Pack for Behavior Designer 1.0.3 (Opsive) | Asset Store | AI (Sensory Perception Add-On for BD) | Conditional | -- | 2026-02-28 |
 | 231 | SensorToolkit2 2.5.17 (Micosmo Games) | Asset Store | AI (Detection Sensors + Velocity Obstacle Steering) | Approved | Recommended | 2026-02-28 |
 | 232 | Interactor 0.999b (Nega Games) | Asset Store | Scripting (Full-Body IK Interaction System) | Conditional | -- | 2026-02-28 |
@@ -405,6 +405,11 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 308 | Projectile Factory 1.1.2 (InfinityPBR / Magic Pig Games) | Asset Store | VFX (Projectile System for Polygon Arsenal) | Approved | -- | 2026-03-26 |
 | 309 | Effect Collection Megapack 9 + Vol2 (CartoonVFX9x) | Asset Store | VFX (Stylized Particle FX Bundle) | Conditional | -- | 2026-03-26 |
 | 310 | 2D Trail Effect 2.0 (The Black Cat) | Asset Store | VFX (Ghost Trail Spawner) | Conditional | -- | 2026-03-26 |
+| 311 | 2.5D Terrain 2.2.1 (Kamgam) | Asset Store | Tools (2.5D Level Generation) | Approved | Environment | 2026-03-31 |
+| 312 | 2.5D Bridge Builder 1.1.0 (Kamgam) | Asset Store | Tools (2.5D Destructible Bridge) | Approved | -- | 2026-03-31 |
+| 313 | 2.5D Looping 1.2.0 (Kamgam) | Asset Store | Tools (2.5D Loop/Depth System) | Conditional | -- | 2026-03-31 |
+| 314 | Mega Cute Pet Zoo 3.3 (Suriyun) | Asset Store | Art (3D Animals + AI Controller) | Approved | Art, Low Poly, Character | 2026-03-31 |
+| 315 | Ghost and Shaders PRO 1.0 (SR Studios) | Asset Store | Shader / Art (Ghost Effect System) | Approved | Shader, VFX | 2026-03-31 |
 
 ---
 
@@ -6215,25 +6220,25 @@ After evaluating 11 Chris West assets (136-145 + 096), here's how they relate to
 
 ---
 
-## ENTRY-229: Behavior Designer Pro 2.1.12 (Opsive)
+## ENTRY-229: Behavior Designer Pro 3.0.0 (Opsive)
 
 | Field | Value |
 |-------|-------|
 | **Asset** | Behavior Designer Pro |
 | **Publisher** | Opsive |
-| **Source** | Packages/ UPM (`com.opsive.behaviordesigner`) + `Assets/Opsive/BehaviorDesigner/` |
-| **Version** | 2.1.12 |
+| **Source** | Packages/ UPM (`com.opsive.behaviordesigner`) |
+| **Version** | 3.0.0 (upgraded from 2.1.12, Mar 30 2026) |
 | **Price** | Paid |
 | **Category** | AI / Behavior Trees |
-| **Session** | 43 |
+| **Session** | 43 (upgraded Session 62) |
 | **Verdict** | Approved |
 | **Label** | Recommended |
 
-**What It Is:** Visual behavior tree editor and runtime for Unity. Drag-and-drop tree authoring, 16 demo scenes, full DOTS/ECS support (unique to BD Pro vs classic BD). Provides the task library, graph editor, variable system, and event bus for authoring arbitrarily complex NPC AI without writing a state machine by hand.
+**What It Is:** Visual behavior tree editor and runtime for Unity. DOTS-powered (v3.0.0+): behavior trees run on ECS entities via `World`/`Entity` integration. Drag-and-drop tree authoring, full DOTS/ECS support, MonoBehaviour API backward compatible with v2. Provides the task library, graph editor, variable system, and event bus for authoring arbitrarily complex NPC AI without writing a state machine by hand.
 
-**Package:** `Packages/com.opsive.behaviordesigner/` + `Assets/Opsive/BehaviorDesigner/Add-Ons/`
+**Package:** `Packages/com.opsive.behaviordesigner/`
 
-**Scale:** 262 C# scripts combined (222 UPM + 40 add-on assets). 4 asmdefs. 16 demo scenes (MeleeCombat, HideAndSeek, Events, TurnBased, Entities/ECS, Subtrees, UtilityTheory, etc.).
+**Scale:** UPM package with Runtime + Editor + Samples. Dependencies: `com.opsive.shared` (v2.0.0), `com.opsive.graphdesigner` (v2.0.0), `com.unity.burst` (v1.8.17+), `com.unity.entities` (v1.3.8+).
 
 **Core Task Types:**
 - `Sequence` -- run children left-to-right; fails on first failure (AND logic)
@@ -9987,6 +9992,8 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 | Adventure Creator | ENTRY-251 | Built | 5 tools: ac-query-managers, ac-list-actions, ac-list-inventory, ac-list-variables, ac-find-scene-objects. `MCPTools.AdventureCreator.Editor` |
 | Text Animator | ENTRY-117 | Built | 4 tools: ta-list-effects, ta-find-components, ta-get-settings, ta-list-databases. `MCPTools.TextAnimator.Editor` |
 | Ink Integration | ENTRY-281 | Built | 3 tools: ink-list-files, ink-compile, ink-get-story-info. `MCPTools.InkIntegration.Editor` |
+| 2.5D Terrain (Kamgam) | ENTRY-311 | Built | 3 tools: terrain25d-query, terrain25d-configure-mesh, terrain25d-generate. `#if HAS_TERRAIN25D` |
+| 2.5D Bridge Builder (Kamgam) | ENTRY-312 | Built | 4 tools: bridge25d-query, bridge25d-configure, bridge25d-control. `#if HAS_BRIDGEBUILDER25D` |
 
 ### MCP Controllability Evaluated -- Audio (AudioProject Sessions 6 + 8)
 
@@ -10076,7 +10083,7 @@ Full scan of remaining installed Sandbox assets not previously evaluated for MCP
 | Asset | ENTRY | Rating | Key API Pattern | Notes |
 |-------|-------|--------|-----------------|-------|
 | DOTween Pro 1.2.765 | ENTRY-111 | **Medium-High** | `DG.Tweening.DOTweenAnimation` component (public fields: animationType, endValueV3/Float/Color, duration, delay, easeType, loops, loopType, id, autoPlay, isRelative). Methods: `DOPlay()`, `DOPause()`, `DORewind()`, `DORestart()`, `DOComplete()`, `DOKill()`, `CreateTween()`, `RecreateTweenAndPlay()`. Global: `DOTween.KillAll()`, `DOTween.PauseAll()`, `DOTween.CompleteAll()`. | **Candidate -- 4 tools.** The DOTweenAnimation component is the key MCP surface: all tween params (animationType, endValue, ease, loops, delay) are public fields on a MonoBehaviour. Setting up a tween via `component-modify` requires 8-10 separate calls; a dedicated `dotween-add-animation` tool collapses this to one. The fluent code-based API (extension methods, sequences) is better via `script-execute`. Rating rationale: component setup wins for MCP, runtime control is runtime-only, sequences stay code-side. Proposed: `dotween-query`, `dotween-add-animation`, `dotween-play`, `dotween-global`. Assembly: `DG.Tweening` namespace. DLL-based: `Plugins/Demigiant/DOTween/DOTween.dll` + `Plugins/Demigiant/DOTweenPro/DOTweenPro.dll`. Must reference both assemblies in asmdef. |
-| Behavior Designer Pro 2.1.12 | ENTRY-229 | **Medium-High** | Core runtime is DLL-based: `Opsive.BehaviorDesigner.Runtime.dll`. Key component: `BehaviorTree` MonoBehaviour. SharedVariable system: `SharedVariable<T>` (bool, float, int, string, Vector3, GameObject, Transform). Task base classes: `Task`, `Action`, `Conditional` with `OnAwake()`, `OnUpdate()` returning `TaskStatus` (Success/Failure/Running). BehaviorTree events: `OnBehaviorTreeTriggerEnter/Exit`. Trees are loaded as assets, not constructed programmatically. | **Candidate -- 4 tools.** The BehaviorTree component exposes runtime control (enable/disable, restart) and the SharedVariable system is the main MCP surface -- read/write named variables on running trees without opening the graph editor. Querying tree state (active task, running status, variable values) is high-value for debugging. Dynamic tree construction is sealed in DLL (no programmatic node creation). Proposed: `bd-query` (tree state + variables + active task), `bd-set-variable` (write SharedVariable by name/type), `bd-control` (enable/disable/restart tree), `bd-list-trees` (all BehaviorTree components in scene). Assembly: `Opsive.BehaviorDesigner.Runtime` namespace. UPM package at `Packages/com.opsive.behaviordesigner/`. Depends on `com.opsive.shared`, `com.opsive.graphdesigner`. |
+| Behavior Designer Pro 3.0.0 | ENTRY-229 | **Medium-High** | UPM package: `com.opsive.behaviordesigner`. Key component: `BehaviorTree` MonoBehaviour. MonoBehaviour API backward compatible with v2. SharedVariable system: `SharedVariable<T>` (bool, float, int, string, Vector3, GameObject, Transform). Task base classes: `Task`, `Action`, `Conditional` with `OnAwake()`, `OnUpdate()` returning `TaskStatus` (Inactive/Queued/Running/Success/Failure). BD3 additions: `StopBehavior(bool pause)`, `RestartBehavior()` returns bool, `Status`/`IsActive()`/`IsRunning()`/`IsPaused()` state queries, `UpdateMode` (EveryFrame/Manual), `Tick()` for manual update, `World`/`Entity` ECS integration. | **Built -- 5 tools (updated from 4).** `bd-query` (tree state + config + variables + runtime state), `bd-set-variable` (read/write SharedVariable by name/type), `bd-control` (start/stop/pause/unpause/restart tree), `bd-list-trees` (all BehaviorTree components in scene), `bd-tick` (manual tick for Manual update mode). Tools use `#if HAS_BEHAVIOR_DESIGNER` guard pattern (no asmdef -- fixed crash-on-uninstall bug). Assembly: `Opsive.BehaviorDesigner.Runtime`. Depends on `com.opsive.shared`, `com.opsive.graphdesigner`, `com.unity.burst`, `com.unity.entities`. |
 | SensorToolkit 2 2.5.17 | ENTRY-231 | **High** | Source-based, namespace `Micosmo.SensorToolkit`. Assembly: `Micosmo.SensorToolkit`. 14 sensor types: RangeSensor (sphere/box/capsule overlap), RaySensor (ray/sphere/box/capsule cast), ArcSensor (bezier/ballistic curve), TriggerSensor, LOSSensor (line-of-sight with angle/distance limits), SteeringSensor (context-based steering with seek/interest/danger/VO), NavMeshSensor, BooleanSensor, UserSignals, plus 2D variants. All fields public. Rich query API: `GetNearestDetection()`, `GetStrongestSignal()`, `GetDetectionsByDistance()`, `GetDetectedComponents<T>()`. Signal pipeline: raw detections -> SignalProcessors -> filtered output. PulseRoutine scheduling (Manual/FixedInterval/EachFrame). SignalFilter (IgnoreList, tag whitelist). | **Candidate -- 5 tools.** Excellent MCP surface. All sensor params are public fields on MonoBehaviours. Configuring a RangeSensor (shape, radius, layers, pulse mode, detection mode) requires 6+ `component-modify` calls; a dedicated tool collapses this. The query API (nearest/strongest/by-distance) is very useful for debugging AI setups. Steering sensor config (seek targets, interest/danger sensors) is complex multi-field setup. Proposed: `sensor-add-range` (add+configure RangeSensor/RaySensor shape, layers, pulse), `sensor-add-los` (add+configure LOSSensor with angle/distance/visibility), `sensor-configure-steering` (seek target, interest/danger sensor assignment, locomotion), `sensor-query` (list sensors on GO, current detections, obstruction state), `sensor-query-detections` (runtime: nearest/strongest/by-tag filtered results). Source at `Assets/SensorToolkit/Sensors/`. |
 | Senses Pack for BD 1.0.3 | ENTRY-230 | **Low** | Add-on for Behavior Designer Pro. 5 simulated senses as BD task nodes: Vision, Hearing, Smell, Temperature, Touch. Source at `Assets/Opsive/BehaviorDesigner/Add-Ons/SensesPack/Scripts/Tasks/`. Tasks use `SharedVariable<T>` for config (detection range, FOV, decay rates). Sensor implementations in `Scripts/Sensors/`. Assembly: `Opsive.BehaviorDesigner.AddOns.SensesPack.Runtime`. | **Not a candidate.** These are behavior tree task nodes, not standalone MonoBehaviour components. Configuration happens inside the BD graph editor (task inspector), not as scene components. MCP can't inject or modify tasks inside a serialized behavior tree asset. The BD SharedVariable tools (proposed above) cover reading/writing the variable values these tasks use at runtime. No dedicated tools needed. |
 | Master Audio 2024 | ENTRY-103 | **High** | Source-based, namespace `DarkTonic.MasterAudio`, no asmdef (Assembly-CSharp). 77 scripts, 10,650-line singleton `MasterAudio.cs`. ~150 static methods with string-based lookup (group name, bus name, playlist name). Key API surfaces: **Playback** (`PlaySound`, `PlaySound3DAtTransform`, `PlaySoundAndForget` + volume/pitch/delay params, returns `PlaySoundResult`), **Group control** (`SetGroupVolume`, `FadeSoundGroupToVolume`, `MuteGroup`, `SoloGroup`, `PauseSoundGroup`, `StopAllOfSound`, `GlideSoundGroupByPitch`), **Bus control** (`SetBusVolumeByName`, `FadeBusToVolume`, `MuteBus`, `SoloBus`, `StopBus`, `PauseBus`, `ChangeBusPitch`), **Playlist** (`PlayPlaylist`, `PlayNextSong`, `PlayRandomSong`, `StopPlaylist`, `FadePlaylistToVolume`, `ChangePlaylistByName`, `QueuePlaylistClip`, `TriggerPlaylistClip`), **Ducking** (`AddSoundGroupToDuckList`, `RemoveSoundGroupFromDuckList`), **RTPC** (`UpdateRealTimeParameter`, `InvokeParameterCommand`), **Custom events** (`FireCustomEvent`, `CreateCustomEvent`), **Global** (`MasterVolumeLevel`, `MuteEverything`, `PlaylistMasterVolume`). Query: `RuntimeSoundGroupNames`, `RuntimeBusNames`, `IsSoundGroupPlaying`, `GetAllPlayingVariations`. `PlaylistController` instance API: `StartPlaylist`, `ChangePlaylist`, `PlayNextSong`, `FadeToVolume`, ducking, events (`SongChanged`, `SongEnded`). | **Candidate -- 6 tools.** Installed in ALL projects (Default label). The static API maps perfectly to MCP -- every call is a string-keyed one-liner. `script-execute` works but requires exact method signatures; dedicated tools with named params and validation are far more ergonomic. Most operations are runtime (play mode) but group/bus config can be modified in edit mode via component hierarchy. Proposed: `ma-query` (list all groups, buses, playlists, playing variations, master volume, mute state), `ma-play` (PlaySound/PlaySound3D with group name, volume, pitch, delay, position/transform), `ma-group-control` (group volume/fade/mute/solo/pause/stop by name), `ma-bus-control` (bus volume/fade/mute/solo/pause/stop/pitch by name), `ma-playlist` (play/stop/next/prev/random/queue/fade/change playlist by controller name), `ma-configure-ducking` (add/remove groups from duck list, set duckedVolCut/unduckTime/riseVolStart). RTPC and custom events are adequately served by `script-execute` (single static call each). No asmdef -- tools would use `#if HAS_MASTERAUDIO` guard pattern like Feel/RopeToolkit. Detection type for MCPToolsDefineManager: `DarkTonic.MasterAudio.MasterAudio, Assembly-CSharp`. |
@@ -10276,6 +10283,391 @@ Tracks utilities identified as candidates for `com.tecvoodoo.utilities`. "Not li
 **HOK Relevance:** LOW-MEDIUM. The ghost trail concept is appealing for Acheron shadow-fish (afterimages trailing behind as they swim) and Lethe fish (fading memories). However, adapting it for 3D animated fish requires custom work. The easing system is reusable. The concept is more valuable than the implementation -- better to write a custom 3D ghost trail script inspired by this approach.
 
 **Verdict Rationale:** Conditional. The 2D focus limits direct applicability to HOK's 3D fish. The ghost trail concept is excellent for underworld aesthetics but would need a custom 3D implementation. Keep installed as reference/inspiration. For production use, write a `FishGhostTrail` script that spawns fading mesh copies behind swimming fish, using this asset's easing system as a reference.
+
+---
+
+## ENTRY-311: 2.5D Terrain 2.2.1 (Kamgam)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | 2.5D Terrain |
+| **Version** | 2.2.1 |
+| **Developer** | Kamgam (kamgam.com) |
+| **Source** | Asset Store (`Assets/2.5D Terrain/`) |
+| **Primary Label** | -- |
+| **Secondary Label** | Environment |
+| **Verdict** | **Approved** |
+| **Date** | 2026-03-31 |
+| **Session** | 63 |
+
+**What It Is:** Spline-based 2.5D terrain generation tool. Define terrain profiles with Bezier splines in 2D, generates full 3D meshes with front/back bevels, middle segments, 2D polygon colliders, and foliage scattering. All generation happens in the editor -- no runtime overhead.
+
+**Architecture:**
+
+- ~78 scripts (runtime + editor), 1 asmdef (`Terrain25DLib`)
+- Namespace: `Kamgam.Terrain25DLib`
+- Install path: `Assets/2.5D Terrain/`
+- **Bundled libraries:** Poly2Tri (triangulation), ClipperLib (polygon offset/clipping), CurveShorteningFlow (erosion), FarseerUnity/BayazitDecomposer (convex decomposition), PolygonMesh2D
+- Pipeline: URP, HDRP, Built-in (shader packages provided as .unitypackage)
+- PDF manual: `2.5DTerrainManual.pdf` (11.4 MB)
+
+**Core Components:**
+
+| Component | Role |
+|-----------|------|
+| `Terrain25D` | Root MonoBehaviour. Lazy-caches child generators via `GetComponentInChildren`. Facade for adding SplineController, MeshGenerator, Collider2DGenerator, FoliageGenerator. |
+| `SplineController` | Manages Bezier splines (shape + hole curves). `CombineAndRememberInfo()` merges splines into polygon data for mesh/collider generators. |
+| `MeshGenerator` | `partial class`. Creates front/back bevel meshes via ClipperLib offset. Configurable: bevel width/scale/divisions/type (Circular/Linear), middle segment width/UV projection, smooth normals, mesh combining. Events: `OnPreMeshGeneration`, `OnPostMeshGenerated`. |
+| `Collider2DGenerator` | Generates `PolygonCollider2D` from spline shapes. Supports shapes + holes as separate collider paths. |
+| `Collider3DGenerator` | Alternative 3D collider generation. |
+| `FoliageGenerator` | Raycast-based foliage scattering on generated terrain surface. Configurable start/end percentage, generator sets with density/prefab settings. Works standalone or coupled to MeshGenerator for auto-width calculation. |
+
+**Code Quality:**
+
+- Clean namespace isolation, proper asmdef
+- Lazy-cached component lookups (no per-frame allocation)
+- `MeshGenerator` is `partial` -- extensible without modifying core file
+- Events for pre/post mesh generation hooks
+- Uses `System.Linq` in MeshGenerator (editor-time only, acceptable)
+- `var` used throughout (Kamgam style, not our convention but read-only asset)
+- No runtime Update/FixedUpdate -- all generation is editor-time or on-demand
+
+**Demo Scenes (4):**
+- `2.5D Terrain Demo.unity` -- main showcase
+- `Example.unity` -- Bezier splines standalone
+- `2.5D Terrain Shape Test.unity` -- shape/hole combinations
+- `2.5D Terrain Foliage Test.unity` -- foliage scattering
+
+**MCP Compatibility:** HIGH. All generation is method-call-driven:
+- `Terrain25D.AddSplineController()`, `AddMeshGenerator()`, `AddCollider2DGenerator()`, `AddFoliageGenerator()` -- create child generators
+- `MeshGenerator` fields are all serialized public -- configurable via `gameobject-component-modify`
+- `SplineController` Bezier points are child GameObjects with `BezierPoint` components -- position/handle manipulation via transform tools
+- Full generation pipeline callable via `script-execute`
+
+**Integration with other Kamgam assets:** Designed as ecosystem. 2.5D Looping (313) and Bridge Builder (312) both include demo scenes integrating with this terrain. Shared Bezier spline code (independently duplicated per asset, not a shared dependency).
+
+**Concerns:**
+- Bundled third-party libraries (ClipperLib, Poly2Tri, Farseer) add ~15 scripts. No namespace collisions observed but watch for duplicates if other assets bundle the same libraries.
+- `MeshGenerator` uses `System.Linq` -- acceptable since editor-only, but flagged per convention.
+- No runtime generation API -- designed for editor-time level building. Runtime procedural terrain would require wrapping the generation calls.
+
+**Project Relevance:**
+- **AQS:** VERY HIGH. 2.5D Metroidvania is the exact target genre. Spline-driven terrain for cave systems, surface terrain, swim zones. Foliage scattering for biome variety. 2D colliders match AQS's 2.5D physics setup.
+- **FearSteez:** HIGH. 2.5D beat 'em up levels. Terrain shapes for street/alley environments with depth variation.
+- **HOK:** NONE. 3D fishing sim, no 2.5D terrain needs.
+- **Any 2.5D side-scroller/platformer:** HIGH. Purpose-built for this genre.
+
+**Verdict Rationale:** Approved with **Environment** secondary label. Solid spline-to-mesh pipeline with beveled terrain generation, proper collider output, and foliage scattering. The bundled algorithmic libraries (ClipperLib, Poly2Tri) handle the hard geometry problems correctly. Clean architecture with events for extensibility. Excellent MCP compatibility -- every step is scriptable. The Kamgam 2.5D ecosystem (Terrain + Bridge + Looping) provides a complete 2.5D level-building toolkit. Primary value is for AQS and FearSteez.
+
+---
+
+## ENTRY-312: 2.5D Bridge Builder 1.1.0 (Kamgam)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | 2.5D Bridge Builder |
+| **Version** | 1.1.0 |
+| **Developer** | Kamgam (kamgam.com) |
+| **Source** | Asset Store (`Assets/BridgeBuilder2.5D/`) |
+| **Primary Label** | -- |
+| **Secondary Label** | -- |
+| **Verdict** | **Approved** |
+| **Date** | 2026-03-31 |
+| **Session** | 63 |
+
+**What It Is:** Spline-based destructible rope bridge system for 2.5D games. Define bridge path with a Bezier spline, auto-generates physics-connected planks with HingeJoint2D + SpringJoint2D. Supports damage-based breaking, proximity activation, checkpoint/reset, and rope edge parts.
+
+**Architecture:**
+
+- ~25 scripts (runtime + editor)
+- Namespace: `Kamgam.BridgeBuilder25D`
+- Install path: `Assets/BridgeBuilder2.5D/`
+- Bundled: BezierSplines library (same code as Terrain, independently duplicated)
+- PDF manual: `BridgeBuilder2.5DManual.pdf` (452 KB)
+
+**Core Component -- `Bridge25D` (MonoBehaviour, 717 LOC):**
+
+| System | Details |
+|--------|---------|
+| **Creation** | `Create(BezierSpline, forceRebuild)` -- segments spline into plank positions, instantiates `BridgePartPrefab` GameObjects, wires `HingeJoint2D` chain + `SpringJoint2D` stability springs. `AutoCreate` for editor-time preview. |
+| **Physics** | `Rigidbody2D` per plank. Configurable: Mass, LinearDrag, GravityScale, SpringDampingRatio, SpringFrequency, AddSpringJointsEvery. `StartAwake` or sleep-until-proximity. |
+| **Breaking** | `BreakAt(Vector3)` or `BreakAt(float t)`. Finds closest plank, disables its hinge, sets broken mass/drag, changes layer, fires `OnBreak` event + `OnBreakEvent` UnityEvent. Disables rope edges on break. |
+| **Damage** | `DamageReceiver` component per plank. `damageTilBreak` threshold. Accumulates damage, breaks at threshold. Supports breaking multiple parts. |
+| **Proximity** | `ProximityTrigger` (CircleCollider2D trigger) wakes sleeping planks when player enters range. Configurable margin. |
+| **Edge Parts** | `IBridge25DEdgePart` interface for rope/pillar endpoints. `Bridge25DEdgePartWithRope` implementation. Edge parts update position based on bridge state and break events. |
+| **Checkpoint/Reset** | `OnCheckpointReached()` memorizes broken state. `ResetState(restartFromBeginning)` recreates bridge and optionally re-breaks at checkpoint position. |
+| **Runtime** | `FixedUpdate` -- detects transform movement, updates joint anchors. `LateUpdate` -- updates edge visuals, processes accumulated damage. |
+
+**Code Quality:**
+
+- Clean namespace, interface-driven edge parts (`IBridge25DEdgePart`)
+- Uses Unity 6 API correctly (`linearDamping` not deprecated `drag`, `linearVelocity` not `velocity`)
+- Smart null-safe patterns (edge part lazy lookup, parts list cleanup)
+- `Utils.SmartDestroy` handles edit-mode vs play-mode destruction
+- `var` throughout (Kamgam convention)
+- Minor: `UnityEditor` imported in runtime script (guarded by `#if UNITY_EDITOR` in usage) -- same pattern as Easy Build System (ENTRY-264). Low risk since only used in `Create()` log statements.
+- Some LINQ-style extension methods (`RemoveNullValues`, `IsFirstOf`, `IsLastOf`) in helpers -- editor/setup-time only.
+
+**Demo Scenes (2):**
+- `Demo.unity` -- standalone bridge with damage/break
+- `DemoWithTerrain.unity` -- bridge integrated with 2.5D Terrain
+
+**MCP Compatibility:** HIGH.
+- `Bridge25D` has all serialized public fields -- configurable via `gameobject-component-modify` (Mass, LinearDrag, GravityScale, damageTilBreak, scale, etc.)
+- `Recreate()` / `Create()` callable via `script-execute`
+- Spline points are child GameObjects (BezierPoint components) -- manipulable via transform tools
+- `BreakAt(float t)` scriptable for testing destruction
+- Prefab assignment (`BridgePartPrefab`, `BridgeEdgePartPrefab`) via component-modify
+
+**Concerns:**
+- 2D physics only (Rigidbody2D, HingeJoint2D, SpringJoint2D) -- cannot be used for 3D bridge physics
+- Duplicated BezierSpline library (same code as Terrain asset). If both installed, no collision (separate namespaces: `Kamgam.BridgeBuilder25D` vs `Kamgam.Terrain25DLib`), but two copies of the same spline code exist in the project
+- `FixedUpdate` runs every frame even when bridge is static (checks `SqrMagnitude` delta). Minor -- single sqrMagnitude comparison is negligible.
+
+**Project Relevance:**
+- **AQS:** HIGH. Metroidvania platformer -- destructible rope bridges are a genre staple. Damage system works with projectile/enemy mechanics. Checkpoint/reset supports respawn flow.
+- **FearSteez:** MEDIUM. Beat 'em up could use breakable bridges as environmental hazards. 2D physics fits the 2.5D gameplay.
+- **HOK:** NONE. 3D fishing sim, no bridge mechanics.
+
+**Verdict Rationale:** Approved. Well-architected destructible bridge system with proper physics chain (HingeJoint2D + SpringJoint2D), damage/break events, proximity activation for performance, and checkpoint/reset for game flow. Interface-driven edge parts allow custom bridge endpoint visuals. The 2D physics approach is correct for 2.5D games. Good MCP compatibility. Primary value for AQS platforming and environmental hazards.
+
+---
+
+## ENTRY-313: 2.5D Looping 1.2.0 (Kamgam)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | 2.5D Looping |
+| **Version** | 1.2.0 |
+| **Developer** | Kamgam (kamgam.com) |
+| **Source** | Asset Store (`Assets/2.5D Looping/`) |
+| **Primary Label** | -- |
+| **Secondary Label** | -- |
+| **Verdict** | **Conditional** |
+| **Date** | 2026-03-31 |
+| **Session** | 63 |
+
+**What It Is:** Z-depth management system for 2.5D looping level sections. When a character enters a looping area (think Sonic loops or figure-8 paths), this system controls the character's Z position based on their X/Y position relative to configurable Z-field points. Also handles collider switching for left-to-right vs right-to-left traversal of the loop.
+
+**Architecture:**
+
+- ~12 scripts (runtime + editor), 1 asmdef (`2.5DLooping`, references `Unity.InputSystem`)
+- Namespace: `Kamgam.Looping25D`
+- Install path: `Assets/2.5D Looping/`
+- PDF manual: `2.5DLoopingManual.pdf` (966 KB)
+
+**Core Component -- `Looping25D` (MonoBehaviour, 356 LOC):**
+
+| System | Details |
+|--------|---------|
+| **Z Control** | `ControlZPositionTriggerArea` (Trigger2D) detects `ILoopingReceiver` objects entering the loop zone. Calculates Z position from closest point on Z-field polylines (`ZFieldPointsInside` + `ZFieldPointsOutside`). Sets Z via `ILoopingReceiver.SetPositionZ()`. |
+| **Direction Switching** | Separate `PolygonCollider2D` for left-to-right and right-to-left paths. Four trigger zones (`LeftToRightColliderTriggerA/B`, `RightToLeftColliderTriggerA/B`) swap which collider is active based on traversal direction. |
+| **Z-Field Calculation** | `getZValue()` finds closest point on inside/outside polylines using `closestPointOnLine()`. The Z position of the closest point becomes the object's Z. Simple but effective -- handles curves and transitions smoothly. |
+| **Checkpoint/Reset** | `OnCheckpointReached()` memorizes collider state. `ResetState()` restores controlled objects to their initial Z and resets collider direction. |
+
+**Interface -- `ILoopingReceiver`:**
+```
+bool IsValid();
+Vector3 GetPosition();
+void SetPositionZ(float posZ);
+```
+Simple 3-method interface. Default implementation `LoopingReceiver` just sets `transform.position.z`. Custom implementations could drive Cinemachine dolly track position, shader depth, or sorting order instead.
+
+**Code Quality:**
+
+- Clean namespace, interface-driven receiver pattern
+- `Update()` iterates controlled objects list -- removes destroyed receivers, sets Z per-frame. List iteration with `RemoveAt` in reverse (correct pattern for removal during iteration).
+- Gizmo drawing for Z-field visualization (editor only, `#if UNITY_EDITOR` guarded)
+- `closestPointOnLine()` is a standard closest-point-on-segment calculation -- correct math, no allocation
+- `var` throughout (Kamgam convention)
+- `List<ControlledObject>` grows unbounded if many receivers enter simultaneously -- unlikely in practice for 2.5D (typically 1 player + maybe companions)
+
+**Demo Scene (1):**
+- `DemoWithTerrain.unity` -- looping section built on 2.5D Terrain, with camera controller
+
+**MCP Compatibility:** MEDIUM. The core component is trigger/collider-based setup -- most configuration is wiring up trigger references and placing Z-field point transforms in the scene. This is visual/spatial work that benefits more from manual Scene View placement than scripted setup. Z-field points are plain Transforms (child GameObjects) so they can be positioned via MCP, but getting the loop geometry right requires visual iteration.
+
+**Concerns:**
+- **Niche use case** -- only relevant for games with looping paths where the character needs to move in/out of the screen depth during a loop. This is a specific 2.5D platformer mechanic, not a general-purpose tool.
+- **Per-frame Update** -- iterates controlled objects every frame. Negligible for typical counts (1-5 objects) but not suitable for hundreds of controlled objects.
+- **Complex setup** -- requires 7+ trigger/collider references wired up correctly (ControlZPositionTriggerArea, 4 direction triggers, 2 path colliders, N z-field point transforms). Manual scene setup is significant.
+- **Tight coupling to 2D physics** -- PolygonCollider2D for path colliders, Trigger2D for detection. Cannot use 3D colliders.
+- **No asmdef protection** -- asmdef exists but references `Unity.InputSystem` (hard dependency). Projects without Input System installed would need to remove or modify the asmdef.
+
+**Project Relevance:**
+- **AQS:** MEDIUM. Could be used for looping cave paths or Sonic-style loop sections if the GDD calls for them. Not currently in the design.
+- **FearSteez:** LOW. Beat 'em up side-scrollers rarely have looping paths. Depth transitions in FearSteez are more about lane switching than Z-field interpolation.
+- **HOK:** NONE. 3D fishing sim.
+- **Any 2.5D platformer with loops:** HIGH if the mechanic is in the design.
+
+**Verdict Rationale:** Conditional. The Z-depth management and collider-switching system is well-implemented for its specific purpose, and the `ILoopingReceiver` interface is clean. However, this is a very niche mechanic -- looping paths with Z-depth transitions. The complex multi-trigger setup and tight 2D physics coupling limit flexibility. Import only when a project specifically needs looping path mechanics. The integration with 2.5D Terrain works well in the demo. Not labeled because the use case is too specific for a general recommendation.
+
+---
+
+## ENTRY-314: Mega Cute Pet Zoo 3.3 (Suriyun)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Mega Cute Pet Zoo |
+| **Version** | 3.3 |
+| **Developer** | Suriyun (suriyun.com) |
+| **Source** | Asset Store (`Assets/Suriyun/`) |
+| **Primary Label** | -- |
+| **Secondary Label** | Art, Low Poly, Character |
+| **Verdict** | **Approved** |
+| **Date** | 2026-03-31 |
+| **Session** | 63 |
+
+**What It Is:** Comprehensive low-poly cute animal art pack with NavMesh-based AI controller. Bundle of 5 sub-packs (Cute Zoo 1-4 + Cute Pet) plus an Addon-PetZoo system that adds AI behavior, animator controllers, and prefabs. Approximately 65 unique animal species across the collection.
+
+**Content Inventory:**
+
+| Category | Count |
+|----------|-------|
+| FBX Models | ~280 (including LOD/type variants) |
+| Prefabs | 191 (44 AI-enabled agent prefabs + 147 static zoo prefabs) |
+| Materials | 108 |
+| Animator Controllers | 49 |
+| Textures | 97 (up to 2048x2048) |
+| Scripts | 11 |
+| Demo Scenes | 6 |
+
+**Animal Species by Pack:**
+
+- **Cute Zoo 1 (10):** Bear, Elephant A/B, Hippo, Lion, Lioness, Rhino + variants
+- **Cute Zoo 2 (12):** Boar, Buffalo, Camel, Crocodile, Flamingo, Gorilla, Kangaroo, Monkey, Owl, Tiger, Turtle
+- **Cute Zoo 3 (14):** Bull, Chameleon, Fox, Koala, Leopard, Meerkat, Mule, Ostrich, Platypus, Porcupine, Raccoon, Skunk, Squirrel, Wolf
+- **Cute Zoo 4 (14):** Anteater, Armadillo, Bison, Chipmunk, Elk, Iguana, Malayan Tapir, Mole, Otter, Pangolin, Peacock, Possum, Red Panda, Sloth
+- **Cute Pet (15):** Cat, Cow, Dog, Pig, Rabbit, Sheep + Alpaca, Chick, Chicken, Duck variants
+
+**Art Style:** Low-poly cute/cartoony with toon shader (cel shading + outline). Consistent aesthetic across all packs. Each animal has texture variants (A/B types). Models are optimized for mobile/PC.
+
+**AI System -- `ControllerPetZoo` (127 LOC):**
+
+- Namespace: `Suriyun`
+- NavMeshAgent-based pathfinding
+- Mecanim state machine: Idle, Eat, Rest, Move, Jump
+- Tag-triggered behaviors: "Fence" -> jump, "Eat" -> eating state, "Rest" -> resting state
+- Cached animator parameter hashes (good practice)
+- Virtual methods throughout -- subclassable
+- `AgentLinkMover` handles OffMeshLink traversal (Teleport, NormalSpeed, Parabola jump modes)
+- `GameManager` handles spawning with preset configs (1x, 10x, 50x)
+
+**Code Quality:**
+
+- Clean namespace (`Suriyun`)
+- No asmdef (all scripts in Assembly-CSharp)
+- Animator hashes cached in `Start()` (correct pattern)
+- `transform_cached` optimization for frequent access
+- Simple coroutine-based jump physics (manual gravity in `JumpOverFence`)
+- `var` used but code is very simple -- 127 LOC total for the controller
+- No per-frame allocations
+- Minor: `using UnityEngine.AI` dependency (fine for NavMesh usage)
+
+**Concerns:**
+- No asmdef -- 11 scripts land in Assembly-CSharp
+- Toon shader dependency not included -- references external shader by GUID. May display pink if shader asset is missing.
+- Documentation is a PDF + external Google Drive link. Minimal in-project docs.
+- NavMesh AI is very basic (random wander, tag-based triggers). Not a replacement for proper AI systems (Behavior Designer, A*).
+- Jump physics uses manual gravity in coroutine rather than Rigidbody -- fine for visual effect but not physically accurate.
+
+**AQS Relevance:** HIGH. The art style and species roster have direct applicability:
+- **Quokka Mom's world animals:** Koala, Platypus, Kangaroo, Possum, Mole, Squirrel, Fox, Raccoon -- all present
+- **Potential Joey companions:** Many small animals could serve as visual base for Joey variants
+- **Low-poly style** matches AQS aesthetic direction
+- The NavMesh AI controller is too basic for AQS (Malbers AC handles movement). Value is purely in the models/animations/materials.
+- Would need Malbers AC integration (replace ControllerPetZoo with MAnimal setup per animal)
+
+**Other Project Relevance:**
+- **HOK:** LOW. Fishing sim doesn't need land animals. Some aquatic animals (Turtle, Crocodile) might work as environment decoration.
+- **FearSteez:** NONE. Beat 'em up -- no cute animal mechanics.
+- **VNPC:** MEDIUM. Visual novel characters could use animals as NPCs or companions.
+- **Any project needing cute animals:** HIGH. 65 species is a comprehensive roster.
+
+**MCP Compatibility:** LOW. Art asset -- prefabs are instantiated via `assets-prefab-instantiate`. The NavMesh AI controller has no properties worth dedicated MCP tools. Material swapping via standard `component-modify` on Renderer.
+
+**Verdict Rationale:** Approved with **Art, Low Poly, Character** secondary labels. The breadth of the animal roster (65 species), consistent art style, and included animations make this a valuable art library. The AI controller is basic but functional for showcase/prototype purposes. Primary value is as a model/animation source for AQS animal characters (Koala, Platypus, Kangaroo etc. are exactly what AQS needs). No primary label because it's a specialized art pack, not universally applicable.
+
+---
+
+## ENTRY-315: Ghost and Shaders PRO 1.0 (SR Studios)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Ghost and Shaders PRO |
+| **Version** | 1.0 |
+| **Developer** | SR Studios Kerala (srstudioskerala@gmail.com) |
+| **Source** | Asset Store (`Assets/Ghost and Shaders PRO/`) |
+| **Primary Label** | -- |
+| **Secondary Label** | Shader, VFX |
+| **Verdict** | **Approved** |
+| **Date** | 2026-03-31 |
+| **Session** | 63 |
+
+**What It Is:** Ghost character effect system built on Shader Graph (URP). Provides a single configurable shader with 100+ material presets, 70+ prefab variants, and a simple component for switching between ghost appearances at runtime. The core value is the shader and material library, not the code.
+
+**Content Inventory:**
+
+| Category | Count |
+|----------|-------|
+| Prefabs | 70+ (Ghost character variants) |
+| Materials | 100+ (4 style categories) |
+| Textures | 50+ (overlay patterns) |
+| Shader Graph | 1 (`Ghost.shadergraph`) |
+| FBX Models | 4 (Ghost mesh: 2,268 tris) |
+| Animations | 14 (Idle, Run, Attack, Dance, Hit, Death, etc.) |
+| Scripts | 2 |
+| Demo Scenes | 1 |
+
+**Material Categories (4 styles, 90+ presets):**
+
+| Style | Count | Description |
+|-------|-------|-------------|
+| Ghost Abstract | 20 | Geometric, minimal, modern patterns |
+| Ghost CYBER | 20 | Neon tech-inspired glowing effects |
+| Ghost Fantasy | 30 | Magical, mystical, glowing appearances |
+| Ghost Simple | 20 | Clean, basic ghost looks |
+
+**Shader Properties (`Ghost.shadergraph`):**
+
+- **Fresnel Power** (default: 3) -- controls edge glow intensity
+- **Color A / Color B** -- two-color fresnel blend
+- **Texture1** -- overlay pattern with: color tint, tiling/offset, animation X/Y speed, distortion X/Y, distortion speed
+- **Texture2 Overlay** -- secondary overlay with: color, offset, tiling, animation X/Y, opacity
+- **Surface:** Transparent, **Blending:** Additive (luminous/ethereal appearance)
+
+**Scripts:**
+
+1. **`Ghost_PRO.cs`** (64 LOC runtime, 130 LOC editor) -- Namespace: `SRStudios`. Material/accessory/mouth switcher with custom editor. `ApplyMaterial()`, `ApplyAccessories()`, `ApplyMouth()`, `SetRandomMaterial()`. Clean null-safe code. Multi-object editing support in custom editor. Note: `using UnityEditor;` at top of file (NOT guarded by `#if UNITY_EDITOR` -- the using statement is always present). Runtime code is clean; editor code is `#if UNITY_EDITOR` wrapped.
+
+2. **`anim_clip_offset.cs`** -- Random animation start offset to prevent synchronized ghost groups.
+
+**Code Quality:**
+
+- Simple, clean code -- does one thing well (material/accessory switching)
+- Custom editor is well-implemented with proper `SerializedProperty` pattern and multi-object support
+- **Build risk:** `using UnityEditor;` at file top without `#if UNITY_EDITOR` guard. Will cause build errors. Same pattern flagged in ENTRY-264 (Easy Build System) and ENTRY-268 (AllIn1 Springs). Must be fixed before any build.
+- No asmdef (2 scripts in Assembly-CSharp)
+- No namespace collisions
+
+**Pipeline Support:** Primary: **URP**. Also supports Built-in and HDRP with Shader Graph target configuration. Troubleshooting guide included (`Pink Material Issue.txt`).
+
+**Concerns:**
+- **Build-breaking `using UnityEditor;`** in Ghost_PRO.cs without `#if` guard. Must wrap in `#if UNITY_EDITOR` before building.
+- Single ghost mesh (2,268 tris) -- this is a shader/material system, not a character library. The ghost model is a vehicle for the shader.
+- Additive blending makes ghosts always luminous -- may not suit all art styles.
+- No namespace isolation concerns (`SRStudios` is unique).
+
+**Project Relevance:**
+- **HOK:** MEDIUM-HIGH. Underworld/Acheron theme -- ghost NPCs, spectral fish, departed souls. The Fantasy material set is a natural fit for Kharon's ferry passengers.
+- **AQS:** LOW-MEDIUM. Possible ghost enemies or supernatural elements in cave biomes. The shader could be applied to non-ghost meshes for ethereal effects.
+- **FearSteez:** LOW. Beat 'em up -- ghosts aren't core to the genre unless a supernatural level is designed.
+- **VNPC:** MEDIUM. Ghost characters in visual novels. The material variety supports different ghost personalities.
+- **Any project with supernatural/ethereal themes:** HIGH. The 100+ material presets cover a wide range of ghost aesthetics.
+
+**MCP Compatibility:** MEDIUM. The `Ghost_PRO` component's material switching is handleable via `gameobject-component-modify` (set `selectedIndex`, call `ApplyMaterial()`). Shader properties on materials can be modified via `object-modify` on Material assets. No dedicated MCP tools needed.
+
+**Verdict Rationale:** Approved with **Shader, VFX** secondary labels. The Shader Graph ghost effect is well-crafted with good property exposure (Fresnel, dual texture overlay with animation, distortion). The 100+ material preset library provides immediate variety without shader knowledge. The build-breaking `using UnityEditor;` must be fixed before any production use. Primary value for HOK's underworld theme and any supernatural game project. No primary label because ghost effects are genre-specific.
 
 ---
 

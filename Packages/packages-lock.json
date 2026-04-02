@@ -76,7 +76,7 @@
       }
     },
     "com.ivanmurzak.unity.mcp": {
-      "version": "0.63.1",
+      "version": "0.63.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -98,31 +98,31 @@
       "url": "https://package.openupm.com"
     },
     "com.ivanmurzak.unity.mcp.animation": {
-      "version": "1.1.20",
+      "version": "1.1.22",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.ivanmurzak.unity.mcp": "0.63.1",
+        "com.ivanmurzak.unity.mcp": "0.63.3",
         "com.unity.modules.animation": "1.0.0"
       },
       "url": "https://package.openupm.com"
     },
     "com.ivanmurzak.unity.mcp.particlesystem": {
-      "version": "1.0.47",
+      "version": "1.0.49",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.ivanmurzak.unity.mcp": "0.63.1",
+        "com.ivanmurzak.unity.mcp": "0.63.3",
         "com.unity.modules.particlesystem": "1.0.0"
       },
       "url": "https://package.openupm.com"
     },
     "com.ivanmurzak.unity.mcp.probuilder": {
-      "version": "1.0.59",
+      "version": "1.0.61",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.ivanmurzak.unity.mcp": "0.63.1",
+        "com.ivanmurzak.unity.mcp": "0.63.3",
         "com.unity.probuilder": "5.2.4"
       },
       "url": "https://package.openupm.com"
@@ -194,7 +194,8 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.opsive.shared": "2.0.0"
+        "com.opsive.shared": "2.0.0",
+        "com.unity.entities": "1.3.8"
       }
     },
     "com.opsive.shared": {
@@ -220,7 +221,7 @@
       }
     },
     "com.tecvoodoo.mcp-tools": {
-      "version": "file:../../DefaultUnityPackages/com.tecvoodoo.mcp-tools",
+      "version": "file:E:/Unity/DefaultUnityPackages/com.tecvoodoo.mcp-tools",
       "depth": 0,
       "source": "local",
       "dependencies": {}
@@ -376,7 +377,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.28",
+      "version": "1.8.29",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -531,6 +532,17 @@
         "com.unity.terrain-tools": "5.3.2"
       }
     },
+    "com.unity.film-internal-utilities": {
+      "version": "0.20.0-preview",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.timeline": "1.2.18",
+        "com.unity.modules.uielements": "1.0.0",
+        "com.unity.modules.imageconversion": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.formats.alembic": {
       "version": "2.4.4",
       "depth": 0,
@@ -593,6 +605,30 @@
       "dependencies": {
         "com.unity.modules.uielements": "1.0.0"
       }
+    },
+    "com.unity.multiplayer.playmode": {
+      "version": "2.0.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "2.0.2"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.multiplayer.tools": {
+      "version": "2.2.8",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.burst": "1.8.18",
+        "com.unity.collections": "2.5.1",
+        "com.unity.mathematics": "1.3.2",
+        "com.unity.profiling.core": "1.0.2",
+        "com.unity.nuget.mono-cecil": "1.11.4",
+        "com.unity.modules.uielements": "1.0.0",
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      },
+      "url": "https://packages.unity.com"
     },
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.6",
@@ -799,6 +835,16 @@
         "com.unity.modules.director": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.toonshader": {
+      "version": "0.13.4-preview",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "17.0.3",
+        "com.unity.film-internal-utilities": "0.20.0-preview"
       },
       "url": "https://packages.unity.com"
     },

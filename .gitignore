@@ -53,6 +53,10 @@ crashlytics-build.properties
 # Recordings (Sandbox specific)
 /[Rr]ecordings/
 
+# Large binary archives (too big for GitHub)
+*.mp4
+*.pptx
+
 # SKILLS folder (if generated)
 /SKILLS/
 
@@ -98,6 +102,14 @@ crashlytics-build.properties
 /Assets/polyperfect.meta
 /Assets/ThirdParty/
 /Assets/ThirdParty.meta
+/Assets/PurrNet/
+/Assets/PurrNet.meta
+/Assets/FishNet/
+/Assets/FishNet.meta
+/Assets/SensorToolkit/
+/Assets/SensorToolkit.meta
+/Assets/Samples/
+/Assets/Samples.meta
 
 # ============================================================
 # Packages -- only track manifest.json and packages-lock.json
