@@ -18,7 +18,7 @@ Players are ghosts in a world of the living. The dead are your hiding places -- 
 ## 2. Core Gameplay Pillars
 
 1. **Two Worlds Overlap** -- The supernatural world (ghosts, Reaper, scythe) and the living world (NPCs, props, hazards) occupy the same space. Possessed players see only the living world. Ghosts and the Reaper see both but can only interact with the supernatural.
-2. **The Dead Don't Walk Right** -- Possessing a corpse means faking life. Rot, stiffness, behavioral mistakes expose you.
+2. **Act Natural** -- Your body moves like its type, but your decisions betray you. Aggression, hesitation, and rot expose you to other possessed players.
 3. **Power is a Choice** -- The Reaper can drop the scythe at any time. Possession and the scythe are mutually exclusive. Every transition is a player decision with risk.
 4. **Chaos Creates Opportunity** -- Environmental hazards randomly kill NPCs. Possessed players kill NPCs. More death = more hiding spots = more targets.
 
@@ -42,11 +42,27 @@ Players are ghosts in a world of the living. The dead are your hiding places -- 
 
 **What possessed players can do:** Full physical interaction. Kill NPCs, attack other possessed bodies, knock over props, trigger hazards.
 
-### 3.3 Information Asymmetry
+### 3.3 Body Visibility from the Supernatural World
 
-- **Ghosts** know where the Reaper is but can't do anything about it without a body.
-- **The Reaper** can see all exposed ghosts but can't tell which NPCs are possessed vs genuine.
-- **Possessed players** are blind to the supernatural. The Reaper could be right next to you and you'd never know. You must exit your body (exposing yourself) to check.
+From the supernatural layer, dead bodies appear as **abstract colored blobs** -- not as recognizable NPCs.
+
+- **Green blob** = empty dead body, available to possess
+- **Red/purple blob** = occupied (another ghost is inside), cannot possess
+- **Size and shape do not reveal the body type.** A green blob could be a human, a cat, a dog, a chicken. You don't know what you're possessing until you're inside it.
+
+This means:
+- **Body selection is a gamble** from the ghost side
+- **Map memory matters** -- while in a possessed body (living world), observe what NPCs are where. Remember locations for when you're a ghost and can only see blobs.
+- **Information is earned** -- spending time in the living world (risking your current body's rot) to scout body locations is a real strategic investment
+- **Creates emergent comedy/panic** -- dive into a blob expecting a human, end up as a chicken, now mimic chicken behavior or get caught
+
+See concept art: `GDD/HnR_Supernatural_World.PNG` and `GDD/HnR_Living_World.PNG`
+
+### 3.4 Information Asymmetry
+
+- **Ghosts** know where the Reaper is but can't do anything about it without a body. Can see body blobs but not what type they are.
+- **The Reaper** can see all exposed ghosts and body blobs (green/red) but can't tell which living-world NPCs are possessed vs genuine. Also can't tell body types from blobs.
+- **Possessed players** are blind to the supernatural. The Reaper could be right next to you and you'd never know. You must exit your body (exposing yourself) to check. BUT you can see the living world clearly -- you know what bodies are where.
 
 ---
 
@@ -165,7 +181,28 @@ A world object visible only in the supernatural layer.
 - Ghost exits body -> body drops, ghost appears in supernatural layer, cooldown starts
 - The Reaper cannot possess bodies (scythe blocks possession)
 
-### 7.3 NPC Lifecycle
+### 7.3 NPC Behavior (Alive)
+
+**Architecture:** Simple state machines (Behavior Designer Pro)
+
+**Living NPC Behaviors:**
+- Human: Walk - Pause - Resume
+- Dog: Wander - Sniff - Sit
+- Cat: Roam - Climb - Groom
+- Pig: Waddle - Root - Rest
+- Sheep: Herd drift - Graze
+- Chicken: Peck - Scatter - Short flight
+- Bird: Fly - Perch - Hop
+- Rabbit: Hop - Nibble - Burrow
+
+**NPC Reactions to Rot (all types):**
+- 0-50% rot nearby: no reaction
+- 50-75% rot nearby: uneasy, change direction to avoid
+- 75-100% rot nearby: panic, flee from the rotted body
+
+NPC panic is a critical gameplay signal -- fleeing NPCs draw attention from possessed players and reveal the rotted body's location.
+
+### 7.4 NPC Lifecycle (State Machine)
 
 **States:**
 - **Alive** -- walking, behaving, part of the living world
@@ -173,10 +210,11 @@ A world object visible only in the supernatural layer.
 - **Possessed** -- ghost inside, body animated, mimicking life. Rot ticking.
 - **Destroyed** -- rot reached zero or excessive damage. Body gone. Ghost ejected.
 
-### 7.4 Rot System
+### 7.5 Rot System
 
-**Rot is a property of the body, not the ghost.**
+**Rot is a property of the body, not the ghost.** Rot is both a timer AND a visible, escalating threat in the living world.
 
+**Rot Meter:**
 - Each body has a rot meter representing remaining usable time
 - **Fresh kill:** maximum rot time available
 - **Old corpse:** reduced rot time (e.g., graveyard bodies start partially rotted)
@@ -187,13 +225,30 @@ A world object visible only in the supernatural layer.
 - Rot persists across possessions -- ghost leaves, rot continues, next ghost gets whatever time is left
 - At zero rot, body is destroyed and any ghost inside is ejected
 
+**Rot Stages (Living World Appearance):**
+
+| Stage | Rot % | Appearance | NPC Reaction | Detection Risk |
+|-------|-------|------------|-------------|----------------|
+| **Fresh** | 0-25% | Looks normal | None | Low -- other possessed players can't easily tell |
+| **Decaying** | 25-50% | Slight discoloration, stiff movement | None | Medium -- observant possessed players may notice |
+| **Rotting** | 50-75% | Clearly wrong, zombie-like | NPCs uneasy, start avoiding | High -- possessed players can see something is off |
+| **Near-death** | 75-100% | Full zombie | NPCs panic and flee | Guaranteed -- every possessed player on screen knows |
+
+**NPC Panic as Information Chain:**
+- NPCs fleeing from a rotted body draws attention from other possessed players
+- Those possessed players can now attack the rotted body to force ejection
+- The commotion may cause other possessed players to react unnaturally, revealing themselves
+- Rot pressure forces body cycling -- the longer you stay, the more the living world rejects you
+
 **Tuning levers:**
 - Base rot rate (passive decay)
 - Possession rot multiplier (how much faster while animated)
 - Damage-to-rot conversion (how much rot time damage removes)
 - Fresh kill rot time vs. hazard kill rot time vs. pre-placed body rot time
+- Rot stage thresholds (when NPC reactions trigger)
+- NPC panic radius and behavior per rot stage
 
-### 7.5 Environmental Hazard System
+### 7.6 Environmental Hazard System
 
 Random events that kill NPCs in the living world. This is the primary body-supply system.
 
@@ -213,21 +268,30 @@ Random events that kill NPCs in the living world. This is the primary body-suppl
 - NOT player-controlled (pure environmental chaos)
 - Possessed players can see and attempt to avoid hazards
 
-### 7.6 Detection System
+### 7.7 Detection System
 
-**No UI markers.** Detection is purely observational.
+**No UI markers. No mimic system.** Body type determines movement -- a cat moves like a cat, a human walks like a human. The player doesn't have to learn NPC patrol patterns.
 
-**Tells that expose a possessed player:**
-- Behavioral inconsistencies (wrong movement pattern for that NPC type)
-- Movement errors (human-like input on an animal body)
-- Rot visuals (decaying appearance gets worse over time)
-- Timing mistakes (pausing, hesitating, reacting to things an NPC wouldn't)
-- A "dead" NPC suddenly walking again in a suspicious area
-- Attacking other NPCs (living NPCs don't typically murder each other)
+**Detection exists between possessed players in the living world, NOT from the Reaper.**
 
-**Who detects:**
-- The Reaper watches from the supernatural layer for behavioral tells
-- Other possessed players watch each other in the living world (but can't see if the Reaper is nearby to capitalize)
+The Reaper sees blobs, not NPCs. A blob moving vertically could be a cat climbing, a bird flying, or a rabbit burrowing. The Reaper can't judge behavior -- they watch for ejections and exposed ghosts.
+
+**Tells that other possessed players can spot:**
+- **Player-driven decisions:** Beelining toward a target, standing motionless reading the situation, moving with obvious purpose
+- **Aggression:** Attacking other NPCs or bodies. Real NPCs don't murder each other.
+- **Rot visuals:** A decaying body is the clearest signal. Gets worse over time.
+- **Unnatural stillness:** NPCs don't freeze and look around. Players do.
+- **A dead NPC suddenly walking again:** If you saw a body on the ground and now it's up, someone possessed it.
+
+**What possessed players can do about it:**
+- Attack the suspicious body (damage = rot acceleration, might force ejection)
+- Kill it (ejects the ghost, now exposed to the Reaper in the supernatural layer)
+- Avoid the area (self-preservation)
+
+**What the Reaper does:**
+- Watches blobs from the supernatural layer
+- Waits for ghosts to get ejected (rot timeout or body destroyed by other possessed players)
+- Drops scythe to go cause ejections personally, then races back to reap
 
 ---
 
@@ -264,16 +328,18 @@ Random events that kill NPCs in the living world. This is the primary body-suppl
 
 ## 9. NPC Types
 
-| Type | Behavior Pattern | Mimic Difficulty | Art Pack |
-|------|-----------------|------------------|----------|
-| Human | Walk - Pause - Resume | Easy | Kenney Animated Characters (Medium) |
-| Dog | Wander - Sniff - Sit | Medium | Cute Pet (Suriyun) |
-| Cat | Roam - Pounce - Groom | Hard (erratic) | Cute Pet (Suriyun) |
-| Pig | Slow waddle - Root - Rest | Easy | Cute Pet (Suriyun) |
-| Sheep | Herd movement - Graze - Bleat | Medium (herd sync) | Cute Pet (Suriyun) |
-| Chicken | Peck - Scatter - Short flight | Hard (unpredictable) | Cute Pet (Suriyun) |
+| Type | Movement | Special Ability | Art Pack |
+|------|----------|----------------|----------|
+| Human | Walk, run, climb | Can use props (push objects, open doors) | Kenney Animated Characters (Medium) |
+| Dog | Walk, run | Fast, erratic direction changes | Cute Pet (Suriyun) |
+| Cat | Walk, run, climb | Vertical access (trees, rooftops) | Cute Pet (Suriyun) |
+| Pig | Slow waddle | Knockback on charge | Cute Pet (Suriyun) |
+| Sheep | Walk, herd drift | -- | Cute Pet (Suriyun) |
+| Chicken | Walk, short flight | Brief vertical access | Cute Pet (Suriyun) |
+| Bird | Fly | Full vertical freedom | Cute Pet (Suriyun) |
+| Rabbit | Walk, hop | Burrow underground | Cute Pet (Suriyun) |
 
-**Design Rule:** Behavior must be observable and mimic-able. Players need to be able to learn patterns by watching.
+**Design Rule:** Body type determines movement capabilities. The player controls the body with normal inputs -- the body moves naturally for its type. No mimic system. Detection comes from player-driven decisions (aggression, unnatural stillness, purpose-driven movement), not from failing to copy NPC patrol patterns.
 
 ---
 
@@ -338,6 +404,7 @@ Ghost and body controllers accept commands from an input provider interface. The
 - Input architecture: Interface-based input providers (local, network, AI) -- game systems input-source agnostic
 - Networking: PurrNet 1.19.1 (per-component ownership, built-in relay, awaitable RPCs)
 - World layering: Camera culling layers or shader-based visibility per player state
+- Supernatural body rendering: Dead bodies rendered as abstract colored blobs (green=empty, red=occupied) in supernatural layer. Actual NPC model hidden. Shader or mesh swap per layer.
 
 ---
 
@@ -346,10 +413,11 @@ Ghost and body controllers accept commands from an input provider interface. The
 - 1 map (Graveyard -- tutorial, pre-placed bodies for easier testing)
 - 2-3 players
 - Core systems only:
-  - Two-world visibility (supernatural vs living layer)
+  - Two-world visibility (supernatural vs living layer, body blobs)
   - NPC lifecycle (alive -> dead -> possessable -> destroyed)
+  - Body-type movement (body determines how you move, not player skill)
   - Scythe pickup/drop/drain/respawn
-  - Ghost possession of dead bodies + cooldown
+  - Ghost possession of dead bodies (blob selection) + cooldown
   - Reaper reap (exposed ghosts only)
   - Basic rot (per-body timer + visual)
   - 1 environmental hazard

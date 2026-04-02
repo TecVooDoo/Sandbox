@@ -106,16 +106,22 @@ Game systems consume `IGhostInput`. They never know or care what's driving it.
 
 ```
 World Layers:
-    Supernatural    -- ghosts, Reaper, scythe (Layer: Supernatural)
-    Living          -- NPCs, dead bodies, possessed bodies, props, hazards (Layer: Living)
+    Supernatural    -- ghosts, Reaper, scythe, body blobs (Layer: Supernatural)
+    Living          -- NPCs, dead bodies (actual models), possessed bodies, props, hazards (Layer: Living)
     Shared          -- environment geometry, buildings, ground (Layer: Default)
 
 Player State -> Camera Culling:
-    Ghost/Reaper    -- sees Supernatural + Living + Shared (all layers)
-    Possessed       -- sees Living + Shared only (Supernatural culled)
+    Ghost/Reaper    -- sees Supernatural + Shared (ghosts, Reaper, scythe, body BLOBS)
+                       sees living world dimly (NPCs walking, environment) but NOT body identity
+    Possessed       -- sees Living + Shared only (Supernatural culled entirely)
 ```
 
-Implementation: Camera culling mask toggles on possession enter/exit. Alternatively shader-based visibility with a global keyword per client.
+**Dead Body Rendering:**
+- In **Living layer**: actual NPC model (human, cat, dog, etc.) lying dead on ground
+- In **Supernatural layer**: abstract colored blob. Green = empty, Red = occupied. Size/shape does NOT reveal body type.
+- Ghost players must remember body locations from their time in the living world to make informed choices.
+
+Implementation: Each dead body has two visual representations -- the actual model (Living layer) and a blob mesh/shader (Supernatural layer). Camera culling toggles which is visible. Alternatively, a shader that swaps appearance based on a per-client global keyword.
 
 ### NPC Lifecycle State Machine
 
@@ -233,8 +239,8 @@ Same approach as AQS:
 3. **HNR root:** `Assets/_Sandbox/_HNR/`
 4. **GDD is user's doc** -- update only when asked.
 5. **No phase system** -- do not reintroduce. See GDD v2.0 history.
-6. **NPC behavior must be mimic-able** -- if a player can't replicate it, it's too complex.
-7. **No UI detection markers** -- detection is purely observational.
+6. **No mimic system** -- body type determines movement. Detection is player decisions, not patrol pattern matching.
+7. **No UI detection markers** -- detection is between possessed players in the living world, not from the Reaper.
 8. **Input interface first** -- all controllers consume `IGhostInput`.
 9. **Build single-player first** -- network layer comes after gameplay is proven.
 10. **All TecVooDoo coding standards apply.**

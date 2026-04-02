@@ -71,15 +71,16 @@
 - **Playtest:** Full tactical loop with one player swapping roles. Body economy feel check.
 
 ### Sprint 3: NPC Behavior + Hazards (The Deception)
-- NPC behavior trees (Behavior Designer Pro -- per-type patterns)
-- Behavior mimicry (player controls body, must approximate NPC's expected pattern)
+- NPC behavior trees (Behavior Designer Pro -- living NPC patterns, NOT player mimic)
+- Body-type movement (body determines capabilities: climb, fly, burrow, etc.)
 - Environmental hazard system (1-2 types, random timing, NPC area kills)
-- Detection tells (rot visuals, movement errors, suspicious behavior)
-- **Playtest:** Watch NPCs, learn patterns, possess, mimic. Can you spot a bad mimic?
+- Possessed player detection (aggression, unnatural stillness, rot visuals)
+- Possessed player combat (attack other bodies, kill NPCs)
+- **Playtest:** Can possessed players spot each other? Does body-type movement feel right?
 
 ### Sprint 4: AI Opponents (Single-Player Complete)
 - AIGhostInput (implements IGhostInput, driven by Behavior Designer Pro)
-- AI ghost behavior (find bodies, evaluate rot, possess, mimic with tunable imperfection)
+- AI ghost behavior (find bodies, evaluate rot, possess, act naturally, attack strategically)
 - AI Reaper behavior (hunt exposed ghosts, drop-possess-chaos-reap loop)
 - Match flow (start, timer, scoring, end screen)
 - Difficulty tuning

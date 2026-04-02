@@ -53,13 +53,16 @@ No scripts yet. Planned systems (aligned with GDD v2.0):
 |--------|---------|
 | NPCSpawner | Spawn and manage living NPC pool |
 | NPCLifecycle | State machine: Alive -> Dead -> Possessed -> Destroyed |
-| NPCBehavior (base) | Behavior interface for NPC types |
-| HumanBehavior | Walk - Pause - Resume |
-| DogBehavior | Wander - Sniff - Sit |
-| CatBehavior | Roam - Pounce - Groom |
-| PigBehavior | Slow waddle - Root - Rest |
-| SheepBehavior | Herd movement - Graze - Bleat |
-| ChickenBehavior | Peck - Scatter - Short flight |
+| NPCBehavior (base) | Behavior interface for living NPC AI patterns |
+| BodyTypeMovement | Body determines movement capabilities (walk, climb, fly, burrow, etc.) |
+| HumanNPC | Walk, run, climb, use props |
+| DogNPC | Walk, run, erratic direction changes |
+| CatNPC | Walk, run, climb (vertical access) |
+| PigNPC | Slow waddle, charge knockback |
+| SheepNPC | Walk, herd drift |
+| ChickenNPC | Walk, short flight |
+| BirdNPC | Full flight, vertical freedom |
+| RabbitNPC | Walk, hop, burrow underground |
 
 ### HNR.Hazard
 | Script | Purpose |
@@ -70,7 +73,7 @@ No scripts yet. Planned systems (aligned with GDD v2.0):
 ### HNR.AI
 | Script | Purpose |
 |--------|---------|
-| AIGhostBrain | Tactical decision-making: find body, evaluate rot, possess, mimic |
+| AIGhostBrain | Tactical decision-making: find body, evaluate rot, possess, act naturally |
 | AIReaperBrain | Hunt exposed ghosts, drop-possess-chaos-reap loop |
 | AIBodySelector | Evaluate available bodies by rot, distance, risk |
 
