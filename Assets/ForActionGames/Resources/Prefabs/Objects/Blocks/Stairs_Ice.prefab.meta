@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 153422840134645ef8a2499f30b0510d
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/Stairs_Ice.prefab
+  uploadId: 620051

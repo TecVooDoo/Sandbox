@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3fd4d40b25c794d32baa37846ef0298d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Angel/angel_run.anim
+  uploadId: 620051

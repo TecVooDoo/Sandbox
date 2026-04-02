@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6e18578ee9e1f4536a6158ac22e5fe0f
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Gimmicks/SwitchButton_lowpoly.prefab
+  uploadId: 620051

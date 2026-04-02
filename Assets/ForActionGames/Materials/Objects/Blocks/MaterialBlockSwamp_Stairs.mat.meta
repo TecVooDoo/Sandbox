@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a56ddd28aa37348f5a1c6636196d1ea7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Blocks/MaterialBlockSwamp_Stairs.mat
+  uploadId: 620051

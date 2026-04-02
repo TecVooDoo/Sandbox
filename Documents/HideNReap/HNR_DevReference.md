@@ -1,7 +1,7 @@
 # Hide 'N Reap -- Dev Reference
 
 **Purpose:** Architecture, coding standards, and AI rules for Hide 'N Reap. Read on demand -- primary doc is `HNR_Status.md`.
-**Last Updated:** April 1, 2026 (Session 0 -- Bootstrap)
+**Last Updated:** April 2, 2026 (Session 2 -- Mechanics Review)
 
 ---
 
@@ -12,7 +12,7 @@
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **HNR Root:** `Assets/_Sandbox/_HNR/`
 
-**Core Innovation:** Phase-driven deception game where the scythe is a contested power object. Possession is conditional on the scythe existing -- lose it and everyone is exposed.
+**Core Innovation:** Two overlapping worlds. Ghosts possess the dead and pretend to be alive. The Reaper hunts exposed ghosts but can't touch the living world. Power is a choice -- the scythe and possession are mutually exclusive.
 
 ---
 
@@ -20,12 +20,15 @@
 
 | Namespace | Purpose | Status |
 |-----------|---------|--------|
-| `HNR.Core` | Match state, phase manager, game events, scythe system | Planned |
-| `HNR.Player` | Ghost controller, input, player state | Planned |
-| `HNR.Reaper` | Reaper abilities, energy, detection | Planned |
-| `HNR.Possession` | Possession system, body management, rot | Planned |
-| `HNR.NPC` | NPC behavior, state machines, variation | Planned |
-| `HNR.Network` | Netcode abstraction, state sync, RPCs | Planned |
+| `HNR.Core` | Match state, game events, scythe system, world layer management | Planned |
+| `HNR.Input` | Input provider interface, local/network/AI implementations | Planned |
+| `HNR.Ghost` | Ghost controller, movement, phasing, possession cooldown | Planned |
+| `HNR.Possession` | Possession system, body management, rot, body interaction | Planned |
+| `HNR.Reaper` | Reaper state, reap mechanic, scythe drain/respawn | Planned |
+| `HNR.NPC` | NPC lifecycle, behavior state machines, hazard deaths | Planned |
+| `HNR.Hazard` | Environmental hazard system, random events, NPC kills | Planned |
+| `HNR.AI` | AI ghost input provider, tactical decision-making | Planned |
+| `HNR.Network` | PurrNet integration, network input provider, state sync | Planned |
 | `HNR.UI` | HUD, score, match flow UI | Planned |
 | `HNR.Audio` | SFX, music, audio cues | Planned |
 
@@ -37,22 +40,25 @@
 Assets/_Sandbox/_HNR/
 |
 +-- Scripts/
-|   +-- Core/           -- MatchManager, PhaseManager, ScytheSystem, GameEvent
-|   +-- Player/         -- GhostController, PlayerInput, PlayerState
-|   +-- Reaper/         -- ReaperController, ReaperAbilities, EnergySystem
-|   +-- Ghost/          -- GhostMovement, GhostPhasing
-|   +-- Possession/     -- PossessionSystem, BodyManager, RotSystem
+|   +-- Core/           -- MatchManager, ScytheSystem, WorldLayerManager, GameEvent
+|   +-- Input/          -- IGhostInput, LocalInput, NetworkInput, AIInput
+|   +-- Ghost/          -- GhostController, GhostMovement, GhostPhasing, CooldownTimer
+|   +-- Possession/     -- PossessionSystem, BodyController, RotSystem
+|   +-- Reaper/         -- ReaperController, ReapSystem, ScytheDrain
 |   +-- NPC/
-|   |   +-- Behaviors/  -- HumanBehavior, DogBehavior, BirdBehavior
-|   +-- Network/        -- NetworkManager, StateSync, PhaseSync
+|   |   +-- Lifecycle/  -- NPCSpawner, NPCLifecycle (Alive/Dead/Possessed/Destroyed)
+|   |   +-- Behaviors/  -- HumanBehavior, DogBehavior, CatBehavior, etc.
+|   +-- Hazard/         -- HazardManager, HazardEvent, map-specific hazard types
+|   +-- AI/             -- AIGhostBrain, AIReaperBrain, AIBodySelector
+|   +-- Network/        -- NetworkInputProvider, StateSync, ScytheSync, BodySync
 |   +-- UI/
 |   +-- Audio/
-|   +-- Test/
 |
 +-- Art/
-|   +-- Characters/     -- Ghost, Reaper, NPC models
-|   +-- Environments/   -- Street, interiors, vertical spaces
-|   +-- VFX/            -- Collapse, possession, reap effects
+|   +-- Characters/     -- Ghost, Reaper models (Assembly Kit)
+|   +-- NPCs/           -- Kenney humans, Cute Pet animals
+|   +-- Environments/   -- KayKit, Tiny Treats, Halloween props
+|   +-- VFX/            -- Rot, death, reap, hazard effects
 |   +-- UI/
 |
 +-- Audio/
@@ -61,9 +67,11 @@ Assets/_Sandbox/_HNR/
 |
 +-- Data/
 |   +-- NPCs/           -- NPC behavior template SOs
-|   +-- Events/          -- GameEvent SOs
-|   +-- Scythe/          -- Scythe config SOs
-|   +-- Maps/            -- Map layout data
+|   +-- Events/         -- GameEvent SOs
+|   +-- Scythe/         -- Scythe config SO (drain time, respawn range, recharge duration)
+|   +-- Rot/            -- Rot config SO (base rate, possession multiplier, damage conversion)
+|   +-- Hazards/        -- Hazard config SOs (frequency, kill radius, map pools)
+|   +-- Match/          -- Match config SO (timer, score target, player count, AI count)
 |
 +-- Prefabs/
 +-- Scenes/
@@ -74,65 +82,97 @@ Assets/_Sandbox/_HNR/
 
 ## Architecture
 
-### Phase State Machine (Core Loop Driver)
+### Input Provider Interface (Foundation)
 
 ```
-                    +------------------+
-                    |   MATCH START    |
-                    +--------+---------+
-                             |
-                    +--------v---------+
-              +---->| POSSESSION PHASE |<----+
-              |     | (Scythe Active)  |     |
-              |     +--------+---------+     |
-              |              |               |
-              |     Reaper energy depletes   |
-              |     or takes enough damage   |
-              |              |               |
-              |     +--------v---------+     |
-              |     | COLLAPSE PHASE   |     |
-              |     | (All Exposed)    |     |
-              |     +--------+---------+     |
-              |              |               |
-              |     +--------v---------+     |
-              +-----| SCRAMBLE PHASE   +-----+
-                    | (Scythe Respawn) |
-                    +------------------+
+IGhostInput
+    GetMoveDirection() : Vector2
+    TryPossess() : bool
+    TryExitBody() : bool
+    TryPickupScythe() : bool
+    TryDropScythe() : bool
+    TryReap() : bool
+    TryAttack() : bool          // while possessing a body
+
+Implementations:
+    LocalGhostInput             // keyboard/gamepad
+    NetworkGhostInput           // PurrNet RPCs
+    AIGhostInput                // Behavior Designer Pro
 ```
 
-### Network Authority Model (TBD -- depends on netcode choice)
+Game systems consume `IGhostInput`. They never know or care what's driving it.
 
-**State that MUST be server-authoritative:**
-- Scythe ownership (who is Reaper)
-- Phase transitions (Possession -> Collapse -> Scramble)
-- Possession state (which player owns which NPC body)
-- Reap events (score changes)
-- Rot progression
+### Two-World Visibility
 
-**State that can be client-predicted:**
-- Ghost movement
-- NPC behavior playback (deterministic state machines)
-- Visual effects (collapse, VFX)
+```
+World Layers:
+    Supernatural    -- ghosts, Reaper, scythe (Layer: Supernatural)
+    Living          -- NPCs, dead bodies, possessed bodies, props, hazards (Layer: Living)
+    Shared          -- environment geometry, buildings, ground (Layer: Default)
+
+Player State -> Camera Culling:
+    Ghost/Reaper    -- sees Supernatural + Living + Shared (all layers)
+    Possessed       -- sees Living + Shared only (Supernatural culled)
+```
+
+Implementation: Camera culling mask toggles on possession enter/exit. Alternatively shader-based visibility with a global keyword per client.
+
+### NPC Lifecycle State Machine
+
+```
+    ALIVE                   DEAD                    POSSESSED               DESTROYED
+    (walking, behaving) --> (body on ground) -----> (ghost controls) -----> (body gone)
+         |                      |                        |                      |
+    killed by:             possessable by:          rot ticking:           ghost ejected
+    - hazard               - any ghost              - passive decay         to supernatural
+    - possessed player     - not in cooldown        - faster while active
+    - other NPC            - rot > 0                - damage accelerates
+                                                    - rot = 0 -> DESTROYED
+```
+
+### Scythe State Machine
+
+```
+    AVAILABLE ---------> HELD -----------> DRAINING ---------> RECHARGING ---------> AVAILABLE
+    (on ground,          (ghost is         (successful         (off field,            (random
+     any ghost           Reaper)           reap, scythe        timer counting)         spawn
+     can pick up)                          disappears)                                 location)
+         ^                   |
+         |                   |
+         +-------------------+
+         (voluntary drop --
+          scythe stays where dropped)
+```
 
 ### Event Architecture
 
-Communication via GameEvent ScriptableObjects (same as all TecVooDoo projects):
+GameEvent ScriptableObjects (same as all TecVooDoo projects):
 
 ```
 ScytheSystem
-    +--- OnScytheClaimed ---> PhaseManager (enter Possession Phase)
-    +--- OnScytheLost ---> PhaseManager (enter Collapse Phase)
-    +--- OnScytheRespawn ---> PhaseManager (enter Scramble Phase)
+    +--- OnScythePickedUp ---> PlayerState (enter Reaper)
+    +--- OnScytheDropped ---> WorldLayer (scythe visible on ground)
+    +--- OnScytheDrained ---> PlayerState (Reaper -> Ghost), Timer (start recharge)
+    +--- OnScytheRespawn ---> WorldLayer (scythe visible at new location)
 
 PossessionSystem
-    +--- OnBodyPossessed ---> RotSystem (start decay timer)
-    +--- OnBodyEjected ---> VFX (ghost emerge effect)
-    +--- OnCollapseTriggered ---> ALL bodies (explode, eject all)
+    +--- OnBodyPossessed ---> WorldLayer (switch to Living visibility)
+    +--- OnBodyExited ---> WorldLayer (switch to Supernatural visibility), Cooldown (start)
+    +--- OnBodyDestroyed ---> Ghost (ejected), VFX (body destruction)
 
-ReaperSystem
-    +--- OnReapSuccess ---> ScoreManager (increment kills)
-    +--- OnEnergyDepleted ---> ScytheSystem (scythe lost)
-    +--- OnReaperDamaged ---> EnergySystem (drain energy)
+RotSystem
+    +--- OnRotThreshold ---> Audio (warning), VFX (intensify decay)
+    +--- OnRotZero ---> PossessionSystem (force eject)
+
+NPCLifecycle
+    +--- OnNPCKilled ---> BodyManager (register new dead body)
+    +--- OnNPCSpawned ---> NPCManager (add to active pool)
+
+HazardSystem
+    +--- OnHazardTriggered ---> VFX (hazard visual), NPCLifecycle (kill NPCs in area)
+
+ReapSystem
+    +--- OnReapSuccess ---> ScoreManager (increment), ScytheSystem (drain)
 
 MatchManager
     +--- OnMatchStart ---> All systems (initialize)
@@ -141,11 +181,12 @@ MatchManager
 
 ### Design Patterns
 
-1. **Vanilla ScriptableObject Architecture** -- GameEvent/GameEventListener for events, config SOs for NPC behaviors, scythe settings, map data.
-2. **Phase State Machine** -- TecVooDoo Games StateMachine (CRTP) for match flow.
-3. **Interface Segregation** -- `IPossessable`, `IReapable`, `IDetectable`, `IPhaseListener`
-4. **Object Pooling** -- EasyPooling 2025 for VFX, ghost trails, collapse particles.
-5. **PersistentSingleton** -- TecVooDoo Utilities for MatchManager, NetworkManager.
+1. **Input provider interface** -- `IGhostInput` consumed by all controllers. Swap local/network/AI without touching game logic.
+2. **Vanilla ScriptableObject architecture** -- GameEvent/GameEventListener for events. Config SOs for rot, scythe, hazards, match settings, NPC behaviors.
+3. **Interface segregation** -- `IPossessable`, `IReapable`, `IDamageable`, `IRotting`
+4. **PersistentSingleton** -- TecVooDoo Utilities for MatchManager, WorldLayerManager.
+5. **Object pooling** -- for VFX, NPC respawns, hazard effects.
+6. **State pattern** -- Ghost, Possessed, Reaper as player states. NPC lifecycle states. Scythe states.
 
 ---
 
@@ -163,12 +204,15 @@ Same as all TecVooDoo projects:
 - **Extract by responsibility** -- not by line count
 - **Production-quality test code** -- even in Sandbox prototype
 
-### Multiplayer-Specific Standards
+### HNR-Specific Standards
 
-- **Server-authoritative state changes** -- clients request, server validates and broadcasts
+- **Input-source agnostic** -- game systems consume `IGhostInput`, never check input source
+- **Server-authoritative state** -- scythe ownership, body rot, NPC lifecycle, possession state, reap events. Clients request, server validates and broadcasts.
 - **Deterministic NPC behavior** -- same seed = same behavior on all clients
-- **Network abstraction layer** -- wrap netcode behind interfaces so we can swap NGO/FishNet/Mirror
-- **Phase transitions are atomic** -- no partial states during Collapse
+- **Per-body rot values** -- rot belongs to the body, not the ghost. Persists across possessions.
+- **World layer discipline** -- every GameObject must be on the correct layer (Supernatural, Living, or Default). Visibility bugs are game-breaking.
+- **Config SOs for all tuning values** -- rot rates, hazard frequency, cooldown duration, scythe recharge time. No magic numbers in code. Tunable without recompile.
+- **No phase system** -- the game flows continuously. Do NOT introduce phase gates, forced ejections, or artificial state cycling. If tension is lacking, tune the body economy (hazard frequency, rot rates, cooldown timers).
 
 ---
 
@@ -177,8 +221,7 @@ Same as all TecVooDoo projects:
 Same approach as AQS:
 - **3D physics** -- Rigidbody + CapsuleCollider, freeze Z rotation
 - **Lane-based movement** -- 2-3 depth lanes (Z positions), not free Z movement
-- **Cinemachine 2.5D camera** -- side-view with CinemachineFollow
-- **LockAxis** -- if using Malbers AC (TBD), otherwise custom lane snapping
+- **Cinemachine 2.5D camera** -- fixed side-view framing entire single-screen map
 - **Unity 6 API** -- `rb.linearVelocity` not `velocity`
 
 ---
@@ -189,12 +232,14 @@ Same approach as AQS:
 2. **Working directory:** `E:\Unity\Sandbox`
 3. **HNR root:** `Assets/_Sandbox/_HNR/`
 4. **GDD is user's doc** -- update only when asked.
-5. **NPC behavior must be mimic-able** -- if a player can't replicate it, it's too complex.
-6. **No UI detection markers** -- detection is purely observational.
-7. **Phase transitions are the heartbeat** -- every system must respect the current phase.
-8. **All TecVooDoo coding standards apply.**
-9. **MCP tools available** -- use for scene setup, component configuration, testing.
-10. **Asset evaluations live in Sandbox** -- reference `Sandbox_AssetLog.md`.
+5. **No phase system** -- do not reintroduce. See GDD v2.0 history.
+6. **NPC behavior must be mimic-able** -- if a player can't replicate it, it's too complex.
+7. **No UI detection markers** -- detection is purely observational.
+8. **Input interface first** -- all controllers consume `IGhostInput`.
+9. **Build single-player first** -- network layer comes after gameplay is proven.
+10. **All TecVooDoo coding standards apply.**
+11. **MCP tools available** -- use for scene setup, component configuration, testing.
+12. **Asset evaluations live in Sandbox** -- reference `Sandbox_AssetLog.md`.
 
 ---
 

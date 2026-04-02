@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9a72f472840b947cf8aace0ac5312846
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Characters/MaterialReaper.mat
+  uploadId: 620051

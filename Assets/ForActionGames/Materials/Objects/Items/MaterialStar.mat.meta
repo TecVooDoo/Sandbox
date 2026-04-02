@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dc1b94acede0546139647086193aa5e9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Items/MaterialStar.mat
+  uploadId: 620051

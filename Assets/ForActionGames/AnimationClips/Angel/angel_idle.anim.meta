@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e5f6d94154eb74db7aa5c841af86e764
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Angel/angel_idle.anim
+  uploadId: 620051

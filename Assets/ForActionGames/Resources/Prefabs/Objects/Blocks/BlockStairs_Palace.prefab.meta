@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f096cfd49fd7f4afcb9ff5f0d3abe6de
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/BlockStairs_Palace.prefab
+  uploadId: 620051

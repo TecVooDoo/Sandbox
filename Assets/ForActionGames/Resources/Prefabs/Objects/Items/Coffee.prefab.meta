@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7f42f2f51a73840caaec86c6e2a03539
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Items/Coffee.prefab
+  uploadId: 620051

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a73598778c5ec418b87cf46d029b3354
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Characters/Reaper.prefab
+  uploadId: 620051

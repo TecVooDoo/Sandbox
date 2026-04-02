@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a4002efc220ae4822b27d98bfa701833
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Gimmicks/MaterialTileNeedle.mat
+  uploadId: 620051

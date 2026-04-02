@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7010dd09cfe03441490ed88e11b1537e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Dragon/dragon_attack1_shift.anim
+  uploadId: 620051

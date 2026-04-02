@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ce9b2169470454dc0a8888f114606acf
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Characters/Devil.prefab
+  uploadId: 620051

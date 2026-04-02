@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fdd25519872184b3e94a28a1afead052
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Devil/devil_dissolve.anim
+  uploadId: 620051

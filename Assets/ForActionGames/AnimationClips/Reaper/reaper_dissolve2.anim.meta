@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7d254db72edf3418f9dbef2b7d461040
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Reaper/reaper_dissolve2.anim
+  uploadId: 620051

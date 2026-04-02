@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6b5b9d1501b7246f9a0ca940b6c8c7d1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Items/MaterialBook.mat
+  uploadId: 620051

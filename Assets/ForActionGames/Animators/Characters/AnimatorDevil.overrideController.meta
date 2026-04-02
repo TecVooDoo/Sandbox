@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dde4f380821e943f4951f4ca22df5988
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 22100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Animators/Characters/AnimatorDevil.overrideController
+  uploadId: 620051

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5b843fb24b7be4c60b3c7d2db8d6a603
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Decorations/SkullObj.prefab
+  uploadId: 620051

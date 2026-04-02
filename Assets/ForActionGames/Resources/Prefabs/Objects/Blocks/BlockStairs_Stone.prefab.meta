@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 2e4b7b8be16fb40f28232c8592a3e33f
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/BlockStairs_Stone.prefab
+  uploadId: 620051

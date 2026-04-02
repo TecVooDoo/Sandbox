@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 721df36435928417d8870fb4595d62e2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Ghost/ghost_attack1.anim
+  uploadId: 620051

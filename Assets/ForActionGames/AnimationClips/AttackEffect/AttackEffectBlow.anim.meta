@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f6988e13b6b6b4467b49028231c048b4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/AttackEffect/AttackEffectBlow.anim
+  uploadId: 620051

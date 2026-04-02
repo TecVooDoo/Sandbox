@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5d138f5eb186a49399b4a6f3e9cd85c6
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Gimmicks/Treasure.prefab
+  uploadId: 620051

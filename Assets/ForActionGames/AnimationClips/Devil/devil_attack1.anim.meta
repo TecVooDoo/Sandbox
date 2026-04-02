@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bbb9d39182fd34b9eb15a6fcfb5eebaf
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Devil/devil_attack1.anim
+  uploadId: 620051

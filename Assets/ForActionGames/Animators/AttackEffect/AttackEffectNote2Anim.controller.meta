@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0f1cb6410977845128aef20cf582ce48
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Animators/AttackEffect/AttackEffectNote2Anim.controller
+  uploadId: 620051

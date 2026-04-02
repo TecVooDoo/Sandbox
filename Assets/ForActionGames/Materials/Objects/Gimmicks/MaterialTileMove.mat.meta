@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9fd8bce17cb8344d4ad95ac2536553dd
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Gimmicks/MaterialTileMove.mat
+  uploadId: 620051

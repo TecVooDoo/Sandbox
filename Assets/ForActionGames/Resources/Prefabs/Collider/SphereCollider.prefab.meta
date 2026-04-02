@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6429771b8a352407b921e4f6bd3c7057
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Collider/SphereCollider.prefab
+  uploadId: 620051

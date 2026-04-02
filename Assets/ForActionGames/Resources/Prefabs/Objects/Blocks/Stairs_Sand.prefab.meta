@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c8c7b7ae2ece34a80b81631551e0abfb
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/Stairs_Sand.prefab
+  uploadId: 620051

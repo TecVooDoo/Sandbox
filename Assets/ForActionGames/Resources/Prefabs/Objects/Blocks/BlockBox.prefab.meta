@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f202af944603f40f5b772d23400ff7c4
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/BlockBox.prefab
+  uploadId: 620051

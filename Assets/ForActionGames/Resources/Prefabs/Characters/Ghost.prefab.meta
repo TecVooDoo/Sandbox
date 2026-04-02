@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a715dd4686716465f9219a1092db9b2e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Characters/Ghost.prefab
+  uploadId: 620051

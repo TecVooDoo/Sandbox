@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1e7ba3fbce6ef4d85a3f27a40b5cf3b8
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/BG/MaterialSwampGrass.mat
+  uploadId: 620051

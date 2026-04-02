@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7fd4f6410b7a4478daab2d3608a84f6b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Devil/devil_run.anim
+  uploadId: 620051

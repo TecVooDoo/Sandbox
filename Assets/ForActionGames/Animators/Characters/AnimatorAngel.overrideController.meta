@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 65424b7b44cce42bdb4e279cc7415ec2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 22100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Animators/Characters/AnimatorAngel.overrideController
+  uploadId: 620051

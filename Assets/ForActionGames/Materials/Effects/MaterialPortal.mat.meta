@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a263890dde10c4e71af0ed4d02f30f8e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Effects/MaterialPortal.mat
+  uploadId: 620051

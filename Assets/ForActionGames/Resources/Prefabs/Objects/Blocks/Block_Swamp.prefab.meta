@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 91c991eedc3624dbfa4ccdef6be6886a
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/Block_Swamp.prefab
+  uploadId: 620051

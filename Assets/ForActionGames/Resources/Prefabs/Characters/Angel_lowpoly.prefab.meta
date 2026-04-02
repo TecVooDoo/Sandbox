@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ab1df65d37a0e46719fd984ed04f5224
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Characters/Angel_lowpoly.prefab
+  uploadId: 620051

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ed28d37b759444463bb2a982636f01ba
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/BlockStairs_Cave.prefab
+  uploadId: 620051

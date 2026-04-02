@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 73817ef043db244849555d5c7f1b2b65
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Effects/MaterialAttackEffectBlow.mat
+  uploadId: 620051

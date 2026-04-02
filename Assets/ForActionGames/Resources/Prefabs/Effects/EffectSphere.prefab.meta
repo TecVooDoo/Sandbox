@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 866a55c02a71a47a7b38ae4c3f6dbb34
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Effects/EffectSphere.prefab
+  uploadId: 620051

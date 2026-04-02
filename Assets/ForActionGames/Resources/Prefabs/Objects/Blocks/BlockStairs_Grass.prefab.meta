@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e489c66680fb64c0eaad55b5936de227
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/BlockStairs_Grass.prefab
+  uploadId: 620051

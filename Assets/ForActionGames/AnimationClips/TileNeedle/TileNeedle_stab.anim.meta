@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5f79944b9c7a04c8e9c2471346801ae3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/TileNeedle/TileNeedle_stab.anim
+  uploadId: 620051

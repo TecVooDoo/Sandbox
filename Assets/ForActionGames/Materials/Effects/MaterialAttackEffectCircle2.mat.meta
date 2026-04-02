@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7408b9674e6084cee97fafee55a932bf
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Effects/MaterialAttackEffectCircle2.mat
+  uploadId: 620051

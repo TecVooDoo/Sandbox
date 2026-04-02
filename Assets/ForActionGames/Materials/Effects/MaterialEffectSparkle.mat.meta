@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 91b5f5cd3a5f64bdb82c3cc09284d5df
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Effects/MaterialEffectSparkle.mat
+  uploadId: 620051

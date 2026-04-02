@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 35b89593cc6dc499288b918c31fc05eb
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/Block_Stone.prefab
+  uploadId: 620051

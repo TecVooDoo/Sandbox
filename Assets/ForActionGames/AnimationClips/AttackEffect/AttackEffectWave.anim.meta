@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e0e3b128442fa43d6a97c70286bcc0dd
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/AttackEffect/AttackEffectWave.anim
+  uploadId: 620051

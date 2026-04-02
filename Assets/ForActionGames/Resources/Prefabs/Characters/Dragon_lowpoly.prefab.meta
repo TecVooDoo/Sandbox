@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 62fcb84b0bdd149169a6cf9a380d7aac
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Characters/Dragon_lowpoly.prefab
+  uploadId: 620051

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 62e9b07fe8c604b6e8b987d669926f51
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Effects/AttackEffectNote2Anim.prefab
+  uploadId: 620051

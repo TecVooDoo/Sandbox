@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6e476bd48a0d645cf90c6efb677d1b6e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Effects/AttackEffectBlowAnim.prefab
+  uploadId: 620051

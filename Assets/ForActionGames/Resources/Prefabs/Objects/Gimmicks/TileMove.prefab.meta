@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5498e996ddc12471bbccb1394631cfe0
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Gimmicks/TileMove.prefab
+  uploadId: 620051

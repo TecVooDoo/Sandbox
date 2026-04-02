@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f808c648a77b641febc9d3ab545f81ab
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/animation/Minotaur_animation.prefab
+  uploadId: 620051

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fe5c908614938407788fe07a5670461d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Blocks/MaterialStairsGrass.mat
+  uploadId: 620051

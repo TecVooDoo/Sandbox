@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0fed2042ce2cf49a88cc8767060c4151
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Blocks/MaterialBlockSand_Stairs.mat
+  uploadId: 620051

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c4ce13684b1c54cd9969bab57fc2ce6f
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Characters/Dragon.prefab
+  uploadId: 620051

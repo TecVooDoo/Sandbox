@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 68d7802c15a3c4e03848a156fa6a5799
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Items/Ring.prefab
+  uploadId: 620051

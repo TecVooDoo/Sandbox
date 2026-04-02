@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5a10558ed1d434f6c83bd456bcd43749
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Items/Fire.prefab
+  uploadId: 620051

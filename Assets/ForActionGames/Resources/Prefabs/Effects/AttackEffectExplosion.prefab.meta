@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 000aae3f9366248dfa9871e2612e84bf
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Effects/AttackEffectExplosion.prefab
+  uploadId: 620051

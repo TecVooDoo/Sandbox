@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f49f5f10c426242ba8e3b6acbd30e4a8
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Items/MaterialCoin.mat
+  uploadId: 620051

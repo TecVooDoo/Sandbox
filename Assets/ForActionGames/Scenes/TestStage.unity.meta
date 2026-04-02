@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7de6faa96ac634b9aa92d4f8d1b37dda
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Scenes/TestStage.unity
+  uploadId: 620051

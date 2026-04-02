@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 173c044a8aef5457980e2c7cc63a85a1
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/BlockStairs_Ice.prefab
+  uploadId: 620051

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e9e545fe96e5949bdbbc037395d5c97a
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/Stairs_Swamp.prefab
+  uploadId: 620051

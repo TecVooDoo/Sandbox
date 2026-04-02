@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3ec9b2a6ee94e4f9d87b8b217daa4458
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Effects/AttackEffectHorn.prefab
+  uploadId: 620051

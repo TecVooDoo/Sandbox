@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1ec4d8a97ecfb472c88e5988cfcf6c63
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Angel/angel_surprised.anim
+  uploadId: 620051

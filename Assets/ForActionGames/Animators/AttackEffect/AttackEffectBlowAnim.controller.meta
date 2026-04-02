@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 77e425fb66d8d4f38859ab5065a1717f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Animators/AttackEffect/AttackEffectBlowAnim.controller
+  uploadId: 620051

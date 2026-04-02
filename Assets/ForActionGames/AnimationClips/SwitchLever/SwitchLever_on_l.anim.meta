@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b2306321b94e5493d8434623917bc710
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/SwitchLever/SwitchLever_on_l.anim
+  uploadId: 620051

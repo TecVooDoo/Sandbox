@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dd9e583b02c3e4a328db41e80e67e979
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Minotaur/minotaur_surprised.anim
+  uploadId: 620051

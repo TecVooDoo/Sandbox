@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 91f0bd185cad5424abd199a82d253606
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Effects/MaterialEffectFire_Blue.mat
+  uploadId: 620051

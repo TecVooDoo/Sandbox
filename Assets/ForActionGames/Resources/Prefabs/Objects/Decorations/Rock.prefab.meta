@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a332e14195f7f486b8cae171a4c1d371
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Decorations/Rock.prefab
+  uploadId: 620051

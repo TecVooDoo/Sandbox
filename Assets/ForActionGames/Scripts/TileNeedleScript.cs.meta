@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e3092967cdc5a4d5aa47dc173844624b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Scripts/TileNeedleScript.cs
+  uploadId: 620051

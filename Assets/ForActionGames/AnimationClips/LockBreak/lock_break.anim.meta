@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b26138cedba65412ab8df2d1a547d064
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/LockBreak/lock_break.anim
+  uploadId: 620051

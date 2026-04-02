@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: da90b5ef6a9cf43ed8ec83f0bb8d9c2f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Animators/AttackEffect/AttackEffectSlashAnim.controller
+  uploadId: 620051

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 854a7435b3d0841d48ff63e5bad58f1d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Animators/AttackEffect/AttackEffectStabAnim.controller
+  uploadId: 620051

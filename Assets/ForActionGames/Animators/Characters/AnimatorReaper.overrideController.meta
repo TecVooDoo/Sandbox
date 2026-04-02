@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cf4719aa1785e466bbd3e09732ae28cc
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 22100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Animators/Characters/AnimatorReaper.overrideController
+  uploadId: 620051

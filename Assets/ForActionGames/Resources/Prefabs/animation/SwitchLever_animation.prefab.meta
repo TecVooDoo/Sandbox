@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c3c58d4b34c774220a8bf1c4638de552
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/animation/SwitchLever_animation.prefab
+  uploadId: 620051

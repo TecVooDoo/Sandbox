@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0fafc9217de5a42369c1bf88366b52dd
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Items/MaterialWatch.mat
+  uploadId: 620051

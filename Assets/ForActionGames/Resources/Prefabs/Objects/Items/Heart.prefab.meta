@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: cb8a5c3045cbd47d195816bf7ba943e8
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Items/Heart.prefab
+  uploadId: 620051

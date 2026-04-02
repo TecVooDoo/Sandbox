@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7192774c5faa94f64a2530bc674d0125
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Blocks/Stairs_Cave.prefab
+  uploadId: 620051

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8f830ac58f54741c9865bf42d5d0a901
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Dragon/dragon_attack3.anim
+  uploadId: 620051

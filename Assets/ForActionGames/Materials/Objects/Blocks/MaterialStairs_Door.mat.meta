@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7affc212f7ee947a0b4c39b7a959068e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Blocks/MaterialStairs_Door.mat
+  uploadId: 620051

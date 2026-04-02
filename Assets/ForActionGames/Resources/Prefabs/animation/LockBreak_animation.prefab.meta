@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6af810ca981c540f9b32b1b9f3045393
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/animation/LockBreak_animation.prefab
+  uploadId: 620051

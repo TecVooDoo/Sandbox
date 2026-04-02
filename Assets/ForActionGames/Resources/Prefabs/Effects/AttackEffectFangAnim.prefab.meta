@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e5624f88395b44505b21b86a00431602
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Effects/AttackEffectFangAnim.prefab
+  uploadId: 620051

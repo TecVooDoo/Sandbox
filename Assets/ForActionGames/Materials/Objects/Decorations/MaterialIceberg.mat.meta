@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5ba794bc5343148f78d62c1576837d54
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Materials/Objects/Decorations/MaterialIceberg.mat
+  uploadId: 620051

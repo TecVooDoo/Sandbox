@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 787e904b8a13d432e832a1f1c3a3abc4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Devil/devil_surprised.anim
+  uploadId: 620051

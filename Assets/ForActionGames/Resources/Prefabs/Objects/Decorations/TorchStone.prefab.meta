@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e90d82b83b68146d79d4662108aff513
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Decorations/TorchStone.prefab
+  uploadId: 620051

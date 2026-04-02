@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 31accd80ff3124606b5dbf098d608832
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/Treasure/treasure_idle.anim
+  uploadId: 620051

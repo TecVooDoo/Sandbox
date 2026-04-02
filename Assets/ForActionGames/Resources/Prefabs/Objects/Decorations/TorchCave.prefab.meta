@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3a48daacd339e45a19c30d282b49bfaf
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/Objects/Decorations/TorchCave.prefab
+  uploadId: 620051

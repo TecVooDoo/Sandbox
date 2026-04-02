@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 657138dad3fc340eda11d56d9f92785b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/AttackEffect/AttackEffectNoteHit.anim
+  uploadId: 620051

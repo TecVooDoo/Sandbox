@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f50358e47db494f5399260725e0e9c6e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/Resources/Prefabs/animation/Wall_animation.prefab
+  uploadId: 620051

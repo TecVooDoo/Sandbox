@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 055549165e7b844c69b13fed67c6cdd0
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249248
+  packageName: Assembly kit for Action games
+  packageVersion: 1.0
+  assetPath: Assets/ForActionGames/AnimationClips/SwitchButton/SwitchButton_on.anim
+  uploadId: 620051
