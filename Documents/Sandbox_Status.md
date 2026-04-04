@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Project Path:** `E:\Unity\Sandbox`
 **Document Version:** Reconstructed Feb 23, 2026 (after data loss)
-**Last Updated:** April 3, 2026 (Session 66)
+**Last Updated:** April 3, 2026 (Session 67)
 
 > **NOTE:** This document was reconstructed after the Sandbox project became corrupt on Feb 23, 2026. Content recovered from session context and MEMORY.md.
 
@@ -20,6 +20,31 @@ Sandbox is a dedicated asset evaluation environment AND game incubator for ALL T
 **Primary output:** `Sandbox_AssetLog.md` -- 315 asset evaluations as of Session 63.
 
 **Reference doc:** `Sandbox_DevReference.md` -- coding standards, MCP gotchas, eval standards, AI rules. Read on demand.
+
+---
+
+## Session 67 (Apr 3, 2026) -- Soul Minor Jumpstart
+
+**Status:** Soul Minor Sprint 1 jumpstart complete. 19 scripts compiling clean. Scene created. Ready for scene wiring + config SO instances.
+
+**Scripts Created (19 total, 0 errors):**
+- SM.Core (11): GameEvent, GameEventListener, GameEvent<T>/DoubleGameEvent/IntGameEvent, BodyConfigSO, ZoneConfigSO, RankConfigSO, UpgradeConfigSO, SoulManager, RankSystem, GameState, SaveManager
+- SM.Harvest (2): TapHarvester (touch/mouse + raycast), ComboSystem (timeout + multiplier)
+- SM.Mine (4): MineLevel, BodyPile (spawn/harvest/respawn), Elevator (capacity/trip cycle), Warehouse (storage/auto-collect)
+- SM.Upgrade (2): UpgradeSystem (mine/elevator/warehouse upgrades), UpgradeCurve (exponential cost calc)
+
+**Folder Structure:** Full hierarchy under `Assets/_Sandbox/_SM/` (Scripts, Art, Audio, Data, Prefabs, Scenes, Animations with subfolders)
+
+**Scene:** SM_ShallowGraves.unity created
+
+**Import Pipeline Bug Found:**
+- .cs files written via filesystem Write tool with auto-refresh disabled don't get properly imported as MonoScripts
+- Unity's AssetDatabase.Refresh() creates minimal .meta files (no MonoImporter section) for externally-written files
+- Fix: delete .cs + .meta, recreate via MCP `script-update-or-create` tool
+- Feedback memory saved: `memory/feedback_script_creation_mcp.md`
+- Added to MEMORY.md MCP Essentials section
+
+**Docs Updated:** SM_Status.md (Session 1), SM_CodeReference.md (19 scripts inventoried)
 
 ---
 

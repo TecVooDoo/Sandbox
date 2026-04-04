@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_SM/`
-**Last Updated:** April 3, 2026 (Session 0 -- Concept)
+**Last Updated:** April 3, 2026 (Session 1 -- Jumpstart)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `SM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,23 +15,31 @@
 
 ## Current State
 
-**Phase:** Pre-development. Concept doc complete. GDD v1.0 drafted. Sandbox strip-down in progress. Jumpstart begins after Sandbox is lean.
+**Phase:** Sprint 1 in progress. Core scripts compiling. Scene created. Ready for scene wiring + config SO instances.
+
+**Session 1 (Apr 3, 2026) -- Jumpstart Sprint:**
+- Full folder structure created under `Assets/_Sandbox/_SM/`
+- 19 scripts written and compiling clean (0 errors):
+  - **SM.Core (11):** GameEvent, GameEventListener, GameEvent<T>/DoubleGameEvent/IntGameEvent, BodyConfigSO, ZoneConfigSO, RankConfigSO, UpgradeConfigSO, SoulManager, RankSystem, GameState, SaveManager
+  - **SM.Harvest (2):** TapHarvester, ComboSystem
+  - **SM.Mine (4):** MineLevel, BodyPile, Elevator, Warehouse
+  - **SM.Upgrade (2):** UpgradeSystem, UpgradeCurve
+- SM_ShallowGraves scene created
+- Hit Unity import pipeline bug: .cs files written via filesystem Write tool weren't imported as MonoScripts with auto-refresh disabled. Required deletion + recreation via MCP `script-update-or-create` tool. Feedback memory saved.
+
+**Next (Session 2):**
+- Create config SO instances: 2 BodyConfigSOs (Cat, Dog), 1 ZoneConfigSO (Shallow Graves), 3 UpgradeConfigSOs (mine, elevator, warehouse), 2 RankConfigSOs (Rank 0-1)
+- Wire SM_ShallowGraves scene: GameState, SoulManager, RankSystem, SaveManager, Elevator, Warehouse, 3 MineLevels with BodyPiles
+- Basic UI (soul counter, upgrade buttons) -- UI Toolkit
+- Phase 4 art assets (Cute Pet, Assembly Kit, KayKit)
+- First playtest: tap bodies, see numbers go up
 
 **Session 0 (Apr 3, 2026) -- Concept:**
 - Soul Minor concept revived from TecVooDoo Projects napkin entry
 - Concept doc written at `E:\TecVooDoo\Projects\Games\1 Concepts\Soul Miner or Soul Minor\Documents\SoulMinor_Concept.md`
 - Idle Miner Tycoon structure confirmed (vertical shaft, three bottlenecks)
-- Cute + gore identity locked (Happy Tree Friends meets IMT -- sickeningly cute bodies, visceral scythe harvesting)
-- Mobile-first, portrait orientation, 3D diorama presentation
-- Chosen over Shift Happens: Nurse Edition as next jumpstart (ships faster, teaches mobile)
+- Cute + gore identity locked (Happy Tree Friends meets IMT)
 - GDD v1.0 drafted, docs structure created
-
-**Next (Session 1 -- Jumpstart Sprint):**
-- Sandbox strip-down must complete first (compile times still 9+ min)
-- Create `Assets/_Sandbox/_SM/` folder structure
-- Core scripts: SoulManager, TapHarvester, UpgradeSystem, RankSystem
-- Config SOs: RankConfigSO, ZoneConfigSO, BodyConfigSO, UpgradeConfigSO
-- Vertical slice target: 1 zone (Shallow Graves), 3 mine levels, tap + elevator + warehouse
 
 ---
 

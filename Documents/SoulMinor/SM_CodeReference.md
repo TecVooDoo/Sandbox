@@ -1,44 +1,51 @@
 # Soul Minor -- Code Reference
 
 **Purpose:** Script inventory and API reference for Soul Minor.
-**Last Updated:** April 3, 2026 (Session 0 -- no code yet)
+**Last Updated:** April 3, 2026 (Session 1 -- 19 scripts)
 
 ---
 
 ## Script Inventory
 
-No scripts yet. Planned systems (aligned with GDD v1.0):
+19 scripts compiling clean. Sprint 1 foundation:
 
-### SM.Core
-| Script | Purpose |
-|--------|---------|
-| SoulManager | Currency tracking (earn, spend, balance). Lifetime total for rank progression. |
-| RankSystem | Track current rank, check thresholds, trigger rank-up events. |
-| GameState | Overall game state (active zone, current rank, settings). |
-| SaveManager | Easy Save 3 wrapper. Auto-save, load, offline time delta. |
+### SM.Core (IMPLEMENTED)
+| Script | Purpose | Status |
+|--------|---------|--------|
+| GameEvent | Void SO event, observer pattern | Done |
+| GameEventListener | MonoBehaviour listener for GameEvent | Done |
+| GameEvent<T> / DoubleGameEvent / IntGameEvent | Generic typed SO events | Done |
+| BodyConfigSO | Body type config (soul value, prefabs, audio) + BodyType enum | Done |
+| ZoneConfigSO | Zone config (body pool, multiplier, level count) | Done |
+| RankConfigSO | Rank config (threshold, title, promotion letter) | Done |
+| UpgradeConfigSO | Upgrade curve config (cost, output, max level) + UpgradeTarget enum | Done |
+| SoulManager | Currency tracking (earn, spend, balance). Lifetime total for rank. | Done |
+| RankSystem | Track current rank, check thresholds, trigger rank-up events. | Done |
+| GameState | Overall game state (active zone, current rank, zone switching). | Done |
+| SaveManager | PlayerPrefs fallback + ES3 #if. Auto-save 30s, offline delta (8h cap). | Done |
 
-### SM.Harvest
-| Script | Purpose |
-|--------|---------|
-| TapHarvester | Process tap input, select body from pile, trigger harvest, award souls. |
-| ScytheController | Animate scythe swing per body type. Visual only. |
-| ComboSystem | Track consecutive taps, apply combo multiplier, reset on timeout. |
+### SM.Harvest (IMPLEMENTED)
+| Script | Purpose | Status |
+|--------|---------|--------|
+| TapHarvester | Touch/mouse input, raycast to BodyPile, harvest + award souls. | Done |
+| ScytheController | Animate scythe swing per body type. Visual only. | Planned |
+| ComboSystem | Consecutive taps, timeout reset, multiplier (configurable). | Done |
 
-### SM.Mine
-| Script | Purpose |
-|--------|---------|
-| MineLevel | Single level in a shaft. Manages body pile, harvest rate, upgrade state. |
-| BodyPile | Visual body pile. Tracks which bodies are harvested, respawn timer. |
-| Elevator | Soul transport from levels to surface. Capacity, speed, queue. |
-| Warehouse | Surface storage. Capacity, auto-collect rate, overflow handling. |
-| ZoneManager | Manages zones (shafts). Zone unlock, zone switching. |
+### SM.Mine (IMPLEMENTED)
+| Script | Purpose | Status |
+|--------|---------|--------|
+| MineLevel | Single shaft level. Body pile ref, upgrade state, pending souls. | Done |
+| BodyPile | Body instances, harvest by raycast hit, respawn timer. | Done |
+| Elevator | Soul transport. Capacity, trip timer, load/deliver cycle. | Done |
+| Warehouse | Surface storage. Capacity, auto-collect, manual collect. | Done |
+| ZoneManager | Manages zones (shafts). Zone unlock, zone switching. | Planned |
 
-### SM.Upgrade
-| Script | Purpose |
-|--------|---------|
-| UpgradeSystem | Process upgrade purchases. Apply to target (level, elevator, warehouse). |
-| UpgradeCurve | Calculate cost and output at any level given base + multiplier SO. |
-| AutomationManager | Manage minions. Assign to levels, track harvest automation. |
+### SM.Upgrade (IMPLEMENTED)
+| Script | Purpose | Status |
+|--------|---------|--------|
+| UpgradeSystem | Purchase upgrades for mine/elevator/warehouse. Tracks per-level state. | Done |
+| UpgradeCurve | Static: cost/output at level N from UpgradeConfigSO. | Done |
+| AutomationManager | Manage minions. Assign to levels, track harvest automation. | Planned |
 
 ### SM.VFX
 | Script | Purpose |
