@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using SM.Core;
 using SM.Mine;
+using SM.VFX;
 
 namespace SM.Harvest
 {
@@ -15,6 +16,7 @@ namespace SM.Harvest
         [SerializeField] private SoulManager _soulManager;
         [SerializeField] private ComboSystem _comboSystem;
         [SerializeField] private Camera _camera;
+        [SerializeField] private NumberPop _numberPop;
 
         [Header("Events")]
         [SerializeField] private DoubleGameEvent _onSoulHarvested;
@@ -38,13 +40,11 @@ namespace SM.Harvest
         {
             bool tapped = false;
 
-            // Touch input (mobile)
             if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
             {
                 Vector2 touchPos = Touchscreen.current.primaryTouch.position.ReadValue();
                 tapped = TryHarvestAt(touchPos);
             }
-            // Mouse fallback (editor)
             else if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 Vector2 mousePos = Mouse.current.position.ReadValue();
@@ -72,10 +72,19 @@ namespace SM.Harvest
             BodyConfigSO harvestedBody = bodyPile.TryHarvest(hit.point);
             if (harvestedBody == null) return false;
 
+            // Get mine level yield multiplier if available
+            float levelMultiplier = 1f;
+            MineLevel mineLevel = bodyPile.GetComponentInParent<MineLevel>();
+            if (mineLevel != null)
+                levelMultiplier = mineLevel.SoulYieldMultiplier;
+
             float comboMultiplier = _comboSystem != null ? _comboSystem.RegisterTap() : 1f;
-            double soulValue = harvestedBody.BaseSoulValue * _baseTapPower * _tapPowerMultiplier * comboMultiplier;
+            double soulValue = harvestedBody.BaseSoulValue * _baseTapPower * _tapPowerMultiplier * levelMultiplier * comboMultiplier;
 
             _soulManager.AddSouls(soulValue);
+
+            if (_numberPop != null)
+                _numberPop.Show(hit.point, soulValue, comboMultiplier >= 2f);
 
             if (_onSoulHarvested != null)
                 _onSoulHarvested.Raise(soulValue);

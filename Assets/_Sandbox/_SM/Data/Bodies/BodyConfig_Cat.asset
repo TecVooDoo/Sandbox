@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SM.Core.BodyConfigSO
   _bodyType: 0
   _baseSoulValue: 1
-  _bodyPrefab: {fileID: 1001402245203251440, guid: 6796fd7f0068bdc428a2fca8eb83823b, type: 3}
+  _bodyPrefab: {fileID: 3709150949319397418, guid: 7f9457d4f63eac14cb20be4c3c9a2e53, type: 3}
   _gorePrefab: {fileID: 0}
   _particleColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   _bodyPartPrefabs: []
