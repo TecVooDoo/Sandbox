@@ -1,100 +1,118 @@
 # Hide 'N Reap -- Code Reference
 
 **Purpose:** Script inventory and API reference for HNR.
-**Last Updated:** April 2, 2026 (Session 2 -- Mechanics Review, no code yet)
+**Last Updated:** April 2, 2026 (Session 3 -- Sprint 1 Foundation)
 
 ---
 
-## Script Inventory
-
-No scripts yet. Planned systems (aligned with GDD v2.0):
+## Implemented Scripts
 
 ### HNR.Core
-| Script | Purpose |
-|--------|---------|
-| MatchManager | Match lifecycle (start, timer, scoring, end) |
-| ScytheSystem | Scythe pickup, drop, drain, recharge, random respawn |
-| WorldLayerManager | Camera culling mask toggle (supernatural/living visibility) |
-| GameEvent / GameEventListener | Standard TecVooDoo event system |
+
+| Script | Path | Purpose |
+|--------|------|---------|
+| PlayerState | `Scripts/Core/PlayerState.cs` | Enum: Ghost, Possessed, Reaper |
+| WorldLayer | `Scripts/Core/WorldLayer.cs` | Layer constants (Supernatural=6, Living=7), camera culling masks |
+| WorldLayerManager | `Scripts/Core/WorldLayerManager.cs` | Camera culling mask toggle based on player state |
+| ScreenBoundary | `Scripts/Core/ScreenBoundary.cs` | Clamps rigidbody to camera viewport (ortho + perspective) |
 
 ### HNR.Input
-| Script | Purpose |
-|--------|---------|
-| IGhostInput | Interface: GetMoveDirection, TryPossess, TryExitBody, TryPickupScythe, TryDropScythe, TryReap, TryAttack |
-| LocalGhostInput | Keyboard/gamepad implementation of IGhostInput |
-| NetworkGhostInput | PurrNet RPC implementation of IGhostInput (Sprint 6) |
-| AIGhostInput | Behavior Designer Pro implementation of IGhostInput (Sprint 4) |
+
+| Script | Path | Purpose |
+|--------|------|---------|
+| IGhostInput | `Scripts/Input/IGhostInput.cs` | Interface: GetMoveDirection, TryPossess, TryExitBody, TryPickupScythe, TryDropScythe, TryReap, TryAttack |
+| LocalGhostInput | `Scripts/Input/LocalGhostInput.cs` | Keyboard input: WASD move, E possess, Q exit, F/G scythe, R reap, LMB attack |
 
 ### HNR.Ghost
-| Script | Purpose |
-|--------|---------|
-| GhostController | Ghost state management, consumes IGhostInput |
-| GhostMovement | 2.5D lane-based movement, phasing through objects |
-| CooldownTimer | Possession cooldown tracking after body exit |
-| PlayerState | Current role (Ghost, Possessed, Reaper), score |
 
-### HNR.Reaper
-| Script | Purpose |
-|--------|---------|
-| ReaperController | Reaper movement, reap targeting (exposed ghosts only) |
-| ReapSystem | Reap execution, score increment, scythe drain trigger |
-| ScytheDrain | Scythe disappear -> recharge timer -> random respawn |
+| Script | Path | Purpose |
+|--------|------|---------|
+| GhostConfigSO | `Scripts/Ghost/GhostConfigSO.cs` | SO: maxSpeed(8), accel(12), decel(4), lane positions, possession cooldown(3s) |
+| GhostController | `Scripts/Ghost/GhostController.cs` | Floaty X/Y movement, state transitions, cooldown timer, WorldLayerManager integration |
 
-### HNR.Possession
-| Script | Purpose |
-|--------|---------|
-| PossessionSystem | Enter/exit dead body, cooldown enforcement |
-| BodyController | Possessed body movement, world interaction, attack |
-| RotSystem | Per-body rot timer, passive decay, possession acceleration, damage conversion |
-| BodyManager | Track all dead bodies, rot values, possession state |
+**GhostController API:**
+- `EnterPossessedState()` -- hides ghost, switches camera to living layer
+- `ExitPossessedState(Vector3 spawnPos)` -- reappears ghost, starts cooldown, switches camera back
+- `EnterReaperState()` / `ExitReaperState()` -- scythe state transitions
+- `SetInputProvider(IGhostInput)` -- runtime input swap (network, AI)
+- `IsOnCooldown`, `CooldownRemaining`, `CurrentState` -- read-only state
 
 ### HNR.NPC
-| Script | Purpose |
-|--------|---------|
-| NPCSpawner | Spawn and manage living NPC pool |
-| NPCLifecycle | State machine: Alive -> Dead -> Possessed -> Destroyed |
-| NPCBehavior (base) | Behavior interface for living NPC AI patterns |
-| BodyTypeMovement | Body determines movement capabilities (walk, climb, fly, burrow, etc.) |
-| HumanNPC | Walk, run, climb, use props |
-| DogNPC | Walk, run, erratic direction changes |
-| CatNPC | Walk, run, climb (vertical access) |
-| PigNPC | Slow waddle, charge knockback |
-| SheepNPC | Walk, herd drift |
-| ChickenNPC | Walk, short flight |
-| BirdNPC | Full flight, vertical freedom |
-| RabbitNPC | Walk, hop, burrow underground |
+
+| Script | Path | Purpose |
+|--------|------|---------|
+| NPCLifecycleState | `Scripts/NPC/Lifecycle/NPCLifecycleState.cs` | Enum: Alive, Dead, Possessed, Destroyed |
+| NPCType | `Scripts/NPC/Lifecycle/NPCType.cs` | Enum: Human, Dog, Cat, Pig, Sheep, Chicken, Bird, Rabbit |
+| NPCConfigSO | `Scripts/NPC/Lifecycle/NPCConfigSO.cs` | SO: rot timing, movement caps (speed, canClimb, canFly, canBurrow), alive walk speed |
+| NPCLifecycle | `Scripts/NPC/Lifecycle/NPCLifecycle.cs` | State machine: Alive->Dead->Possessed->Destroyed. Rot timer with 4 stages. |
+
+**NPCLifecycle API:**
+- `Kill()` -- Alive->Dead, starts rot timer
+- `Possess()` -> bool -- Dead->Possessed if possessable
+- `Unpossess()` -- Possessed->Dead, body keeps rot
+- `TakeDamage(float)` -- reduces rot time, destroys at zero
+- `IsPossessable` -- true if Dead and rot > 0
+- `RotStage` (0-3), `RotNormalized` (0-1), `RotTimeRemaining`
+- Events: `OnStateChanged`, `OnRotThresholdCrossed`, `OnBodyDestroyed`
+
+### HNR.Possession
+
+| Script | Path | Purpose |
+|--------|------|---------|
+| PossessionSystem | `Scripts/Possession/PossessionSystem.cs` | Bridges GhostController + NPCLifecycle. OverlapSphere body detection, exit via event. |
+| BodyController | `Scripts/Possession/BodyController.cs` | Possessed body movement (horizontal only), stand-up/lie-down, exit input (Q key). |
+
+**PossessionSystem API:**
+- `ExitBody()` -- voluntary exit, deactivates body, reappears ghost
+- `CurrentBody`, `IsInBody` -- read-only state
+- `SetInputProvider(IGhostInput)` -- runtime input swap
+
+**BodyController API:**
+- `Activate(IGhostInput, NPCConfigSO)` -- starts body movement, stands up
+- `Deactivate()` -- stops movement, lies down
+- Event: `OnExitRequested` -- fired when Q pressed
+
+---
+
+## SO Assets
+
+| Asset | Path | Purpose |
+|-------|------|---------|
+| GhostConfig | `Data/GhostConfig.asset` | Ghost movement tuning |
+| NPCConfig_Human | `Data/NPCConfig_Human.asset` | Human NPC type config (default values) |
+
+---
+
+## Scenes
+
+| Scene | Path | Purpose |
+|-------|------|---------|
+| HNR_GraveyardTest | `Scenes/HNR_GraveyardTest.unity` | Sprint 1 test scene: fixed camera, ghost, 3 dead bodies |
+
+---
+
+## Planned Scripts (Not Yet Implemented)
+
+### HNR.Core
+- MatchManager, ScytheSystem, GameEvent/GameEventListener
+
+### HNR.Reaper
+- ReaperController, ReapSystem, ScytheDrain
+
+### HNR.NPC
+- NPCSpawner, NPC behavior scripts (per-type), BodyTypeMovement
 
 ### HNR.Hazard
-| Script | Purpose |
-|--------|---------|
-| HazardManager | Random hazard scheduling, min/max intervals |
-| HazardEvent (base) | Area-of-effect NPC kill, map-specific subtypes |
+- HazardManager, HazardEvent subtypes
 
 ### HNR.AI
-| Script | Purpose |
-|--------|---------|
-| AIGhostBrain | Tactical decision-making: find body, evaluate rot, possess, act naturally |
-| AIReaperBrain | Hunt exposed ghosts, drop-possess-chaos-reap loop |
-| AIBodySelector | Evaluate available bodies by rot, distance, risk |
+- AIGhostInput, AIGhostBrain, AIReaperBrain, AIBodySelector
 
 ### HNR.Network
-| Script | Purpose |
-|--------|---------|
-| NetworkInputProvider | PurrNet wrapper implementing IGhostInput |
-| StateSync | Server-authoritative sync for scythe, rot, NPC lifecycle |
-| BodySync | Body ownership transfer via PurrNet per-component ownership |
+- NetworkGhostInput, StateSync, BodySync
 
-### HNR.UI
-| Script | Purpose |
-|--------|---------|
-| ScoreHUD | Reap count display |
-| MatchTimerUI | Match timer |
-| RotWarningUI | Rot threshold warning for possessing player |
-
-### HNR.Audio
-| Script | Purpose |
-|--------|---------|
-| AudioCueManager | SFX triggers for death, scythe, reap, hazard, rot |
+### HNR.UI / HNR.Audio
+- ScoreHUD, MatchTimerUI, RotWarningUI, AudioCueManager
 
 ---
 

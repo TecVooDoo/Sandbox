@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Project Path:** `E:\Unity\Sandbox`
 **Document Version:** Reconstructed Feb 23, 2026 (after data loss)
-**Last Updated:** April 1, 2026 (Session 65)
+**Last Updated:** April 3, 2026 (Session 66)
 
 > **NOTE:** This document was reconstructed after the Sandbox project became corrupt on Feb 23, 2026. Content recovered from session context and MEMORY.md.
 
@@ -20,6 +20,68 @@ Sandbox is a dedicated asset evaluation environment AND game incubator for ALL T
 **Primary output:** `Sandbox_AssetLog.md` -- 315 asset evaluations as of Session 63.
 
 **Reference doc:** `Sandbox_DevReference.md` -- coding standards, MCP gotchas, eval standards, AI rules. Read on demand.
+
+---
+
+## Session 66 (Apr 3, 2026) -- HNR Migration, TecVooDoo Project, Sandbox Rebuild, Soul Minor
+
+**Status:** Massive infrastructure session. HNR migrated to standalone. TecVooDoo project created. Sandbox rebuilt from scratch (fresh project, lean packages). Soul Minor chosen as next jumpstart.
+
+**HNR Migration COMPLETE:**
+- HNR standalone at `E:\Unity\HideNReap` (Unity 6, URP)
+- 14 scripts migrated (GhostController, NPCLifecycle, PossessionSystem, BodyController, configs, etc.)
+- All docs migrated, MCP configured, compiling clean
+- Sprint 1 partially tested -- ghost movement + possess/exit works, body stand-up needs fix
+
+**TecVooDoo Project Created:**
+- `E:\Unity\TecVooDoo` -- dedicated TMCP/TVDGames/TVDUtilities development
+- All TMCP-supported assets will be installed here (replacing Sandbox for that role)
+- Docs: TVD_Status.md, TVD_DevReference.md
+- TMCP define manager bug flagged as HIGH priority
+
+**Sandbox Complete Rebuild:**
+- Old Sandbox compile times: 15 min (692s script compilation + 100s domain reload)
+- Diagnosed via Editor.log: 5,500+ .cs files from TMCP-supported assets
+- Stripped ~3,220 .cs files, still 10 min due to domain reload / stale Library
+- Nuclear option: deleted entire project, recreated fresh, copied back Documents + configs
+- Fresh install: 11 packages (5 defaults + 6 QoL + infrastructure)
+- MCP connected on port 24815
+- Expected compile times: < 20s
+
+**Asset Uninstall Log (from old Sandbox):**
+- PurrNet: clean (locked empty folder)
+- Dialogue System + addon: clean (TMCP define stuck, manual strip)
+- Behavior Designer Pro + UCC: must uninstall together (shared Opsive folders)
+- Feel: clean (TMCP define stuck, DLL locked folder)
+- Final IK: clean (TMCP define stuck, wouldn't clear even after strip)
+- AllIn1 3D Shader: clean
+- Damage Numbers Pro: clean (DLL locked folder)
+
+**TMCP Define Manager Bug (confirmed pattern):**
+- Asset removal leaves `HAS_*` defines in ProjectSettings
+- Compile errors prevent define manager from running to clean them up
+- Every TMCP-supported asset removal requires manual define stripping
+- Flagged in TecVooDoo TVD_Status.md as HIGH priority
+
+**New Docs Created:**
+- Eval_Guide.md (standalone eval methodology for all eval types)
+- Sandbox_FreshInstall.md (minimal package list for fresh rebuild)
+- NewProjectSetup_Brief.md updated (Auto Refresh disabled, editor preferences section)
+
+**Soul Minor -- Next Jumpstart:**
+- Concept revived from TecVooDoo Projects napkin entry
+- Full concept doc at `E:\TecVooDoo\Projects\Games\1 Concepts\Soul Miner or Soul Minor\Documents\SoulMinor_Concept.md`
+- GDD v1.0 + Status + DevReference + CodeReference created in `Documents\SoulMinor\`
+- Idle Miner Tycoon structure (vertical shaft, three bottlenecks)
+- Cute + gore identity (Happy Tree Friends meets IMT -- scythe bodies, blood + soul wisps)
+- Mobile-first, portrait, 3D diorama. 8-12 week ship target.
+- Chosen over Shift Happens: Nurse Edition (ships faster, teaches mobile)
+
+**Shift Happens: Nurse Edition:**
+- Concept doc created at `E:\TecVooDoo\Projects\Games\1 Concepts\Shift Happens Nurse Edition\Documents\ShiftHappens_Concept.md`
+- Bomber Crew in a hospital. Career ladder, delegation, three task categories (work, training, BS from cat-driven admin)
+- Edition model for franchise (Nurse -> Aircraft Maintenance -> Kitchen -> etc.)
+- Deferred as follow-up project after Soul Minor ships
 
 ---
 

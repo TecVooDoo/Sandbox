@@ -299,138 +299,6 @@ MonoBehaviour:
   cropToFit:
     m_OverrideState: 1
     m_Value: 1
---- !u!114 &-1522212033863166957
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79d2da40ebb77b944bc3b032a724941f, type: 3}
-  m_Name: OutlineVolumeSettings
-  m_EditorClassIdentifier: OccaSoftware.Outlines.Runtime::OccaSoftware.Outlines.Runtime.OutlineVolumeSettings
-  active: 1
-  outlineColor:
-    m_OverrideState: 1
-    m_Value: {r: 0, g: 0, b: 0, a: 1}
-  maximumOutlineThickness:
-    m_OverrideState: 1
-    m_Value: 0
-  edgeThreshold:
-    m_OverrideState: 1
-    m_Value: 0
-  excludeSkybox:
-    m_OverrideState: 1
-    m_Value: 1
-  resolutionScaling:
-    m_OverrideState: 1
-    m_Value: 1080
-  frameRate:
-    m_OverrideState: 1
-    m_Value: 6
-  depthThickness01:
-    m_OverrideState: 1
-    m_Value: 1
-  depthThreshold:
-    m_OverrideState: 1
-    m_Value: 1
-  depthSoftness:
-    m_OverrideState: 1
-    m_Value: 0.1
-  normalThickness01:
-    m_OverrideState: 1
-    m_Value: 1
-  normalThreshold:
-    m_OverrideState: 1
-    m_Value: 0.5
-  normalSoftness:
-    m_OverrideState: 1
-    m_Value: 0.5
-  lumaThickness01:
-    m_OverrideState: 1
-    m_Value: 1
-  lumaThreshold:
-    m_OverrideState: 1
-    m_Value: 0.2
-  lumaSoftness:
-    m_OverrideState: 1
-    m_Value: 0.1
-  colorThickness01:
-    m_OverrideState: 1
-    m_Value: 1
-  colorThreshold:
-    m_OverrideState: 1
-    m_Value: 0.2
-  colorSoftness:
-    m_OverrideState: 1
-    m_Value: 0.1
-  distanceStart:
-    m_OverrideState: 1
-    m_Value: 0
-  distanceEnd:
-    m_OverrideState: 1
-    m_Value: 100
-  nearThickness01:
-    m_OverrideState: 1
-    m_Value: 1
-  farThickness01:
-    m_OverrideState: 1
-    m_Value: 1
-  nearAlpha:
-    m_OverrideState: 1
-    m_Value: 1
-  farAlpha:
-    m_OverrideState: 1
-    m_Value: 1
-  grazingAngleThreshold:
-    m_OverrideState: 1
-    m_Value: 0.2
-  grazingAngleOffset:
-    m_OverrideState: 1
-    m_Value: 3
-  offsetTexture:
-    m_OverrideState: 1
-    m_Value: {fileID: 0}
-    dimension: 1
-  offsetTextureStrength:
-    m_OverrideState: 1
-    m_Value: 0
-  offsetTextureScale:
-    m_OverrideState: 1
-    m_Value: 3
-  offsetTextureSpeed:
-    m_OverrideState: 1
-    m_Value: 10
-  offsetExcludeSkybox:
-    m_OverrideState: 1
-    m_Value: 1
-  paperTexture:
-    m_OverrideState: 1
-    m_Value: {fileID: 0}
-    dimension: 1
-  paperTextureStrength:
-    m_OverrideState: 1
-    m_Value: 0
-  paperTextureScale:
-    m_OverrideState: 1
-    m_Value: 10
-  paperTextureSpeed:
-    m_OverrideState: 1
-    m_Value: 0
-  paperExcludeSkybox:
-    m_OverrideState: 1
-    m_Value: 1
-  blurAmount:
-    m_OverrideState: 1
-    m_Value: 0
-  blurNoiseEnabled:
-    m_OverrideState: 1
-    m_Value: 0
-  previewOutlines:
-    m_OverrideState: 1
-    m_Value: 0
 --- !u!114 &-1410297666881709256
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -474,9 +342,6 @@ MonoBehaviour:
   skyOcclusionIntensityMultiplier:
     m_OverrideState: 1
     m_Value: 1
-  worldOffset:
-    m_OverrideState: 1
-    m_Value: {x: 0, y: 0, z: 0}
 --- !u!114 &-1216621516061285780
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -509,9 +374,6 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
   highQualityFiltering:
-    m_OverrideState: 1
-    m_Value: 0
-  filter:
     m_OverrideState: 1
     m_Value: 0
   downscale:
@@ -600,7 +462,8 @@ MonoBehaviour:
   - {fileID: -6288072647309666549}
   - {fileID: 7518938298396184218}
   - {fileID: -1410297666881709256}
-  - {fileID: -1522212033863166957}
+  - {fileID: -7750755424749557576}
+  - {fileID: -5139089513906902183}
 --- !u!114 &853819529557874667
 MonoBehaviour:
   m_ObjectHideFlags: 3

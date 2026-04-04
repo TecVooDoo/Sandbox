@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **HNR Root:** `Assets/_Sandbox/_HNR/`
-**Last Updated:** April 2, 2026 (Session 2 -- Mechanics Review)
+**Last Updated:** April 2, 2026 (Session 3 -- Sprint 1 Foundation)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `HNR_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,41 +15,37 @@
 
 ## Current State
 
-**Phase:** Session 2 -- GDD v2.0 written. Original mechanics restored. Ready for prototyping.
+**Phase:** Sprint 1 in progress. Core ghost movement, NPC lifecycle, possession system written and partially tested. Scene needs fixups before next playtest.
+
+**Session 3 (Apr 2, 2026) -- Sprint 1 Foundation:**
+- Created GhostConfigSO (speed 8, accel 12, decel 4 for floaty feel, lane positions, possession cooldown 3s)
+- Created GhostController (floaty X/Y movement, state transitions Ghost/Possessed/Reaper, possession cooldown, WorldLayerManager integration)
+- Created ScreenBoundary (clamps rigidbody to camera viewport, supports ortho + perspective)
+- Created NPCLifecycleState enum, NPCType enum, NPCConfigSO (per-type rot + movement config)
+- Created NPCLifecycle (Alive/Dead/Possessed/Destroyed state machine, rot timer with 4 stages per GDD, damage-to-rot, events)
+- Created PossessionSystem (bridges GhostController + NPCLifecycle, OverlapSphere body detection, exit via BodyController event)
+- Created BodyController (ground-based possessed body movement, stand-up/lie-down, exit input)
+- Set up Unity layers: 6=Supernatural, 7=Living
+- Created GhostConfig.asset + NPCConfig_Human.asset SOs
+- Built HNR_GraveyardTest scene: fixed camera at (0,2,-15), ground, ghost player (cyan capsule), 3 dead bodies at various rot
+- Disabled Unity Auto Refresh (added to NewProjectSetup_Brief.md as standard)
+- **Playtest results:** Ghost WASD movement works (floaty feel confirmed). E/Q possess/exit works. Body moves left/right when possessed.
+- **Known issues from playtest:**
+  - Scene bodies need Rigidbodies added (scene was built without them)
+  - Body stand-up Y position fix is in code but untested (bodies at Y=0.5 embed in ground when rotated upright, need Y=1)
+  - Lane switching deferred (removed from vertical input to prevent Z drift)
+- **BLOCKER:** Sandbox compile times 10-15 min per change. Auto Refresh now disabled (Ctrl+R manual compile), but still painful. Consider standalone migration sooner if this continues.
 
 **Session 2 (Apr 2, 2026) -- Mechanics Review:**
-- Reviewed GDD against original paper-napkin design (pre-crash)
-- Identified significant complexity creep in v1.0/v1.1: phase system, scythe-gated possession, collapse events, Reaper energy drain, Lane Strike/Decay Pulse abilities -- all added to solve problems that the original "possess the dead" mechanic never had
-- Restored original core mechanics:
-  - Two overlapping worlds (supernatural + living). Possessed players blind to supernatural.
-  - Ghosts possess the DEAD only (not living NPCs). Bodies are a scarce resource.
-  - Reaper can only reap exposed ghosts. Cannot interact with living world.
-  - Scythe and possession are mutually exclusive. Reaper drops scythe voluntarily to go possess.
-  - Environmental hazards are the primary body-supply system (random NPC kills).
-  - Rot is per-body (not per-ghost), persists across possessions, fresh bodies last longer.
-  - Possession cooldown after exiting any body (prevents instant body-hopping).
-  - Successful reap drains scythe -- disappears, recharges, respawns randomly.
+- GDD v2.0 written -- original "possess the dead" mechanics restored
 - CUT: Phase system, Collapse event, Reaper energy, scythe-gated possession, Lane Strike, Decay Pulse
-- GDD updated to v2.0
-- Graveyard is now the tutorial map (starts with pre-dead bodies)
 
-**Session 1 (Apr 2, 2026) -- Art Direction + Foundations:**
-- Visual lineup scene at `Assets/_Sandbox/_HNR/ArtEval/`
-- 5 art packs evaluated, multi-pack art direction confirmed
-- PurrNet 1.19.1 locked in as netcode
-- Single screen confirmed
-- 3 maps, 6 NPC types defined
-
-**Session 0 (Apr 1, 2026) -- Bootstrap:**
-- GDD v1.0, folder structure, docs created
-
-**Next (Session 3 -- Foundation Sprint):**
-- IGhostInput interface + LocalGhostInput (keyboard)
-- World layer system (supernatural/living camera culling)
-- Ghost controller + movement (2.5D, phasing)
-- NPC spawner + lifecycle (alive -> dead)
-- Basic possession (enter/exit dead body + cooldown)
-- Graveyard test map (primitives, pre-placed bodies)
+**Next (Session 4 -- Finish Sprint 1 Playtest):**
+- Fix test scene: add Rigidbodies to body capsules, verify stand-up/lie-down works
+- Verify possession cooldown (3s timer visible in inspector)
+- Verify rot timer ticking (rotting body should disappear, eject ghost)
+- Verify screen boundary clamping
+- If all Sprint 1 items pass: commit and plan Sprint 2
 
 **Sprint Plan (Single-Player First, Network Last):**
 
@@ -166,7 +162,11 @@ Evaluated KayKit, Kenney, Tiny Treats, Cute Pet (Suriyun), Assembly Kit (Sigmoid
 
 ## Known Issues
 
-None yet -- fresh bootstrap.
+| Issue | Impact | Notes |
+|-------|--------|-------|
+| Sandbox compile times 10-15 min | Major workflow blocker | Auto Refresh disabled, manual Ctrl+R. Still slow due to TMCP asset volume. |
+| Test scene bodies missing Rigidbodies | Scene not fully testable | Bodies need RBs for stand-up/lie-down physics. Quick fix next session. |
+| Body stand-up Y position | Capsule embeds in ground at Y=0.5 | Code raises to Y=1 on possess, untested. |
 
 ---
 

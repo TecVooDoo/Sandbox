@@ -2,19 +2,12 @@
   "mcpServers": {
     "ai-game-developer": {
       "args": [
-        "port=54815",
+        "port=24815",
         "plugin-timeout=10000",
         "client-transport=stdio",
         "authorization=none"
       ],
       "command": "E:/Unity/Sandbox/Library/mcp-server/win-x64/unity-mcp-server.exe"
-    },
-    "blender": {
-      "command": "cmd",
-      "args": ["/c", "uvx", "blender-mcp"],
-      "env": {
-        "DISABLE_TELEMETRY": "true"
-      }
     }
   }
 }

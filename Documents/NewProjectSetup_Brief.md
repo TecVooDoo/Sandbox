@@ -290,10 +290,28 @@ Document project-specific rules in that project's `DevReference.md`.
 
 ---
 
+## 11. Editor Preferences (Claude Code Workflow)
+
+These settings prevent Unity from triggering full reimports every time Claude Code writes a file externally. Apply to every project.
+
+**Edit > Preferences > Asset Pipeline:**
+
+| Setting | Value | Why |
+|---------|-------|-----|
+| Auto Refresh | **Disabled** | Prevents reimport on every external file write. Compile manually with **Ctrl+R**. |
+| Script Changes While Playing | **Recompile After Finished Playing** | Safer than hot-reload, avoids mid-play domain reload crashes. |
+
+Without these, writing multiple scripts via Claude Code triggers a separate reimport cycle for each file -- catastrophic on large projects with many assets (Sandbox reimport takes 10+ minutes).
+
+**Workflow:** Claude writes all scripts, then user hits Ctrl+R once to compile the batch.
+
+---
+
 ## Quick Setup Checklist
 
 - [ ] Unity 6 project created with URP
 - [ ] Root folder: `Assets/_<ProjectName>/`
+- [ ] **Editor Preferences set** (Auto Refresh disabled, Recompile After Finished Playing)
 - [ ] OpenUPM scoped registry added to manifest.json
 - [ ] Phase 1 prerequisites installed (Addressables, TextMesh Pro)
 - [ ] Phase 2 core packages installed (UniTask, TecVooDoo packages, MCP)

@@ -127,6 +127,8 @@ The Unity port is shown in the AI Game Developer panel in Unity Editor. Use what
 | AnimationProject | 52516 | `E:/Unity/AnimationProject` |
 | SpaceSucks | 29794 | `E:/Unity/SpaceSucks` |
 | DLYH | 51240 | `C:/Unity/DontLoseYourHead` |
+| HideNReap | 26876 | `E:/Unity/HideNReap` |
+| TecVooDoo | 23611 | `E:/Unity/TecVooDoo` |
 | VNPC | check Unity | `E:/Unity/VNPC/VisualNovelPointClick` |
 | Blender (all projects) | 9876 | N/A (runs via `uvx`) |
 
