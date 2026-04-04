@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_SM/`
-**Last Updated:** April 3, 2026 (Session 1 -- Jumpstart)
+**Last Updated:** April 4, 2026 (Session 2 -- Scene Wiring + Art)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `SM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,24 +15,38 @@
 
 ## Current State
 
-**Phase:** Sprint 1 in progress. Core scripts compiling. Scene created. Ready for scene wiring + config SO instances.
+**Phase:** Sprint 1 in progress. First playtest done. Core tap loop works (tap -> souls -> upgrades). Needs visible upgrade feedback and three-bottleneck pipeline.
 
-**Session 1 (Apr 3, 2026) -- Jumpstart Sprint:**
-- Full folder structure created under `Assets/_Sandbox/_SM/`
-- 19 scripts written and compiling clean (0 errors):
-  - **SM.Core (11):** GameEvent, GameEventListener, GameEvent<T>/DoubleGameEvent/IntGameEvent, BodyConfigSO, ZoneConfigSO, RankConfigSO, UpgradeConfigSO, SoulManager, RankSystem, GameState, SaveManager
-  - **SM.Harvest (2):** TapHarvester, ComboSystem
-  - **SM.Mine (4):** MineLevel, BodyPile, Elevator, Warehouse
-  - **SM.Upgrade (2):** UpgradeSystem, UpgradeCurve
-- SM_ShallowGraves scene created
-- Hit Unity import pipeline bug: .cs files written via filesystem Write tool weren't imported as MonoScripts with auto-refresh disabled. Required deletion + recreation via MCP `script-update-or-create` tool. Feedback memory saved.
+**Session 2 (Apr 4, 2026) -- Scene Wiring, UI, Art Assets:**
+- 18 config SO instances created: 2 BodyConfigSOs (Cat, Dog), 2 RankConfigSOs (Rank 0-1), 1 ZoneConfigSO (Shallow Graves), 3 UpgradeConfigSOs (mine/elevator/warehouse), 11 GameEvent SOs
+- SM_ShallowGraves scene fully wired:
+  - [GameManager]: SoulManager, RankSystem, GameState, SaveManager, UpgradeSystem
+  - [Input]: TapHarvester, ComboSystem
+  - [Mine]: ZoneInitializer, Elevator, Warehouse, 3 MineLevels with BodyPiles (Box colliders on Layer 6 "Body")
+  - [UI]: UIDocument + SMHUD controller
+- New scripts: ZoneInitializer (BodyPile init + IGameEventListener<double> for Elevator->Warehouse), SMHUD (UI Toolkit controller)
+- UI Toolkit HUD: soul counter, rank bar, combo indicator, 3 upgrade buttons, collect button. PanelSettings 1080x1920 portrait.
+- UI fix: pickingMode=Ignore on root so clicks pass through to 3D body piles
+- Placeholder body prefabs: pink cube (Cat), brown cube (Dog)
+- Camera: side-view, dark purple bg, 45 FOV
+- **Art assets imported:**
+  - KayKit Skeletons (6 characters + 2 anim sets) -- player rank progression
+  - KayKit Halloween (102 props) -- Shallow Graves/Cemetery zones
+  - KayKit Block Bits (58 tiling blocks) -- mine shaft walls/floors
+  - Suriyun Cute Pet + ForActionGames Assembly Kit already in project
+- **First playtest:** Tap cubes -> disappear -> soul counter increments -> upgrade buttons work. UI click-through fixed. Upgrades run but no visible feedback yet.
 
-**Next (Session 2):**
-- Create config SO instances: 2 BodyConfigSOs (Cat, Dog), 1 ZoneConfigSO (Shallow Graves), 3 UpgradeConfigSOs (mine, elevator, warehouse), 2 RankConfigSOs (Rank 0-1)
-- Wire SM_ShallowGraves scene: GameState, SoulManager, RankSystem, SaveManager, Elevator, Warehouse, 3 MineLevels with BodyPiles
-- Basic UI (soul counter, upgrade buttons) -- UI Toolkit
-- Phase 4 art assets (Cute Pet, Assembly Kit, KayKit)
-- First playtest: tap bodies, see numbers go up
+**Known Issues:**
+- Upgrades change internal values but no visible feedback (no number pop, no speed change visible)
+- Three-bottleneck pipeline not connected (tap goes direct to SoulManager, bypasses Mine->Elevator->Warehouse)
+- Collect button never shows (Warehouse never receives souls without pipeline)
+- Assembly Kit vs KayKit Skeletons decision pending for player character
+
+**Next (Session 3):**
+- Make upgrades visibly meaningful: soul value per tap display, number pop on harvest
+- Consider connecting three-bottleneck pipeline (Sprint 2 scope per GDD)
+- Replace placeholder cubes with Cute Pet animal models
+- Environment dressing with Halloween/BlockBits props
 
 **Session 0 (Apr 3, 2026) -- Concept:**
 - Soul Minor concept revived from TecVooDoo Projects napkin entry
@@ -69,6 +83,7 @@
 - Soul wisp release (beautiful ethereal rise from gore)
 - Screen shake, number pops, combo multiplier feedback
 - Audio: wet crunch + chime, squelch per type, soul whoosh
+- **Juicy Actions** -- install at standalone migration. Use SO-based action sequences for all juice: tap feedback (scale punch + shake), combo multiplier popups (spring actions), harvest gore bursts (action groups), elevator arrival (timed sequences), upgrade purchase (post-processing flash). Replaces custom coroutine-based VFX scripting.
 - **Playtest:** Does the harvest FEEL incredible? Violence-to-beauty transition working?
 
 ### Sprint 4: Ranks + Zones (Progression)
@@ -130,6 +145,7 @@
 | Audio | Master Audio 2024 | Already in Sandbox (default package) |
 | Tweening | DOTween Pro | Already in Sandbox (default package) |
 | Text effects | Text Animator | Already in Sandbox (default package) |
+| Action sequencing / juice | Juicy Actions 1.0.3 (Magic Pig Games) | Evaluated in Sandbox (ENTRY-316, Approved/Recommended). Install at standalone migration -- too heavy for Sandbox (604 scripts, ~108K LOC). Covers screen shake, scale punch, spring physics, combo feedback, post-processing effects. Replaces need for custom VFX coroutines in Sprint 3. |
 | Blood shader | TBD -- may need eval | Sprint 3 |
 
 ---

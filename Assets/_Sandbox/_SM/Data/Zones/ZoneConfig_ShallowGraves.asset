@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c37992b481d985a47979c0849f818a5e, type: 3}
+  m_Name: ZoneConfig_ShallowGraves
+  m_EditorClassIdentifier: Assembly-CSharp::SM.Core.ZoneConfigSO
+  _zoneName: Shallow Graves
+  _flavorText: Fresh arrivals. Still warm.
+  _requiredRank: 0
+  _bodyTypePool:
+  - {fileID: 11400000, guid: b61b661a4ba526741b3a1bf17ed510d8, type: 2}
+  - {fileID: 11400000, guid: 16a91c121caee964ca0ce12fe59e5c10, type: 2}
+  _soulMultiplier: 1
+  _levelCount: 3
+  _backgroundPrefab: {fileID: 0}
+  _ambientClip: {fileID: 0}

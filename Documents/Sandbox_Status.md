@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Project Path:** `E:\Unity\Sandbox`
 **Document Version:** Reconstructed Feb 23, 2026 (after data loss)
-**Last Updated:** April 3, 2026 (Session 67)
+**Last Updated:** April 4, 2026 (Session 69)
 
 > **NOTE:** This document was reconstructed after the Sandbox project became corrupt on Feb 23, 2026. Content recovered from session context and MEMORY.md.
 
@@ -17,9 +17,56 @@
 
 Sandbox is a dedicated asset evaluation environment AND game incubator for ALL TecVooDoo projects. Assets are imported, tested, and evaluated here before being used in actual projects. New game projects bootstrap here with on-demand asset loading, then migrate to standalone when proven.
 
-**Primary output:** `Sandbox_AssetLog.md` -- 315 asset evaluations as of Session 63.
+**Primary output:** `Sandbox_AssetLog.md` -- 316 asset evaluations as of Session 68.
 
 **Reference doc:** `Sandbox_DevReference.md` -- coding standards, MCP gotchas, eval standards, AI rules. Read on demand.
+
+---
+
+## Session 69 (Apr 4, 2026) -- Soul Minor Scene Wiring + Art
+
+**Status:** SM scene fully wired, UI working, art assets imported, first playtest completed.
+
+**Config SO Instances (18 assets):**
+- 2 BodyConfigSOs (Cat/Dog), 2 RankConfigSOs (Rank 0-1), 1 ZoneConfigSO (Shallow Graves)
+- 3 UpgradeConfigSOs (mine/elevator/warehouse), 11 GameEvent SOs
+
+**Scene Wired (SM_ShallowGraves):**
+- [GameManager]: SoulManager, RankSystem, GameState, SaveManager, UpgradeSystem
+- [Input]: TapHarvester, ComboSystem
+- [Mine]: ZoneInitializer, Elevator, Warehouse, 3 MineLevels with BodyPiles
+- [UI]: UIDocument + SMHUD (UI Toolkit, 1080x1920 portrait)
+
+**New Scripts (2):** ZoneInitializer (IGameEventListener<double>, BodyPile init), SMHUD (UI controller). 21 scripts total.
+
+**Art Assets Imported:**
+- KayKit Skeletons (6 characters + animations) -- player rank progression
+- KayKit Halloween (102 environment props) -- zone dressing
+- KayKit Block Bits (58 tiling blocks) -- mine shaft walls
+- Source: `E:\Game Assets\Itch\apps\kaykit-complete\` (CC0)
+
+**First Playtest Results:**
+- Tap bodies -> disappear -> soul counter increments -> upgrades deduct souls: all working
+- UI click-through fix applied (pickingMode=Ignore on root)
+- Upgrades run but no visible feedback yet (internal math only)
+- Three-bottleneck pipeline not connected (direct-to-SoulManager flow for prototype)
+- Collect button hidden (Warehouse never receives without pipeline)
+
+---
+
+## Session 68 (Apr 4, 2026) -- Juicy Actions Eval
+
+**Status:** Single asset eval completed. Juicy Actions 1.0.3 evaluated and approved (ENTRY-316, Recommended). User removing asset from Sandbox post-eval to keep compile times lean.
+
+**Eval: Juicy Actions 1.0.3 (Magic Pig Games / Infinity PBR)**
+- 604 scripts, ~108K LOC, 6 assembly definitions, 27 action categories, 300+ pre-built actions
+- SO-asset-based async action sequencing system with spring physics, field overrides, blackboard, clock abstraction
+- Verdict: **Approved, Recommended** (Animation secondary label)
+- MCP: component-add/get work. Field modification limited due to nested SerializeReference structure.
+- Complementary to DOTween (code-driven) and Feel (feedback-focused). Standalone -- no dependencies on either.
+- Flagged for Soul Minor: install at standalone migration for Sprint 3 juice (too heavy for lean Sandbox)
+
+**Docs Updated:** Sandbox_AssetLog.md (ENTRY-316 + summary row), SM_Status.md (Asset Needs + Sprint 3 Juicy Actions note), Sandbox_Status.md
 
 ---
 

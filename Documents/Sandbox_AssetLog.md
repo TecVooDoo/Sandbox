@@ -410,6 +410,7 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 313 | 2.5D Looping 1.2.0 (Kamgam) | Asset Store | Tools (2.5D Loop/Depth System) | Conditional | -- | 2026-03-31 |
 | 314 | Mega Cute Pet Zoo 3.3 (Suriyun) | Asset Store | Art (3D Animals + AI Controller) | Approved | Art, Low Poly, Character | 2026-03-31 |
 | 315 | Ghost and Shaders PRO 1.0 (SR Studios) | Asset Store | Shader / Art (Ghost Effect System) | Approved | Shader, VFX | 2026-03-31 |
+| 316 | Juicy Actions 1.0.3 (Magic Pig Games / Infinity PBR) | Asset Store | Scripting (Async Action Sequencing / Game Feel System) | Approved | Recommended | 2026-04-04 |
 
 ---
 
@@ -10668,6 +10669,109 @@ Simple 3-method interface. Default implementation `LoopingReceiver` just sets `t
 **MCP Compatibility:** MEDIUM. The `Ghost_PRO` component's material switching is handleable via `gameobject-component-modify` (set `selectedIndex`, call `ApplyMaterial()`). Shader properties on materials can be modified via `object-modify` on Material assets. No dedicated MCP tools needed.
 
 **Verdict Rationale:** Approved with **Shader, VFX** secondary labels. The Shader Graph ghost effect is well-crafted with good property exposure (Fresnel, dual texture overlay with animation, distortion). The 100+ material preset library provides immediate variety without shader knowledge. The build-breaking `using UnityEditor;` must be fixed before any production use. Primary value for HOK's underworld theme and any supernatural game project. No primary label because ghost effects are genre-specific.
+
+---
+
+### ENTRY-316: Juicy Actions 1.0.3 (Magic Pig Games / Infinity PBR) | Approved, Recommended | 2026-04-04
+
+| Field | Value |
+|-------|-------|
+| Source | Asset Store |
+| Category | Scripting (Async Action Sequencing / Game Feel System) |
+| Verdict | **Approved** |
+| Labels | **Recommended**, Animation |
+| Scripts | 604 |
+| LOC | ~108,476 |
+| Asmdef | 6 (Runtime, Editor, Cinemachine, TextMeshPro, Tests x2) |
+| Namespace | `MagicPigGames.JuicyActions` (+ sub-namespaces for Serialization, Tests) |
+| Editor-only | No -- full runtime + editor support |
+| Path | `Assets/Magic Pig Games (Infinity PBR)/Juicy Actions/` |
+| Triggered by | Sandbox general eval |
+
+**What it does:**
+Frame-asynchronous action sequencing system. Actions are ScriptableObject assets that execute async sequences (move, scale, shake, spring, audio, particles, post-processing, etc.) on target GameObjects. Think "DOTween sequences as ScriptableObjects with a visual inspector, async/await execution, and 300+ pre-built action types."
+
+**Problem it solves:**
+Game feel / juice without writing per-effect code. Reusable action assets that can be composed into sequences and groups, with field overrides per-instance. Eliminates the common pattern of writing one-off coroutines for screen shake, scale punches, color flashes, etc.
+
+**Architecture:**
+- **Action** (base class, 82KB) -- ScriptableObject with async `ExecuteAsync(CancellationToken)`. Frame-async on main thread (no background threads). Run-key pattern for restart-safe cooperative cancellation.
+- **ActionExecutor** (151KB) -- Central orchestrator. Runs items sequentially or in parallel groups (Barrier/Race/Timed exit modes). Fire-and-forget `Execute()` or awaitable `ExecuteAsync()`.
+- **ActionBlackboard** -- Shared data dictionary for passing values between actions via `BBKey<T>`.
+- **ActionOnEnable/Start/Input/Collision/etc.** -- 21 MonoBehaviour trigger types that wire ActionExecutors to Unity events.
+- **Spring physics system** -- SpringAction variants (Float, Vector3, Vector2, Color, Int) for physically-simulated juicy animations.
+- **Clock abstraction** -- ActionSystemClock with TimeMode (ActionClock, UnityTime, Unscaled). Never reads `Time.deltaTime` directly.
+- **Field Overrides** -- `[CanOverride]` / `[SimpleOverride]` attributes allow per-executor field customization without mutating the SO asset.
+- **LifecycleProcessor** -- Background frame-async cleanup of completed/expired action instances.
+- **DeterministicRandom** -- Seeded RNG for reproducible action sequences.
+
+**27 Action Categories (300+ pre-built actions):**
+Transform (move, rotate, scale, shake, spring, wobble, snap-to-grid), Rigidbody/Rigidbody2D, Physics (raycasts, spherecasts, material mods), Animation/Animator, Audio, Camera, Cinemachine (11 actions, conditional on Cinemachine 3.0+), Events (Unity Events, Blackboard events), Lighting, Materials, NavMesh, Object Lifecycle (spawn, destroy, toggle), Particles, PlayerPrefs, Post Processing (43 actions -- bloom, DOF, vignette, chromatic aberration, etc.), RectTransform, Scene, Sprites, Time, TMP Text (31 actions, conditional on TMP), UI Actions, Action Flow (wait, stop, conditionals).
+
+**Pre-built Action Objects:** 100+ pre-configured `.asset` files ready to drag-and-drop. Organized by category in `Action Objects/` folder.
+
+**Assembly Definitions (6):**
+1. `MagicPigGames.JuicyActions.Runtime` -- refs: InputSystem, RenderPipelines.Core, RenderPipelines.Universal, TextMeshPro. Multi-platform (Editor + 11 platforms).
+2. `MagicPigGames.JuicyActions.Editor` -- editor-only.
+3. `MagicPigGames.JuicyActions.Cinemachine` -- conditional on `CINEMACHINE` define (CM 3.0+).
+4. `MagicPigGames.JuicyActions.TextMeshPro` -- conditional on `TEXTMESHPRO_PRESENT`.
+5. `JuicyActionsTests` -- editor tests.
+6. `JuicyActionsPlayModeTests` -- play mode tests.
+
+**Code Quality:**
+- Excellent. Clean async/await patterns, no per-frame allocations in hot paths, proper CancellationToken propagation throughout.
+- Template Method pattern in base classes (`ActionOverTime`, `ActionOverTimeWithBaseValues`, `InstantAction`) -- well-documented with inline AI-friendly comments explaining architecture decisions.
+- `[RuntimeInitializeOnLoadMethod]` for domain reload safety. `#if UNITY_EDITOR` guards properly applied for EditorApplication references.
+- Comprehensive XML docs on public API. Action.cs includes a full "CREATING NEW ACTIONS -- Developer & AI Guide" block comment.
+- `FormerlySerializedAs` used throughout for safe field renames.
+- link.xml included for IL2CPP code stripping prevention.
+- 56 test scripts (EditMode + PlayMode) with mock infrastructure.
+
+**Demo Scenes (6):**
+1. Action System Demo -- core system showcase
+2. Card Match Demo -- card matching game
+3. Color Collide Demo -- collision-based mechanics
+4. SciFi Shooter Demo -- combat/shooting
+5. Slot Demo -- slot machine game
+6. Action Test Scene -- internal testing
+
+**Documentation (18 markdown files):**
+Chances System, ExecutableItem, Enhanced Selection Patterns, NavMeshQueryResult, PhysicsQueryResult, List/Array Overrides, Range Validation, ScaleTime, TapNotificationSystem, Unity Events Support, Feature Changelog, and more. Quality is good -- implementation-focused with code examples.
+
+**Dependencies:**
+- Required: Unity Input System (versionDefines)
+- Optional: Cinemachine 3.0+ (conditional compilation), TextMeshPro (conditional), URP (post-processing actions)
+- No third-party package dependencies
+
+**Integration with Other Evaluated Assets:**
+- **Projectile Factory (ENTRY-308)** -- same publisher (Magic Pig Games / Infinity PBR). Projectile Factory is a projectile system that integrates with Polygon Arsenal. Juicy Actions is a general-purpose action system. Complementary, not overlapping.
+- **DOTween Pro (ENTRY-111)** -- Competing in the "tweening/juice" space, but fundamentally different: DOTween is code-driven tweening, Juicy Actions is SO-asset-driven action sequencing. DOTween is better for quick one-liner tweens in code. Juicy Actions is better for designer-facing reusable action compositions. Can coexist.
+- **Feel (ENTRY-241)** -- Both are "game feel" systems. Feel is feedback-focused (haptics, screen effects, sequences). Juicy Actions is broader (any action type, not just feedback). Some overlap in screen shake / scale punch territory. Both can coexist -- Feel is better for quick juice feedback, Juicy Actions is better for complex multi-step sequences.
+
+**MCP Controllability:**
+- `component-add`: PASS -- `MagicPigGames.JuicyActions.ActionOnEnable` (and all trigger MonoBehaviours) add cleanly via fully-qualified type name.
+- `component-get`: PASS -- returns component reference and enabled state. Field introspection limited due to nested `ActionExecutor` serializable class (complex SerializeReference structure).
+- `component-modify`: NOT TESTED -- ActionExecutor's nested structure (List<ExecutableItem> with SerializeReference) is likely too complex for flat field modification via MCP. Actions are ScriptableObject assets referenced by the executor, not inline data.
+- `script-execute`: NOT TESTED -- API is public and clean (`executor.Execute(target)`, `await executor.ExecuteAsync(target, token)`). Should work for runtime control.
+- **Gotchas:** Actions are SO assets, not component fields. The workflow is: create Action SO assets in the project, then reference them in ActionExecutor sequences on MonoBehaviour triggers. MCP can add trigger components, but wiring up action sequences requires either inspector work or script-execute to set references programmatically.
+
+**Key Gotchas:**
+- **Large codebase** -- 604 scripts, ~108K LOC. Will increase compile times. In the fresh Sandbox (11 packages) this is manageable. In a project already heavy with scripts, evaluate impact.
+- **SO-asset workflow** -- The power is in reusable Action assets. This means a project adopting Juicy Actions needs a library of `.asset` files. The 100+ pre-built ones help, but custom actions require creating new SO assets. Not a code-only workflow.
+- **Post-processing actions (43)** require URP Volume system. Won't work without URP.
+- **Cinemachine actions** require CM 3.0+ and the `CINEMACHINE` define.
+- **Scene open via MCP fails** with parentheses in path (`Magic Pig Games (Infinity PBR)`). Not a Juicy Actions bug -- MCP scene-open path handling issue.
+
+**Project Relevance:**
+- **Any project:** HIGH. Game feel/juice is universal. Every TecVooDoo project can benefit from reusable shake, scale, color, and spring actions.
+- **HOK:** HIGH. Ferry sequences, fishing feedback, companion reactions -- all natural fits for action sequences.
+- **FearSteez:** HIGH. Beat 'em up hit reactions, combo feedback, screen effects.
+- **AQS:** MEDIUM-HIGH. Quokka animations, joey reactions, environmental effects.
+- **HNR:** HIGH. Ghost possession effects, NPC panic reactions, supernatural VFX sequences.
+- **Soul Minor:** MEDIUM. Idle game feedback (harvest taps, combo multiplier effects, elevator arrival).
+
+**Verdict Rationale:**
+Approved with **Recommended** primary label and **Animation** secondary. This is a production-grade, well-architected action system with exceptional code quality and documentation. The async/await execution model is modern and clean. The SO-asset approach makes actions reusable across projects. 300+ pre-built actions cover the vast majority of common game feel needs. The spring physics system adds physically-simulated juice that DOTween doesn't natively provide. The 6 assembly definitions show proper modular architecture with conditional compilation for optional integrations. The 56-file test suite demonstrates professional engineering standards. Recommended because game feel/juice is needed in every game project, and this is the most comprehensive SO-based action system evaluated to date. It complements (not replaces) DOTween and Feel -- different tools for different workflows.
 
 ---
 

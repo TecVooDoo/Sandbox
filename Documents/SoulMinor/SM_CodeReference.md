@@ -1,7 +1,7 @@
 # Soul Minor -- Code Reference
 
 **Purpose:** Script inventory and API reference for Soul Minor.
-**Last Updated:** April 3, 2026 (Session 1 -- 19 scripts)
+**Last Updated:** April 4, 2026 (Session 2 -- 21 scripts)
 
 ---
 
@@ -38,6 +38,7 @@
 | BodyPile | Body instances, harvest by raycast hit, respawn timer. | Done |
 | Elevator | Soul transport. Capacity, trip timer, load/deliver cycle. | Done |
 | Warehouse | Surface storage. Capacity, auto-collect, manual collect. | Done |
+| ZoneInitializer | Bootstraps BodyPiles with zone body pool. IGameEventListener<double> for Elevator->Warehouse. | Done |
 | ZoneManager | Manages zones (shafts). Zone unlock, zone switching. | Planned |
 
 ### SM.Upgrade (IMPLEMENTED)
@@ -56,14 +57,12 @@
 | BodyPartPhysics | Short-lived tumbling limbs/tails/feathers. Pooled. |
 | ScreenShake | Camera shake on harvest. Scales with body size. |
 
-### SM.UI (UI Toolkit)
-| Script | Purpose |
-|--------|---------|
-| CurrencyDisplay | Soul counter, Dark Gem counter. Top of screen. |
-| UpgradePanel | Side drawer. Level, elevator, warehouse upgrade buttons with costs. |
-| RankUpScreen | Full-screen promotion letter overlay. Rank title + flavor text. |
-| NumberPop | Floating "+X" numbers on harvest. Pooled. |
-| ComboDisplay | Combo counter ("x5!", "x10!"). Scales with combo. |
+### SM.UI (IMPLEMENTED)
+| Script | Purpose | Status |
+|--------|---------|--------|
+| SMHUD | UI Toolkit controller. Soul counter, rank bar, upgrade buttons, collect button, combo display. pickingMode=Ignore on root for click-through. | Done |
+| RankUpScreen | Full-screen promotion letter overlay. Rank title + flavor text. | Planned |
+| NumberPop | Floating "+X" numbers on harvest. Pooled. | Planned |
 
 ### SM.Audio
 | Script | Purpose |

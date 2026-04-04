@@ -1,0 +1,44 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:Style src="SM_HUD.uss" />
+
+    <!-- Top Bar: Currency (picks input, blocks clicks on top area) -->
+    <ui:VisualElement name="top-bar" class="top-bar" picking-mode="Position">
+        <ui:VisualElement class="currency-row" picking-mode="Ignore">
+            <ui:Label name="soul-icon" text="&#x2728;" class="soul-icon" picking-mode="Ignore" />
+            <ui:Label name="soul-counter" text="0" class="soul-counter" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement class="rank-row" picking-mode="Ignore">
+            <ui:Label name="rank-label" text="Soul Minor" class="rank-label" picking-mode="Ignore" />
+            <ui:VisualElement name="rank-progress-bg" class="rank-progress-bg" picking-mode="Ignore">
+                <ui:VisualElement name="rank-progress-fill" class="rank-progress-fill" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+
+    <!-- Combo indicator (pass-through) -->
+    <ui:Label name="combo-label" text="" class="combo-label" picking-mode="Ignore" />
+
+    <!-- Bottom Panel: Upgrade Buttons (panel picks, buttons pick) -->
+    <ui:VisualElement name="bottom-panel" class="bottom-panel" picking-mode="Position">
+        <ui:Button name="btn-upgrade-mine" class="upgrade-btn">
+            <ui:Label text="Mine" class="upgrade-title" picking-mode="Ignore" />
+            <ui:Label name="mine-cost" text="Cost: 10" class="upgrade-cost" picking-mode="Ignore" />
+            <ui:Label name="mine-level" text="Lv 0" class="upgrade-level" picking-mode="Ignore" />
+        </ui:Button>
+        <ui:Button name="btn-upgrade-elevator" class="upgrade-btn">
+            <ui:Label text="Elevator" class="upgrade-title" picking-mode="Ignore" />
+            <ui:Label name="elevator-cost" text="Cost: 50" class="upgrade-cost" picking-mode="Ignore" />
+            <ui:Label name="elevator-level" text="Lv 0" class="upgrade-level" picking-mode="Ignore" />
+        </ui:Button>
+        <ui:Button name="btn-upgrade-warehouse" class="upgrade-btn">
+            <ui:Label text="Warehouse" class="upgrade-title" picking-mode="Ignore" />
+            <ui:Label name="warehouse-cost" text="Cost: 30" class="upgrade-cost" picking-mode="Ignore" />
+            <ui:Label name="warehouse-level" text="Lv 0" class="upgrade-level" picking-mode="Ignore" />
+        </ui:Button>
+    </ui:VisualElement>
+
+    <!-- Warehouse collect button -->
+    <ui:Button name="btn-collect" class="collect-btn">
+        <ui:Label name="collect-label" text="Collect (0)" class="collect-text" picking-mode="Ignore" />
+    </ui:Button>
+</ui:UXML>
