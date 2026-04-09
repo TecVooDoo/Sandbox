@@ -2,7 +2,7 @@
 
 **Purpose:** Track every asset, package, and technique evaluated in Sandbox. This is the primary document for the project.
 
-**Last Updated:** March 31, 2026 (Session 63 -- Kamgam 2.5D trilogy + Mega Cute Pet Zoo + Ghost Shaders PRO)
+**Last Updated:** April 9, 2026 (TecVooDoo Session 2 -- 4 new TMCP tool groups + TVG + TVU updates)
 
 > **NOTE:** This document was reconstructed on Feb 23, 2026 after the Sandbox project became corrupt and the Documents folder was lost. The summary table (all 135 entries) has been fully recovered from session context. Detailed ENTRY blocks for entries 001-115 are pending recovery from session JSONL at `C:\Users\steph\.claude\projects\e--Unity-Sandbox\99250266-b660-4ea0-88f0-61e5b98f52e1.jsonl`. Entries 116-135 (Session 35 UI Toolkit batch) are summarized in the session transcript.
 
@@ -411,6 +411,17 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 314 | Mega Cute Pet Zoo 3.3 (Suriyun) | Asset Store | Art (3D Animals + AI Controller) | Approved | Art, Low Poly, Character | 2026-03-31 |
 | 315 | Ghost and Shaders PRO 1.0 (SR Studios) | Asset Store | Shader / Art (Ghost Effect System) | Approved | Shader, VFX | 2026-03-31 |
 | 316 | Juicy Actions 1.0.3 (Magic Pig Games / Infinity PBR) | Asset Store | Scripting (Async Action Sequencing / Game Feel System) | Approved | Recommended | 2026-04-04 |
+| 317 | Endless Book 1.16.0 (echo17) | Asset Store | Tools (3D Animated Book UI / Visualization) | Approved | -- | 2026-04-09 |
+| 318 | Remo 1.0.0 (CapyTools) | Asset Store | Tools (Remote Runtime Inspector / Debugger) | Approved | -- | 2026-04-09 |
+| 319 | English Tracing Book 1.3.0 (Indie Games Studio) | Asset Store | Template (Educational Letter Tracing Game) | Conditional | -- | 2026-04-09 |
+| 320 | Game Launcher 2.3.4 (Legend) | Asset Store | Tools (Desktop Game Launcher / Auto-Patcher) | Conditional | -- | 2026-04-09 |
+| 321 | Action Adventure Kit (SoftLeitner) | Asset Store | Framework (Action RPG / Adventure Game Framework) | Approved | Recommended | 2026-04-09 |
+| 322 | Real Time Weather Pro (Assist Software) | Asset Store | Tools (Real-World Weather System / API Integration) | Approved | Environment | 2026-04-09 |
+| 323 | Mesh to Terrain 2.5.4 (Infinity Code) | Asset Store | Editor Tool (Mesh-to-Terrain Conversion) | Approved | -- | 2026-04-09 |
+| 324 | Procedural UI 7.0.7 (DTT) | Asset Store | UI (SDF Rounded Corners + Gradients) | Conditional | -- | 2026-04-09 |
+| 325 | Lumen: Stylized Light FX 2.0.5 (Distant Lands) | Asset Store | VFX (Stylized Mesh-Based Volumetric Lighting) | Approved | VFX, Environment | 2026-04-09 |
+| 326 | Ultimate Terrain (Pampel Games) | Asset Store | Tools (Procedural Terrain Generation + Runtime Editing) | Approved | Recommended, Environment | 2026-04-09 |
+| 327 | Map Graph (Insane Scatterbrain) | Asset Store | Tools (Graph-Based Procedural 2D Map Generation) | Approved | -- | 2026-04-09 |
 
 ---
 
@@ -1371,6 +1382,10 @@ After evaluating 11 Chris West assets (136-145 + 096), here's how they relate to
 - Forensic Science Practical Lab (VR -- procedural tissue/organ models for education)
 
 **A Quokka Story / 2D Projects Relevance:** LOW. 2D games don't need volumetric mesh generation.
+
+**TecVooDoo Utilities Candidate:** No -- domain-specific volumetric modeling.
+**TecVooDoo Games Candidate:** No -- ships whole, too specialized.
+**MCP Candidate:** Medium. `MudRenderer` and brush subclasses (`MudBrushBase`) are standard MonoBehaviours with public properties (brush blend mode, radius, strength, color). `component-add/modify` handles brush parameter setup. However, the GPU compute shader pipeline means mesh generation triggers aren't directly scriptable -- would need `script-execute` to call `MudRenderer.MarkNeedsCompute()`. A `mudbun-query` (list brushes, renderer state) + `mudbun-configure-brush` (set brush params) tool pair would add value for iterating SDF compositions. Lower priority -- SDF modeling is iterative design work better done in Inspector. Added Session 72.
 
 ---
 
@@ -7952,6 +7967,10 @@ For any object tied into the Feel feedback pipeline (player hit reactions, enemy
 - **HOK:** LOW -- feel feedback already covers fish/reel reactions
 - **All others:** Situational
 
+**TecVooDoo Utilities Candidate:** No -- single-component animation effect.
+**TecVooDoo Games Candidate:** No -- ships whole, too simple to extract.
+**MCP Candidate:** Low. Single `SquashAndStretch` MonoBehaviour with 7 public fields (`enableSquash`, `enableStretch`, `maxSquash`, `maxStretch`, `minSpeedThreshold`, `maxSpeedThreshold`, `springHalfLife`). Standard `component-add/modify` covers all configuration -- no custom TMCP tools needed. Added Session 72.
+
 ---
 
 ## ENTRY-256: Boing Kit 1.2.47
@@ -8028,6 +8047,10 @@ Effectors push Reactors when they pass nearby. A fish breaking the water surface
 - **FearSteez:** HIGH -- BoingBones for hair/chain spring physics, complementing MagicaCloth 2
 - **HOK:** MEDIUM -- BoingBehavior/Effector for environmental reactivity
 - **All projects:** LOW-MEDIUM -- BoingBehavior adds spring feel to any bouncing/reactive object
+
+**TecVooDoo Utilities Candidate:** No -- spring physics system, not a utility.
+**TecVooDoo Games Candidate:** No -- ships whole, specialized animation physics.
+**MCP Candidate:** Medium. `BoingBones`, `BoingBehavior`, `BoingEffector`, `BoingReactorField` are standard MonoBehaviours with many tunable public properties (stiffness, damping, positionEffect, rotationEffect, scaleEffect per axis). `SharedBoingParams` SO for reusable configs. `component-add/modify` handles most setup. BoingBones has per-bone chain config (LengthStiffness, PoseStiffness, BendAngleCap, CollisionRadius, AnimationBlend) that requires 5+ `component-modify` calls per bone -- a dedicated `boing-configure-bones` tool could collapse this. Proposed if built: `boing-query` (list Boing components + params on GO), `boing-configure` (set spring params, damping, effect axes). Medium priority -- setup is typically one-time per character. Added Session 72.
 
 ---
 
@@ -9953,6 +9976,732 @@ TecVooDoo's custom adaptive music system. Singleton pattern (`MusicDirector.Inst
 
 ---
 
+### ENTRY-317: Endless Book (echo17)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Endless Book |
+| **Publisher** | echo17 |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | Tools (3D Animated Book UI / Visualization) |
+| **Price** | Bundle (retail ~$40) |
+| **Rating** | -- |
+| **Version** | 1.16.0 |
+| **Last Release** | Mar 3, 2026 |
+| **Unity Versions** | 2019.4.32+ |
+| **Pipeline** | URP, HDRP, BiRP (separate unitypackages for URP vs Other) |
+| **Dependencies** | None |
+| **Install Size** | 74 MB (core ~1.2 MB, demos ~73 MB) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | -- (project-specific) |
+| **Verdict** | **Approved** |
+
+**What It Does:** Complete 3D animated book system with page turning, state machine-driven open/close transitions, manual page dragging, and per-page material assignment. 5 book states (ClosedFront, OpenFront, OpenMiddle, OpenBack, ClosedBack) with animated transitions between them.
+
+**Key Features:**
+- **State machine architecture:** 5 states with Animator-driven transitions, configurable timing
+- **Page turning:** Forward/backward/turn-to-page with 1-10 simultaneous page animations
+- **Manual page dragging:** Normalized-time drag API with reverse/complete callbacks
+- **Per-page materials:** PageData array holds front/back materials per page, filler material for odd counts
+- **Standin quality system:** High/Medium/Low geometry switching for performance
+- **Runtime API:** Add/insert/remove/move pages dynamically, change materials, remap
+- **Delta time modes:** Scaled/unscaled for pause menu compatibility
+
+**Architecture:**
+- 21 scripts total (6 core runtime: 2,063 LOC, 1 editor: 173 LOC, 14 demo: 1,726 LOC)
+- Namespace: `echo17.EndlessBook`
+- No asmdef (removed in v1.13.2 to avoid build errors)
+- Main class `EndlessBook` MonoBehaviour: 1,759 lines
+- Delegate-based event system (StateChanged, PageTurn, DragCompleted)
+- 13 FBX models (book geometry, standins, pages)
+- 2 Animator Controllers (book states + page turns)
+
+**Code Quality:**
+- Well-structured state machine with clear separation
+- Rich public API with 50+ methods
+- Proper delegate callbacks for async operations
+- Custom inspector with full editor control
+- Long maintenance history (16 versions, actively maintained)
+- No namespace conflicts, clean echo17 prefix
+
+**Concerns:**
+- 73 MB demo content should be deleted after eval (core is only ~1.2 MB)
+- No asmdef -- global Assembly-CSharp inclusion
+- 1 custom shader (Shader Weaver generated, demo-only) -- not needed for core functionality
+- Single-developer publisher risk (mitigated by long track record)
+
+**Overlap Analysis:**
+- No overlap with MegaBook 2 (ENTRY-138, Chris West) in the functional sense -- MegaBook does mesh deformation page simulation, Endless Book does Animator-driven state machine book visualization. Different approaches to similar concepts. MegaBook is more physically accurate; Endless Book is more production-ready for UI/narrative use.
+- No overlap with any other evaluated asset.
+
+**Verdict Rationale:** Approved without default label. Mature, well-maintained book visualization system with clean API. Project-specific -- include when you need an interactive book UI (story games, journals, menus, tutorials). The state machine + Animator approach is more production-ready than physics-based alternatives. Core footprint is tiny (~1.2 MB) after demo deletion.
+
+**VNPC Relevance:** HIGH. Visual novel / point-and-click games commonly use book metaphors for journals, diaries, spellbooks, recipe books. The per-page material system supports dynamic content injection. Manual page drag adds tactile interaction.
+
+**HOK Relevance:** MEDIUM. Kharon's ferry logbook, soul manifests, or navigation charts could use the book visualization. Per-page materials allow dynamic content per voyage.
+
+**SetDesign Relevance:** LOW. Environment building doesn't need interactive books, though decorative open books on tables/shelves could use the standin system.
+
+**Other 3D Projects:** MEDIUM across narrative titles (GRIMMORPG spellbook, Alpha Foxtrot Uniform mission briefing, Forensic Science Lab evidence journal).
+
+**TecVooDoo Utilities Candidate:** No -- too domain-specific (book visualization).
+**TecVooDoo Games Candidate:** No -- self-contained UI system, not a gameplay pattern.
+**MCP Candidate:** Medium. `EndlessBook` is a standard MonoBehaviour with rich public API. `component-add/modify` handles property setup. Method calls (SetState, TurnForward, TurnToPage, AddPageData) need `script-execute` or custom tools. A `book-query` + `book-control` tool pair could set state, turn pages, and manage PageData. Lower priority than Decal Collider/Texture Studio -- book setup is typically one-time in a scene, not iterated via MCP.
+
+---
+
+### ENTRY-318: Remo (CapyTools)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Remo -- Remote Runtime Editor for Unity |
+| **Publisher** | CapyTools |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | Tools (Remote Runtime Inspector / Debugger) |
+| **Price** | Bundle (retail ~$30) |
+| **Rating** | -- |
+| **Version** | 1.0.0 |
+| **Last Release** | Feb 24, 2025 |
+| **Unity Versions** | 2021.3+ |
+| **Pipeline** | All (pipeline-agnostic, no shaders) |
+| **Dependencies** | MessagePack (bundled DLLs) |
+| **Install Size** | 11.5 MB (DLL-based, minimal source) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | -- (project-specific) |
+| **Verdict** | **Approved** |
+
+**What It Does:** Remote runtime editor that lets you inspect and modify GameObjects, components, materials, and static classes in a running Unity build from a separate editor instance or web browser. Connects via Unity PlayerConnection or HTTP/JSON. Essentially a remote Inspector/Hierarchy window for deployed builds.
+
+**Key Features:**
+- **Remote Hierarchy:** Browse scene hierarchy in running builds
+- **Remote Inspector:** View and modify component fields/properties at runtime
+- **Remote Camera:** View game camera output remotely
+- **Remote Materials:** Inspect and tweak materials in running builds
+- **Static Class Inspection:** Browse static class fields remotely
+- **Dual transport:** PlayerConnection (fast, binary MessagePack) or HTTP/JSON (web-compatible)
+- **Single prefab setup:** Drop `RemoServer` prefab into scene, configure port (default 7575)
+
+**Architecture:**
+- 13 source files, 524 LOC total (thin wrappers around precompiled DLLs)
+- Core logic in 5 DLLs: `CapyTools.RemoteEditor.dll` (100 KB), `.Serialization.dll`, `.Resolvers.dll`, `.Server.dll`, `.Editor.dll`
+- 2 asmdefs: `CapyTools.Common`, `CapyTools.Common.Editor`
+- Namespaces: `CapyTools.RemoteEditor.Wrappers`, `CapyTools.Common`
+- MessagePack binary serialization (bundled: MessagePack.dll 265 KB + dependencies)
+- `link.xml` for IL2CPP linker preservation across all render pipelines
+- `TagService` ScriptableObject syncs project tags for remote access
+
+**Code Quality:**
+- Clean thin-wrapper pattern over DLLs
+- Proper asmdef isolation for Common library
+- Conditional logging (`CAPY_DEBUG` define)
+- Execution order -99999 ensures serialization initializes first
+- IL2CPP-safe with explicit link.xml preservation
+
+**Concerns:**
+- DLL-based -- cannot inspect or modify core functionality (black box)
+- v1.0.0 with Feb 2025 release -- relatively new, no update history yet
+- Small/new publisher -- longevity risk
+- Development builds only by default (`allowOnNonDevelopmentBuild` flag exists but off)
+- Port 7575 needs firewall consideration for network debugging
+- No demo scenes -- relies on documentation (offline HTML manual)
+
+**Overlap Analysis:**
+- Complementary to Unity's built-in Profiler and Frame Debugger (those are performance analysis, this is runtime state inspection/modification)
+- No overlap with any evaluated asset. Closest concept is Unity's Remote Config but that's cloud-based settings, not runtime inspection.
+
+**Verdict Rationale:** Approved without default label. Useful debugging tool for testing builds on devices (mobile, console, VR headsets) where you can't easily attach the Unity Editor. The DLL black-box nature limits extensibility but the core use case (remote inspection) works out of the box. Low install footprint (11.5 MB). Include when doing device-targeted development.
+
+**All Projects Relevance:** MEDIUM across all projects that target non-desktop platforms. Highest value for:
+- **AQS:** Mobile-first game -- remote inspect on iOS/Android devices
+- **FearSteez:** Mobile beat 'em up -- same
+- **HNR:** Multiplayer testing across devices
+- **VR projects:** Can't easily use Inspector in headset
+
+**Desktop-only projects (HOK, SetDesign):** LOW -- standard Unity Editor debugging is sufficient.
+
+**TecVooDoo Utilities Candidate:** No -- proprietary DLL-based tool, not redistributable.
+**TecVooDoo Games Candidate:** No -- debugging tool, not gameplay.
+**MCP Candidate:** None. Remo IS a remote editor -- it would be redundant with MCP's own runtime inspection capabilities. The asset serves the same conceptual role as MCP but for non-editor contexts (deployed builds). No custom tools needed.
+
+---
+
+### ENTRY-319: English Tracing Book (Indie Games Studio)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | English Tracing Book |
+| **Publisher** | Indie Games Studio (Baraa Nasser) |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | Template (Educational Letter Tracing Game) |
+| **Price** | Bundle (retail ~$30) |
+| **Rating** | -- |
+| **Version** | 1.3.0 |
+| **Last Release** | Apr 3, 2024 |
+| **Unity Versions** | 2021.3+ |
+| **Pipeline** | All (LineRenderer + SpriteRenderer only, no custom shaders) |
+| **Dependencies** | New Input System |
+| **Install Size** | 170 MB (scripts ~400 KB, textures ~150 MB, audio ~10 MB) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | -- |
+| **Verdict** | **Conditional** |
+
+**What It Does:** Complete educational game template for tracing letters/numbers/shapes with finger or mouse. Spline-based letter shapes defined as ordered waypoint colliders. User traces along the path; validation checks waypoint hits in order with backward-prevention. Binary pass/fail completion.
+
+**Architecture:**
+- 73 scripts, 10,792 LOC, single namespace `IndieStudio.EnglishTracingBook` with subnamespaces (Core, Managers, Inputs, UI, Utils, Models)
+- No asmdef -- everything in Assembly-CSharp
+- Heavy singleton pattern (GameManager.Instance referenced throughout)
+- 170 MB install, overwhelmingly letter/number textures
+
+**Tracing System Core (the interesting part):**
+- **Shape definition:** Bezier control points as child Transforms under Curve GameObjects. Cubic Bezier interpolation with configurable smoothness.
+- **Input capture:** New Input System event-driven (PointerPress/Position). Raycast2D against CircleCollider2D waypoints.
+- **Validation:** Ordered waypoint hits (tracedPoints counter), backward-prevention via dot product check, forward-jump limit (max 15 points ahead), distance tolerance for endpoint completion.
+- **Visualization:** LineRenderer with configurable width/color, animated auto-complete on path finish.
+- **Accuracy:** Binary only (all waypoints hit or not). No partial credit, no stroke quality scoring, no deviation measurement.
+
+**Key Files:**
+- `Curve.cs` -- Bezier point list + interpolation (~100 LOC, clean)
+- `Bezier.cs` -- Pure cubic Bezier math (~50 LOC, stateless utility)
+- `Line.cs` -- LineRenderer wrapper with backward check + reset animation (~150 LOC)
+- `GameManager.cs` -- Core loop, heavily coupled to UI/audio/persistence (~500 LOC)
+
+**Concerns:**
+- Massive template bloat for a simple mechanic (73 scripts for letter tracing)
+- GameManager coupling makes extraction harder than reimplementation
+- Binary completion only -- no granularity for puzzle difficulty tuning
+- 170 MB install for content that has zero reuse value outside education
+- Last updated Apr 2024 -- no Unity 6 validation
+- Import warned about overwriting project files (root-level folders)
+
+**Verdict Rationale:** Conditional -- do not install as-is in any project. The tracing *pattern* (Bezier spline + ordered waypoint colliders + LineRenderer + backward-prevention dot product) is a sound approach worth knowing about, but the implementation is too coupled and bloated to extract. Reimplementing the core mechanic from scratch using the same approach would be ~200-300 LOC and cleaner than trying to decouple from this template.
+
+**Cherry-Pick Assessment:** The algorithmic pattern is the value, not the code. Specifically:
+- Bezier cubic interpolation for smooth curves from control points
+- Ordered CircleCollider2D waypoints for discrete progress tracking
+- Dot product backward-prevention (`Vector2.Dot(moveDir, lastDir) < 0` = reject)
+- Distance tolerance for endpoint completion
+These are standard techniques that can be reimplemented cleanly without carrying this asset's baggage.
+
+**TecVooDoo Utilities Candidate:** No -- the useful patterns (Bezier math, dot product validation) are too trivial to package. Any project needing tracing would implement inline.
+**TecVooDoo Games Candidate:** No -- same reasoning. A generic `TracingPuzzle` system is conceivable but the market for it is too narrow to justify a shared library entry. Better as a per-project implementation when needed.
+
+---
+
+### ENTRY-320: Game Launcher (Legend)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Game Launcher |
+| **Publisher** | Legend |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | Tools (Desktop Game Launcher / Auto-Patcher) |
+| **Price** | Bundle (retail ~$25) |
+| **Rating** | -- |
+| **Version** | 2.3.4 (Basic) |
+| **Last Release** | -- |
+| **Unity Versions** | 2021.3+ |
+| **Pipeline** | N/A (editor tool, no rendering) |
+| **Dependencies** | GameLauncherCore.dll (bundled, .NET 4.8) |
+| **Install Size** | 17 MB (includes WPF launcher source zip) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | -- |
+| **Verdict** | **Conditional** |
+
+**What It Does:** Desktop game launcher and auto-patcher management system for Windows. The Unity-side is entirely editor tooling (version management, news JSON creation, workspace config). The actual launcher is a separate WPF desktop application distributed as a zip inside the asset. Think MMO-style launcher that patches your game before launch.
+
+**Architecture:**
+- 5 scripts, 4,103 LOC -- 99.6% editor code, 0.4% runtime (literally a 15-line OpenURL MonoBehaviour)
+- Namespaces: `GameLauncher`, `GameLauncher.Utilities`, `GameLauncherCore` (DLL)
+- No asmdef
+- Core logic in `GameLauncherCore.dll` (black box, .NET 4.8)
+- `FileSafety.cs` (392 LOC) ported from osu-framework (MIT), cross-platform file ops
+
+**Editor Tools:**
+- `AdminWindow` -- workspace management, version tracking, download URL config, Release/Beta environments
+- `NewsJSONCreatorWindow` -- structured news/alerts content creation with multi-language (en_US, es_MX), multi-region, server status
+- `Wizard` -- first-time setup guide
+
+**Concerns:**
+- The Unity-side adds almost no runtime value -- it's a deployment/management pipeline
+- Actual launcher is WPF (Windows-only) -- not cross-platform
+- DLL black box for core functionality
+- "Basic" tier implies paid Enterprise tier with more features
+- No in-game UI components -- the launcher runs outside Unity entirely
+
+**Verdict Rationale:** Conditional. Not a bad tool for what it does, but the use case is narrow: Windows desktop games that need a standalone launcher with auto-patching. None of our current projects need this -- they're either mobile (AQS, FearSteez, Soul Minor), multiplayer (HNR), or prototypes. Would only matter for a shipped PC title distributed outside Steam (Steam handles its own patching). Keep in mind for future PC-only releases.
+
+**FileSafety.cs Cherry-Pick Note:** The `FileSafety` utility class (from osu-framework, MIT license) has clean cross-platform file/directory operations: safe move-with-fallback, recursive readonly removal, path normalization, delayed delete on reboot. However, these are standard .NET operations wrapped convenience-style -- not complex enough to warrant extraction into TecVooDoo Utilities.
+
+**TecVooDoo Utilities Candidate:** No -- FileSafety patterns are standard .NET file ops, not worth packaging.
+**TecVooDoo Games Candidate:** No -- deployment tool, not gameplay.
+
+---
+
+### ENTRY-321: Action Adventure Kit (SoftLeitner)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Action Adventure Kit (AdventureCore) |
+| **Publisher** | SoftLeitner |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | Framework (Action RPG / Adventure Game Framework) |
+| **Price** | Bundle (retail ~$80) |
+| **Rating** | -- |
+| **Version** | -- |
+| **Last Release** | -- |
+| **Unity Versions** | 2021.3+ |
+| **Pipeline** | URP (17.3.0, includes Toon Shader 0.13.4 preview) |
+| **Dependencies** | Input System, Timeline, Cinemachine 2.x, AI Navigation, Visual Scripting (optional), Addressables |
+| **Install Size** | ~438 MB total (Core 137 MB, Hero 140 MB, Isle 39 MB, Souls 122 MB) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | -- |
+| **Verdict** | **Approved, Recommended** |
+
+**What It Does:** Complete action-adventure/RPG framework with 13 decoupled gameplay systems, 3 demo projects (third-person hero, world exploration, souls-like combat), and 73 demo/test scenes. This is a framework, not a template -- individual systems are interface-decoupled and independently extractable.
+
+**Architecture (Outstanding):**
+- 463 scripts, ~18.8K LOC (447 runtime, 16 editor)
+- 2 asmdefs: `AdventureCore`, `AdventureCore.Editor` -- proper isolation
+- Namespace: `AdventureCore` (+ `.Timeline`, `.VisualScripting` sub-namespaces)
+- **62 interface files** -- heavy interface-based decoupling
+- 4 manager classes, none are static singletons (scene-based instances)
+- Hub pattern via `CharacterBase` (composition root, not god class -- subsystems are optional/virtual)
+- SO-driven data design throughout (ItemBase, DamageKind, ResourceType, AttributeType, EffectType)
+
+**Gameplay Systems (13 identified):**
+
+| System | Files | LOC | Coupling | Extractability |
+|--------|-------|-----|----------|----------------|
+| Damage | 20 | 1,317 | Interface-based (IDamageSender/IDamageReceiver) | HIGH |
+| Item/Inventory | 37 | 3,569 | Semi-decoupled (ICharacterAssociator) | HIGH |
+| Resource Pool | 11 | 1,029 | Self-contained | HIGH |
+| Attribute/Stats | 13 | 905 | Interface-based (IAttributeModifier) | HIGH |
+| Effects (Buffs) | 12 | 707 | Self-contained | HIGH |
+| Movement | 9 | 2,798 | Abstract base + 7 implementations | HIGH |
+| Actions/Acting | 31 | 3,563 | Virtual methods, events | HIGH |
+| UI | 44 | 4,633 | Event-driven | MEDIUM |
+| Timeline/Dialog | 23 | 1,074 | Timeline playables | MEDIUM |
+| Persistence | 16 | 795 | IPersister interface | MEDIUM |
+| Character | 37 | 1,610 | Hub coordinator | MEDIUM |
+| Visual Scripting | 120 | 7,483 | Optional integration | LOW priority |
+| Utilities | 74 | 9,043 | Mixed | MEDIUM |
+
+**Code Quality:**
+- Consistent naming (Base/Manager/Pool/Value suffixes)
+- HelpURL + XML comments on public classes
+- SerializeReference for polymorphic serialization
+- Surrogate pattern for save/load (advanced)
+- CharacterInstructionBase with 27 composable modifier implementations
+- Events over direct calls throughout
+- Unit tests included (AdventureCore.Tests, 13 test scenes)
+
+**Concerns:**
+- 438 MB total -- heavy with demo content (Core framework alone is 137 MB)
+- Visual Scripting integration is 120 files / 7.5K LOC -- bloat if unused
+- Cinemachine 2.x (not 3.x) -- would need migration for Cinemachine 3 projects
+- Utilities folder is a catch-all (74 files, 9K LOC)
+- Demo projects (Hero, Isle, Souls) are reference implementations, not production-ready games
+
+**Overlap Analysis:**
+- **vs UCC (ENTRY-165):** Both are character controller frameworks. UCC is more physics/ability focused; AAK is more RPG-systems focused (inventory, damage types, effects). Complementary rather than competing -- UCC for movement/abilities, AAK for RPG data layer.
+- **vs Malbers AC (ENTRY-028):** AC is animal-specific locomotion. AAK is genre framework. No meaningful overlap.
+- **vs Dialogue System (ENTRY-214):** AAK has a lightweight Timeline-based dialog system. DS is far more capable. DS would replace AAK's dialog in any serious narrative project.
+
+**Verdict Rationale:** Approved, Recommended. This is exceptionally well-architected for a game framework asset. The interface-heavy decoupling, SO-driven data, and proper asmdef isolation make it genuinely modular -- not the usual "framework" that's actually a tightly-coupled template. Individual systems (damage, inventory, resources, attributes, effects) are cleanly extractable. The 3 demo projects (Hero, Isle, Souls) serve as working reference implementations. Best suited for 3D action-adventure/RPG projects.
+
+**GRIMMORPG Relevance:** HIGH. This is almost purpose-built for an action RPG -- damage types, inventory, equipment slots, resource pools, attribute modifiers, effects/buffs, persistence. Could serve as the gameplay framework backbone.
+
+**HOK Relevance:** MEDIUM. Inventory system for ferry cargo/items, resource pool for soul currency, effect system for environmental hazards. Overkill for HOK's scope but individual systems are useful.
+
+**HNR Relevance:** MEDIUM. Damage system with IDamageSender/IDamageReceiver fits the reaper/NPC interaction model. Resource pool for ghost energy. Would need multiplayer adaptation.
+
+**Other Projects:** LOW for 2D/mobile (AQS, FearSteez, Soul Minor) -- framework assumes 3D action-adventure context.
+
+**TecVooDoo Games Candidate:** Yes -- several systems are candidates for extraction into com.tecvoodoo.games if they prove cleaner than rolling our own. Top candidates: IDamageSender/IDamageReceiver pattern, ResourcePool/ResourceType, AttributePool with modifier stacking. These are generic RPG patterns not specific to action-adventure.
+**TecVooDoo Utilities Candidate:** No -- the utilities are game-framework helpers, not general-purpose.
+**MCP Candidate:** Skipped per cherry-pick rule -- if systems get extracted to TGames, the original asset won't be installed. If installed whole in a project (e.g. GRIMMORPG), would revisit then. The CharacterBase hub + SO-driven config would map well to MCP tools.
+
+---
+
+### ENTRY-322: Real Time Weather Pro (Assist Software)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Real Time Weather Pro |
+| **Publisher** | Assist Software |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | Tools (Real-World Weather System / API Integration) |
+| **Price** | Bundle (retail ~$100) |
+| **Rating** | -- |
+| **Version** | -- |
+| **Last Release** | -- |
+| **Unity Versions** | 2021.3+ |
+| **Pipeline** | URP + HDRP (conditional compilation for both) |
+| **Dependencies** | None required. Optional integrations: Enviro 2/3, Tenkoku, Massive Clouds Atmos, Expanse, EasySky, Crest, KWS |
+| **Install Size** | 104 MB (scripts 34 MB, demo 31 MB, resources 14 MB) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | Environment |
+| **Verdict** | **Approved** |
+
+**What It Does:** Real-world weather data integration system that fetches live weather from multiple API providers (OpenWeatherMap, Tomorrow.io, Stormglass, Metocean) and drives Unity weather/sky systems (Enviro, Tenkoku, Atmos, Expanse, EasySky) and water systems (Crest, KWS). Also supports offline simulation via timelapse presets. 40+ weather states, full maritime data (waves, tides, sea temp).
+
+**Architecture:**
+- 125 scripts, 25,235 LOC (19,845 runtime, 5,390 editor)
+- 14 namespaces under `RealTimeWeather.*` (Data, Managers, Simulation, UI, WeatherControllers, WeatherProvider.*)
+- No asmdef (monolithic Assembly-CSharp)
+- Singleton `RealTimeWeatherManager` with event-driven updates
+- Adapter pattern for weather/water system integration (pluggable module controllers)
+- Async HTTP via UnityWebRequest + Task-based async/await
+- 9 ScriptableObject types (ForecastData, WeatherDataProfile, presets)
+
+**Weather Features:**
+- 40+ WeatherState enum values (rain variants, snow, thunder, fog, dust, tornado, etc.)
+- Temperature, humidity, wind (speed + direction), pressure, visibility, UV, dewpoint, cloud cover
+- Maritime: wave height/period/direction, sea surface temp, radiation flux, tidal data
+- Time of day + season support (latitude-based)
+- Multi-language (50+ via OpenWeatherMap)
+
+**API Providers (5):**
+- OpenWeatherMap (current + historical + One Call 3.0)
+- Tomorrow.io (forecasts + marine)
+- Stormglass.io (marine/tidal)
+- Metocean (ocean data)
+- RTW internal simulation (no API needed)
+
+**Weather System Adapters (7):**
+- Enviro 2/3, Tenkoku, Atmos, Expanse, EasySky (sky/weather)
+- Crest, KWS (water/ocean)
+- Each adapter activated/deactivated independently at runtime
+
+**Concerns:**
+- No asmdef -- 125 scripts in global Assembly-CSharp
+- RealTimeWeatherManager is a god object (handles all system activation/deactivation)
+- Requires API keys for real-world data (OpenWeatherMap free tier available)
+- 7 optional weather/water system integrations via conditional defines -- complexity risk
+- Module controllers have tight coupling to third-party APIs (by necessity, mitigated by `#if` guards)
+
+**Overlap Analysis:**
+- No overlap with any evaluated asset. This is a data layer that feeds INTO visual weather systems, not a weather renderer itself.
+
+**Verdict Rationale:** Approved with Environment label. Solid weather data integration system with excellent API provider coverage and pluggable weather system adapters. The real value is the data pipeline: fetch real-world weather, normalize to common WeatherData format, drive any supported sky/water system. The adapter architecture means you're not locked to one weather renderer. Best suited for 3D projects needing realistic or location-based weather.
+
+**HOK Relevance:** HIGH. Acheron river environment with real-world weather driving water state (via Crest adapter), fog, rain -- fits the supernatural ferry setting perfectly. Maritime data for wave simulation.
+
+**GRIMMORPG Relevance:** HIGH. Open-world RPG with dynamic weather affecting gameplay (visibility, movement, combat modifiers). Location-based weather adds immersion.
+
+**SetDesign Relevance:** MEDIUM. Environment building with realistic weather conditions for visual reference. Useful for "what does this building look like in rain" testing.
+
+**2D/Mobile Projects:** LOW. Weather systems are 3D-focused. Mobile API calls add latency/data cost.
+
+**TecVooDoo Utilities Candidate:** No -- too domain-specific (weather integration).
+**TecVooDoo Games Candidate:** No -- weather is environmental, not a gameplay pattern.
+**MCP Candidate:** High. `RealTimeWeatherManager` singleton with excellent public API surface. All major properties settable: Latitude, Longitude, IsAutoWeatherEnabled, AutoWeatherUpdateRate, SelectedWeatherSystem (enum), SelectedWaterSystem (enum), WeatherRequestMode (enum). Key methods: `RequestWeatherByCityAndCountry()`, `RequestWeatherByGeoCoordinates()`, `ActivateXSimulation()`/`DeactivateXSimulation()` for each adapter, `LoadTimelapse()`. Events: `OnCurrentWeatherUpdate`, `OnHourlyWeatherUpdate`, `OnCurrentMaritimeUpdate`. Proposed 3 tools: `rtw-query` (current weather state, active systems, location, provider), `rtw-configure` (set location, provider, update rate, active weather/water system), `rtw-request` (trigger weather fetch by city or coordinates). Guard: `#if HAS_RTW_PRO`. Detection: `RealTimeWeather.Managers.RealTimeWeatherManager, Assembly-CSharp`.
+
+---
+
+### ENTRY-323: Mesh to Terrain (Infinity Code)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Mesh to Terrain |
+| **Publisher** | Infinity Code |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | Editor Tool (Mesh-to-Terrain Conversion) |
+| **Price** | Bundle (retail ~$25) |
+| **Rating** | -- |
+| **Version** | 2.5.4.1 |
+| **Last Release** | -- |
+| **Unity Versions** | 2019.3+ |
+| **Pipeline** | All (uses standard Unity Terrain system) |
+| **Dependencies** | None. Optional: HugeTexture (Infinity Code), Relief Terrain Pack (conditional `#if`) |
+| **Install Size** | 19 MB (scripts 5.7 MB, textures 6.8 MB, example 3.9 MB, docs 1.7 MB) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | -- (project-specific) |
+| **Verdict** | **Approved** |
+
+**What It Does:** Editor-only conversion tool that bakes 3D mesh geometry into Unity TerrainData. Raycasts mesh surfaces to generate heightmaps, captures textures via camera or raycast, supports multi-terrain tiling, hole handling, and terrain layer generation with alphamaps.
+
+**Architecture:**
+- 22 scripts, 3,434 LOC (~97% editor, ~3% runtime helpers)
+- Namespace: `InfinityCode.MeshToTerrain`
+- No asmdef
+- EditorWindow-based with partial class modularity (Prepare, Terrains, Textures, Finalize)
+- State machine phase tracking (idle -> prepare -> createTerrains -> generateHeightmaps -> generateTextures -> finish)
+- ~30 configuration properties on `MeshToTerrainPrefs` (heightmap resolution 129-2048, texture capture mode, hole handling, multi-terrain grid, Y-range)
+
+**Key Features:**
+- Auto-detect or manual bounds selection
+- Heightmap resolution 129-2048px
+- Texture baking via camera or raycast capture
+- Multi-terrain grid tiling (NxM)
+- Hole handling: minimum value, neighbor average, or remove
+- Terrain layer + alphamap generation
+- Non-destructive (original meshes preserved)
+
+**Concerns:**
+- No asmdef
+- UI-driven only -- no public `Convert()` method for programmatic use
+- Editor-only, zero runtime value
+- 19 MB with demo content that should be deleted after eval
+
+**Verdict Rationale:** Approved without label. Solid, focused editor tool for a specific workflow: converting imported mesh environments (from Blender, purchased assets, etc.) into Unity terrain. Useful when you have detailed mesh landscapes and need Unity terrain features (splatmap painting, grass/detail layers, terrain LOD). The multi-terrain tiling is particularly valuable for large worlds.
+
+**SetDesign Relevance:** MEDIUM-HIGH. Converting imported environment meshes to terrain for proper terrain-based workflows (painting, detail layers, LOD).
+
+**GRIMMORPG Relevance:** MEDIUM. Open world terrain from mesh imports.
+
+**Other Projects:** LOW for most (2D, mobile, small-scale 3D).
+
+**TecVooDoo Utilities Candidate:** No -- editor-only conversion tool.
+**TecVooDoo Games Candidate:** No -- not gameplay.
+**MCP Candidate:** Low. Editor-only tool with no public conversion API. The conversion is driven by EditorWindow Update() loop with internal phase transitions. Would require hacky workarounds (setting phase to prepare, pumping Update frames) to trigger via MCP. Not worth custom tools -- this is a one-time-use tool operated via its own UI.
+
+---
+
+### ENTRY-324: Procedural UI (DTT)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Procedural UI |
+| **Publisher** | DTT |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | UI (SDF Rounded Corners + Gradients) |
+| **Price** | Bundle (retail ~$20) |
+| **Rating** | -- |
+| **Version** | 7.0.7 |
+| **Last Release** | -- |
+| **Unity Versions** | 2020.2+ |
+| **Pipeline** | **Built-in Render Pipeline ONLY** (CGPROGRAM shaders, no URP/HDRP) |
+| **Dependencies** | DTT editor/runtime utility packages (bundled via asmdef GUIDs) |
+| **Install Size** | 31 MB (demo 6.8 MB) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | -- |
+| **Verdict** | **Conditional** |
+
+**What It Does:** SDF-based procedural rounded corners for Unity UI Image components, plus 5 gradient effect types (Angular, Radial, Linear, Reflected, Diamond). `RoundedImage` extends `Image` with per-corner rounding, optional border rendering, and SDF-based precise hit detection.
+
+**Architecture:**
+- 50 scripts, 6,034 LOC (23 runtime: 2,404, 16 editor: 2,270, 7 tests: 1,037, 1 demo: 47)
+- 6 asmdefs -- excellent isolation (Runtime, Runtime.Unsafe, Editor, Demo, Tests.Runtime, Tests.Editor)
+- Namespace: `DTT.UI.ProceduralUI`
+- 3 custom shaders (CGPROGRAM): RoundedCorners, RoundedCornersGradient, Gradient
+- Unsafe code isolated in dedicated assembly (byte packing for float compression)
+- NUnit test suite included
+
+**Key Components:**
+- `RoundedImage` (extends Image): `SetCornerRounding()` (8 overloads), `Mode` (Fill/Border), `BorderThickness`, `DistanceFalloff`, `RoundingUnit` (Percentage/World), per-corner or uniform control
+- `Border` (MonoBehaviour): color, thickness, inside/outside rendering
+- `GradientEffect` (BaseMeshEffect): 5 gradient types, rotation, scale, offset
+- `RoundedImageHitbox`: SDF-based precise hit testing for rounded corners
+
+**Code Quality:**
+- Clean asmdef isolation, proper test coverage
+- XML documentation on public API
+- Event-driven (`OnUpdate` actions)
+- Static material/shader caching for performance
+- Canvas shader channel validation with auto-fix suggestions
+
+**Critical Concern -- Built-in RP Only:**
+All 3 shaders use CGPROGRAM (legacy). No URP or HDRP shader variants. Since all TecVooDoo projects use URP, this asset **cannot be used as-is**. The shaders would need to be rewritten for URP, which undermines the value proposition.
+
+**Verdict Rationale:** Conditional. Well-engineered with excellent code quality (6 asmdefs, test suite, proper isolation). The SDF rounded corner approach is technically sound. However, **Built-in RP only** is a dealbreaker for URP projects. All current TecVooDoo projects are URP. Would only be useful if: (a) shaders are ported to URP, or (b) a BiRP project materializes. Unity's native UI Toolkit already supports rounded corners via USS border-radius, making this less essential for new projects.
+
+**TecVooDoo Utilities Candidate:** No -- UI component, not a utility. Also BiRP-only.
+**TecVooDoo Games Candidate:** No -- UI rendering, not gameplay.
+**MCP Candidate:** Would be High if usable (excellent public API: `SetCornerRounding()`, `Mode`, `BorderThickness`, `GradientEffect.Type/Offset/Rotation/Scale` all settable via MonoBehaviour properties). But since it's BiRP-only and won't be installed in URP projects, no TMCP tools warranted.
+
+---
+
+### ENTRY-325: Lumen: Stylized Light FX 2 (Distant Lands)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Lumen: Stylized Light FX 2 |
+| **Publisher** | Distant Lands |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | VFX (Stylized Mesh-Based Volumetric Lighting) |
+| **Price** | Bundle (retail ~$30) |
+| **Version** | 2.0.5 |
+| **Last Release** | -- |
+| **Unity Versions** | 6000.1+ |
+| **Pipeline** | **URP only** (shaders tagged UniversalPipeline, requires LumenRendererFeature) |
+| **Dependencies** | URP (com.unity.render-pipelines.universal) |
+| **Install Size** | 53 MB (UPM package at `Packages/com.distantlands.lumen`) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | VFX, Environment |
+| **Verdict** | **Approved** |
+
+**What It Does:** Mesh-based stylized volumetric lighting effects -- god rays (static + dynamic), fake lights, lens flares. NOT true volumetrics; uses efficient mesh approximation for performance (mobile/VR compatible). Inspired by Genshin Impact, Alto's Adventure, Amnesia. Stackable effect layer system with SO-based profiles.
+
+**Architecture:**
+- 21 scripts, 3,801 LOC (14 runtime: ~2,360, 7 editor: ~1,450)
+- 2 asmdefs: `DistantLands.Lumen.Runtime`, `DistantLands.Lumen.Editor`
+- Namespace: `DistantLands.Lumen`
+- UPM package (not Assets folder -- clean install)
+- Polymorphic `LumenEffectLayer` base with 5 layer types: StaticRay, DynamicRay, LumenLight, LumenFlare, EffectStack (nested)
+- SO-driven profiles (`LumenEffectProfile`) with serialized layer stacks
+- 3 Amplify Shader Editor shaders (Light Ray, Fake Light, Flare)
+- 60+ cached shader property IDs for performance
+
+**Key Components:**
+- `LumenEffectPlayer` (MonoBehaviour): brightness, color, scale, range, localSunDirection, updateFrequency (Always/OnChanges/ViaScripting). Methods: `RedoEffect()`, `FadeBrightness/Scale/Color(target, duration)`, `ClearEffect()`, static `CreatePlayer()`.
+- `LumenEffectProfile` (SO): layer stack definition
+- `LumenSun` (MonoBehaviour): sets global `LUMEN_SunDir` shader vector
+- `SetLightRayDirection` (MonoBehaviour): aims rays at target Transform
+
+**15 demo scenes** across 5 sample packages (candle, concert lighting, dynamic rays, fake lights, base demo).
+
+**Concerns:**
+- URP-only (matches our pipeline -- not a problem)
+- Unity 6000.1+ minimum
+- Renderer feature is a stub (empty RecordRenderGraph) -- may need updates for future render graph changes
+- No LOD system for effect meshes
+- Single directional light assumption for sun
+
+**Verdict Rationale:** Approved with VFX + Environment labels. Clean, performant stylized lighting system with proper UPM packaging and asmdef isolation. The mesh-based approach trades accuracy for performance, making it perfect for stylized 3D games. Effect profiles as SOs enable reusable lighting presets across scenes. Particularly valuable for atmospheric environments.
+
+**SetDesign Relevance:** HIGH. Building environments benefit from god rays through windows, atmospheric lighting, volumetric-style ambiance. This is exactly what SetDesign needs for environment polish.
+
+**HOK Relevance:** HIGH. Acheron underworld atmosphere -- god rays through fog, ethereal light shafts on the river, supernatural glow effects.
+
+**GRIMMORPG Relevance:** HIGH. Atmospheric horror/dark fantasy environments with dramatic lighting.
+
+**2D/Mobile Projects:** MEDIUM. Mobile-compatible but 2D projects won't benefit from 3D mesh-based lighting.
+
+**TecVooDoo Utilities Candidate:** No -- VFX system, not a utility.
+**TecVooDoo Games Candidate:** No -- environmental VFX, not gameplay.
+**MCP Candidate:** Medium. `LumenEffectPlayer` has clean public properties (brightness, color, scale, range, localSunDirection) settable via `component-modify`. Method calls (`FadeBrightness`, `FadeColor`, `RedoEffect`, `ClearEffect`) need `script-execute`. Profile swapping via `player.profile = newProfile` is scriptable. A `lumen-query` + `lumen-configure` tool pair could set player params and swap profiles. Lower priority -- lighting setup is usually one-time per scene, not iterated via MCP. Guard: `#if HAS_LUMEN`. Detection: `DistantLands.Lumen.LumenEffectPlayer, DistantLands.Lumen.Runtime`.
+
+---
+
+### ENTRY-326: Ultimate Terrain (Pampel Games)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Ultimate Terrain |
+| **Publisher** | Pampel Games |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | Tools (Procedural Terrain Generation + Runtime Editing) |
+| **Price** | Bundle (retail ~$50) |
+| **Version** | -- |
+| **Last Release** | -- |
+| **Unity Versions** | 2022+ |
+| **Pipeline** | All (Built-in, URP, HDRP -- uses standard Unity Terrain) |
+| **Dependencies** | Unity.Jobs, Unity.Collections, Unity.Mathematics, PampelGames.Shared (bundled) |
+| **Install Size** | 131 MB (scripts 33 MB, demo 91 MB, docs 8 MB) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | Recommended, Environment |
+| **Verdict** | **Approved, Recommended** |
+
+**What It Does:** Modular procedural terrain generation and runtime editing system. 14 height modules (Perlin, Voronoi, directional noise, shapes, curves, texture-based, smoothing, blending), 4 filter types (height, slope, texture, clamp), texture layer painting, detail/grass placement, tree/prefab spawning. Animated execution with tweening. Multi-terrain support. Bake/reset non-destructive workflow.
+
+**Architecture (Excellent):**
+- 74 scripts, ~16.5K LOC (45 runtime: 10,937, 24 editor: 5,538, 4 demo: 133)
+- 2 asmdefs: `PG.UltimateTerrain`, `PG.UltimateTerrain.Editor`
+- Namespace: `PampelGames.UltimateTerrain`
+- **Burst-compiled** -- 30+ custom job structs with `[BurstCompile]`, IJobParallelFor throughout
+- Modular plugin architecture: `ModuleBase` (14 implementations), `FilterBase` (4 implementations), `LayerBase`
+- Static facade: `UltimateTerrainAPI` for multi-instance management
+- 12+ event delegates for animation lifecycle callbacks
+- Extensive XML documentation (388 doc comments in main controller)
+
+**Key Components:**
+- `UltimateTerrain` (MonoBehaviour): position, scale, duration, enableAnimation, multiTerrainActive, heightModules (`[SerializeReference]` list), textureLayers/detailsLayers/treeLayers/prefabLayers. 50+ Execute() overloads. State control: Pause/Resume/Stop/IsExecuting. Reset/Bake/Flatten methods.
+- `UltimateTerrainAPI` (static): global Execute/Reset/Pause across all registered instances
+- `SO_GlobalSettings` (SO): terrain update mode, gizmo rendering, object pooling
+- `UT_Storage` (SO): per-terrain persistent state snapshots
+
+**5 demo scenes:** Mountain environment, explosion craters, erosion, volcano, terrain blending.
+
+**Concerns:**
+- 131 MB with 91 MB demo content -- delete after eval
+- Bundled `PampelGames.Shared` dependency (internal utility library)
+- No async execution (all blocking, though Burst-compiled so fast)
+- Large public API surface (50+ Execute overloads -- could use builder pattern)
+
+**Verdict Rationale:** Approved, Recommended with Environment label. Outstanding architecture -- Burst-compiled job system, modular plugin design, proper asmdef isolation, extensive documentation. The 14 height modules + 4 filters + layer system covers virtually any terrain generation need. Runtime execution with animated tweening enables gameplay-driven terrain modification (explosions, erosion, environmental effects). Multi-terrain support is production-ready. All render pipelines supported via standard Unity Terrain.
+
+**SetDesign Relevance:** HIGH. Procedural terrain for environment building -- generate base terrain, paint textures, place details. The animated execution could create terrain reveal effects.
+
+**HOK Relevance:** HIGH. Acheron river environment terrain with runtime erosion, environmental effects on shoreline.
+
+**GRIMMORPG Relevance:** HIGH. Open-world terrain generation with runtime modification (player impact on world).
+
+**Other Projects:** MEDIUM for terrain-using 3D projects. LOW for 2D/mobile.
+
+**TecVooDoo Utilities Candidate:** No -- terrain-specific system.
+**TecVooDoo Games Candidate:** No -- environmental tool, not gameplay pattern.
+**MCP Candidate:** High. `UltimateTerrain` has excellent public API. All core properties settable: position (Vector2), scale (Vector2), duration (float), enableAnimation (bool), multiTerrainActive (bool). 50+ Execute methods callable via `script-execute`. Static `UltimateTerrainAPI` provides global access. State queries: `IsExecuting()`, `IsPaused()`. Reset/Bake methods for terrain state management. Proposed 3 tools: `ut-query` (list UltimateTerrain instances, current state, module/layer counts), `ut-configure` (set position, scale, duration, animation, modules), `ut-execute` (trigger Execute/ExecuteInstant with position/scale params, or Reset/Bake). Guard: `#if HAS_ULTIMATE_TERRAIN`. Detection: `PampelGames.UltimateTerrain.UltimateTerrain, PG.UltimateTerrain`.
+
+---
+
+### ENTRY-327: Map Graph (Insane Scatterbrain)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Map Graph |
+| **Publisher** | Insane Scatterbrain |
+| **Source** | Asset Store (Humble Bundle) |
+| **Category** | Tools (Graph-Based Procedural 2D Map Generation) |
+| **Price** | Bundle (retail ~$50) |
+| **Version** | -- |
+| **Last Release** | -- |
+| **Unity Versions** | 2022+ |
+| **Pipeline** | All (outputs Texture2D/Tilemap -- no custom shaders) |
+| **Dependencies** | DeBroglie (WFC), QuikGraph (graph algorithms), DelaunatorSharp (triangulation), FastNoiseLite -- all bundled as DLLs |
+| **Install Size** | 213 MB total (core+editor 94 MB, docs 13 MB, samples 25 MB unitypackage) |
+| **Evaluated** | Apr 9, 2026 (Session 72) |
+| **Asset Store Label** | -- (project-specific) |
+| **Verdict** | **Approved** |
+
+**What It Does:** Node-based procedural map generation framework for 2D games. Graph editor for building generation pipelines that output Texture2D or Tilemap data. Includes: BSP trees, Voronoi/Delaunay, Wave Function Collapse (DeBroglie), A* pathfinding, cellular automata smoothing, noise generation, area extraction, drawing operations. Graphs are built in editor, executed at runtime via `ScriptGraphRunner`.
+
+**Architecture (Excellent):**
+- 339 scripts across ecosystem (~18K LOC), core 60 runtime scripts ~12K LOC
+- Multiple asmdefs: `InsaneScatterbrain.MapGraph`, `.Editor`, plus supporting modules
+- Namespace: `InsaneScatterbrain.MapGraph`
+- Node-based graph system inheriting from `InsaneScatterbrain.ScriptGraph`
+- Dependency injection via `DependencyContainer`
+- Comprehensive object pooling (TextureData, TilemapData, Area, BSP nodes) for GC reduction
+- Thread-aware: `ThreadLocal<T>` services, main-thread coroutines for Unity API calls
+- Custom nodes via `ProcessorNode` inheritance with `[ScriptNode]` attribute
+- Zero code smells (no TODOs/FIXMEs/HACKs)
+
+**Key Components:**
+- `MapGraphGraph` (SO): graph definition asset
+- `ScriptGraphRunner` (MonoBehaviour): Graph (processor), RunAsynchronously (bool), ParamsInData (DataBag for input params), LatestResult (dict for outputs). Events: OnProcessed, OnProgress, OnError.
+- `MapGraphTilemapPrefab` (MonoBehaviour): tilemap output marker
+
+**Bundled algorithms:** BSP, Voronoi, Delaunay, MST, RST (via QuikGraph), A*, WFC (DeBroglie), cellular automata, flood fill, Perlin/Simplex noise (FastNoiseLite).
+
+**Samples provided as unitypackage** (25 MB, not auto-installed).
+
+**Concerns:**
+- 213 MB total footprint (heavy with docs + samples)
+- Graph-centric design -- not for imperative C# control; graphs must be built in editor
+- Limited runtime parameter control (inputs via DataBag, no live node editing)
+- 3 bundled DLLs (DeBroglie, QuikGraph, DelaunatorSharp) -- black boxes
+
+**Overlap Analysis:**
+- No overlap with evaluated assets. This is the only graph-based 2D procedural generation tool in the catalog.
+
+**Verdict Rationale:** Approved without default label. Exceptionally well-architected procedural generation framework with professional code quality. The graph-based pipeline approach is powerful for 2D map generation (dungeons, overworlds, cave systems). The bundled algorithms (BSP, WFC, Voronoi, pathfinding) cover most procedural generation needs. Project-specific -- install when building procedural 2D levels.
+
+**VNPC Relevance:** MEDIUM. Procedural dungeon/room generation for point-and-click exploration.
+
+**HNR Relevance:** MEDIUM-HIGH. Procedural map generation for multiplayer levels -- each match gets unique layout.
+
+**GRIMMORPG Relevance:** MEDIUM. Procedural dungeon instances, overworld region generation.
+
+**2D Projects (AQS, FearSteez, Soul Minor):** LOW-MEDIUM. These have hand-crafted levels, but procedural side-content (bonus dungeons, randomized areas) could use this.
+
+**TecVooDoo Utilities Candidate:** No -- domain-specific procedural generation framework.
+**TecVooDoo Games Candidate:** No -- ships whole, graph editor + runtime as unit.
+**MCP Candidate:** Low. Runtime control is limited to `ScriptGraphRunner` input/output (set ParamsInData, execute, read LatestResult). The real work happens in the graph editor which is visual/interactive. No meaningful TMCP tools -- `component-modify` on ScriptGraphRunner covers the few runtime properties (RunAsynchronously, EnableMultiThreading). Graph creation/editing is editor-only and not MCP-automatable.
+
+---
+
 ## MCP Candidates
 
 Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evaluated for MCP use.
@@ -9995,6 +10744,10 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 | Ink Integration | ENTRY-281 | Built | 3 tools: ink-list-files, ink-compile, ink-get-story-info. `MCPTools.InkIntegration.Editor` |
 | 2.5D Terrain (Kamgam) | ENTRY-311 | Built | 3 tools: terrain25d-query, terrain25d-configure-mesh, terrain25d-generate. `#if HAS_TERRAIN25D` |
 | 2.5D Bridge Builder (Kamgam) | ENTRY-312 | Built | 4 tools: bridge25d-query, bridge25d-configure, bridge25d-control. `#if HAS_BRIDGEBUILDER25D` |
+| Juicy Actions | ENTRY-316 | Built | 2 tools: juicy-query, juicy-play. `#if HAS_JUICY_ACTIONS` |
+| Boing Kit | ENTRY-256 | Built | 2 tools: boing-query, boing-configure. `#if HAS_BOINGKIT` |
+| MudBun | ENTRY-146 | Built | 3 tools: mudbun-query, mudbun-configure-renderer, mudbun-configure-brush. `#if HAS_MUDBUN` |
+| Lumen | ENTRY-325 | Built | 2 tools: lumen-query, lumen-configure. `#if HAS_LUMEN` |
 
 ### MCP Controllability Evaluated -- Audio (AudioProject Sessions 6 + 8)
 
@@ -10120,6 +10873,37 @@ ECS/DOTS packages evaluated for SpaceSucks project support.
 | SensorToolkit 2 | ENTRY-231 | Medium-High | Clean component model maps 1:1 to `component-add/modify`. SignalProcessor chain also MCP-configurable. |
 | ECS N-Body Orbit Sim | ENTRY-306 | Low | Self-contained sim, no editor API surface. Authoring components modifiable via standard tools. |
 
+### MCP Controllability Evaluated -- Sandbox Evals (Session 71, Apr 8, 2026)
+
+Decal Collider and Texture Studio evaluated for MCP tool potential. Driven by SetDesign project need: adding graffiti/artwork to building exterior walls.
+
+| Asset | ENTRY | Rating | Key API Pattern | Notes |
+|-------|-------|--------|-----------------|-------|
+| Decal Collider | ENTRY-151 | **High** | Single `DecalCollider` MonoBehaviour in `DecalCollider.Runtime` namespace. `[ExecuteAlways]`, `[AddComponentMenu("Physics/Decal Collider")]`. 2 modes via `DecalMode` enum: GridProjection (grid-based UV onto terrain/meshes), MeshProjection (project source mesh onto target). All config via public properties: `size` (Vector2), `maxDistance` (float), `projectionDirection` (18-value enum), `projectionSpace` (Local/World), `wrapMask` (LayerMask), `decalMode`, `meshSubdivisions` (1-128), `colliderSubdivisions` (1-64), `surfaceOffset`, `alphaThreshold`, `alwaysRebuild`, `ignoreSelf`, `cullIfInvisible`. Rich method API: `RebuildSafe()`, `ForceRebuild()`, `SetSprite(Sprite)`, `SetText(string)`, `SetVertexColor(Color)`, `SetAlphaThreshold(float, bool)`, `SetAdaptiveSubdivisions(float)`, `SetMaskBox(Vector3, Vector2)`, `LookAtTarget(Vector3)`. Query methods: `GetHitObjects()`, `GetRaycastHits()`, `GetLayerHitStatistics()`, `LastRebuildStats` (triangles, rays, time, memory). Async: `AsyncRebuild(Action<float>)`. Editor-only: `SaveMeshToAsset(path)`. Extended API in separate partial class (`DecalCollider.API.cs`, 680 lines). No asmdef but clean namespace. | **Candidate -- 3 tools.** Standard MonoBehaviour with exceptionally rich public API. `component-add/modify` handles property setup but cannot call methods (rebuild, sprite assignment, queries). The rebuild trigger is essential -- without it, configuring properties has no visible effect. Proposed: `decal-query` (read config + rebuild stats + hit objects + mesh info), `decal-configure` (set mode, size, direction, subdivisions, surface offset, alpha threshold, optimization flags + assign material), `decal-rebuild` (trigger `RebuildSafe()` + optionally `SetSprite`/`SetText`/`SetVertexColor` before rebuild). SetDesign use case: add component to empty GO near wall, set `projectionDirection` to match wall normal, assign graffiti sprite, set size/subdivisions, rebuild. All from conversation. Detection: `DecalCollider.Runtime.DecalCollider, Assembly-CSharp`. Guard: `#if HAS_DECAL_COLLIDER`. |
+| Texture Studio | ENTRY-142 | **Medium-High** | `CompositeMap` ScriptableObject in `TextureStudio` namespace -- layer-based GPU texture compositing. `MapManager` MonoBehaviour links CompositeMap to materials. Core API is method-based on ScriptableObject: `CreateLayer()`, `FindLayer(name)`, `FindLayerPath(path)`, `GetAllLayers()`, `SetLayerTransform(name, pos, angle, scale)`, `SetSprite(name, Sprite)`, `SetParent(layer, parent)`. 8 `SetParam()` overloads (float, bool, int, Color, string, Texture, Vector2, ReplaceColor) -- cascades to child layers. 30 `ParamName` enum values (Active, Angle, Blend, BlendMode, Tint, Text, TextCol, Opacity, Hue, Saturation, Contrast, Blur, etc.). State snapshots: `SaveState(name)`, `SetState(name/index)`. Rendering: `UpdateTexture()`, `GetTexture()` (RenderTexture), `CreateTexture(w, h)` (Texture2D bake), `ApplyMap()` (push to materials). 26 blend modes. No asmdef but has namespace. 5 runtime scripts, 16 editor scripts. | **Candidate -- 3 tools.** The SO-based method API cannot be driven by `component-modify` -- needs `script-execute` or custom tools. `SetParam()` is the primary runtime interface (dynamic team colors, text, damage overlays). Proposed: `texstudio-query` (inspect CompositeMap: list layers with hierarchy/blend mode/active state, list params, linked materials), `texstudio-set-param` (wrap all 8 `SetParam()` overloads + `UpdateTexture()` + `ApplyMap()` in one call), `texstudio-render` (trigger `UpdateTexture()`/`CreateTexture(w,h)` and optionally bake to PNG). SetDesign use case: compose graffiti textures from layered elements (stencil shapes, text, color tints) then assign to Decal Collider as source texture. Lower priority than Decal Collider for the wall-art workflow -- existing textures/sprites can be assigned directly. Detection: `TextureStudio.CompositeMap, Assembly-CSharp`. Guard: `#if HAS_TEXTURE_STUDIO`. |
+
+### MCP Controllability Evaluated -- Sandbox Session 72 (Apr 9, 2026)
+
+New asset evals with inline MCP assessments. Backfill of Long Bunny Labs entries. Juicy Actions TMCP addendum.
+
+| Asset | ENTRY | Rating | Notes |
+|-------|-------|--------|-------|
+| Endless Book | ENTRY-317 | Medium | Standard MonoBehaviour, rich API. Method calls (SetState, TurnToPage) need script-execute. Lower priority -- one-time setup. |
+| Remo | ENTRY-318 | None | Remote editor -- redundant with MCP itself. |
+| English Tracing Book | ENTRY-319 | N/A | Conditional (coupled template). Pattern useful, code not. |
+| Game Launcher | ENTRY-320 | N/A | Conditional (Windows desktop tool). No runtime value. |
+| Action Adventure Kit | ENTRY-321 | Skipped | TGames cherry-pick candidate -- won't be installed whole. Revisit if adopted as full framework. |
+| Real Time Weather Pro | ENTRY-322 | **High** | Singleton `RealTimeWeatherManager` with excellent public API. Proposed 3 tools: `rtw-query`, `rtw-configure`, `rtw-request`. Guard: `#if HAS_RTW_PRO`. Detection: `RealTimeWeather.Managers.RealTimeWeatherManager, Assembly-CSharp`. |
+| Mesh to Terrain | ENTRY-323 | Low | Editor-only, no public conversion API. UI-driven. |
+| Procedural UI | ENTRY-324 | N/A | BiRP-only -- won't be installed in URP projects. |
+| Lumen | ENTRY-325 | **Built** | 2 tools: `lumen-query`, `lumen-configure`. `#if HAS_LUMEN`. Built TVD2. |
+| Ultimate Terrain | ENTRY-326 | **High** | `UltimateTerrain` with 50+ Execute methods, full property access, static API facade. Proposed 3 tools: `ut-query`, `ut-configure`, `ut-execute`. Guard: `#if HAS_ULTIMATE_TERRAIN`. Detection: `PampelGames.UltimateTerrain.UltimateTerrain, PG.UltimateTerrain`. |
+| Map Graph | ENTRY-327 | Low | Graph editor is visual/interactive. Runtime limited to I/O params on ScriptGraphRunner. |
+| Juicy Actions | ENTRY-316 | **Built** | 2 tools: `juicy-query`, `juicy-play`. `#if HAS_JUICY_ACTIONS`. Built TVD2. |
+| MudBun | ENTRY-146 | **Built** | 3 tools: `mudbun-query`, `mudbun-configure-renderer`, `mudbun-configure-brush`. `#if HAS_MUDBUN`. Built TVD2. |
+| Squash & Stretch Kit | ENTRY-255 | Low | 7 public fields, standard component-modify covers it. No custom tools needed. Backfill. |
+| Boing Kit | ENTRY-256 | **Built** | 2 tools: `boing-query`, `boing-configure`. `#if HAS_BOINGKIT`. Built TVD2. |
+
 ### AI-Friendliness Evaluated -- VNPC (Session 1)
 
 AI-Friendliness assessments from VNPC project. These rate how well Claude can work with each asset's API (code generation, scripting).
@@ -10175,7 +10959,7 @@ Tracks utilities identified as candidates for `com.tecvoodoo.utilities`. "Not li
 |---------|--------|-----------|--------|-------|
 | SimpleBoids | Session 34 (NVJOB Boids cherry-pick) | ~200 lines | Added | In TVU v1.0.0 Gameplay module |
 | CategoryLogger | Session 34 | ~60 lines | Added | In TVU v1.0.0 Logging module |
-| InRangeOf, Quantize, Transform resets, DestroyChildren, HierarchyPath, ToVector2XY/XZ, RoundToInt, SetLayerRecursively, ToHexRGB, TryFromHex | Session 35 retroactive scan | ~15 lines | Pending | Tier 1 -- small, zero-dep, high reuse |
+| InRangeOf, Quantize, Transform resets, DestroyChildren, HierarchyPath, ToVector2XY/XZ, RoundToInt, SetLayerRecursively, ToHexRGB, TryFromHex | Session 35 retroactive scan | ~15 lines | Added | In TVU v1.2.0 -- added to existing extension files (TVD2) |
 | SlowMotion, CameraShake | Session 35 retroactive scan | ~55 lines | Pending | Tier 2 -- useful but slightly higher complexity |
 | GridSystem, Observable\<T\>, EventBus\<T\> | Session 35 retroactive scan | ~440 lines | Pending | Tier 3 -- larger scope, evaluate individually |
 | GrabMaster AudioClipSettings/AudioEventPlayer | ENTRY-239 (Session 59) | ~3 scripts | Pending | Randomized clip playback with SO-defined volume/pitch ranges. Good Audio utility candidate. |
@@ -10772,6 +11556,10 @@ Chances System, ExecutableItem, Enhanced Selection Patterns, NavMeshQueryResult,
 
 **Verdict Rationale:**
 Approved with **Recommended** primary label and **Animation** secondary. This is a production-grade, well-architected action system with exceptional code quality and documentation. The async/await execution model is modern and clean. The SO-asset approach makes actions reusable across projects. 300+ pre-built actions cover the vast majority of common game feel needs. The spring physics system adds physically-simulated juice that DOTween doesn't natively provide. The 6 assembly definitions show proper modular architecture with conditional compilation for optional integrations. The 56-file test suite demonstrates professional engineering standards. Recommended because game feel/juice is needed in every game project, and this is the most comprehensive SO-based action system evaluated to date. It complements (not replaces) DOTween and Feel -- different tools for different workflows.
+
+**TecVooDoo Utilities Candidate:** No -- domain-specific game feel system, not a utility.
+**TecVooDoo Games Candidate:** No -- ships whole as an asset (6 asmdefs, 604 scripts). Too large and too tightly integrated to cherry-pick. Install the full asset when a project needs it.
+**MCP Candidate:** Medium-Low. The core challenge: actions are ScriptableObject assets, not component properties. The workflow is create SO action assets -> reference them in ActionExecutor sequences on MonoBehaviour triggers. MCP `component-add` works for triggers (ActionOnEnable, ActionOnCollision, etc.), but wiring up action sequences requires setting SO references in nested `[SerializeReference]` lists -- too complex for `component-modify`. Runtime control via `script-execute` works: `executor.Execute(target)`, `await executor.ExecuteAsync(target, token)`. A dedicated `juicy-query` tool to list triggers + their action sequences on a GO would add value. A `juicy-play` tool to trigger execution by trigger name would too. But the SO-asset creation workflow (making new Action assets) can't be driven by MCP -- that's Inspector/project window work. Proposed 2 tools if built: `juicy-query` (list triggers + action lists on GO), `juicy-play` (trigger execution on a named trigger). Guard: `#if HAS_JUICY_ACTIONS`. Detection: `MagicPigGames.JuicyActions.ActionExecutor, MagicPigGames.JuicyActions`. Lower priority than weather/decal tools due to SO-asset-first workflow. Added Session 72.
 
 ---
 
