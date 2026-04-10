@@ -193,7 +193,7 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 097 | Dynamic Bone (Will Hong) | Asset Store | Physics (Bone Sim) | Rejected | Don't Use | 2026-02-20 |
 | 098 | All In 1 3D Shader (Seaside Studio) | Asset Store | Shader (Multi-Effect) | Approved | -- | 2026-02-20 |
 | 099 | Character Creator Framework (TelePresent) | Asset Store | Character (Customization) | Rejected | Don't Use | 2026-02-20 |
-| 100 | Timeflow Animation System (Axon Genesis) | Asset Store | Animation (Sequencer) | Conditional | -- | 2026-02-21 |
+| 100 | Timeflow Animation System (Axon Genesis) | Asset Store | Animation (Sequencer) | Approved | Recommended, Animation | 2026-02-21 (re-eval 2026-04-10) |
 | 101 | Koreographer Professional (Sonic Bloom) | Asset Store | Audio (Music Sync) | Approved | Recommended | 2026-02-21 |
 | 102 | Audio Preview Tool (Warped Imagination) | Asset Store | Editor Tool (Audio QoL) | Approved | Default | 2026-02-21 |
 | 103 | Master Audio 2024 (DarkTonic) | Asset Store | Audio (Complete System) | Approved | Default | 2026-02-21 |
@@ -498,6 +498,82 @@ Editor-only level design toolkit for painting, placing, and arranging prefabs in
 Best-in-class editor-time prefab placement tool. The breadth of tools (14 distinct modes), octree-backed performance, and persistent data system set it apart from simpler alternatives. Upgraded from Conditional to **Approved, Recommended** after full re-inspection confirmed scope and quality. Complementary to runtime building systems — they solve different problems.
 
 **MCP Tools (Session 52-55):** 4 custom tools built -- `pwb-list-palettes`, `pwb-add-to-palette`, `pwb-place-brush`, `pwb-place-line`. Palettes persist across sessions in PWB's own data storage. Use `brushName` partial match (not index). `pwb-place-line` creates a named container GO. All 4 tools confirmed working ✅.
+
+---
+
+### ENTRY-100: Timeflow Animation System 1.10.1 (Axon Genesis) | Approved, Recommended | 2026-02-21 (re-eval 2026-04-10)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Timeflow Animation System |
+| **Version** | 1.10.1 |
+| **Developer** | Axon Genesis |
+| **Source** | Asset Store (UPM: `com.axongenesis.timeflow`) |
+| **Primary Label** | Recommended |
+| **Secondary Label** | Animation |
+| **Verdict** | **Approved** (upgraded from Conditional) |
+| **Date** | 2026-02-21 (re-eval 2026-04-10) |
+| **Session** | Original eval lost in Sandbox corruption. Re-eval triggered by AudioProject. |
+| Scripts | 483 |
+| Asmdef | 1 (`Timeflow`) + optional MidiJack |
+| Namespace | `AxonGenesis` |
+| Path | `Packages/com.axongenesis.timeflow/` |
+| Triggered by | AudioProject -- dedicated animation project needs procedural animation beyond Timeline |
+
+**What it does:**
+Independent procedural animation engine with its own time management, channel-based keyframing, behavioral animation (tweens, noise, motion paths, audio-reactive), and optional Unity Timeline sync via PlayableDirector.
+
+**Problem it solves:**
+Unity Timeline is clip-based sequencing -- great for linear cutscenes, but limited for procedural/behavioral animation. Timeflow provides 14 easing modes, tween chaining, noise generation, audio-reactive animation, MIDI control, and a property binding system that can animate any component field via reflection. It's a different tool for a different job -- both coexist.
+
+**Architecture:**
+- **Timeflow** (sealed MonoBehaviour) -- top-level controller with Play/Stop/Pause/SetTime, parent-child nesting, work areas, global time scale. `[ExecuteInEditMode]`.
+- **TimeflowObject** -- per-object track component with behaviors and channels.
+- **TimeflowBehavior** (abstract) -- base for all animation behaviors. 15+ update modes, channel system.
+- **Tween** (1418 LOC, 60+ fields) -- procedural animation with 14 easing modes, repeat/pingpong, trigger chaining, ApplyToEach for batch animation.
+- **Keyframer** -- keyframe-based channel animation with Bezier/Quadratic/Linear interpolation.
+- **MotionPath** -- spline-based path animation.
+- **TimeflowEvent** -- trigger events at specific times with SendMessage + UnityEvent.
+- **Property** (2940 LOC) -- reflection-based property binding system with handlers for Transform, Material, Rigidbody, Animator, VFX Graph, Volume. 14 PropertyTypes.
+- **MathUtil** (4011 LOC) -- standalone easing/interpolation library, ADSR envelopes, vector math.
+- **AudioTrack / AudioReactive / AudioSample** -- audio sync and frequency-reactive animation.
+- **Optional:** MIDI input (MidiJack), Spine integration, Timeline sync.
+
+**Code Quality:**
+- Professional. Clean namespace (`AxonGenesis`), proper asmdef, `[ExecuteInEditMode]` throughout.
+- Partial classes keep files manageable despite 483 scripts.
+- Property binding uses reflection caching for performance.
+- MathUtil is pure static math -- zero allocations.
+- Editor integration is extensive (custom timeline view, keyboard shortcuts).
+
+**Why upgraded from Conditional:**
+Original eval was pre-AudioProject. Now there's a dedicated animation project where procedural animation is the primary use case. Timeflow fills a real gap -- Timeline handles sequencing, Timeflow handles behavioral/procedural animation. The Tween engine alone (14 easing modes, trigger chaining, batch animation) justifies the install. The property binding system and MathUtil library add significant value.
+
+**Project Relevance:**
+- **AudioProject:** CRITICAL. Procedural animation synced to audio is the core use case.
+- **HOK:** HIGH. Ferry animations, fishing bobber physics, environmental ambient animations.
+- **FearSteez:** HIGH. Combat hit reactions, screen effects, procedural juice.
+- **AQS:** MEDIUM-HIGH. Quokka movement feel, joey animations, environmental effects.
+- **HNR:** HIGH. Ghost possession effects, NPC panic animations.
+- **Any project with procedural animation:** HIGH.
+
+**MCP Controllability:**
+- `component-add`: PASS -- `AxonGenesis.Timeflow` adds cleanly.
+- `component-get`: PASS -- all public fields readable.
+- `component-modify`: PARTIAL -- simple fields (AutoPlay, GlobalTimeScale) work. Tween's 60+ fields benefit from dedicated tools.
+- `script-execute`: PASS -- `Play()`, `Stop()`, `SetTime()` all callable.
+- **Gotchas:** Tween configuration is too complex for raw component-modify (60+ fields). Property binding requires reflection setup. TimeflowEvent's SendMessage target needs both GO reference and function name.
+
+**Key Gotchas:**
+- 483 scripts will increase compile times. Manageable in dedicated projects but evaluate impact in script-heavy projects.
+- `[ExecuteInEditMode]` on most components -- effects run in editor which is powerful but can cause unexpected behavior.
+- Optional Timeline sync is one-way: Timeflow can follow PlayableDirector, but Timeline can't drive Timeflow tracks.
+- MIDI support requires MidiJack package (separate install).
+
+**Verdict Rationale:**
+Approved with **Recommended** primary and **Animation** secondary. Upgraded from Conditional because the AudioProject provides a clear production use case. Timeflow is not a Timeline replacement -- it's a complementary procedural animation engine that handles behavioral/parametric animation that Timeline wasn't designed for. The 14 easing modes, tween chaining, audio-reactive system, and reflection-based property binding are production-grade. Recommended because any project with procedural animation needs would benefit.
+
+**MCP Candidate:** Yes -- 4 tools proposed. See MCP Candidates section.
 
 ---
 
@@ -10748,6 +10824,8 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 | Boing Kit | ENTRY-256 | Built | 2 tools: boing-query, boing-configure. `#if HAS_BOINGKIT` |
 | MudBun | ENTRY-146 | Built | 3 tools: mudbun-query, mudbun-configure-renderer, mudbun-configure-brush. `#if HAS_MUDBUN` |
 | Lumen | ENTRY-325 | Built | 2 tools: lumen-query, lumen-configure. `#if HAS_LUMEN` |
+| uLipSync | ENTRY-328 | Built | 3 tools: lipsync-query, lipsync-configure, lipsync-bake. `#if HAS_ULIPSYNC`. Built M3 S2. |
+| Timeflow | ENTRY-100 | Built | 4 tools: timeflow-query, timeflow-control, timeflow-configure-tween, timeflow-configure-event. `#if HAS_TIMEFLOW`. Built TVD2. Re-eval Conditional -> Recommended. |
 
 ### MCP Controllability Evaluated -- Audio (AudioProject Sessions 6 + 8)
 
@@ -10903,6 +10981,13 @@ New asset evals with inline MCP assessments. Backfill of Long Bunny Labs entries
 | MudBun | ENTRY-146 | **Built** | 3 tools: `mudbun-query`, `mudbun-configure-renderer`, `mudbun-configure-brush`. `#if HAS_MUDBUN`. Built TVD2. |
 | Squash & Stretch Kit | ENTRY-255 | Low | 7 public fields, standard component-modify covers it. No custom tools needed. Backfill. |
 | Boing Kit | ENTRY-256 | **Built** | 2 tools: `boing-query`, `boing-configure`. `#if HAS_BOINGKIT`. Built TVD2. |
+| uLipSync | ENTRY-328 | **Built** | 3 tools: `lipsync-query`, `lipsync-configure`, `lipsync-bake`. `#if HAS_ULIPSYNC`. Built M3AnimatedSeries Session 2. |
+
+### MCP Controllability Evaluated -- M3AnimatedSeries (Session 2, Apr 9, 2026)
+
+| Asset | ENTRY | Rating | Key API Pattern | Notes |
+|-------|-------|--------|-----------------|-------|
+| uLipSync 3.1.5 | ENTRY-328 | **Built** | `uLipSync.uLipSync` (analyzer), `uLipSync.uLipSyncBlendShape` (blendshape driver), `uLipSync.uLipSyncBakedDataPlayer` (pre-baked playback), `uLipSync.Timeline.uLipSyncTimelineEvent` (Timeline binding). Assembly: `uLipSync.Runtime`. All 7 core types resolve via reflection. 23 components discoverable via `component-list-all`. All public fields on key components are serialized and accessible. | **Verified live in M3AnimatedSeries (MCP connected).** `component-list-all(search="uLipSync")` returns 23 components. `script-execute` reflection confirms: all types in `uLipSync.Runtime` assembly resolve. `uLipSyncBlendShape` fields: updateMethod, skinnedMeshRenderer, blendShapes (List), maxBlendShapeValue, minVolume, maxVolume, smoothness, usePhonemeBlend. `uLipSyncBakedDataPlayer` fields: audioSource, bakedData, playOnAwake, playAudioSource, volume, timeOffset, onLipSyncUpdate. `AssetDatabase.FindAssets("t:uLipSync.Profile")` returns 5 profiles (3 sample, 1 UnityChan, 1 test). `FindAssets("t:uLipSync.BakedData")` returns 4 baked assets. Profile and BakedData are ScriptableObjects -- queryable via `assets-get-data`. **component-add:** works for all MonoBehaviour types (verified via component-list-all). **component-get/modify:** all key fields are public serialized -- standard pipeline works. The `blendShapes` field (List of BlendShapeInfo with phoneme string + index int + maxWeight float) may need `script-execute` for list manipulation. **script-execute:** full API access confirmed -- `Play()`, `Stop()`, `RequestCalibration()`, Profile creation, BakedData baking (editor-only bake API). **Timeline:** uLipSyncTrack/uLipSyncClip creation requires PlayableDirector manipulation -- doable via script-execute but complex. **Proposed 3 tools:** `lipsync-query` (list uLipSync/BlendShape/BakedDataPlayer/TimelineEvent components on GO hierarchy, show profile phonemes, blendshape mappings, baked data info), `lipsync-configure` (set profile on uLipSync, configure blendshape mappings with phoneme-to-blendshape-index pairs, set volume/smoothness params), `lipsync-bake` (batch bake AudioClips to BakedData using profile -- wraps editor bake API via script-execute). Guard: `#if HAS_ULIPSYNC`. Detection: `uLipSync.uLipSync, uLipSync.Runtime`. |
 
 ### AI-Friendliness Evaluated -- VNPC (Session 1)
 
@@ -11560,6 +11645,129 @@ Approved with **Recommended** primary label and **Animation** secondary. This is
 **TecVooDoo Utilities Candidate:** No -- domain-specific game feel system, not a utility.
 **TecVooDoo Games Candidate:** No -- ships whole as an asset (6 asmdefs, 604 scripts). Too large and too tightly integrated to cherry-pick. Install the full asset when a project needs it.
 **MCP Candidate:** Medium-Low. The core challenge: actions are ScriptableObject assets, not component properties. The workflow is create SO action assets -> reference them in ActionExecutor sequences on MonoBehaviour triggers. MCP `component-add` works for triggers (ActionOnEnable, ActionOnCollision, etc.), but wiring up action sequences requires setting SO references in nested `[SerializeReference]` lists -- too complex for `component-modify`. Runtime control via `script-execute` works: `executor.Execute(target)`, `await executor.ExecuteAsync(target, token)`. A dedicated `juicy-query` tool to list triggers + their action sequences on a GO would add value. A `juicy-play` tool to trigger execution by trigger name would too. But the SO-asset creation workflow (making new Action assets) can't be driven by MCP -- that's Inspector/project window work. Proposed 2 tools if built: `juicy-query` (list triggers + action lists on GO), `juicy-play` (trigger execution on a named trigger). Guard: `#if HAS_JUICY_ACTIONS`. Detection: `MagicPigGames.JuicyActions.ActionExecutor, MagicPigGames.JuicyActions`. Lower priority than weather/decal tools due to SO-asset-first workflow. Added Session 72.
+
+---
+
+### ENTRY-328: uLipSync 3.1.5 (hecomi)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | uLipSync |
+| **Publisher** | hecomi |
+| **Source** | GitHub (https://github.com/hecomi/uLipSync) |
+| **Category** | Animation (MFCC-Based Lip Sync) |
+| **Price** | Free (MIT License) |
+| **Version** | 3.1.5 |
+| **Last Release** | -- |
+| **Unity Versions** | 2020+ |
+| **Pipeline** | All (no rendering -- drives blendshapes/textures) |
+| **Dependencies** | Unity.Burst 1.4.11+, Unity.Mathematics 1.2.5+ |
+| **Install Size** | 428 MB total (Runtime 6.9 MB, Editor 6.4 MB, Samples 413 MB, Plugins 384 KB) |
+| **Package Name** | com.hecomi.ulipsync |
+| **Evaluated** | Apr 9, 2026 |
+| **Triggered by** | M3AnimatedSeries (lip sync pipeline for animated series production) |
+| **Verdict** | **Approved, Recommended** |
+
+**What It Does:** MFCC-based (Mel-Frequency Cepstrum Coefficients) lip sync system. Analyzes audio waveforms in real-time or pre-baked to detect phonemes (A, I, U, E, O, N, noise), then drives SkinnedMeshRenderer blendshapes, textures/UVs, or Animator parameters accordingly. Supports both runtime analysis from AudioSource/microphone and pre-baked BakedData for offline/Timeline workflows. Full Timeline integration with custom track/clip types. Can export lip sync data as AnimationClips.
+
+**Architecture (Good):**
+- 75 scripts, ~9.2K LOC total
+- 2 asmdefs: `uLipSync.Runtime`, `uLipSync.Editor`
+- Namespace: `uLipSync` (runtime), `uLipSync.Timeline` (Timeline integration)
+- **Burst-compiled** `LipSyncJob : IJob` for MFCC computation (FFT, Mel filter bank, DCT, phoneme scoring)
+- NativeArray throughout -- zero managed allocations in hot path
+- Clean event-driven architecture: `uLipSync` emits `LipSyncUpdateEvent` (UnityEvent<LipSyncInfo>), receivers (`uLipSyncBlendShape`, `uLipSyncTexture`, `uLipSyncAnimator`) subscribe
+- `Profile` ScriptableObject stores calibration data (MFCC reference patterns per phoneme)
+- `BakedData` ScriptableObject stores pre-computed per-frame phoneme ratios at 60fps
+- Thread-safe: `OnAudioFilterRead` -> ring buffer with lock -> Job system -> main thread callback
+- Conditional compilation: `USE_VRM0X`, `USE_VRM10` for VRM support; `ULIPSYNC_DEBUG` for debug visualization
+- `allowUnsafeCode: true` in asmdef (required for Burst)
+
+**Key Components:**
+- `uLipSync` (MonoBehaviour): Core analyzer. Requires AudioSource on same GO (or AudioSource proxy). Fields: `profile` (Profile SO), `outputSoundGain` (float 0-1), `audioSourceProxy` (uLipSyncAudioSource). Event: `onLipSyncUpdate` (LipSyncUpdateEvent).
+- `uLipSyncBlendShape` (MonoBehaviour): BlendShape driver. Fields: `skinnedMeshRenderer` (SMR), `blendShapes` (list of phoneme->blendshape index mappings), `minVolume`/`maxVolume` (float, log10), `smoothness` (float 0-0.3), `updateMethod` (enum), `usePhonemeBlend` (bool), `maxBlendShapeValue` (float).
+- `uLipSyncTexture` (MonoBehaviour): Texture/UV swap driver for 2D faces. Fields: `targetRenderer`, `textures` (list of phoneme->Texture+UV mappings), `minVolume`, `minDuration`.
+- `uLipSyncAnimator` (MonoBehaviour): Animator parameter driver. Maps phonemes to Animator float parameters.
+- `uLipSyncBakedDataPlayer` (MonoBehaviour): Plays pre-baked data. Fields: `audioSource`, `bakedData` (BakedData SO), `playOnAwake`, `timeOffset` (-0.3 to 0.3s), `volume`. Methods: `Play()`, `Play(BakedData)`, `Stop()`.
+- `uLipSyncTimelineEvent` (MonoBehaviour): Timeline binding target. Receives `OnFrame(BakedFrame)` from Timeline mixer.
+- `uLipSyncTrack` (TrackAsset): Custom Timeline track. Binding type: `uLipSyncTimelineEvent`. Clips reference `BakedData` assets.
+- `Profile` (ScriptableObject): Calibration data. Fields: `mfccNum` (int, default 12), `targetSampleRate` (int, default 16000), `sampleCount` (int, default 1024), `melFilterBankChannels` (int, default 30), `compareMethod` (L1Norm/L2Norm/CosineSimilarity), `mfccs` (list of MfccData per phoneme).
+- `BakedData` (ScriptableObject): Pre-computed lip sync. Fields: `profile`, `audioClip`, `duration`, `frames` (list of BakedFrame at 60fps). Each frame has volume + phoneme ratios.
+- `uLipSyncMicrophone` (MonoBehaviour): Mic input wrapper.
+- `uLipSyncCalibrationAudioPlayer` (MonoBehaviour): Editor tool for calibrating from AudioClip segments.
+
+**DSP Pipeline (LipSyncJob.Execute):**
+1. RMS volume calculation
+2. Ring buffer copy
+3. Low-pass filter (cutoff = targetSampleRate/2, range 500Hz)
+4. Downsample (outputSampleRate -> targetSampleRate)
+5. Pre-emphasis (0.97)
+6. Hamming window
+7. Normalize
+8. FFT
+9. Mel filter bank (configurable channels)
+10. Power to dB
+11. DCT -> MFCC coefficients
+12. Score against calibrated phonemes (L1/L2/Cosine)
+
+**Editor Tools:**
+- Baked Data Generator window (batch AudioClip -> BakedData conversion)
+- Animation Clip Generator window (BakedData -> AnimationClip conversion)
+- Timeline Setup Helper (auto-creates BakedData from AudioTrack clips)
+- Profile calibration UI (runtime mic calibration with visual MFCC feedback)
+- Per-component custom inspectors with runtime visualization
+
+**12 sample scenes** covering: AudioClip playback, mic input, audio source proxy, VRM, bake, Timeline, animation bake, texture mode, Animator mode, runtime setup, UI, WebGL.
+
+**Concerns:**
+- 428 MB install with 413 MB in samples (Unity-chan assets). Samples can be deleted after review -- core runtime+editor is only 13.3 MB.
+- `using System.Linq` in Profile.cs (`GetPhonemeNames()`) -- single editor-time call, not per-frame. Acceptable.
+- `BakedData.GetFrame()` allocates a new `List<BakedPhonemeRatio>` every call (line 62 of BakedData.cs). At 60fps playback this is a GC concern. For offline rendering (M3's primary use case) this is acceptable. For runtime games, would need pooling patch.
+- `uLipSyncTexture.cs` imports `UnityEditor` unconditionally (line 2) -- will cause build errors outside editor if this script is included in a build. The component itself is runtime-viable but the import needs `#if UNITY_EDITOR` guard. **Bug.**
+- Ring buffer lock in `OnDataReceived` on audio thread -- minimal contention but technically blocks audio thread during buffer copy.
+- `var` used extensively throughout codebase (not matching M3 coding standards, but this is a third-party package -- don't modify).
+- No asmdef for Samples -- sample scripts compile into Assembly-CSharp. Delete samples after eval.
+
+**Project Fit:**
+
+**M3AnimatedSeries Relevance:** **CRITICAL.** This is the primary lip sync solution for the animated series pipeline. The workflow matches M3's production model perfectly:
+1. Record voice lines per character
+2. Create a calibrated Profile per voice actor
+3. Batch-bake all AudioClips to BakedData assets (Baked Data Generator window)
+4. Place BakedData clips on uLipSync Timeline tracks alongside audio
+5. Bind to uLipSyncBlendShape on Synty SidekickCharacters
+6. Timeline playback drives mouth animation in sync with dialogue
+7. Optionally export to AnimationClips for further keyframe editing
+
+The pre-bake + Timeline workflow is ideal for offline animated series production -- no runtime analysis overhead, deterministic playback, editable timing via `timeOffset`. The AnimationClip export enables integration with Animancer's animation layering system.
+
+**Key question for M3:** Do Synty SidekickCharacters have viseme blendshapes? If not, need to create them with EditorSculpt (ENTRY-152) or use `uLipSyncTexture` for texture-based face swaps. Texture mode is simpler but less expressive; blendshape mode is better for close-ups.
+
+**Other projects:** LOW. Most TecVooDoo projects don't have voice-acted dialogue. Could be relevant for HOK if it adds voiced NPC dialogue later.
+
+**MCP Controllability:**
+- `component-add`: Should work for `uLipSyncBlendShape`, `uLipSyncBakedDataPlayer`, `uLipSyncTimelineEvent`. The core `uLipSync` component requires AudioSource on same GO.
+- `component-get`: Should work -- all key fields are serializable.
+- `component-modify`: Should work for setting Profile/BakedData references, volume, timeOffset, smoothness.
+- `script-execute`: Full API access. `uLipSyncBakedDataPlayer.Play()`, `.Stop()`. Profile creation via `Profile.Create()`. BakedData baking would require editor API access.
+- **Timeline integration** is the primary MCP challenge -- creating uLipSync tracks and clips on Timeline requires PlayableDirector/TimelineAsset manipulation, which is editor API work.
+
+**MCP Candidate:** Medium. Core setup (add components, set references, configure parameters) works through standard MCP tools. The batch bake workflow (Baked Data Generator window) is editor-only GUI work -- not MCP-automatable without custom script-execute calls. A dedicated `lipsync-bake` tool that wraps the bake API could add value for batch processing. Proposed 2 tools: `lipsync-query` (list uLipSync/BlendShape/BakedDataPlayer components, show profile phonemes, blendshape mappings), `lipsync-configure` (set profile, blendshape mappings, volume params). Guard: `#if HAS_ULIPSYNC`. Detection: `uLipSync.uLipSync, uLipSync.Runtime`.
+
+**Key Gotchas:**
+- **Delete samples after eval** -- 413 MB of Unity-chan assets. Core package is 13.3 MB.
+- **`uLipSyncTexture` has unconditional `using UnityEditor`** -- will fail in player builds if included. Either exclude from build or add `#if UNITY_EDITOR` guard.
+- **BakedData.GetFrame() allocates per call** -- acceptable for offline rendering, needs pooling for runtime games.
+- **Profile calibration is per-voice** -- each voice actor needs their own calibrated Profile SO. Budget time for calibration passes.
+- **v3 broke v2 profiles** -- if upgrading from v2, all Profiles must be recalibrated (MFCC values changed).
+- **Synty SidekickCharacters may lack viseme blendshapes** -- verify before committing to blendshape workflow. Fallback: texture mode or EditorSculpt to create custom visemes.
+- **Git URLs don't work on this machine** -- installed via `file:` reference to local clone at `E:\Unity\uLipSync-main\Assets\uLipSync`.
+- **WebGL limitations** -- no Job System/Burst on WebGL, uses `AudioClip.GetData()` fallback. Not relevant for M3 (offline rendering).
+
+**Verdict Rationale:** Approved with Recommended label. Clean architecture with Burst-compiled MFCC analysis, proper Job System usage, and zero-alloc hot paths. The dual workflow (real-time analysis + pre-baked Timeline playback) covers both iteration and final production needs. Timeline integration with custom track/clip types is exactly what M3's episode sequencing requires. The AnimationClip export bridges to Animancer's animation layering. MIT license, active maintenance (v3.1.5), 12 sample scenes with thorough documentation. The texture-swap fallback mode provides a viable path if Synty characters lack viseme blendshapes. Only concern is the GetFrame allocation and the UnityEditor import bug in uLipSyncTexture, neither of which blocks M3's offline rendering workflow.
+
+**TecVooDoo Utilities Candidate:** No -- domain-specific lip sync system.
+**TecVooDoo Games Candidate:** No -- third-party package, install whole.
 
 ---
 
