@@ -6,6 +6,171 @@
 
 ---
 
+## Session 69 (Apr 4, 2026) -- Soul Minor Scene Wiring + Art
+
+**Status:** SM scene fully wired, UI working, art assets imported, first playtest completed.
+
+**Config SO Instances (18 assets):**
+- 2 BodyConfigSOs (Cat/Dog), 2 RankConfigSOs (Rank 0-1), 1 ZoneConfigSO (Shallow Graves)
+- 3 UpgradeConfigSOs (mine/elevator/warehouse), 11 GameEvent SOs
+
+**Scene Wired (SM_ShallowGraves):**
+- [GameManager]: SoulManager, RankSystem, GameState, SaveManager, UpgradeSystem
+- [Input]: TapHarvester, ComboSystem
+- [Mine]: ZoneInitializer, Elevator, Warehouse, 3 MineLevels with BodyPiles
+- [UI]: UIDocument + SMHUD (UI Toolkit, 1080x1920 portrait)
+
+**New Scripts (2):** ZoneInitializer (IGameEventListener<double>, BodyPile init), SMHUD (UI controller). 21 scripts total.
+
+**Art Assets Imported:**
+- KayKit Skeletons (6 characters + animations) -- player rank progression
+- KayKit Halloween (102 environment props) -- zone dressing
+- KayKit Block Bits (58 tiling blocks) -- mine shaft walls
+- Source: `E:\Game Assets\Itch\apps\kaykit-complete\` (CC0)
+
+**First Playtest Results:**
+- Tap bodies -> disappear -> soul counter increments -> upgrades deduct souls: all working
+- UI click-through fix applied (pickingMode=Ignore on root)
+- Upgrades run but no visible feedback yet (internal math only)
+- Three-bottleneck pipeline not connected (direct-to-SoulManager flow for prototype)
+- Collect button hidden (Warehouse never receives without pipeline)
+
+---
+
+## Session 68 (Apr 4, 2026) -- Juicy Actions Eval
+
+**Status:** Single asset eval completed. Juicy Actions 1.0.3 evaluated and approved (ENTRY-316, Recommended). User removing asset from Sandbox post-eval to keep compile times lean.
+
+**Eval: Juicy Actions 1.0.3 (Magic Pig Games / Infinity PBR)**
+- 604 scripts, ~108K LOC, 6 assembly definitions, 27 action categories, 300+ pre-built actions
+- SO-asset-based async action sequencing system with spring physics, field overrides, blackboard, clock abstraction
+- Verdict: **Approved, Recommended** (Animation secondary label)
+- MCP: component-add/get work. Field modification limited due to nested SerializeReference structure.
+- Complementary to DOTween (code-driven) and Feel (feedback-focused). Standalone -- no dependencies on either.
+- Flagged for Soul Minor: install at standalone migration for Sprint 3 juice (too heavy for lean Sandbox)
+
+**Docs Updated:** Sandbox_AssetLog.md (ENTRY-316 + summary row), SM_Status.md (Asset Needs + Sprint 3 Juicy Actions note), Sandbox_Status.md
+
+---
+
+## Session 67 (Apr 3, 2026) -- Soul Minor Jumpstart
+
+**Status:** Soul Minor Sprint 1 jumpstart complete. 19 scripts compiling clean. Scene created. Ready for scene wiring + config SO instances.
+
+**Scripts Created (19 total, 0 errors):**
+- SM.Core (11): GameEvent, GameEventListener, GameEvent<T>/DoubleGameEvent/IntGameEvent, BodyConfigSO, ZoneConfigSO, RankConfigSO, UpgradeConfigSO, SoulManager, RankSystem, GameState, SaveManager
+- SM.Harvest (2): TapHarvester (touch/mouse + raycast), ComboSystem (timeout + multiplier)
+- SM.Mine (4): MineLevel, BodyPile (spawn/harvest/respawn), Elevator (capacity/trip cycle), Warehouse (storage/auto-collect)
+- SM.Upgrade (2): UpgradeSystem (mine/elevator/warehouse upgrades), UpgradeCurve (exponential cost calc)
+
+**Folder Structure:** Full hierarchy under `Assets/_Sandbox/_SM/` (Scripts, Art, Audio, Data, Prefabs, Scenes, Animations with subfolders)
+
+**Scene:** SM_ShallowGraves.unity created
+
+**Import Pipeline Bug Found:**
+- .cs files written via filesystem Write tool with auto-refresh disabled don't get properly imported as MonoScripts
+- Unity's AssetDatabase.Refresh() creates minimal .meta files (no MonoImporter section) for externally-written files
+- Fix: delete .cs + .meta, recreate via MCP `script-update-or-create` tool
+- Feedback memory saved: `memory/feedback_script_creation_mcp.md`
+- Added to MEMORY.md MCP Essentials section
+
+**Docs Updated:** SM_Status.md (Session 1), SM_CodeReference.md (19 scripts inventoried)
+
+---
+
+## Session 66 (Apr 3, 2026) -- HNR Migration, TecVooDoo Project, Sandbox Rebuild, Soul Minor
+
+**Status:** Massive infrastructure session. HNR migrated to standalone. TecVooDoo project created. Sandbox rebuilt from scratch (fresh project, lean packages). Soul Minor chosen as next jumpstart.
+
+**HNR Migration COMPLETE:**
+- HNR standalone at `E:\Unity\HideNReap` (Unity 6, URP)
+- 14 scripts migrated (GhostController, NPCLifecycle, PossessionSystem, BodyController, configs, etc.)
+- All docs migrated, MCP configured, compiling clean
+- Sprint 1 partially tested -- ghost movement + possess/exit works, body stand-up needs fix
+
+**TecVooDoo Project Created:**
+- `E:\Unity\TecVooDoo` -- dedicated TMCP/TVDGames/TVDUtilities development
+- All TMCP-supported assets will be installed here (replacing Sandbox for that role)
+- Docs: TVD_Status.md, TVD_DevReference.md
+- TMCP define manager bug flagged as HIGH priority
+
+**Sandbox Complete Rebuild:**
+- Old Sandbox compile times: 15 min (692s script compilation + 100s domain reload)
+- Diagnosed via Editor.log: 5,500+ .cs files from TMCP-supported assets
+- Stripped ~3,220 .cs files, still 10 min due to domain reload / stale Library
+- Nuclear option: deleted entire project, recreated fresh, copied back Documents + configs
+- Fresh install: 11 packages (5 defaults + 6 QoL + infrastructure)
+- MCP connected on port 24815
+- Expected compile times: < 20s
+
+**Asset Uninstall Log (from old Sandbox):**
+- PurrNet: clean (locked empty folder)
+- Dialogue System + addon: clean (TMCP define stuck, manual strip)
+- Behavior Designer Pro + UCC: must uninstall together (shared Opsive folders)
+- Feel: clean (TMCP define stuck, DLL locked folder)
+- Final IK: clean (TMCP define stuck, wouldn't clear even after strip)
+- AllIn1 3D Shader: clean
+- Damage Numbers Pro: clean (DLL locked folder)
+
+**TMCP Define Manager Bug (confirmed pattern):**
+- Asset removal leaves `HAS_*` defines in ProjectSettings
+- Compile errors prevent define manager from running to clean them up
+- Every TMCP-supported asset removal requires manual define stripping
+- Flagged in TecVooDoo TVD_Status.md as HIGH priority
+
+**New Docs Created:**
+- Eval_Guide.md (standalone eval methodology for all eval types)
+- Sandbox_FreshInstall.md (minimal package list for fresh rebuild)
+- NewProjectSetup_Brief.md updated (Auto Refresh disabled, editor preferences section)
+
+**Soul Minor -- Next Jumpstart:**
+- Concept revived from TecVooDoo Projects napkin entry
+- Full concept doc at `E:\TecVooDoo\Projects\Games\1 Concepts\Soul Miner or Soul Minor\Documents\SoulMinor_Concept.md`
+- GDD v1.0 + Status + DevReference + CodeReference created in `Documents\SoulMinor\`
+- Idle Miner Tycoon structure (vertical shaft, three bottlenecks)
+- Cute + gore identity (Happy Tree Friends meets IMT -- scythe bodies, blood + soul wisps)
+- Mobile-first, portrait, 3D diorama. 8-12 week ship target.
+- Chosen over Shift Happens: Nurse Edition (ships faster, teaches mobile)
+
+**Shift Happens: Nurse Edition:**
+- Concept doc created at `E:\TecVooDoo\Projects\Games\1 Concepts\Shift Happens Nurse Edition\Documents\ShiftHappens_Concept.md`
+- Bomber Crew in a hospital. Career ladder, delegation, three task categories (work, training, BS from cat-driven admin)
+- Edition model for franchise (Nurse -> Aircraft Maintenance -> Kitchen -> etc.)
+- Deferred as follow-up project after Soul Minor ships
+
+---
+
+## Session 65 (Apr 1, 2026) -- Hide 'N Reap Bootstrap + TMCP Fix
+
+**Status:** Hide 'N Reap bootstrapped as new Sandbox incubation project. TMCP stale defines bug fixed.
+
+**Hide 'N Reap Bootstrap:**
+- GDD v1.0 created (phase-driven competitive deception, 2.5D, 3-6 players)
+- Folder structure: `Assets/_Sandbox/_HNR/` (Scripts, Art, Audio, Data, Prefabs, Scenes)
+- Docs: Status, DevReference, CodeReference, StatusArchive, GDD
+- 8 namespaces planned: Core, Player, Reaper, Ghost, Possession, NPC, Network, UI, Audio
+- Sprint 1 priority: netcode evaluation (NGO vs FishNet vs Mirror)
+- No packages installed yet -- on-demand per new Sandbox approach
+
+**TMCP Stale Defines Fix:**
+- Root cause: `MCPToolsDefineManager` added `HAS_*` defines but couldn't clean them when assets removed (compilation errors blocked domain reload)
+- Fix: Added `RemoveStaleDefines()` method + `MCPToolsAssetPostprocessor` (`OnPostprocessAllAssets`) to catch deletions BEFORE recompilation
+- Added `#if HAS_MALBERS_AC` guards to all 8 MalbersAC tool files
+- Converted MalbersAC asmdef to GUID reference
+- Manually removed stale defines from both Sandbox and AQS ProjectSettings
+- Memory: `feedback_tmcp_stale_defines.md`
+
+**NewProjectSetup_Brief.md updated:**
+- 3-tier package structure: Default (15 packages) / Animation / Project-Specific
+
+---
+
+## Session 64 (Apr 1, 2026) -- AQS Migration + Sandbox Cleanup
+
+**Status:** AQS migrated to standalone project at `E:\Unity\AQuokkaStory`. Sandbox bloat cleanup: ~735 MB removed.
+
+---
+
 ## Session 61 (Mar 28, 2026) -- Infrastructure Standardization
 
 **Status:** Cross-project infrastructure audit and standardization. MCP configs, permissions, docs, and package management unified across all active projects.

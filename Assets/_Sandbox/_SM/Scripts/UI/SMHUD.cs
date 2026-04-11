@@ -34,10 +34,10 @@ namespace SM.UI
         private Label _elevatorLevel;
         private Label _warehouseCost;
         private Label _warehouseLevel;
-        private Label _collectLabel;
-        private Button _collectBtn;
 
         private float _comboFadeTimer;
+
+        public UIDocument UIDocument => _uiDocument;
 
         private void OnEnable()
         {
@@ -54,13 +54,10 @@ namespace SM.UI
             _elevatorLevel = root.Q<Label>("elevator-level");
             _warehouseCost = root.Q<Label>("warehouse-cost");
             _warehouseLevel = root.Q<Label>("warehouse-level");
-            _collectLabel = root.Q<Label>("collect-label");
-            _collectBtn = root.Q<Button>("btn-collect");
 
             root.Q<Button>("btn-upgrade-mine").clicked += OnUpgradeMine;
             root.Q<Button>("btn-upgrade-elevator").clicked += OnUpgradeElevator;
             root.Q<Button>("btn-upgrade-warehouse").clicked += OnUpgradeWarehouse;
-            _collectBtn.clicked += OnCollect;
         }
 
         private void Update()
@@ -80,7 +77,6 @@ namespace SM.UI
             }
 
             UpdateUpgradeButtons();
-            UpdateCollectButton();
             UpdateComboFade();
         }
 
@@ -100,14 +96,6 @@ namespace SM.UI
             double whCost = _upgradeSystem.GetWarehouseUpgradeCost(_warehouseConfig);
             _warehouseLevel.text = "Lv " + (_warehouse != null ? _warehouse.UpgradeLevel : 0);
             _warehouseCost.text = "Cost: " + FormatNumber(whCost);
-        }
-
-        private void UpdateCollectButton()
-        {
-            if (_warehouse == null) return;
-            double stored = _warehouse.StoredSouls;
-            _collectLabel.text = "Collect (" + FormatNumber(stored) + ")";
-            _collectBtn.style.display = stored > 0 ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         private void UpdateComboFade()
@@ -144,12 +132,6 @@ namespace SM.UI
         {
             if (_upgradeSystem != null && _warehouse != null)
                 _upgradeSystem.TryUpgradeWarehouse(_warehouseConfig, _warehouse);
-        }
-
-        private void OnCollect()
-        {
-            if (_warehouse != null)
-                _warehouse.CollectAll();
         }
 
         private static string FormatNumber(double value)

@@ -123,7 +123,7 @@ namespace SM.Mine
         private Vector3 GetPilePosition(int index)
         {
             float x = (index % 5 - 2) * 0.8f + Random.Range(-0.15f, 0.15f);
-            float y = 0.6f + (index / 5) * 0.6f;
+            float y = 0.05f + (index / 5) * 0.5f;
             float z = Random.Range(-0.2f, 0.2f);
             return new Vector3(x, y, z);
         }

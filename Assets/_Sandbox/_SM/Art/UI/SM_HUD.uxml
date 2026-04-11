@@ -37,8 +37,4 @@
         </ui:Button>
     </ui:VisualElement>
 
-    <!-- Warehouse collect button -->
-    <ui:Button name="btn-collect" class="collect-btn">
-        <ui:Label name="collect-label" text="Collect (0)" class="collect-text" picking-mode="Ignore" />
-    </ui:Button>
 </ui:UXML>

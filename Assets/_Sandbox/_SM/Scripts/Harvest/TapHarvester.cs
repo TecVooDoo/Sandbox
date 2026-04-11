@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 using SM.Core;
 using SM.Mine;
 using SM.VFX;
@@ -17,6 +18,7 @@ namespace SM.Harvest
         [SerializeField] private ComboSystem _comboSystem;
         [SerializeField] private Camera _camera;
         [SerializeField] private NumberPop _numberPop;
+        [SerializeField] private UIDocument _uiDocument;
 
         [Header("Events")]
         [SerializeField] private DoubleGameEvent _onSoulHarvested;
@@ -43,18 +45,31 @@ namespace SM.Harvest
             if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
             {
                 Vector2 touchPos = Touchscreen.current.primaryTouch.position.ReadValue();
-                tapped = TryHarvestAt(touchPos);
+                if (!IsOverUI(touchPos))
+                    tapped = TryHarvestAt(touchPos);
             }
             else if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 Vector2 mousePos = Mouse.current.position.ReadValue();
-                tapped = TryHarvestAt(mousePos);
+                if (!IsOverUI(mousePos))
+                    tapped = TryHarvestAt(mousePos);
             }
 
             if (tapped && _onTapPerformed != null)
             {
                 _onTapPerformed.Raise();
             }
+        }
+
+        private bool IsOverUI(Vector2 screenPosition)
+        {
+            if (_uiDocument == null || _uiDocument.rootVisualElement == null) return false;
+
+            // UI Toolkit panel is Y-down; Input System screen is Y-up. Flip.
+            Vector2 panelPos = new Vector2(screenPosition.x, Screen.height - screenPosition.y);
+            VisualElement picked = _uiDocument.rootVisualElement.panel.Pick(panelPos);
+            // Pick() respects pickingMode, so any non-null result means the click is on pickable UI.
+            return picked != null;
         }
 
         private bool TryHarvestAt(Vector2 screenPosition)

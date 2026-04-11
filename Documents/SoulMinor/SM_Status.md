@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_SM/`
-**Last Updated:** April 4, 2026 (Session 2 -- Scene Wiring + Art)
+**Last Updated:** April 4, 2026 (Session 4 -- Save/Load, Ranks, UI Click-through)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `SM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,25 @@
 
 ## Current State
 
-**Phase:** Sprint 1 in progress. First playtest done. Core tap loop works (tap -> souls -> upgrades). Needs visible upgrade feedback and three-bottleneck pipeline.
+**Phase:** Sprint 1 core complete. Tap loop working end-to-end with save/load, 8 ranks, floating numbers, upgrade feedback. Three-bottleneck pipeline intentionally deferred to Sprint 2.
+
+**Session 4 (Apr 4, 2026) -- Save/Load, Rank Progression, UI Fixes:**
+- Fixed floating bodies: BodyPile spawn Y lowered to 0.05
+- SaveManager now auto-loads on Start() and uses Easy Save 3 directly (was using PlayerPrefs fallback -- I had incorrectly said ES3 wasn't in project)
+- UpgradeSystem persistence: exposed ElevatorUpgradeLevel, WarehouseUpgradeLevel, GetMineUpgradeSnapshot, RestoreState, ReapplyAllUpgrades
+- SaveManager wired with references to UpgradeSystem + all MineLevels + Elevator + Warehouse + 3 configs to reapply stats on load
+- 6 new RankConfigSOs created (Rank 2-7 from GDD: Crypt Warden, Soul Foreman, Death's Bookkeeper, Harbinger, Pale Rider, Grim Reaper). All 8 ranks wired into RankSystem -- rank bar now progresses naturally
+- Removed Collect button from UXML (vestigial -- warehouse never receives in direct flow)
+- Fixed UI click pass-through: TapHarvester now checks `UIDocument.rootVisualElement.panel.Pick()` before raycasting. Clicks on buttons no longer fire both UI and 3D harvest
+- ES3 known issue: old PlayerPrefs saves won't migrate; first ES3 launch starts fresh. `Clear Save Data` context menu on SaveManager component.
+
+**Session 3 (Apr 4, 2026) -- NumberPop, Upgrade Feedback, Cute Pet, Environment:**
+- NumberPop system: pooled world-space TextMesh rises + fades on harvest
+- TapHarvester reads MineLevel.SoulYieldMultiplier so Mine upgrades visibly increase tap value
+- Cute Pet Cat/Dog prefabs: 3x scale, colliders, Layer 6, animators stripped, Suriyun Toon/Toon materials converted to URP/Lit
+- Environment dressing rebuilt with 2u block spacing: KayKit Halloween props (graves, fences, candles, coffins, ribcage, bones) + BlockBits shaft (dark stone walls, dirt floors, grass ground, bottom cap). 0 overlaps.
+- Scanner tool: script-execute walks [Environment] AABBs and reports clipping pairs
+- Collider/renderer bounds scan integrated into workflow for placement verification
 
 **Session 2 (Apr 4, 2026) -- Scene Wiring, UI, Art Assets:**
 - 18 config SO instances created: 2 BodyConfigSOs (Cat, Dog), 2 RankConfigSOs (Rank 0-1), 1 ZoneConfigSO (Shallow Graves), 3 UpgradeConfigSOs (mine/elevator/warehouse), 11 GameEvent SOs
@@ -37,16 +55,16 @@
 - **First playtest:** Tap cubes -> disappear -> soul counter increments -> upgrade buttons work. UI click-through fixed. Upgrades run but no visible feedback yet.
 
 **Known Issues:**
-- Upgrades change internal values but no visible feedback (no number pop, no speed change visible)
-- Three-bottleneck pipeline not connected (tap goes direct to SoulManager, bypasses Mine->Elevator->Warehouse)
-- Collect button never shows (Warehouse never receives souls without pipeline)
-- Assembly Kit vs KayKit Skeletons decision pending for player character
+- Three-bottleneck pipeline not connected (tap goes direct to SoulManager) -- deferred to Sprint 2 per user preference. Not visible in current play.
+- Environment dressing has a few visual gaps between the dirt floor rows (aesthetic only, not blocking gameplay)
+- KayKit props: directional ones (skulls, gravestones) may render backwards at default rotation -- needs manual (0,180,0) check. Memory saved: `feedback_kaykit_prop_orientation.md`
+- Assembly Kit vs KayKit Skeletons decision still pending for player character
 
-**Next (Session 3):**
-- Make upgrades visibly meaningful: soul value per tap display, number pop on harvest
-- Consider connecting three-bottleneck pipeline (Sprint 2 scope per GDD)
-- Replace placeholder cubes with Cute Pet animal models
-- Environment dressing with Halloween/BlockBits props
+**Next (Session 5):**
+- Optional: connect three-bottleneck pipeline (Mine pending -> Elevator -> Warehouse -> Collect). GDD Sprint 2 scope.
+- Body respawn tuning (currently 5s per body, one at a time)
+- Rank-up feedback UI (promotion letter popup, title change animation)
+- Pick character rank prefabs from KayKit Skeletons to replace Assembly Kit for player
 
 **Session 0 (Apr 3, 2026) -- Concept:**
 - Soul Minor concept revived from TecVooDoo Projects napkin entry
