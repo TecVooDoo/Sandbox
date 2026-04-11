@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Project Path:** `E:\Unity\Sandbox`
 **Document Version:** Reconstructed Feb 23, 2026 (after data loss)
-**Last Updated:** April 10, 2026 (Session 73)
+**Last Updated:** April 11, 2026 (Session 74)
 
 > **NOTE:** This document was reconstructed after the Sandbox project became corrupt on Feb 23, 2026. Content recovered from session context and MEMORY.md.
 
@@ -20,6 +20,35 @@ Sandbox is a dedicated asset evaluation environment AND game incubator for ALL T
 **Primary output:** `Sandbox_AssetLog.md` -- 327 asset evaluations as of Session 72.
 
 **Reference doc:** `Sandbox_DevReference.md` -- coding standards, MCP gotchas, eval standards, AI rules. Read on demand.
+
+---
+
+## Session 74 (Apr 11, 2026) -- Soul Minor: Design Pivot, GDD v2.0
+
+**Status:** Design pivot. Sprint 1 playtest revealed the IMT three-bottleneck framing wasn't landing visually or conceptually. Rebuilt the design around a row-based body processing factory. GDD v2.0 written, rebuild plan drafted. No code changes yet -- next session starts Phase 1 scaffolding.
+
+**What changed in v2.0:**
+- Mine/Elevator/Warehouse -> Rows/Pipes/Gatherers
+- Rank system (8 ranks) -> removed (descent itself is progression)
+- Zones -> removed (single continuous shaft)
+- Mythology/fiction framing -> dropped ("forget the why, it just happens")
+- Reaper is still the player avatar but moves down manually, one-way, never returns up
+- Blood bar on each row's floor fills with chops; tool upgrade button appears when full
+- Gatherers (max 10) with speed/carry-tier upgrades feed bodies into a funnel
+
+**Keep from Sprint 1:** SoulManager, GameEvent system, NumberPop, ComboSystem, SaveManager (ES3), BodyConfigSO, body prefabs, KayKit art, UI click-through fix, UpgradeSystem math
+
+**Delete after new scene playable:** MineLevel, Elevator, Warehouse, RankSystem, 8 RankConfigSOs, ZoneConfigSO, SM_ShallowGraves.unity
+
+**New docs:**
+- `Documents/SoulMinor/GDD/SM_GDD.md` v2.0 -- full rewrite of sections 2-17
+- `Documents/SoulMinor/SM_RebuildPlan.md` -- keep/adapt/delete tables, 8-phase build order, scene hierarchy + UI layout targets
+
+**Next Session (75) -- Sprint 2 Phase 1:**
+- Create `SM_Shaft.unity` scene
+- Create `SM.Shaft` and `SM.Gatherer` namespaces
+- Write stub scripts per rebuild plan
+- First milestone: single row vertical slice (Phase 2)
 
 ---
 

@@ -1,211 +1,243 @@
 # Soul Minor -- Game Design Document
 
 **Project:** Soul Minor
-**Genre:** Idle/Incremental Tycoon
+**Genre:** Idle/Incremental (Body Processing Factory)
 **Platform:** Mobile-first (iOS/Android), portrait orientation
 **Players:** Single player
-**Version:** 1.0
-**Last Updated:** April 3, 2026
+**Version:** 2.0 (major pivot from IMT three-bottleneck to row-based factory)
+**Last Updated:** April 11, 2026
 
 ---
 
 ## 1. High Concept
 
-You died. Nothing special. Now you're a Soul Minor -- the lowest rank in the underworld's soul-harvesting bureaucracy. The afterlife is backed up. Bodies are piling up. Someone has to mine the souls out of them with a scythe. That someone is you.
+You are the Reaper. Bodies pile up faster than anyone can process them. Your job: chop them, extract the souls, descend deeper. There are always more bodies.
 
-Tap to scythe adorable body piles. Watch the blood fly and the souls rise. Automate. Rank up. Become the Grim Reaper.
+Bodies are gathered from above, dropped through pipes into chopping rows, and the reaper (you) hacks them up. Blood fills the floor. Tools get upgraded. Minions take over old rows. You descend. The shaft keeps going down.
 
 **The name:** "Soul Minor" (you're a nobody) + "Soul Miner" (you mine souls). Title screen: the 'e' in Miner flickers between 'e' and 'o'.
 
-**The tone:** As bloody gory as it is sickeningly cute. Happy Tree Friends meets Idle Miner Tycoon. Chubby cats with big eyes, stacked in adorable piles. You hack them apart with a scythe. Blood splatters across pastel fur. Beautiful ethereal soul wisps rise from the carnage. The contrast IS the brand.
+**The tone:** Sickeningly cute bodies + visceral chopping + clean soul extraction. Chubby cats with big eyes get hacked apart. Blood splatters. The contrast is the brand. No "why" -- it just happens. The afterlife is a factory and you run the line.
 
 ---
 
-## 2. Reference Game
-
-**Idle Miner Tycoon (Kolibri Games)** -- 100M+ downloads. Vertical shaft structure with three balanced bottlenecks (mine, elevator, warehouse). Proven idle loop. Soul Minor uses the same structural formula with a unique skin.
-
----
-
-## 3. Core Loop
+## 2. Core Loop
 
 ```
-TAP to scythe a body pile
-    --> GORE BURST (blood, fur, limbs fly)
-    --> SOUL WISP rises beautifully from the carnage
-    --> CURRENCY earned
-    --> SPEND on upgrades (harvest speed, elevator, warehouse, automation)
-    --> RANK UP when lifetime threshold reached
-    --> NEW ZONE unlocks (deeper, harder, richer, gorier)
-    --> OFFLINE PROGRESS accumulates while away
-    --> RETURN --> collect offline earnings --> repeat
+GATHERERS (top) bring bodies to the funnel
+    --> bodies flow down PIPES to the reaper's row
+    --> REAPER (player) chops bodies manually
+    --> MINIONS on the row auto-chop when purchased
+    --> BLOOD BAR fills on the row's floor
+    --> TOOL UPGRADE button becomes available
+    --> press it (or let the auto-button minion do it)
+    --> BUY MORE OUTLETS (adds a minion each) until row is fully built
+    --> T-CONNECTOR AUTO-BUILDS, next row unlocks
+    --> DESCEND (one-way) to the new row
+    --> repeat forever, going deeper
 ```
 
 **Session types:**
-- **Active (30s-5min):** Tap to harvest, spend currency, trigger abilities
-- **Idle (hours):** Souls accumulate passively via minions
-- **Return:** Big satisfying collect moment, push progress
+- **Active (30s-5min):** Click to chop alongside minions on the current row, buy upgrades, press tool upgrade buttons on rows without auto-minions
+- **Idle (hours):** All rows with minions self-sustain. Blood bars fill, auto-buttons press upgrades (if purchased). Souls accumulate.
+- **Return:** Big offline earnings collect, then push deeper.
 
 ---
 
-## 4. The Shaft (IMT Structure)
+## 3. Layout
 
-Portrait orientation. Side-view cross-section of a vertical shaft into the underworld.
+Portrait orientation. Side-view cross-section of a vertical body processing shaft.
 
-### 4.1 Three Bottlenecks
+```
+[SURFACE PLATFORM]       <- gatherer spawn/return, body funnel
+       |
+       v  (pipes zig-zag down)
+       |
+[ROW 0 - Reaper starts here, 1-4 outlets, chopping floor, blood bar]
+       |
+       v
+[ROW 1 - unlocks when Row 0 is fully built]
+       |
+       v
+[ROW 2, 3, ..., N]
+```
 
-| System | What It Does | Upgrade Focus |
-|--------|-------------|--------------|
-| **Mine Levels** | Body piles. Tap to harvest souls. | Soul yield, harvest speed, pile size |
-| **Elevator** | Bone-and-chain conveyor. Moves souls from levels to surface. | Speed, capacity, number of cars |
-| **Warehouse** | Surface collection point. Stores souls until collected. | Storage cap, auto-collect rate |
-
-If any one system is underleveled, the pipeline chokes. Balance investment across all three.
-
-### 4.2 Mine Levels (Body Piles)
-
-Each level is a horizontal area with a cute body pile:
-- **Tap** --> scythe swings --> gore burst --> soul wisp rises
-- Each tap has: impact flash, screen shake, wet crunch + chime audio, blood spray, body-type particles, then the ethereal soul wisp
-- **Assign minions** for auto-harvest (idle play)
-- **Upgrade** to increase yield, speed, pile size
-- **Bodies respawn** over time -- "more keep arriving"
-
-### 4.3 Elevator
-
-Bone-and-chain elevator on the left side:
-- Souls queue at each level waiting for pickup
-- Elevator capacity limits throughput
-- Upgrade: speed, capacity, car count
-- Visual: ghostly wisps riding a creaky bone elevator upward
-
-### 4.4 Warehouse
-
-Surface collection point:
-- Warehouse has max capacity -- overflow is lost
-- Tap to collect (or auto-collect with upgrade)
-- Collected souls become spendable currency
-- Upgrade: storage size, auto-collect rate
+**Camera:**
+- Portrait 9:16+
+- Player scrolls vertically to see any row
+- Reaper stays locked to its current row when scrolling (camera decoupled from reaper)
 
 ---
 
-## 5. The Harvest Moment (Core Feel)
+## 4. Gatherers (Global)
 
-This is THE moment. Every tap must feel incredible:
+Minions on the surface platform who fetch bodies and feed the funnel.
 
-1. **Tap** -- character swings scythe
-2. **Impact** -- screen flash, slight shake, crunchy wet sound
-3. **Gore burst** -- blood spray, body-type particles (fur/feathers/wool), limb physics
-4. **Soul release** -- beautiful ethereal wisp rises from the mess, glowing, peaceful
-5. **Number pop** -- soul value floats up ("+5", "+50", etc.)
+| Property | Value |
+|----------|-------|
+| Starting count | 1 |
+| Max count | 10 (hard cap) |
+| Upgrade | Speed tier (1-5), repeatable purchase |
+| Behavior | Walk off-screen, return with a body, dump in funnel |
 
-The **violence-to-beauty transition** in steps 3-->4 is the emotional hook. Something awful produces something beautiful. That one-second arc is the entire game feel.
+**Speed tiers gate carry capacity:**
+- Tier 1: cats only
+- Tier 2: + dogs
+- Tier 3: + pigs
+- Tier 4: + sheep / rabbit / chicken
+- Tier 5: + cows
 
----
+Higher speed = faster round trip AND they can carry heavier bodies. One upgrade path, not separate "speed" and "strength" purchases.
 
-## 6. Bodies
-
-### 6.1 Design Principle
-
-The cuter the body, the gorier the harvest, the more satisfying the reward. Maximize the contrast at every level.
-
-### 6.2 Body Types
-
-| Type | Look | Gore Signature | Sound |
-|------|------|---------------|-------|
-| **Cat** | Curled up, big closed eyes, peaceful smile | Fur puffs + red mist, tiny paw flies off | Soft splat |
-| **Dog** | On back, tongue out, belly up | Big wet splatter, tail spins away | Heavy splat |
-| **Pig** | Perfectly round, content smile | Massive blood burst, snout bounces | Deep squelch |
-| **Sheep** | Fluffy wool cloud, eyes closed | Wool explodes like blood-soaked cotton ball | Poof + splat |
-| **Rabbit** | Tiny ball, impossibly cute | Small intense red spray, ears tumble | Quick snap |
-| **Chicken** | Legs up, cartoonishly stiff | Feather explosion + red confetti + comedic "bawk" | Bawk + pop |
-| **Cow** | Large, takes up pile space | Biggest splatter in the game + screen shake | BOOM |
-
-### 6.3 Body Piles
-
-Each mine level has 5-15 bodies:
-- Random mix from zone's type pool
-- Stacked, overlapping, some upside down -- cute and undisturbed before harvest
-- Faint soul glow where souls remain
-- Post-harvest: pile gets messier (blood pools, scattered parts, grey-out)
-- Respawn clean over time
-
-### 6.4 Soul Wisps
-
-Harvested souls rise as glowing wisps:
-- White = common, Blue = uncommon, Gold = rare
-- Float to elevator shaft with particle trail
-- Clean and ethereal -- stark contrast to the gore they emerged from
+**Visual:** Each gatherer is a small figure. They walk off the right edge, screen-wipe a second, walk back dragging a body (sized to body type). Drop it in the funnel. Walk off again.
 
 ---
 
-## 7. Zones
+## 5. The Pipe Network
 
-Each zone is a separate shaft with its own levels, body types, and visual theme.
+Bodies travel from the funnel through pipes down to the reaper's row.
 
-| Zone | Rank | Theme | Body Pool | Flavor Text |
-|------|------|-------|-----------|-------------|
-| **Shallow Graves** | 0 | Dirt, wooden crosses, wilting flowers | Cat, Dog | "Fresh arrivals. Still warm." |
-| **The Cemetery** | 1 | Iron fences, crypts, dead trees | Cat, Dog, Rabbit | "Organized death. How quaint." |
-| **Catacombs** | 2 | Stone walls, candles, cobwebs | Cat, Pig, Sheep | "They've been here a while." |
-| **Purgatory** | 3 | Fog, floating platforms, grey | All types tangled | "Nobody leaves. Nobody arrives." |
-| **The Bone Yard** | 4 | Skeletal structures, bone furniture | Skeletal variants | "Even the dead have a junkyard." |
-| **The Abyss** | 5+ | Infinite darkness, glowing soul-light | Prestige variants | "You've gone too deep." |
+- **Funnel** at the top, always accepts bodies from gatherers
+- **Main pipe** carries bodies downward
+- **T-connectors** split the main pipe to feed each row
+- **Row outlets** are where bodies drop onto the chopping floor
+- Each row starts with **1 outlet**, can be upgraded to **4 outlets** (3 upgrade purchases)
+- When a row reaches 4 outlets AND 4 minions, the T-connector to the next row **auto-builds** and the next row unlocks
 
----
-
-## 8. Rank Progression
-
-Ranks = lifetime souls harvested (spending doesn't reduce rank progress).
-
-| Rank | Title | Promotion Letter | Unlock |
-|------|-------|-----------------|--------|
-| 0 | Soul Minor | "Welcome to the afterlife. Here's a shovel. Don't ask questions." | Tutorial, Shallow Graves |
-| 1 | Grave Attendant | "You've shown adequate competence. Don't let it go to your head." | Cemetery, first minion |
-| 2 | Crypt Warden | "Congratulations. You now supervise dead things in a slightly nicer room." | Catacombs, elevator upgrades |
-| 3 | Soul Foreman | "Management is impressed. Well, 'impressed' is strong. 'Aware' is closer." | Purgatory, manager automation |
-| 4 | Death's Bookkeeper | "Your throughput numbers are... acceptable. Here's a desk." | Bone Yard, prestige preview |
-| 5 | Harbinger | "The living have started to notice you. That's either very good or very bad." | The Abyss, prestige system |
-| 6 | Pale Rider | "You've been assigned a horse. It's also dead. You'll get along." | Mount speed bonus, cosmetics |
-| 7 | Grim Reaper | "Welcome to Management." | All zones, reap mechanic, title screen changes |
+Bodies only flow down. No backflow, no re-routing. Simple and visible.
 
 ---
 
-## 9. Your Character
+## 6. The Row (Gameplay Unit)
 
-Visual progression through ranks:
-- **Rank 0-2:** Tiny ghost with comically oversized scythe
-- **Rank 3-4:** Skeletal figure, scythe fits now
-- **Rank 5-6:** Hooded figure, dark robes, scythe glows
-- **Rank 7:** Full Grim Reaper. Blood drips from the blade.
+Each row is a horizontal chopping platform. The whole game happens on rows.
 
-Character appears at whatever level you're tapping. Does a harvest swing animation. Gets progressively bloodier as you harvest (resets on zone change).
+### 6.1 Row Components
+
+```
+[PIPE OUTLETS]  <- 1 to 4, bodies drop here
+     |
+     v
+[REAPER or MINIONS chop]  <- one worker per outlet
+     |
+     v
+[BLOOD BAR]  <- floor fills with blood as bodies are chopped
+     |
+[TOOL UPGRADE BUTTON]  <- appears when blood bar is full
+```
+
+### 6.2 Row Lifecycle
+
+1. **Row opens** — 1 outlet active. Reaper alone. Player clicks to chop manually.
+2. **Outlet 2 upgrade purchased** — adds outlet + 1 auto-chop minion (minion handles that outlet)
+3. **Outlet 3 upgrade purchased** — adds outlet + 1 minion
+4. **Outlet 4 upgrade purchased** — adds outlet + 1 minion. Row is now "fully built."
+5. **T-connector auto-builds** — visually extends pipe to next row, next row unlocks. Reaper stays on current row.
+6. **Auto-button minion** purchase becomes available (expensive, one-time per row). Presses the tool upgrade button automatically when it's ready.
+7. **Tool upgrade button** — appears on this row whenever the blood bar is full. Costs souls. Resets blood bar, raises the row's tool tier, boosts soul yield per chop on this row.
+8. **Descend button** appears after the T-connector builds. Player clicks when ready (manual gate). Reaper walks down to the next row. **One-way.**
+
+### 6.3 While the Reaper Is on a Row
+
+- Player can click to chop bodies on the reaper's outlet manually (active play bonus)
+- Combo multiplier builds on consecutive player taps
+- Minions on other outlets of this row auto-chop
+- Blood bar fills from all chops (reaper + minions)
+
+### 6.4 When the Reaper Leaves a Row
+
+- All 4 minions stay and self-sustain
+- Blood bar keeps filling, tool upgrades keep being available
+- Auto-button minion (if purchased) keeps pressing upgrades
+- If no auto-button minion: player must scroll up and manually press tool upgrade when available
 
 ---
 
-## 10. Upgrade Systems
+## 7. Blood Bar
 
-### 10.1 Tap Upgrades (Active Play)
-- Tap Power: souls per tap
-- Multi-tap: harvest radius
-- Combo Multiplier: chain taps for increasing bonus
-- Critical Tap: % chance for 10x value
+Each row has its own blood bar -- the row's "floor."
 
-### 10.2 Automation (Idle Play)
-- Minion Count: auto-harvesters per level
-- Minion Speed: harvest rate
-- Offline Multiplier: % of active earnings while away
-- Soul Magnet: auto-collect nearby surface souls
+- Fills as bodies are chopped on that row (from reaper + any minions)
+- When full, the **Tool Upgrade button** for that row becomes available
+- Pressing the button: spend souls, bar resets, row's tool tier +1
+- **Tool tier** is the soul multiplier for every chop on that row (both reaper and minions)
+- Rows level up tool tier independently -- Row 0 tier 15, Row 1 tier 8, etc.
+- There is no hard cap on tool tier, but costs scale exponentially so you'll always be chasing it
 
-### 10.3 Infrastructure
-- Elevator Speed, Capacity, Car Count
-- Warehouse Size, Auto-Collect Rate
+---
 
-### 10.4 Prestige (Permanent)
-- Starting rank bonus
-- Base multiplier per prestige
-- Earlier automation unlock
-- Cosmetic unlocks
+## 8. Souls (Currency)
+
+### 8.1 Formula
+
+```
+souls_per_chop =
+    base_yield
+    * body_type_value
+    * row_depth_multiplier
+    * row_tool_tier
+    * combo_multiplier (reaper only, when actively clicking)
+```
+
+### 8.2 Body Type Values
+
+| Body | Value | Unlocks on Row |
+|------|-------|----------------|
+| Cat | 1 | 1 |
+| Dog | 1.5 | 1 |
+| Pig | 3 | 3 |
+| Sheep | 4 | 5 |
+| Rabbit | 2 | 7 |
+| Chicken | 2 | 7 |
+| Cow | 10 | 9 |
+| **Coffin** (rare, any row) | Special bonus | Any row |
+
+New body types appear in the gatherer pool as the reaper reaches each unlock row. Each row's pipe pool includes all currently unlocked body types.
+
+### 8.3 Coffins
+
+Occasional rare body drop at any depth. Chopping a coffin grants a **bonus reward** -- TBD: large soul bundle OR instant blood bar fill (pick one during tuning). Designed to create "oh!" moments and break the rhythm.
+
+### 8.4 Row Depth Multiplier
+
+Deeper rows are worth more. Exact curve TBD, but target: row N is roughly `1 + 0.5N` multiplier (linear) or `1.2^N` (exponential). Pick during balance.
+
+---
+
+## 9. Upgrade Summary
+
+### 9.1 Per-Row Upgrades
+
+| Upgrade | Type | Count | Effect |
+|---------|------|-------|--------|
+| Outlet + Minion | One-time | 3 per row | Adds pipe outlet + auto-chop minion |
+| Tool Tier | Repeatable | Unlimited | Soul multiplier for this row |
+| Auto-Button Minion | One-time | 1 per row | Auto-presses tool upgrade button |
+
+### 9.2 Global Upgrades
+
+| Upgrade | Type | Count | Effect |
+|---------|------|-------|--------|
+| Gatherer Count | One-time | 9 (1 -> 10) | Adds a gatherer on the surface |
+| Gatherer Speed/Tier | Repeatable | 5 tiers | Faster round trips + bigger body carry capacity |
+
+### 9.3 Descend (Row Progression Gate)
+
+- Appears after a row is fully built (4 outlets + T-connector built)
+- Manual click, one-way
+- Player can delay to chop alongside minions on the current row for combo bonuses
+
+---
+
+## 10. The Reaper (Player Avatar)
+
+- Single reaper, no rank progression visuals yet (visual evolution deferred -- TBD)
+- Starts on Row 0 when a new save begins
+- Descends manually via the Descend button
+- **One-way down** -- reaper never moves back up
+- Player can scroll the camera freely without moving the reaper
+- On the reaper's current row, player taps bodies to chop manually (stacks with minions, builds combo)
+- On rows without an auto-button minion, player scrolls up to press tool upgrade buttons when ready
 
 ---
 
@@ -213,85 +245,96 @@ Character appears at whatever level you're tapping. Does a harvest swing animati
 
 | Currency | Source | Spent On |
 |----------|--------|----------|
-| **Souls** (primary) | Harvesting | Level/elevator/warehouse upgrades, minions |
-| **Dark Gems** (premium) | Rank-ups, ads, IAP | Managers, instant upgrades, cosmetics |
-| **Prestige Essence** | Ascension reset | Permanent multipliers |
+| **Souls** (primary) | Chopping bodies | Outlet upgrades, tool upgrades, minions, gatherers, auto-buttons |
+| **Dark Gems** (premium, future) | Rank-ups, ads, IAP | Instant upgrades, cosmetics |
+| **Prestige Essence** (future) | Ascension reset | Permanent multipliers |
+
+Sprint 1/2 scope: Souls only. Dark Gems and Prestige deferred.
 
 ---
 
-## 12. Prestige System
+## 12. Audio (Unchanged)
 
-Rank 5+: "Ascend" -- reset all progress for Prestige Essence.
-- Permanent multipliers (harvest speed, soul value, offline rate)
-- Each ascension faster than last (multipliers compound)
-- Prestige count as badge
-- Visual changes: shaft darker/more ornate per prestige
-- Endgame: optimize ascension speed
-
----
-
-## 13. Monetization
-
-| Method | Implementation |
-|--------|---------------|
-| Rewarded Ads | 2x offline earnings, temporary boost, free Dark Gems |
-| Interstitial Ads | Between zone transitions or rank-ups |
-| IAP: Dark Gem Packs | Premium currency bundles |
-| IAP: Starter Pack | One-time discounted bundle |
-| IAP: Auto-Collect Pass | Permanent 2x offline earnings |
-| IAP: Cosmetics | Reaper skins, scythe styles |
-| No Pay-to-Win | All content reachable F2P |
+- **Chop:** Wet crunch + chime simultaneously. Crunch sells the violence, chime sells the reward.
+- **Body-specific sounds:** Squelch, splat, feather poof, "bawk," cow BOOM.
+- **Soul release:** Ethereal whoosh when a body is fully processed.
+- **Combo:** Sounds pitch up with each reaper tap, building to crescendo.
+- **Blood bar full / tool upgrade available:** Distinct "ready" chime.
+- **Gatherers:** Footsteps, body drop thud.
+- **Ambient:** Low hum, distant echoes. Deeper rows = lower pitch.
 
 ---
 
-## 14. Audio
-
-- **Harvest:** Wet crunch + satisfying chime simultaneously. Crunch sells violence, chime sells reward.
-- **Gore:** Squelch, splat, rip -- varies by body type. Chickens get comedic "bawk."
-- **Soul release:** Ethereal whoosh/shimmer. Beautiful, clean, contrasts the gore.
-- **Combo:** Sounds pitch up with each tap, building to crescendo.
-- **Elevator:** Creaky chain, continuous when running.
-- **Rank-up:** Dramatic fanfare, screen flash.
-- **Idle return:** Big "cha-ching" collection.
-- **Ambient:** Low hum, distant echoes. Deeper zones = lower pitch.
-
----
-
-## 15. Visual Presentation
+## 13. Visual Presentation
 
 - **Portrait orientation**, 9:16+
-- **Side-view cross-section** of vertical shaft
-- **Vertical scroll** to see deeper levels
-- **3D models in fixed camera diorama** (Cute Pet bodies, Assembly Kit characters, KayKit Halloween props)
-- **Dark background**, bright cute bodies POP
-- **Soul wisps** are the visual focus -- glowing, ethereal
+- **Side-view cross-section** of a vertical pipe-and-row factory
+- **Vertical scroll** to look at any row
+- **3D models** (Cute Pet bodies, KayKit props for shaft geometry)
+- **Bright cute bodies** POP against dark shaft background
+- **Blood** is the color/progression indicator -- each row's floor darkens as it fills
+- **Pipes** are visually prominent -- the player should always know where bodies are coming from
 - **UI:** Dark theme with glowing accents. "Corporate underworld memo" aesthetic.
 
 ---
 
-## 16. Backstory (Light Touch)
+## 14. What Was Removed in v2.0
 
-Delivered through:
-1. **Promotion letters** -- 2-3 sentences per rank-up from "Management." Darkly funny, bureaucratic.
-2. **Zone flavor text** -- one-liner on entering each zone.
-3. **Loading tips** -- underworld workplace safety ("Souls are non-refundable", "Please do not fraternize with the bodies").
-4. **Your tombstone** -- title screen shows your tombstone. Blank at Rank 0. Adds titles. At Rank 7: "GRIM REAPER" and it cracks.
+Keeping this list so I remember what we cut and why:
 
-No cutscenes. No dialogue. The humor speaks for itself.
+- **Rank progression (ranks 0-7)** -- removed. Descent itself is the progression. Rank titles may return later as cosmetic flavor.
+- **Zones (Shallow Graves, Cemetery, Catacombs...)** -- removed. The shaft is one continuous descent. Visual theming changes gradually with depth instead of discrete zones.
+- **Elevator** -- removed. Replaced with pipe network (bodies flow down, not souls flowing up).
+- **Warehouse** -- removed. Souls are credited directly to the player on chop. No storage, no overflow.
+- **IMT three-bottleneck structure** -- removed entirely. Each row is now a self-contained mini-factory.
+- **Tap Power / Multi-tap / Combo-as-upgrade / Critical Tap** -- simplified. Combo is automatic when actively chopping. No separate tap upgrades.
+- **Mythology / fiction framing (reaping separates soul from body)** -- deliberately dropped. "Forget the why, it just happens."
+
+Rank progression, zones, and the mythology framing may return in later sprints if there's space. For now, the loop is what matters.
 
 ---
 
-## 17. Prototype Scope (DO NOT EXPAND YET)
+## 15. Prototype Scope (Sprint 2 Rebuild)
 
-- 1 zone (Shallow Graves)
-- 3 mine levels
-- Core tap loop + gore VFX
-- Elevator + warehouse (three bottlenecks)
-- Save/load
-- 1 upgrade per bottleneck
-- 1 minion tier
-- No monetization, no prestige, no multiple zones
-- **Prove the feel.** Does tapping bodies feel incredible? Does the cute+gore contrast land?
+Replaces the Sprint 1 three-bottleneck scope entirely.
+
+**In scope:**
+- 1 shaft (single continuous descent)
+- 5-10 rows (enough to prove the loop + depth multiplier feel)
+- Gatherer system: 1 gatherer, no speed upgrade yet
+- Single body type to start (cat), add dog at row 2 for unlock testing
+- Per-row systems: outlets, minions, blood bar, tool upgrade, auto-button minion, T-connector
+- Manual descent
+- Save/load (reuse existing ES3 system, adapt to new data shape)
+- Basic VFX: chop effect, soul wisp, floating number pop
+- UI: currency header, per-row upgrade panels (contextual, only visible when scrolled to that row)
+
+**Out of scope (defer):**
+- Coffins (add after base loop feels good)
+- More body types beyond cat/dog
+- Visual reaper rank progression
+- Dark Gems, Prestige, monetization
+- Offline earnings (add once the active loop is tuned)
+- Audio beyond placeholder
+
+**Success criteria:**
+1. Can you build Row 0 from scratch to fully-upgraded in 1-3 minutes of active play?
+2. Does watching minions chop feel satisfying, or is it boring?
+3. When you descend to Row 1, does it feel like progress?
+4. Does scrolling up to an old row to press tool upgrade buttons feel like meaningful babysitting or annoying chore?
+5. Is the reaper-on-current-row active bonus worth clicking, or is it dominated by auto-chop?
+
+---
+
+## 16. Open Design Questions
+
+- **Tool upgrade cost curve:** steep enough to create tension with outlet/gatherer purchases, not so steep that the button is rarely affordable
+- **Blood bar fill rate:** should it fill in ~5-15s once row is fully built? Too fast = button spam, too slow = dead rows
+- **Coffin payoff:** soul bundle (one-shot bonus) or blood bar instant-fill (row ready to upgrade right now)?
+- **Descent animation:** does the reaper walk/fall down the pipe to the next row, or just teleport with a visual flourish?
+- **Deep-row fatigue:** at row 50, is the player still invested or are they just watching numbers? Need variation triggers (new body types, visual shifts, rare events)
+- **Tool upgrade button visual:** where does it live? Floating UI above the row? On the blood bar itself?
+- **Auto-button minion:** is it visibly a minion standing next to the button, or an abstract automation toggle?
 
 ---
 

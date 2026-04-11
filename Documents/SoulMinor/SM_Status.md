@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_SM/`
-**Last Updated:** April 4, 2026 (Session 4 -- Save/Load, Ranks, UI Click-through)
+**Last Updated:** April 11, 2026 (Session 74 -- DESIGN PIVOT: Row-based factory replaces IMT three-bottleneck)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `SM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,37 @@
 
 ## Current State
 
-**Phase:** Sprint 1 core complete. Tap loop working end-to-end with save/load, 8 ranks, floating numbers, upgrade feedback. Three-bottleneck pipeline intentionally deferred to Sprint 2.
+**Phase:** DESIGN PIVOT. Sprint 1 technically worked but the IMT three-bottleneck framing wasn't landing visually or conceptually in playtest. Pivoted to a row-based body processing factory. GDD v2.0 written, rebuild plan drafted. Sprint 1 scene kept as reference but will be archived once Sprint 2 scene is playable.
+
+**Session 74 (Apr 11, 2026) -- Design Pivot, GDD v2.0, Rebuild Plan:**
+- Playtest feedback: mine/elevator/warehouse didn't visually tell a story. "Why are animals appearing? What does the elevator do?" The IMT framing wasn't fitting the soul-harvesting fiction.
+- Explored the mythology (reaper/psychopomp role) briefly, decided to drop the "why" entirely and focus on a legible factory loop
+- **New core structure:**
+  - Gatherers (surface, max 10, upgrade speed/carry-tier) fetch bodies and drop them in a funnel
+  - Bodies flow through pipes down to rows
+  - Reaper (player) starts on Row 0 with 1 outlet, chops manually
+  - Row upgrades: 4 outlets max, each outlet adds a chop-minion
+  - Blood bar on each row floor fills as chops happen
+  - When blood bar full, Tool Upgrade button available (soul multiplier for that row)
+  - Auto-button minion (per-row purchase) presses tool upgrade automatically
+  - When row fully built (4 outlets + 4 minions), T-connector auto-builds and next row unlocks
+  - Reaper moves down manually via Descend button. One-way.
+  - Deeper rows = higher multipliers + new body types (cat/dog, +pig, +sheep, +rabbit/chicken, +cow)
+  - Coffins occasionally drop for bonus rewards
+  - Rank system + zones REMOVED in v2.0
+- Wrote `SM_GDD.md` v2.0 -- full replacement of sections 2-10 and 17
+- Wrote `SM_RebuildPlan.md` -- keep/adapt/delete tables, build order, scene hierarchy target, UI layout target
+- **Kept from Sprint 1** (still reusable): SoulManager, GameEvent system, NumberPop, ComboSystem, SaveManager (ES3), BodyConfigSO, Cute Pet body prefabs, KayKit art, Layer 6 setup, UpgradeSystem math, UI click-through fix
+- **To delete** (after Sprint 2 scene proven): MineLevel, Elevator, Warehouse, RankSystem, 8 RankConfigSOs, ZoneConfigSO, SM_ShallowGraves scene
+
+**Previous Sprint 1 work (kept for reference, not gameplay-current):**
+See `SM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outputs:
+- 21 scripts in SM.Core/Harvest/Mine/Upgrade/UI/VFX
+- ES3 save/load working
+- Full UI Toolkit HUD
+- KayKit Halloween + Skeletons + Block Bits art imports
+- Environment dressing with overlap scanner
+- Cute Pet material fixes (Toon/Toon -> URP/Lit)
 
 **Session 4 (Apr 4, 2026) -- Save/Load, Rank Progression, UI Fixes:**
 - Fixed floating bodies: BodyPile spawn Y lowered to 0.05
@@ -54,17 +84,19 @@
   - Suriyun Cute Pet + ForActionGames Assembly Kit already in project
 - **First playtest:** Tap cubes -> disappear -> soul counter increments -> upgrade buttons work. UI click-through fixed. Upgrades run but no visible feedback yet.
 
-**Known Issues:**
-- Three-bottleneck pipeline not connected (tap goes direct to SoulManager) -- deferred to Sprint 2 per user preference. Not visible in current play.
-- Environment dressing has a few visual gaps between the dirt floor rows (aesthetic only, not blocking gameplay)
-- KayKit props: directional ones (skulls, gravestones) may render backwards at default rotation -- needs manual (0,180,0) check. Memory saved: `feedback_kaykit_prop_orientation.md`
-- Assembly Kit vs KayKit Skeletons decision still pending for player character
+**Known Issues (carryover from Sprint 1 -- mostly irrelevant after pivot):**
+- IMT three-bottleneck framing didn't land -- resolved by the pivot
+- Environment dressing gaps -- will be redesigned for row-factory layout anyway
+- KayKit prop orientation quirks -- still relevant for new scene, memory saved
+- Assembly Kit vs KayKit Skeletons decision -- irrelevant, new design has single reaper visual
 
-**Next (Session 5):**
-- Optional: connect three-bottleneck pipeline (Mine pending -> Elevator -> Warehouse -> Collect). GDD Sprint 2 scope.
-- Body respawn tuning (currently 5s per body, one at a time)
-- Rank-up feedback UI (promotion letter popup, title change animation)
-- Pick character rank prefabs from KayKit Skeletons to replace Assembly Kit for player
+**Next (Session 75 -- Sprint 2 Phase 1, per SM_RebuildPlan.md):**
+1. Create `SM_Shaft.unity` scene (keep `SM_ShallowGraves.unity` as archive reference)
+2. Create `SM.Shaft` and `SM.Gatherer` namespaces
+3. Write stub scripts per rebuild plan: ShaftManager, Row, RowOutlet, RowWorker, Reaper, ChopMinion, BloodBar, ToolUpgradeController, GathererManager, Gatherer, BodyFunnel, PipeNetwork
+4. First milestone: Phase 2 vertical slice -- single Row 0, single outlet, reaper chops manually, blood bar fills, tool upgrade button works
+
+Reference: `SM_RebuildPlan.md` for the full 8-phase build order and scene/UI targets.
 
 **Session 0 (Apr 3, 2026) -- Concept:**
 - Soul Minor concept revived from TecVooDoo Projects napkin entry
