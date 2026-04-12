@@ -10,8 +10,8 @@ namespace BM.Shaft
         [SerializeField] private LeftoversGauge _leftoversGauge;
         [SerializeField] private int _toolTier;
 
-        public UnityEvent OnReady;
-        public UnityEvent<int> OnTierChanged;
+        public UnityEvent OnReady = new UnityEvent();
+        public UnityEvent<int> OnTierChanged = new UnityEvent<int>();
 
         public int ToolTier => _toolTier;
         public bool IsReady => _leftoversGauge != null && _leftoversGauge.IsFull;

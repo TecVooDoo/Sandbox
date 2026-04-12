@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 12, 2026 (Session 76 -- Phase 4 multi-outlet, player Ghoul, ChopMinions)
+**Last Updated:** April 12, 2026 (Session 76 -- Phase 4+5 multi-outlet, descent, dynamic rows)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,7 @@
 
 ## Current State
 
-**Phase:** Sprint 2 Phase 1+2+3+4 COMPLETE. Full idle factory loop playable on Row 0: Gatherer -> Funnel -> PipeNetwork -> 1-4 Outlets (O key) -> Cute Pet bodies spawn at floor -> Player-controlled Ghoul walks to clicked body and chops -> ChopMinions (M key) auto-chop on timer -> LeftoversGauge fills -> Tool Upgrade. Funnel tick rate scales with clear outlet count. Pipe Dream Pack imported for future visual pass.
+**Phase:** Sprint 2 Phase 1-5 COMPLETE. Full vertical shaft loop: Build Row 0 (4 outlets + 4 minions) -> row completion auto-unlocks Row 1 below -> D to descend (Ghoul + camera) -> build Row 1 with its own gauge + upgrade button -> repeat infinitely. Bodies flow from single gatherer surface to all rows via shared PipeNetwork. Per-row upgrade button turns red on gauge fill, resets on click.
 
 **Session 76 (Apr 12, 2026) -- Phase 4 multi-outlet + player Ghoul + ChopMinions:**
 - **Chop now consumes body:** `RowWorker.Chop()` calls `_assignedOutlet.ConsumeBody()` before adding blood. Guards against empty outlets. `ShaftTapHarvester` no longer double-consumes.
@@ -25,6 +25,17 @@
 - **Keyboard shortcuts for prototyping:** O = add outlet, M = add minion to next un-minioned outlet (via `ShaftManager.Update`)
 - **Pipe Dream Pack discovered:** `Assets/OnePotatoKingdom_PipeDreamPack/` — low poly pipes + fluid VFX, URP materials included. 33 prefabs: RegularPipe, PipeCurve, PipeTCross, PipeBaloon, PipeCap variants. PipeBaloon noted as potential "blocked outlet" visual. Deferred to visual pass.
 - **Body gravity-drop idea noted:** Bodies could fall from outlet to floor via Rigidbody + ground collider instead of teleporting to BodyDrop. Sprint 3 polish item.
+
+**Session 76 cont. (Apr 12, 2026) -- Phase 5 row completion + descent + dynamic rows:**
+- **Row completion detection:** `Row.IsFullyBuilt` now requires 4 outlets AND 4 ChopMinions (Ghoul excluded via `ChopMinionCount` property). Auto-triggers `UnlockNextRow()`.
+- **Dynamic row spawning:** `ShaftManager.UnlockNextRow()` creates Row_N at Y = -N * rowSpacing with full component set: LeftoversGauge (dark BG + red fill + visual driver), ToolUpgradeController + WorldUpgradeButton (grey/red color toggle on fill), 1 starting outlet, all wired to shared PipeNetwork/BodyPool.
+- **Descent:** D key moves Ghoul to next row (reparented), camera snaps to new row Y + 2.2 offset. One-way. `_nextRowUnlocked` flag prevents duplicate row creation.
+- **Row-restricted clicking:** `ShaftTapHarvester` checks body's parent Row matches Ghoul's Row — can't click animals on other rows.
+- **UnityEvent initialization fix:** All public `UnityEvent` fields across `LeftoversGauge`, `ToolUpgradeController`, `RowOutlet` initialized with `= new UnityEvent()` to prevent NullRef when components are created at runtime via `AddComponent` (Awake runs before reflection can set fields).
+- **WorldUpgradeButton collider fix:** Button component added to `buttonCube` (has BoxCollider from CreatePrimitive) instead of empty parent GO — `[RequireComponent(typeof(Collider))]` was blocking AddComponent.
+- **Manual event wiring:** `WorldUpgradeButton` Awake can't subscribe to controller events (null at Awake time). OnReady/OnTierChanged listeners wired via lambdas in `CreateUpgradeButtonForRow` after reflection setup.
+- **Row.Init()** accepts `outletSpacing` parameter (default 1.5) so dynamic rows match Row 0 layout.
+- **Playtest CONFIRMED:** Full loop: build Row 0 (O x3, M x4) -> Row 1 auto-unlocks -> D to descend -> build Row 1 with working gauge + upgrade button -> Row 2 unlocks -> repeat.
 
 **Session 75 (Apr 11, 2026) -- Phase 1+2 vertical slice + Real Blood eval (ENTRY-329):**
 - **Phase 1 Scaffolding:** Created `BM_Shaft.unity` scene. Unloaded `BM_ShallowGraves.unity` (kept on disk as reference). Wrote 14 stub scripts:
@@ -149,11 +160,12 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 
 **Next (Session 76 -- Phase 4):**
 
-Phase 5 -- Row Completion + Descent:
-1. When row is fully built (4 outlets + 4 minions), auto-build T-connector and unlock Row 1
-2. Descend button appears. One-way descent. Ghoul moves to Row 1.
-3. Row 1 spawns below Row 0 at `_rowSpacing` Y offset, starts with 1 outlet
-4. Camera scroll / two-camera viewport (see `project_bm_pinned_surface_scroll.md`)
+Phase 6 -- Progression + Balance:
+1. Replace keyboard shortcuts (O/M/D) with proper upgrade purchase UI (cost curves, currency display)
+2. Per-row body type escalation (deeper rows = bigger animals = more blood)
+3. Gatherer upgrades (speed, carry tier, count)
+4. Two-camera pinned-surface viewport (see `project_bm_pinned_surface_scroll.md`)
+5. Save/load integration (ES3 — row state, ghoul position, upgrades)
 
 Sprint 3 Polish (deferred):
 - Body gravity-drop from outlet to floor (Rigidbody + ground collider)
@@ -161,7 +173,7 @@ Sprint 3 Polish (deferred):
 - Pipe Dream Pack visual swap (replace KayKit pipes, PipeBaloon for blocked outlets)
 - LeftoversGauge glass-top transparency
 - Blood splat VFX on chop
-- Replace keyboard shortcuts (O/M) with proper upgrade purchase UI buttons
+- T-connector visual between rows on completion
 
 Carryover cleanup:
 - Delete `Assets/Knife/Real Blood/Shaders/BloodPuddle.shader.bak` (leftover from ASE port probe)

@@ -23,7 +23,30 @@ namespace BM.Shaft
 
         public int RowIndex => _rowIndex;
         public int OutletCount => _outlets.Count;
-        public bool IsFullyBuilt => _outlets.Count >= _maxOutlets && _workers.Count >= _maxOutlets;
+        public PipeNetwork PipeNetwork => _pipeNetwork;
+
+        public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, float outletSpacing = 1.5f)
+        {
+            _rowIndex = rowIndex;
+            _pipeNetwork = pipeNetwork;
+            _bodyPool = bodyPool;
+            _pipeVisualPrefab = pipeVisualPrefab;
+            _outletSpacing = outletSpacing;
+        }
+        public bool IsFullyBuilt => _outlets.Count >= _maxOutlets && ChopMinionCount >= _maxOutlets;
+
+        public int ChopMinionCount
+        {
+            get
+            {
+                int count = 0;
+                for (int i = 0; i < _workers.Count; i++)
+                {
+                    if (_workers[i] is ChopMinion) count++;
+                }
+                return count;
+            }
+        }
         public LeftoversGauge LeftoversGauge => _leftoversGauge;
         public ToolUpgradeController ToolUpgrade => _toolUpgrade;
         public int MaxOutlets => _maxOutlets;

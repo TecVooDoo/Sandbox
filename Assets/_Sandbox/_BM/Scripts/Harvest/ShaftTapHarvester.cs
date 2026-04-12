@@ -56,6 +56,8 @@ namespace BM.Harvest
             ClickableBody clickable = hit.collider.GetComponentInParent<ClickableBody>();
             if (clickable != null && clickable.Owner != null)
             {
+                Row ownerRow = clickable.Owner.GetComponentInParent<Row>();
+                if (ownerRow == null || ownerRow != _ghoul.GetComponentInParent<Row>()) return false;
                 _ghoul.GoToOutlet(clickable.Owner);
             }
             return true;

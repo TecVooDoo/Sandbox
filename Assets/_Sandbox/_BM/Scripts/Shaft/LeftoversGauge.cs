@@ -8,8 +8,8 @@ namespace BM.Shaft
         [SerializeField] private float _capacity = 100f;
         [SerializeField] private float _current;
 
-        public UnityEvent OnFilled;
-        public UnityEvent OnEmptied;
+        public UnityEvent OnFilled = new UnityEvent();
+        public UnityEvent OnEmptied = new UnityEvent();
 
         public float Capacity => _capacity;
         public float Current => _current;

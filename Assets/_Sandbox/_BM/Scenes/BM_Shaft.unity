@@ -214,8 +214,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SM.Shaft.ShaftManager
   _rowParent: {fileID: 8201271}
-  _rowPrefab: {fileID: 0}
   _rowSpacing: 3
+  _pipeNetwork: {fileID: 1172077639}
+  _bodyPool: {fileID: 240367683}
+  _pipeVisualPrefab: {fileID: 919132149155446097, guid: f262e446ab4d292419460c92096a979a,
+    type: 3}
+  _ghoul: {fileID: 480114029}
+  _mainCamera: {fileID: 2089749475}
 --- !u!4 &155519923
 Transform:
   m_ObjectHideFlags: 0
@@ -306,7 +311,7 @@ Transform:
   m_GameObject: {fileID: 283572885}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 2.133, y: 0.5, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -9,8 +9,8 @@ namespace BM.Shaft
         [SerializeField] private Transform _spawnPoint;
         [SerializeField] private BodyPool _pool;
 
-        public UnityEvent OnBodyPlaced;
-        public UnityEvent OnBodyCleared;
+        public UnityEvent OnBodyPlaced = new UnityEvent();
+        public UnityEvent OnBodyCleared = new UnityEvent();
 
         private GameObject _currentBody;
         private BodyConfigSO _currentConfig;
