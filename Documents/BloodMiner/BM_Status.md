@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 11, 2026 (Session 75 -- Phase 3 gatherer->funnel->outlet body flow visible, scene polish)
+**Last Updated:** April 12, 2026 (Session 76 -- Phase 4 multi-outlet, player Ghoul, ChopMinions)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,16 @@
 
 ## Current State
 
-**Phase:** Sprint 2 Phase 1+2+3 COMPLETE. Full chain works end-to-end: Gatherer walks surface -> drops body in funnel -> funnel ticks at clear-outlet rate -> body rented from BodyPool, spawned at outlet BodyDrop -> clickable to chop -> BloodBar fills -> Upgrade button -> tier loop. Cute Pet cat/dog bodies visible at outlet. Camera flipped to +Z for clean front view. LeftoversGauge dropped below ground to avoid clipping. Ready for Phase 4 (multi-outlet + Ghoul patrol).
+**Phase:** Sprint 2 Phase 1+2+3+4 COMPLETE. Full idle factory loop playable on Row 0: Gatherer -> Funnel -> PipeNetwork -> 1-4 Outlets (O key) -> Cute Pet bodies spawn at floor -> Player-controlled Ghoul walks to clicked body and chops -> ChopMinions (M key) auto-chop on timer -> LeftoversGauge fills -> Tool Upgrade. Funnel tick rate scales with clear outlet count. Pipe Dream Pack imported for future visual pass.
+
+**Session 76 (Apr 12, 2026) -- Phase 4 multi-outlet + player Ghoul + ChopMinions:**
+- **Chop now consumes body:** `RowWorker.Chop()` calls `_assignedOutlet.ConsumeBody()` before adding blood. Guards against empty outlets. `ShaftTapHarvester` no longer double-consumes.
+- **Dynamic outlet spawning:** `Row.AddOutlet()` creates Outlet_N at runtime with BodyDrop child, PipeVisual (KayKit pipe at 0.4 scale), registers in PipeNetwork. Max 4 outlets per row. Spacing 1.5 units to fit within gauge width.
+- **ChopMinion with visual:** Green placeholder cube (0.3 scale), auto-chops on 1s interval when body present at assigned outlet. `Row.AddChopMinion(outlet)` spawns at floor level (y=0, z=0.5 offset). `GetNextUnminionedOutlet()` cycles through outlets without duplicating.
+- **Player-controlled Ghoul (design correction):** Ghoul is NOT auto-patrol. Player taps a body -> `ShaftTapHarvester` calls `Ghoul.GoToOutlet(outlet)` -> Ghoul walks to outlet SpawnPoint -> chops on arrival. Idle otherwise. Memory updated.
+- **Keyboard shortcuts for prototyping:** O = add outlet, M = add minion to next un-minioned outlet (via `ShaftManager.Update`)
+- **Pipe Dream Pack discovered:** `Assets/OnePotatoKingdom_PipeDreamPack/` — low poly pipes + fluid VFX, URP materials included. 33 prefabs: RegularPipe, PipeCurve, PipeTCross, PipeBaloon, PipeCap variants. PipeBaloon noted as potential "blocked outlet" visual. Deferred to visual pass.
+- **Body gravity-drop idea noted:** Bodies could fall from outlet to floor via Rigidbody + ground collider instead of teleporting to BodyDrop. Sprint 3 polish item.
 
 **Session 75 (Apr 11, 2026) -- Phase 1+2 vertical slice + Real Blood eval (ENTRY-329):**
 - **Phase 1 Scaffolding:** Created `BM_Shaft.unity` scene. Unloaded `BM_ShallowGraves.unity` (kept on disk as reference). Wrote 14 stub scripts:
@@ -58,7 +67,7 @@
   5. LeftoversGauge fill clipped through dog/ghoul/upgrade button at floor level -> dropped gauge to world Y=-0.3 (slightly below ground). Glass-top recess deferred to later transparency pass.
 - **Playtest CONFIRMED:** Cute Pet dogs/cats visibly arrive at the outlet, walk-by gatherer drops feed the funnel queue, pipeline ticks dispatch bodies on schedule. Full Phase 3 visual loop is live.
 - **Memories saved (re-usable across sessions):**
-  - `project_bm_ghoul_movement.md` -- Ghoul patrols outlets when OutletCount > 1
+  - `project_bm_ghoul_movement.md` -- Ghoul is player-controlled (tap to move + chop), NOT auto-patrol (updated Session 76)
   - `project_bm_outlet_arrival_pop.md` -- Bodies should "extrude" out of pipe with progressive squash (deferred to Sprint 3 polish, deformer asset already in project)
   - `project_bm_pinned_surface_scroll.md` -- Phase 5 viewport: surface stays pinned at top, rows scroll up showing last + active row only. Two-camera approach planned.
   - `reference_ase_programmatic_api.md` -- ASE template swap API + OnGUI blocker
@@ -140,11 +149,19 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 
 **Next (Session 76 -- Phase 4):**
 
-Phase 4 -- Outlet Upgrade + Ghoul Patrol:
-1. Add 2nd-4th outlet upgrade purchase wiring (UpgradeConfigSO retargeting, button per outlet slot)
-2. Implement `Ghoul` patrol loop: walk between outlets on current row, chop the body at each, move to next (see `project_bm_ghoul_movement.md` memory)
-3. `ChopMinion` spawns when each new outlet bought (bound to that outlet, auto-chops on `_chopInterval`)
-4. Funnel tick rate already adjusts to clear-outlet count -- verify it speeds up with more outlets in play
+Phase 5 -- Row Completion + Descent:
+1. When row is fully built (4 outlets + 4 minions), auto-build T-connector and unlock Row 1
+2. Descend button appears. One-way descent. Ghoul moves to Row 1.
+3. Row 1 spawns below Row 0 at `_rowSpacing` Y offset, starts with 1 outlet
+4. Camera scroll / two-camera viewport (see `project_bm_pinned_surface_scroll.md`)
+
+Sprint 3 Polish (deferred):
+- Body gravity-drop from outlet to floor (Rigidbody + ground collider)
+- Progressive-emergence squash on body arrival (see `project_bm_outlet_arrival_pop.md`)
+- Pipe Dream Pack visual swap (replace KayKit pipes, PipeBaloon for blocked outlets)
+- LeftoversGauge glass-top transparency
+- Blood splat VFX on chop
+- Replace keyboard shortcuts (O/M) with proper upgrade purchase UI buttons
 
 Carryover cleanup:
 - Delete `Assets/Knife/Real Blood/Shaders/BloodPuddle.shader.bak` (leftover from ASE port probe)

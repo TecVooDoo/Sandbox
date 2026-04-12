@@ -41,15 +41,6 @@ namespace BM.Shaft
             body.transform.localPosition = Vector3.zero;
             body.transform.localRotation = Quaternion.identity;
 
-            Renderer rend = body.GetComponentInChildren<Renderer>();
-            string matInfo = "none";
-            if (rend != null && rend.sharedMaterial != null)
-            {
-                Material mat = rend.sharedMaterial;
-                matInfo = mat.name + "/" + (mat.shader != null ? mat.shader.name : "null-shader");
-            }
-            Debug.Log("[BM] Outlet.PlaceBody " + config.name + " body=" + body.name + " active=" + body.activeInHierarchy + " worldPos=" + body.transform.position + " lossyScale=" + body.transform.lossyScale + " rendType=" + (rend != null ? rend.GetType().Name : "null") + " rendEnabled=" + (rend != null ? rend.enabled.ToString() : "-") + " rendBounds=" + (rend != null ? rend.bounds.size.ToString() : "null") + " rendCenter=" + (rend != null ? rend.bounds.center.ToString() : "null") + " mat=" + matInfo);
-
             ClickableBody clickable = body.GetComponent<ClickableBody>();
             if (clickable == null) clickable = body.AddComponent<ClickableBody>();
             clickable.Bind(this, config);

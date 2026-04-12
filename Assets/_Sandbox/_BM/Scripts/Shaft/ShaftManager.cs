@@ -28,6 +28,40 @@ namespace BM.Shaft
             return _rows[index];
         }
 
+        private void Update()
+        {
+            if (_rows.Count == 0) return;
+            Row activeRow = GetRow(_ghoulRowIndex);
+            if (activeRow == null) return;
+
+            if (UnityEngine.InputSystem.Keyboard.current != null)
+            {
+                if (UnityEngine.InputSystem.Keyboard.current.oKey.wasPressedThisFrame)
+                {
+                    RowOutlet newOutlet = activeRow.AddOutlet();
+                    if (newOutlet != null)
+                        Debug.Log("[BM] ShaftManager: outlet added, total=" + activeRow.OutletCount);
+                    else
+                        Debug.Log("[BM] ShaftManager: outlet at max (" + activeRow.MaxOutlets + ")");
+                }
+
+                if (UnityEngine.InputSystem.Keyboard.current.mKey.wasPressedThisFrame)
+                {
+                    RowOutlet target = activeRow.GetNextUnminionedOutlet();
+                    if (target != null)
+                    {
+                        ChopMinion minion = activeRow.AddChopMinion(target);
+                        if (minion != null)
+                            Debug.Log("[BM] ShaftManager: minion added for " + target.name);
+                    }
+                    else
+                    {
+                        Debug.Log("[BM] ShaftManager: all outlets have minions");
+                    }
+                }
+            }
+        }
+
         public void Descend()
         {
         }

@@ -53,12 +53,10 @@ namespace BM.Harvest
             Ray ray = _camera.ScreenPointToRay(screenPosition);
             if (!Physics.Raycast(ray, out RaycastHit hit, 100f, _bodyLayer)) return false;
 
-            _ghoul.Chop();
-
             ClickableBody clickable = hit.collider.GetComponentInParent<ClickableBody>();
             if (clickable != null && clickable.Owner != null)
             {
-                clickable.Owner.ConsumeBody();
+                _ghoul.GoToOutlet(clickable.Owner);
             }
             return true;
         }

@@ -9,7 +9,7 @@ namespace BM.Shaft
 
         protected Row _row;
 
-        public RowOutlet AssignedOutlet => _assignedOutlet;
+        public RowOutlet AssignedOutlet { get => _assignedOutlet; set => _assignedOutlet = value; }
         public Row Row => _row;
 
         protected virtual void Awake()
@@ -19,6 +19,8 @@ namespace BM.Shaft
 
         public virtual void Chop()
         {
+            if (_assignedOutlet == null || _assignedOutlet.IsClear) return;
+            _assignedOutlet.ConsumeBody();
             if (_row != null) _row.OnChop(_chopAmount);
         }
     }

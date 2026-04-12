@@ -579,7 +579,6 @@ MonoBehaviour:
   _currentRowIndex: 0
   _walkSpeed: 2.5
   _arriveDistance: 0.15
-  _patrolChopInterval: 0.5
 --- !u!23 &480114030
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -852,6 +851,13 @@ MonoBehaviour:
   - {fileID: 480114029}
   _leftoversGauge: {fileID: 516293603}
   _toolUpgrade: {fileID: 1789337081}
+  _pipeNetwork: {fileID: 1172077639}
+  _bodyPool: {fileID: 240367683}
+  _pipeVisualPrefab: {fileID: 919132149155446097, guid: f262e446ab4d292419460c92096a979a,
+    type: 3}
+  _outletSpacing: 1.5
+  _outletHeight: 1.5
+  _maxOutlets: 4
 --- !u!1 &758502223
 GameObject:
   m_ObjectHideFlags: 0
