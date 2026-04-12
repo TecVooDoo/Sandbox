@@ -129,6 +129,7 @@ The Unity port is shown in the AI Game Developer panel in Unity Editor. Use what
 | DLYH | 51240 | `C:/Unity/DontLoseYourHead` |
 | HideNReap | 26876 | `E:/Unity/HideNReap` |
 | TecVooDoo | 23611 | `E:/Unity/TecVooDoo` |
+| GRIMMORPG | check Unity | `E:/Unity/GRIMMORPG` |
 | VNPC | check Unity | `E:/Unity/VNPC/VisualNovelPointClick` |
 | Blender (all projects) | 9876 | N/A (runs via `uvx`) |
 

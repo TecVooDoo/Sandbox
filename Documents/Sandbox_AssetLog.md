@@ -10305,7 +10305,7 @@ These are standard techniques that can be reimplemented cleanly without carrying
 - "Basic" tier implies paid Enterprise tier with more features
 - No in-game UI components -- the launcher runs outside Unity entirely
 
-**Verdict Rationale:** Conditional. Not a bad tool for what it does, but the use case is narrow: Windows desktop games that need a standalone launcher with auto-patching. None of our current projects need this -- they're either mobile (AQS, FearSteez, Soul Minor), multiplayer (HNR), or prototypes. Would only matter for a shipped PC title distributed outside Steam (Steam handles its own patching). Keep in mind for future PC-only releases.
+**Verdict Rationale:** Conditional. Not a bad tool for what it does, but the use case is narrow: Windows desktop games that need a standalone launcher with auto-patching. None of our current projects need this -- they're either mobile (AQS, FearSteez, Blood Miner), multiplayer (HNR), or prototypes. Would only matter for a shipped PC title distributed outside Steam (Steam handles its own patching). Keep in mind for future PC-only releases.
 
 **FileSafety.cs Cherry-Pick Note:** The `FileSafety` utility class (from osu-framework, MIT license) has clean cross-platform file/directory operations: safe move-with-fallback, recursive readonly removal, path normalization, delayed delete on reboot. However, these are standard .NET operations wrapped convenience-style -- not complex enough to warrant extraction into TecVooDoo Utilities.
 
@@ -10392,7 +10392,7 @@ These are standard techniques that can be reimplemented cleanly without carrying
 
 **HNR Relevance:** MEDIUM. Damage system with IDamageSender/IDamageReceiver fits the reaper/NPC interaction model. Resource pool for ghost energy. Would need multiplayer adaptation.
 
-**Other Projects:** LOW for 2D/mobile (AQS, FearSteez, Soul Minor) -- framework assumes 3D action-adventure context.
+**Other Projects:** LOW for 2D/mobile (AQS, FearSteez, Blood Miner) -- framework assumes 3D action-adventure context.
 
 **TecVooDoo Games Candidate:** Yes -- several systems are candidates for extraction into com.tecvoodoo.games if they prove cleaner than rolling our own. Top candidates: IDamageSender/IDamageReceiver pattern, ResourcePool/ResourceType, AttributePool with modifier stacking. These are generic RPG patterns not specific to action-adventure.
 **TecVooDoo Utilities Candidate:** No -- the utilities are game-framework helpers, not general-purpose.
@@ -10770,7 +10770,7 @@ All 3 shaders use CGPROGRAM (legacy). No URP or HDRP shader variants. Since all 
 
 **GRIMMORPG Relevance:** MEDIUM. Procedural dungeon instances, overworld region generation.
 
-**2D Projects (AQS, FearSteez, Soul Minor):** LOW-MEDIUM. These have hand-crafted levels, but procedural side-content (bonus dungeons, randomized areas) could use this.
+**2D Projects (AQS, FearSteez, Blood Miner):** LOW-MEDIUM. These have hand-crafted levels, but procedural side-content (bonus dungeons, randomized areas) could use this.
 
 **TecVooDoo Utilities Candidate:** No -- domain-specific procedural generation framework.
 **TecVooDoo Games Candidate:** No -- ships whole, graph editor + runtime as unit.
@@ -11637,7 +11637,7 @@ Chances System, ExecutableItem, Enhanced Selection Patterns, NavMeshQueryResult,
 - **FearSteez:** HIGH. Beat 'em up hit reactions, combo feedback, screen effects.
 - **AQS:** MEDIUM-HIGH. Quokka animations, joey reactions, environmental effects.
 - **HNR:** HIGH. Ghost possession effects, NPC panic reactions, supernatural VFX sequences.
-- **Soul Minor:** MEDIUM. Idle game feedback (harvest taps, combo multiplier effects, elevator arrival).
+- **Blood Miner:** MEDIUM. Idle game feedback (harvest taps, combo multiplier effects, elevator arrival).
 
 **Verdict Rationale:**
 Approved with **Recommended** primary label and **Animation** secondary. This is a production-grade, well-architected action system with exceptional code quality and documentation. The async/await execution model is modern and clean. The SO-asset approach makes actions reusable across projects. 300+ pre-built actions cover the vast majority of common game feel needs. The spring physics system adds physically-simulated juice that DOTween doesn't natively provide. The 6 assembly definitions show proper modular architecture with conditional compilation for optional integrations. The 56-file test suite demonstrates professional engineering standards. Recommended because game feel/juice is needed in every game project, and this is the most comprehensive SO-based action system evaluated to date. It complements (not replaces) DOTween and Feel -- different tools for different workflows.
@@ -11768,6 +11768,112 @@ The pre-bake + Timeline workflow is ideal for offline animated series production
 
 **TecVooDoo Utilities Candidate:** No -- domain-specific lip sync system.
 **TecVooDoo Games Candidate:** No -- third-party package, install whole.
+
+---
+
+### ENTRY-329: Real Blood (Knife)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Real Blood |
+| **Publisher** | Knife |
+| **Source** | Unity Asset Store |
+| **Category** | VFX / Gore (Blood Decals, Liquid Surface, Damage System) |
+| **Price** | Paid |
+| **Version** | Unknown (imported Apr 11, 2026 -- older asset) |
+| **Last Release** | -- |
+| **Unity Versions** | Built-in RP (primary), HDRP 16 (upgrade package included), no URP upgrade path |
+| **Pipeline** | **Built-in RP shipped / HDRP via included upgrade package / URP incompatible out of the box** |
+| **Dependencies** | None required for scripts; shaders authored with Amplify Shader Editor (ENTRY-158) -- ASE NOT required to USE shaders, only to EDIT them |
+| **Install Size** | Large (scenes, demos, textures, models, 2 unitypackage upgrade files in `SRP/`) |
+| **Evaluated** | Apr 11, 2026 |
+| **Removed** | Apr 11, 2026 -- same-day import/eval/remove. Folder deleted after eval; a native plugin DLL held a file lock and must be swept on next Unity close. |
+| **Triggered by** | Blood Miner -- cute+gore mobile idle, investigating ready-made blood splat/decal systems |
+| **Verdict** | **Rejected for URP (SM + any Sandbox-pipeline project)** -- Conditional/Recommended for HDRP projects only. Salvage texture+particle+script assets for custom URP blood system. |
+
+**What It Does:** Full character gore and liquid simulation system for FPS/TPS/action games. Character Damage Painter (`CharacterDamagePainter`) renders damage onto skinned meshes via dynamic texture projection; Liquid Surface produces real-time blood pools with wave/ripple physics driven by a sub-camera + particle system writing to a render texture; decal system spawns puddles, splats, handprints, and trails on impact. Comes with a 3D showcase scene full of demo scenarios (head explosion, entrails, blood jet, shooting, trail puddles) driven by `HittableDoll`, `ExplodeableDoll`, `RigidbodyExplosion`, `DemoRobot`, and related classes.
+
+**Architecture:**
+- **49 scripts, ~3,380 LOC** in `Assets/Knife/Real Blood/Scripts/`
+- **16 shaders** in `Assets/Knife/Real Blood/Shaders/` -- all authored with Amplify Shader Editor, all Built-in RP surface shader templates (`SurfaceOutputStandardSpecular`, `CGPROGRAM` passes, etc.)
+- **1 demo scene** (`RealBloodShowcase.unity`) + many scene config assets (`.asset` ScriptableObjects: `Damage`, `EntrailsDemo`, `Head Cut Off Demo`, `Man Orbit Demo`, `PuddlesDemo`, `Shooting Demo Side`, `Trail Puddles`, `Wall Decals Side Demo`, `Explosion Demo`, `Gore Material Demo`, `PPV Profile`)
+- **Shader categories:** `BloodPuddle`, `BloodPuddle (Instanced)`, `BloodTrail`, `Distortion`, `Edge Zone`, `Liquid Blood`, `Liquid Blood Errosion`, `Liquid Blood Sphere Errosion`, `Liquid Surface Opaque`, `Liquid Surface Transparent`, `PBR Damageable`, `PBR Damageable Metallic`, `PBR Masked Albedo`, `PBR NormalFix`, `Simple Decal`, `SurfaceWithBakedSkinnedAnimation`
+- **Subfolders:** `Animations/`, `Materials/` (Blood Particles, Blood, Damage, Demo, Entrails, Leaks, Props, Puddles, Trail), `Models/`, `Prefabs/` (Blood, Damage, Demo, Entrails, Leaks, Props, Puddles), `Textures/` (BigPuddle, Common, Damage, Decals, Handprints, Leaks, Liquid, Meat, Offal, Puddles), `Resources/`, `SimpleController/`, `Fonts/`, `SRP/`
+- **HDRP upgrade:** `SRP/HDRP Upgrade.unitypackage` + `SRP/HDRP Upgrade 2023.2 HDRP 16.unitypackage`
+- **No URP upgrade shipped.** Publisher made a conscious choice to skip URP.
+
+**Key Scripts (partial):**
+- `CharacterDamagePainter` -- projects damage masks onto character materials via camera-based texture painting
+- `LiquidSurface` -- main liquid simulation; needs RenderTexture, sub-camera, particles pool, TextureApplier
+- `DecalsProjector`, `DecalsOnCollision`, `DecalsOnParticleCollision(AngledSpawn)`, `FeetDecalSpawner` -- decal placement
+- `HitBox`, `HittableDoll`, `ExplodeableDoll`, `ExplodeableHead`, `HeadExplosionDoll` -- damage receiving
+- `RigidbodyExplosion` -- physical explosion forces
+- `DemoRobot`, `DemoRobotTrigger`, `DemoDollHand`, `DemoBlock` -- showcase demo drivers
+- `InstancedRendererColorApplier(Randomizer)`, `InstancedRendererVectorApplier` -- GPU instancing color variance
+- `AutoSpawner`, `Spawner`, `ISpawner`, `ISpawnerContainer` -- simple pooling/spawn system
+- `CollisionDamage`, `ExampleDamageable`, `IResettable`, `ISimpleObserverable`, `AnimationEventSimpleObserverable` -- damage/reset event plumbing
+- `MaterialFloatAnimator`, `LocalRotator`, `LocalPositionToVectorApplier`, `NoiseLocalRotation`, `RandomAnimatorSpeed`, `RandomIntegerParameter`, `PlayAnimationByAnimationEvent`, `ParticleSystemsController` -- animation helpers
+
+**Compile Status (Unity 6, 2026-04-11):** Compiles clean. Only warnings:
+- `DecalsProjector.cs(23,32)`: `FindObjectOfType<T>()` is obsolete (CS0618) -- non-breaking
+- `LiquidSurface.cs(14,40)`: unused field `height` (CS0414)
+- `DemoRobot.cs(25,23)`: unused field `aimAngle` (CS0414)
+
+**URP Compatibility Test (Sandbox, URP, 2026-04-11):** 
+- Applied `BigPuddle.mat` (shader `Knife/Blood/Puddle`) to a test quad in `BM_Shaft.unity`
+- `Shader.isSupported == true` (misleading -- URP treats legacy surface shaders as "supported" at load time)
+- **Rendered full magenta** from camera -- classic URP legacy-shader fallback
+- Confirmed: built-in RP Standard Surface shaders have no URP subshader pass, URP forward renderer falls back to the magenta error shader
+
+**Amplify Shader Editor Port Investigation (2026-04-11):**
+- ASE (ENTRY-158) installed during this eval session
+- ASE exposes `AmplifyShaderEditorWindow.ConvertShaderToASE(shader)` + `SetTemplateShader(TemplatesManager.URPLitGUID, false)` + `SaveToDisk(false)` -- synchronous path for template swap
+- Attempted programmatic port via `script-execute`: ran into `You can only call GUI functions from inside OnGUI` because ASE's load path calls `ParentGraph.Draw()` which tries to emit GUI commands. Window opened despite the exception, template swap scheduled, but subsequent MCP calls stalled Unity. Rolled back via filesystem restore from `.bak`.
+- **Port path exists but is fragile from outside-OnGUI contexts.** Full details: [reference_ase_programmatic_api.md](C:\Users\steph\.claude\projects\e--Unity-Sandbox\memory\reference_ase_programmatic_api.md)
+- Manual ASE port (user double-clicks each shader, changes Shader Type to Universal Lit or Unlit, saves) is the reliable path. 16 shaders × ~2 min each = ~30 min total work, but `PBR Damageable` (tessellation) and `Liquid Surface Opaque/Transparent` (camera depth readback) will likely need per-shader fixes after the template swap.
+
+**Project Fit:**
+
+**Blood Miner: NOT SUITABLE AS-IS.**
+1. Shaders render magenta in URP (blocker)
+2. Real Blood's architecture is overkill for a mobile idle game -- character damage painting, tessellated wounds, full liquid sim at 60fps is designed for FPS character gore, not for mobile idle tap-to-chop at arbitrary scales
+3. SM bodies are abstract "cute animals at an outlet," not skinned characters with hit zones
+4. Mobile performance budget doesn't afford the liquid surface pipeline (render texture + sub-camera + particles)
+
+**Salvage value for SM (high):**
+- **Texture library:** `Textures/Puddles/`, `Textures/Handprints/`, `Textures/BigPuddle/`, `Textures/Decals/`, `Textures/Liquid/`, `Textures/Meat/`, `Textures/Offal/`, `Textures/Leaks/` -- hundreds of blood splat/puddle/gore textures that can feed URP Particle System sheets (Unlit material, additive/alpha blended)
+- **Particle prefabs:** `Prefabs/Blood/`, `Prefabs/Leaks/`, `Prefabs/Puddles/` -- reuse the ParticleSystem curves, emission shapes, lifetime gradients. Swap the Renderer.material from `Knife/*` to a URP Particles/Unlit or Particles/Lit material. Most should work with minor config.
+- **Decal spawn logic:** `DecalsOnParticleCollision(AngledSpawn)`, `FeetDecalSpawner` -- C# only, no shader dependency. Drop-in reusable for URP decal placement.
+- **Pooling pattern:** `AutoSpawner` / `Spawner` / `ISpawner` -- lightweight spawn helpers, URP-agnostic
+
+**Recommended SM approach (when we get to Sprint 3 "Gore + Juice"):** 
+1. Keep Real Blood imported as a *texture/particle asset source* only
+2. Build a minimal `BM.VFX.BloodBurst` component: URP/Particles/Unlit material using Real Blood puddle+splat textures as the particle sprite sheet, emission burst on chop, 0.5s lifetime, fade out
+3. Static decal sprites (not shader-driven) for persistent puddles at outlet bases -- just a quad with URP/Unlit and alpha-blended puddle texture, pooled
+4. Skip liquid surface, skip character damage painter, skip tessellated wounds entirely -- mobile idle doesn't need them and they'd tank performance
+
+**For future HDRP projects:** Real Blood is **Recommended**. Extract the `SRP/HDRP Upgrade 2023.2 HDRP 16.unitypackage` and it ships a ready HDRP visual pipeline. The architecture (damage painter + liquid surface + decals) becomes genuinely compelling at HDRP fidelity.
+
+**Asset Store Label:** *(no label for URP projects)* / **Recommended** when filtering for HDRP.
+
+**MCP Controllability:**
+- `component-add` / `component-modify`: works for `HittableDoll`, `CharacterDamagePainter`, `LiquidSurface`, `DecalsOnParticleCollision`, etc. All fields are standard serializable.
+- `script-execute`: full access for runtime damage/explosion triggers (`HittableDoll.ApplyDamage`, `ExplodeableDoll.Explode`)
+- No need for dedicated MCP tools -- the asset is opinionated enough that scene wiring per-game is the expected workflow.
+- **Interesting meta-tool opportunity:** `ase-convert-to-urp` or general `ase-set-template` TMCP tools for auto-porting ASE shaders between pipelines. Blocked currently by the OnGUI threading issue described above. Candidate for TMCP tool work when we next revisit shader pipeline tooling.
+
+**Key Gotchas:**
+- **`isSupported == true` for legacy surface shaders in URP is misleading** -- the shader loads but renders magenta. Don't trust that property alone; do a visual render test.
+- **16 shaders all need porting.** Manual ASE port is feasible but tedious; tessellated shaders (`PBR Damageable*`) and liquid surface shaders won't translate 1:1.
+- **HDRP upgrade package is `.unitypackage` file in `SRP/`, not auto-imported.** User must double-click it when using HDRP.
+- **Demo scene references lots of demo config assets** (`.asset` ScriptableObjects at the root of the Real Blood folder). These aren't scripts but they're project-polluting. Can be deleted once asset eval is done if SM only wants texture+particle salvage.
+- **`DecalsProjector.cs` uses the obsolete `FindObjectOfType<T>()`** -- still works in Unity 6, will break in a later Unity release. Trivial fix when/if we adopt any scripts.
+- **`.bak` file left for shader backups** -- `Assets/Knife/Real Blood/Shaders/BloodPuddle.shader.bak` was created during the ASE programmatic port probe. Safe to delete after import.
+
+**Verdict Rationale:** URP pipeline incompatibility is a hard blocker for Sandbox use. Manual ASE port of all 16 shaders is ~30-60 min for the simple ones plus ~2-4 hours for tessellation/liquid surface fixes, and the resulting system still wildly exceeds SM's mobile budget. Better engineering ROI: treat Real Blood as an **asset library** (textures, particle prefab curves, decal scripts) and build a focused `BM.VFX.BloodBurst` micro-system for Sprint 3. The **HDRP verdict is different** -- if a future project targets HDRP, Real Blood ships production-ready via the included upgrade package and earns a **Recommended** label.
+
+**TecVooDoo Utilities Candidate:** No -- domain-specific gore VFX system, no general-purpose utility code.
+**TecVooDoo Games Candidate:** No -- third-party package, not something to re-implement or absorb.
 
 ---
 
