@@ -7,6 +7,7 @@ namespace BM.Shaft
         [SerializeField] private int _currentRowIndex;
         [SerializeField] private float _walkSpeed = 2.5f;
         [SerializeField] private float _arriveDistance = 0.15f;
+        [SerializeField] private float _chopReach = 0.5f;
 
         private RowOutlet _targetOutlet;
         private bool _walking;
@@ -30,8 +31,13 @@ namespace BM.Shaft
         {
             if (!_walking || _targetOutlet == null) return;
 
-            Vector3 goal = _targetOutlet.SpawnPoint.position;
-            goal.y = transform.position.y;
+            Vector3 bodyPos = _targetOutlet.SpawnPoint.position;
+            Vector3 ghoulPos = transform.position;
+
+            float dirX = bodyPos.x - ghoulPos.x;
+            float stopOffset = dirX > 0 ? -_chopReach : _chopReach;
+
+            Vector3 goal = new Vector3(bodyPos.x + stopOffset, ghoulPos.y, bodyPos.z);
 
             if (Vector3.Distance(transform.position, goal) > _arriveDistance)
             {

@@ -1,4 +1,4 @@
-/* Soul Minor HUD Stylesheet */
+/* Blood Miner HUD Stylesheet */
 
 .top-bar {
     position: absolute;
@@ -16,56 +16,73 @@
     justify-content: center;
 }
 
-.soul-icon {
+.blood-icon {
     font-size: 28px;
     margin-right: 8px;
-    color: rgb(200, 180, 255);
+    color: rgb(200, 50, 50);
 }
 
-.soul-counter {
+.blood-counter {
     font-size: 36px;
     color: rgb(255, 255, 255);
     -unity-font-style: bold;
     -unity-text-align: middle-center;
 }
 
-.rank-row {
+.row-info {
     flex-direction: row;
     align-items: center;
     justify-content: center;
     margin-top: 4px;
 }
 
-.rank-label {
+.row-label {
     font-size: 14px;
     color: rgb(180, 180, 180);
-    margin-right: 8px;
+    margin-right: 12px;
 }
 
-.rank-progress-bg {
-    width: 120px;
-    height: 8px;
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
+.outlet-label {
+    font-size: 14px;
+    color: rgb(180, 180, 180);
 }
 
-.rank-progress-fill {
-    height: 100%;
-    width: 0%;
-    background-color: rgb(160, 120, 255);
-    border-radius: 4px;
+.gatherer-row {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 6px;
 }
 
-.combo-label {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    -unity-text-align: middle-center;
-    font-size: 48px;
-    color: rgb(255, 200, 50);
+.top-btn {
+    margin: 0 4px;
+    padding: 4px 8px;
+    background-color: rgba(80, 60, 20, 0.8);
+    border-color: rgb(180, 140, 60);
+    border-width: 1px;
+    border-radius: 6px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.top-btn:hover {
+    background-color: rgba(100, 80, 30, 0.9);
+}
+
+.top-btn:disabled {
+    background-color: rgba(40, 30, 15, 0.5);
+    border-color: rgb(80, 60, 30);
+    opacity: 0.6;
+}
+
+.top-btn-text {
+    font-size: 11px;
+    color: rgb(255, 220, 120);
     -unity-font-style: bold;
-    opacity: 0;
+}
+
+.top-btn-cost {
+    font-size: 10px;
+    color: rgb(180, 160, 100);
 }
 
 .bottom-panel {
@@ -83,8 +100,8 @@
     flex-grow: 1;
     margin: 0 4px;
     padding: 8px 4px;
-    background-color: rgba(80, 40, 120, 0.8);
-    border-color: rgb(140, 100, 200);
+    background-color: rgba(120, 30, 30, 0.8);
+    border-color: rgb(200, 80, 80);
     border-width: 2px;
     border-radius: 8px;
     flex-direction: column;
@@ -92,11 +109,62 @@
 }
 
 .upgrade-btn:hover {
-    background-color: rgba(100, 60, 150, 0.9);
+    background-color: rgba(150, 40, 40, 0.9);
 }
 
 .upgrade-btn:active {
-    background-color: rgba(120, 80, 170, 1);
+    background-color: rgba(180, 60, 60, 1);
+}
+
+.upgrade-btn:disabled {
+    background-color: rgba(60, 30, 30, 0.5);
+    border-color: rgb(100, 60, 60);
+    opacity: 0.6;
+}
+
+.minion-btn {
+    background-color: rgba(30, 60, 120, 0.8);
+    border-color: rgb(80, 120, 200);
+}
+
+.minion-btn:hover {
+    background-color: rgba(40, 80, 150, 0.9);
+}
+
+.minion-btn:active {
+    background-color: rgba(60, 100, 180, 1);
+}
+
+.minion-btn:disabled {
+    background-color: rgba(30, 40, 60, 0.5);
+    border-color: rgb(60, 80, 100);
+    opacity: 0.6;
+}
+
+.descend-btn {
+    flex-grow: 1;
+    margin: 0 4px;
+    padding: 8px 4px;
+    background-color: rgba(30, 80, 30, 0.8);
+    border-color: rgb(80, 180, 80);
+    border-width: 2px;
+    border-radius: 8px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.descend-btn:hover {
+    background-color: rgba(40, 100, 40, 0.9);
+}
+
+.descend-btn:active {
+    background-color: rgba(60, 130, 60, 1);
+}
+
+.descend-btn:disabled {
+    background-color: rgba(30, 50, 30, 0.5);
+    border-color: rgb(60, 100, 60);
+    opacity: 0.6;
 }
 
 .upgrade-title {
@@ -107,7 +175,7 @@
 
 .upgrade-cost {
     font-size: 12px;
-    color: rgb(200, 180, 255);
+    color: rgb(200, 180, 180);
     margin-top: 2px;
 }
 
@@ -115,26 +183,4 @@
     font-size: 11px;
     color: rgb(150, 150, 150);
     margin-top: 1px;
-}
-
-.collect-btn {
-    position: absolute;
-    bottom: 110px;
-    left: 50%;
-    translate: -50% 0;
-    padding: 12px 32px;
-    background-color: rgba(50, 150, 50, 0.85);
-    border-color: rgb(100, 220, 100);
-    border-width: 2px;
-    border-radius: 12px;
-}
-
-.collect-btn:hover {
-    background-color: rgba(70, 180, 70, 0.95);
-}
-
-.collect-text {
-    font-size: 18px;
-    color: rgb(255, 255, 255);
-    -unity-font-style: bold;
 }

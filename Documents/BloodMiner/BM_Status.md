@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 12, 2026 (Session 76 -- Phase 4+5 multi-outlet, descent, dynamic rows)
+**Last Updated:** April 12, 2026 (Session 76 -- Phase 4+5+6 UI overhaul, currency, gatherer upgrades)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,7 @@
 
 ## Current State
 
-**Phase:** Sprint 2 Phase 1-5 COMPLETE. Full vertical shaft loop: Build Row 0 (4 outlets + 4 minions) -> row completion auto-unlocks Row 1 below -> D to descend (Ghoul + camera) -> build Row 1 with its own gauge + upgrade button -> repeat infinitely. Bodies flow from single gatherer surface to all rows via shared PipeNetwork. Per-row upgrade button turns red on gauge fill, resets on click.
+**Phase:** Sprint 2 Phase 1-6 COMPLETE. Full idle loop with UI-driven economy: Blood currency earned from chopping, spent on outlets (50 base x2), minions (30 base x1.8), gatherer speed (100 base x3), gatherer count (80 base x2, row-gated). Row depth multiplier (10% per row). Gatherer count slots unlock 1 per new row (production: 1 per 10 rows). Synty Dark Fantasy Interface noted for UI skin pass.
 
 **Session 76 (Apr 12, 2026) -- Phase 4 multi-outlet + player Ghoul + ChopMinions:**
 - **Chop now consumes body:** `RowWorker.Chop()` calls `_assignedOutlet.ConsumeBody()` before adding blood. Guards against empty outlets. `ShaftTapHarvester` no longer double-consumes.
@@ -35,7 +35,22 @@
 - **WorldUpgradeButton collider fix:** Button component added to `buttonCube` (has BoxCollider from CreatePrimitive) instead of empty parent GO — `[RequireComponent(typeof(Collider))]` was blocking AddComponent.
 - **Manual event wiring:** `WorldUpgradeButton` Awake can't subscribe to controller events (null at Awake time). OnReady/OnTierChanged listeners wired via lambdas in `CreateUpgradeButtonForRow` after reflection setup.
 - **Row.Init()** accepts `outletSpacing` parameter (default 1.5) so dynamic rows match Row 0 layout.
-- **Playtest CONFIRMED:** Full loop: build Row 0 (O x3, M x4) -> Row 1 auto-unlocks -> D to descend -> build Row 1 with working gauge + upgrade button -> Row 2 unlocks -> repeat.
+- **Playtest CONFIRMED:** Full loop: build Row 0 -> Row 1 auto-unlocks -> D to descend -> build Row 1 with working gauge + upgrade button -> Row 2 unlocks -> repeat.
+
+**Session 76 cont. (Apr 12, 2026) -- Phase 6 UI overhaul + currency + gatherer upgrades:**
+- **BloodManager currency wired:** `Row.OnChop` now feeds both LeftoversGauge (row-local fill) and BloodManager (global spendable currency). BloodManager on [GameManager] GO.
+- **HUD rewrite (UI Toolkit):** `BM_HUD.uxml` + `BM_HUD.uss` replaced Sprint 1 mine/elevator/warehouse layout. New layout:
+  - Top bar: blood counter, row number, outlet/minion counts, gatherer speed upgrade button, buy gatherer button
+  - Bottom bar: Buy Outlet (red), Buy Minion (blue), Descend (green)
+- **BMHUD.cs controller:** Queries ShaftManager/BloodManager each frame, enables/disables buttons based on affordability + state, formats numbers (K/M).
+- **Cost curves:** Outlet 50 base x2 per purchase. Minion 30 base x1.8. Gatherer speed 100 base x3 (max 5 tiers). Gatherer count 80 base x2.
+- **Row depth multiplier:** All row purchases multiplied by `1.0 + rowIndex * 0.1` (Row 0 = 1x, Row 1 = 1.1x, etc.).
+- **Gatherer count gated by row progression:** 1 slot unlocks per new row completed (testing). Production: 1 per 10 rows. Button shows "New row needed" when no slots. Max 10 gatherers.
+- **Outlet + minion split:** Separate purchases per user feedback — row starts with 1 outlet 0 minions, buy each independently.
+- **Ghoul positioning fixes:** Spawns at x=-1 (left edge, not under outlet). Stops 0.5 units before body (`_chopReach`) instead of walking on top.
+- **Upgrade button position matched:** New row buttons use UpgradeButtonVisual at local (2.13, 0.5, 0) matching Row 0's editor-placed position.
+- **O/M shortcuts removed:** UI buttons are the only purchase path. D key kept as backup for descent.
+- **TODO next session:** Wire `ToolUpgradeController.ToolTier` to actually multiply blood yield in `Row.OnChop` (currently tier increments but has no gameplay effect). See memory note.
 
 **Session 75 (Apr 11, 2026) -- Phase 1+2 vertical slice + Real Blood eval (ENTRY-329):**
 - **Phase 1 Scaffolding:** Created `BM_Shaft.unity` scene. Unloaded `BM_ShallowGraves.unity` (kept on disk as reference). Wrote 14 stub scripts:
@@ -160,12 +175,12 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 
 **Next (Session 76 -- Phase 4):**
 
-Phase 6 -- Progression + Balance:
-1. Replace keyboard shortcuts (O/M/D) with proper upgrade purchase UI (cost curves, currency display)
+Phase 7 -- Next priorities:
+1. Wire tool tier multiplier to blood yield in Row.OnChop (see memory note)
 2. Per-row body type escalation (deeper rows = bigger animals = more blood)
-3. Gatherer upgrades (speed, carry tier, count)
-4. Two-camera pinned-surface viewport (see `project_bm_pinned_surface_scroll.md`)
-5. Save/load integration (ES3 — row state, ghoul position, upgrades)
+3. Two-camera pinned-surface viewport (see `project_bm_pinned_surface_scroll.md`)
+4. Save/load integration (ES3 — row state, ghoul position, upgrades, currency)
+5. Synty Dark Fantasy Interface UI skin pass
 
 Sprint 3 Polish (deferred):
 - Body gravity-drop from outlet to floor (Rigidbody + ground collider)

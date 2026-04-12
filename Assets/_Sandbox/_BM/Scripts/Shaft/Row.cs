@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using BM.Core;
 
 namespace BM.Shaft
 {
@@ -12,6 +13,7 @@ namespace BM.Shaft
         [FormerlySerializedAs("_bloodBar")]
         [SerializeField] private LeftoversGauge _leftoversGauge;
         [SerializeField] private ToolUpgradeController _toolUpgrade;
+        [SerializeField] private BloodManager _bloodManager;
 
         [Header("Outlet Spawning")]
         [SerializeField] private PipeNetwork _pipeNetwork;
@@ -25,13 +27,27 @@ namespace BM.Shaft
         public int OutletCount => _outlets.Count;
         public PipeNetwork PipeNetwork => _pipeNetwork;
 
-        public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, float outletSpacing = 1.5f)
+        public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, BloodManager bloodManager, float outletSpacing = 1.5f)
         {
             _rowIndex = rowIndex;
             _pipeNetwork = pipeNetwork;
             _bodyPool = bodyPool;
             _pipeVisualPrefab = pipeVisualPrefab;
+            _bloodManager = bloodManager;
             _outletSpacing = outletSpacing;
+        }
+
+        public bool BuyOutlet()
+        {
+            if (_outlets.Count >= _maxOutlets) return false;
+            return AddOutlet() != null;
+        }
+
+        public bool BuyMinion()
+        {
+            RowOutlet target = GetNextUnminionedOutlet();
+            if (target == null) return false;
+            return AddChopMinion(target) != null;
         }
         public bool IsFullyBuilt => _outlets.Count >= _maxOutlets && ChopMinionCount >= _maxOutlets;
 
@@ -79,6 +95,7 @@ namespace BM.Shaft
         public void OnChop(float amount)
         {
             if (_leftoversGauge != null) _leftoversGauge.Add(amount);
+            if (_bloodManager != null) _bloodManager.AddBlood(amount);
         }
 
         public RowOutlet AddOutlet()

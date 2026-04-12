@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using BM.Core;
+using BM.Gatherer;
 
 namespace BM.Shaft
 {
@@ -12,13 +14,90 @@ namespace BM.Shaft
         [SerializeField] private GameObject _pipeVisualPrefab;
         [SerializeField] private Ghoul _ghoul;
         [SerializeField] private Camera _mainCamera;
+        [SerializeField] private BloodManager _bloodManager;
+        [SerializeField] private GathererManager _gathererManager;
 
         private readonly List<Row> _rows = new List<Row>();
         private int _ghoulRowIndex;
         private bool _nextRowUnlocked;
+        private int _gathererSlotsAvailable;
 
         public int GhoulRowIndex => _ghoulRowIndex;
         public int RowCount => _rows.Count;
+        public BloodManager BloodManager => _bloodManager;
+        public bool CanDescend => _ghoulRowIndex + 1 < _rows.Count;
+
+        public Row ActiveRow => GetRow(_ghoulRowIndex);
+
+        private double GetRowDepthMultiplier(Row row)
+        {
+            return 1.0 + row.RowIndex * 0.1;
+        }
+
+        public double GetOutletCost(Row row)
+        {
+            int purchased = Mathf.Max(0, row.OutletCount - 1);
+            return 50 * System.Math.Pow(2, purchased) * GetRowDepthMultiplier(row);
+        }
+
+        public double GetMinionCost(Row row)
+        {
+            return 30 * System.Math.Pow(1.8, row.ChopMinionCount) * GetRowDepthMultiplier(row);
+        }
+
+        public bool TryBuyOutlet()
+        {
+            Row row = ActiveRow;
+            if (row == null || row.OutletCount >= row.MaxOutlets) return false;
+            double cost = GetOutletCost(row);
+            if (_bloodManager == null || !_bloodManager.TrySpend(cost)) return false;
+            return row.BuyOutlet();
+        }
+
+        public bool TryBuyMinion()
+        {
+            Row row = ActiveRow;
+            if (row == null || row.GetNextUnminionedOutlet() == null) return false;
+            double cost = GetMinionCost(row);
+            if (_bloodManager == null || !_bloodManager.TrySpend(cost)) return false;
+            return row.BuyMinion();
+        }
+
+        public GathererManager GathererMgr => _gathererManager;
+
+        public double GetGathererSpeedCost()
+        {
+            if (_gathererManager == null) return 0;
+            return 100 * System.Math.Pow(3, _gathererManager.SpeedTier - 1);
+        }
+
+        public int GathererSlotsAvailable => _gathererSlotsAvailable;
+        public bool CanBuyGatherer => _gathererManager != null && _gathererSlotsAvailable > 0 && _gathererManager.Count < 10;
+
+        public double GetGathererCountCost()
+        {
+            if (_gathererManager == null) return 0;
+            return 80 * System.Math.Pow(2, _gathererManager.Count - 1);
+        }
+
+        public bool TryBuyGathererSpeed()
+        {
+            if (_gathererManager == null || _gathererManager.SpeedTier >= 5) return false;
+            double cost = GetGathererSpeedCost();
+            if (_bloodManager == null || !_bloodManager.TrySpend(cost)) return false;
+            _gathererManager.SetSpeedTier(_gathererManager.SpeedTier + 1);
+            return true;
+        }
+
+        public bool TryBuyGathererCount()
+        {
+            if (!CanBuyGatherer) return false;
+            double cost = GetGathererCountCost();
+            if (_bloodManager == null || !_bloodManager.TrySpend(cost)) return false;
+            _gathererManager.SetCount(_gathererManager.Count + 1);
+            _gathererSlotsAvailable--;
+            return true;
+        }
 
         private void Awake()
         {
@@ -46,36 +125,10 @@ namespace BM.Shaft
                 _nextRowUnlocked = true;
             }
 
-            if (UnityEngine.InputSystem.Keyboard.current != null)
+            if (UnityEngine.InputSystem.Keyboard.current != null
+                && UnityEngine.InputSystem.Keyboard.current.dKey.wasPressedThisFrame)
             {
-                if (UnityEngine.InputSystem.Keyboard.current.oKey.wasPressedThisFrame)
-                {
-                    RowOutlet newOutlet = activeRow.AddOutlet();
-                    if (newOutlet != null)
-                        Debug.Log("[BM] ShaftManager: outlet added, total=" + activeRow.OutletCount);
-                    else
-                        Debug.Log("[BM] ShaftManager: outlet at max (" + activeRow.MaxOutlets + ")");
-                }
-
-                if (UnityEngine.InputSystem.Keyboard.current.mKey.wasPressedThisFrame)
-                {
-                    RowOutlet target = activeRow.GetNextUnminionedOutlet();
-                    if (target != null)
-                    {
-                        ChopMinion minion = activeRow.AddChopMinion(target);
-                        if (minion != null)
-                            Debug.Log("[BM] ShaftManager: minion added for " + target.name);
-                    }
-                    else
-                    {
-                        Debug.Log("[BM] ShaftManager: all outlets have minions");
-                    }
-                }
-
-                if (UnityEngine.InputSystem.Keyboard.current.dKey.wasPressedThisFrame)
-                {
-                    Descend();
-                }
+                Descend();
             }
         }
 
@@ -89,13 +142,16 @@ namespace BM.Shaft
             rowGO.transform.localPosition = new Vector3(0f, yPos, 0f);
 
             Row row = rowGO.AddComponent<Row>();
-            row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab);
+            row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab, _bloodManager);
 
             LeftoversGauge gauge = CreateGaugeForRow(rowGO, row);
             CreateUpgradeButtonForRow(rowGO, row, gauge);
 
             RowOutlet firstOutlet = row.AddOutlet();
             _rows.Add(row);
+
+            _gathererSlotsAvailable++;
+            Debug.Log("[BM] ShaftManager: +1 gatherer slot available, total=" + _gathererSlotsAvailable);
 
             Debug.Log("[BM] ShaftManager: Row_" + newIndex + " unlocked at y=" + yPos + " with 1 outlet");
         }
@@ -117,7 +173,7 @@ namespace BM.Shaft
             {
                 _ghoul.MoveToRow(_ghoulRowIndex);
                 _ghoul.transform.SetParent(nextRow.transform, false);
-                _ghoul.transform.localPosition = new Vector3(0f, 0.65f, 0f);
+                _ghoul.transform.localPosition = new Vector3(-1f, 0.65f, 0f);
             }
 
             if (_mainCamera != null)
@@ -200,7 +256,7 @@ namespace BM.Shaft
             GameObject buttonCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             buttonCube.name = "UpgradeButtonVisual";
             buttonCube.transform.SetParent(upgradeGO.transform, false);
-            buttonCube.transform.localPosition = Vector3.zero;
+            buttonCube.transform.localPosition = new Vector3(2.13f, 0.5f, 0f);
             buttonCube.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
 
             Renderer rend = buttonCube.GetComponent<Renderer>();
