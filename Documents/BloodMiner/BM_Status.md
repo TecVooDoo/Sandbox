@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 12, 2026 (Session 76 -- Phase 4+5+6 UI overhaul, currency, gatherer upgrades)
+**Last Updated:** April 12, 2026 (Session 77 -- Phase 7+8 economy, cameras, save/load, UI skin, skeleton characters)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,41 @@
 
 ## Current State
 
-**Phase:** Sprint 2 Phase 1-6 COMPLETE. Full idle loop with UI-driven economy: Blood currency earned from chopping, spent on outlets (50 base x2), minions (30 base x1.8), gatherer speed (100 base x3), gatherer count (80 base x2, row-gated). Row depth multiplier (10% per row). Gatherer count slots unlock 1 per new row (production: 1 per 10 rows). Synty Dark Fantasy Interface noted for UI skin pass.
+**Phase:** Sprint 2 Phase 1-8 COMPLETE. Phase 7: economy (tool tier multiplier, body type escalation, 7 BodyConfigSOs), camera (single camera, portrait-first), save/load (ES3), UI skin (Synty Dark Fantasy). Phase 8: KayKit Skeleton characters replacing placeholder cubes (Skeleton_Warrior Ghoul, Skeleton_Minion ChopMinions, animated Idle/Walk/Attack).
+
+**Session 77 (Apr 12, 2026) -- Phase 7 economy + cameras + save/load + UI skin:**
+- **Tool tier multiplier wired:** `Row.OnChop` now multiplies blood by `1 + toolTier`. Both gauge fill and BloodManager currency get the boosted amount. Tier 0 = 1x, Tier 1 = 2x, etc.
+- **Per-row body type escalation:**
+  - `BodyConfigSO` new `_unlockRow` field. Cat/Dog unlock row 1, Pig row 3, Sheep row 5, Rabbit/Chicken row 7, Cow row 9.
+  - `RowWorker.Chop()` reads body's `BaseBloodValue` and multiplies chop amount (Cat=1x, Dog=1.5x, Pig=3x, Sheep=4x, Rabbit/Chicken=2x, Cow=10x).
+  - `GathererManager` renamed `_availableBodies` -> `_allBodies`, added `_unlockedBodies` filtered list + `UpdateUnlockedBodies(rowDepth)`.
+  - `ShaftManager.Descend()` calls `UpdateUnlockedBodies` on each descent.
+  - 5 new BodyConfigSO assets created (Pig, Sheep, Rabbit, Chicken, Cow) with GDD values. All 7 wired to `_allBodies`.
+- **Two-camera pinned-surface viewport:**
+  - `SurfaceCamera` (top 25%, depth 1) fixed at (0,5,6.5) looking at gatherer area. Untagged.
+  - `RowCamera` (bottom 75%, depth 0, MainCamera tag) follows ghoul's current row. Centers between previous and active row on descent.
+  - `ShaftManager.Descend()` camera logic updated: midpoint between prev/active row + 1.5 offset.
+- **ES3 save/load:**
+  - `BM_SaveManager` on `[GameManager]`. Saves blood balance/lifetime, ghoul row, per-row outlets/minions/tool tier/gauge fill, gatherer count/speed/slots.
+  - Auto-saves on `OnApplicationPause`/`OnApplicationQuit`. Auto-loads on `Start()`.
+  - Context menu: Save Game, Load Game, Clear Save Data.
+- **Synty Dark Fantasy Interface UI skin:**
+  - Imported `Synty/InterfaceDarkFantasyHUD` and `Synty/PolygonParticleFX`.
+  - `BM_HUD.uss` reskinned: `Box_Hotbar_01` (top bar), `Box_Hotbar_03` (bottom panel), Pirata One font for titles/counter, warm gold/amber text colors, text shadows for readability.
+- **KayKit Skeletons noted:** 6 characters + animations. External path: `E:\Game Assets\Itch\apps\kaykit-complete\`
+- **Camera pivot (mid-session):** Dual-camera approach abandoned -- different viewport aspect ratios made identical FOV/rotation look completely different between surface and row views. Pivoted to single full-screen camera (FOV 65, pos (2,2,10), rotation (5,180,0)). SurfaceCamera disabled. Camera pans down on descent, surface scrolls off naturally.
+- **Layer system established:** Layer 7=Surface, Layer 9=Shaft, Layer 6=Body. Set up for future camera isolation if needed.
+- **PanelSettings Match=0** (width-only) for mobile portrait compatibility.
+
+**Session 77 cont. (Apr 12, 2026) -- Phase 8 KayKit Skeleton characters:**
+- **Skeleton FBX import:** Skeleton_Warrior.fbx + Skeleton_Minion.fbx + skeleton_texture_A.png imported to `Assets/_Sandbox/_BM/Art/Characters/KayKit_Skeletons/`. 10 animation FBXs imported to `Animations/` subfolder (General, MovementBasic, CombatMelee, etc.). All set to Humanoid rig.
+- **Mat_Skeleton material:** URP/Lit with skeleton_texture_A (1024x1024). Assigned to all Ghoul/Minion mesh parts.
+- **AC_Ghoul animator:** 3 states (Idle->Idle_A, Walk->Walking_A, Attack->Melee_1H_Attack_Chop). Parameters: IsWalking(Bool), Attack(Trigger). 5 transitions with 0.1s blend.
+- **AC_ChopMinion animator:** 2 states (Idle->Idle_A, Attack->Melee_1H_Attack_Chop). Parameter: Attack(Trigger). 2 transitions.
+- **Ghoul.cs updated:** Gets Animator from children in Awake. Sets `IsWalking` on GoToOutlet, clears + triggers `Attack` on arrival.
+- **ChopMinion.cs updated:** `SetupModel(prefab, ctrl, mat)` method instantiates Skeleton_Minion at 0.7 scale, assigns material + animator. Falls back to green cube if no model provided. Triggers `Attack` on each chop.
+- **Row.cs + ShaftManager.cs updated:** Minion model/animator/material references passed through `Row.Init()` and `ShaftManager.UnlockNextRow()` so dynamically spawned rows create animated minions.
+- **Ghoul in scene:** Skeleton_Warrior model instantiated as child of Ghoul GO, 10 mesh parts with Mat_Skeleton, AC_Ghoul controller assigned.
 
 **Session 76 (Apr 12, 2026) -- Phase 4 multi-outlet + player Ghoul + ChopMinions:**
 - **Chop now consumes body:** `RowWorker.Chop()` calls `_assignedOutlet.ConsumeBody()` before adding blood. Guards against empty outlets. `ShaftTapHarvester` no longer double-consumes.
@@ -173,14 +207,15 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 - KayKit prop orientation quirks -- still relevant for new scene, memory saved
 - Assembly Kit vs KayKit Skeletons decision -- irrelevant, new design has single reaper visual
 
-**Next (Session 76 -- Phase 4):**
+**Next (Session 78):**
 
-Phase 7 -- Next priorities:
-1. Wire tool tier multiplier to blood yield in Row.OnChop (see memory note)
-2. Per-row body type escalation (deeper rows = bigger animals = more blood)
-3. Two-camera pinned-surface viewport (see `project_bm_pinned_surface_scroll.md`)
-4. Save/load integration (ES3 — row state, ghoul position, upgrades, currency)
-5. Synty Dark Fantasy Interface UI skin pass
+Phase 9 -- Polish + Tuning:
+1. Camera + UI tuning pass (single camera framing, UI frame padding at 1080x1920, mobile tap target sizes)
+2. Gatherer visual upgrade (small skeleton figure walking on surface)
+3. Pipe Dream Pack visual swap (replace KayKit pipe cylinders with PipeDreamPack prefabs)
+4. LeftoversGauge transparency/glass-top pass
+5. Ghoul facing direction (flip/rotate toward movement direction)
+6. Playtest + balance pass (cost curves, body values, tool tier scaling)
 
 Sprint 3 Polish (deferred):
 - Body gravity-drop from outlet to floor (Rigidbody + ground collider)

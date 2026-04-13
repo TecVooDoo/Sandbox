@@ -1,4 +1,5 @@
 using UnityEngine;
+using BM.Core;
 
 namespace BM.Shaft
 {
@@ -20,8 +21,11 @@ namespace BM.Shaft
         public virtual void Chop()
         {
             if (_assignedOutlet == null || _assignedOutlet.IsClear) return;
+            float bodyValue = 1f;
+            BodyConfigSO config = _assignedOutlet.CurrentConfig;
+            if (config != null) bodyValue = (float)config.BaseBloodValue;
             _assignedOutlet.ConsumeBody();
-            if (_row != null) _row.OnChop(_chopAmount);
+            if (_row != null) _row.OnChop(_chopAmount * bodyValue);
         }
     }
 }

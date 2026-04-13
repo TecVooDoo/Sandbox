@@ -11,7 +11,7 @@ namespace BM.Gatherer
         [SerializeField] private BodyFunnel _funnel;
         [SerializeField] private Transform _pickupPoint;
         [SerializeField] private Transform _dropPoint;
-        [SerializeField] private BodyConfigSO[] _availableBodies;
+        [SerializeField] private BodyConfigSO[] _allBodies;
         [SerializeField] private int _count = 1;
         [SerializeField] private int _speedTier = 1;
         [SerializeField] private int _defaultCarryTier = 1;
@@ -21,6 +21,8 @@ namespace BM.Gatherer
 
         private readonly List<Gatherer> _gatherers = new List<Gatherer>();
         private readonly List<BodyConfigSO> _filterBuffer = new List<BodyConfigSO>();
+        private readonly List<BodyConfigSO> _unlockedBodies = new List<BodyConfigSO>();
+        private int _currentRowDepth;
 
         public int Count => _count;
         public int SpeedTier => _speedTier;
@@ -38,13 +40,26 @@ namespace BM.Gatherer
             ApplySpeedToAll();
         }
 
+        public void UpdateUnlockedBodies(int currentRowDepth)
+        {
+            _currentRowDepth = currentRowDepth;
+            _unlockedBodies.Clear();
+            if (_allBodies == null) return;
+            for (int i = 0; i < _allBodies.Length; i++)
+            {
+                if (_allBodies[i] != null && _allBodies[i].UnlockRow <= currentRowDepth + 1)
+                    _unlockedBodies.Add(_allBodies[i]);
+            }
+            Debug.Log("[BM] GathererManager: " + _unlockedBodies.Count + " body types unlocked at row depth " + currentRowDepth);
+        }
+
         public BodyConfigSO PickRandomBody(int carryTierLimit)
         {
-            if (_availableBodies == null || _availableBodies.Length == 0) return null;
+            if (_unlockedBodies.Count == 0) return null;
             _filterBuffer.Clear();
-            for (int i = 0; i < _availableBodies.Length; i++)
+            for (int i = 0; i < _unlockedBodies.Count; i++)
             {
-                BodyConfigSO body = _availableBodies[i];
+                BodyConfigSO body = _unlockedBodies[i];
                 if (body != null && body.CarryTierRequired <= carryTierLimit)
                     _filterBuffer.Add(body);
             }
@@ -54,6 +69,7 @@ namespace BM.Gatherer
 
         private void Awake()
         {
+            UpdateUnlockedBodies(0);
             SyncGatherers();
         }
 

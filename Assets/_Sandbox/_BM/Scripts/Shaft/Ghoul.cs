@@ -9,11 +9,21 @@ namespace BM.Shaft
         [SerializeField] private float _arriveDistance = 0.15f;
         [SerializeField] private float _chopReach = 0.5f;
 
+        private Animator _animator;
         private RowOutlet _targetOutlet;
         private bool _walking;
 
+        private static readonly int _animIsWalking = Animator.StringToHash("IsWalking");
+        private static readonly int _animAttack = Animator.StringToHash("Attack");
+
         public int CurrentRowIndex => _currentRowIndex;
         public bool IsWalking => _walking;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _animator = GetComponentInChildren<Animator>();
+        }
 
         public void MoveToRow(int rowIndex)
         {
@@ -25,6 +35,7 @@ namespace BM.Shaft
             if (outlet == null) return;
             _targetOutlet = outlet;
             _walking = true;
+            if (_animator != null) _animator.SetBool(_animIsWalking, true);
         }
 
         private void Update()
@@ -46,6 +57,11 @@ namespace BM.Shaft
             }
 
             _walking = false;
+            if (_animator != null)
+            {
+                _animator.SetBool(_animIsWalking, false);
+                _animator.SetTrigger(_animAttack);
+            }
             _assignedOutlet = _targetOutlet;
             _targetOutlet = null;
             Chop();

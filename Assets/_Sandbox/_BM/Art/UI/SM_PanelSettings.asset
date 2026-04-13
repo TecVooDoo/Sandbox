@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 19101, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: SM_PanelSettings
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.PanelSettings
-  themeUss: {fileID: -4733365628477956816, guid: ee2c5c51f34095545b02d548f809f526, type: 3}
+  themeUss: {fileID: -4733365628477956816, guid: ee2c5c51f34095545b02d548f809f526,
+    type: 3}
   m_DisableNoThemeWarning: 0
   m_TargetTexture: {fileID: 0}
   m_RenderMode: 0
@@ -26,7 +27,7 @@ MonoBehaviour:
   m_FallbackDpi: 96
   m_ReferenceResolution: {x: 1080, y: 1920}
   m_ScreenMatchMode: 0
-  m_Match: 0.5
+  m_Match: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
   m_BindingLogLevel: 0
@@ -42,8 +43,10 @@ MonoBehaviour:
     m_ActiveFilters: 31
   m_AtlasBlitShader: {fileID: 9101, guid: 0000000000000000f000000000000000, type: 0}
   m_DefaultShader: {fileID: 9100, guid: 0000000000000000f000000000000000, type: 0}
-  m_RuntimeGaussianBlurShader: {fileID: 20300, guid: 0000000000000000f000000000000000, type: 0}
-  m_RuntimeColorEffectShader: {fileID: 20301, guid: 0000000000000000f000000000000000, type: 0}
+  m_RuntimeGaussianBlurShader: {fileID: 20300, guid: 0000000000000000f000000000000000,
+    type: 0}
+  m_RuntimeColorEffectShader: {fileID: 20301, guid: 0000000000000000f000000000000000,
+    type: 0}
   m_SDFShader: {fileID: 19011, guid: 0000000000000000f000000000000000, type: 0}
   m_BitmapShader: {fileID: 9001, guid: 0000000000000000f000000000000000, type: 0}
   m_SpriteShader: {fileID: 19012, guid: 0000000000000000f000000000000000, type: 0}

@@ -17,6 +17,11 @@ namespace BM.Shaft
         [SerializeField] private BloodManager _bloodManager;
         [SerializeField] private GathererManager _gathererManager;
 
+        [Header("Minion Visuals")]
+        [SerializeField] private GameObject _minionModelPrefab;
+        [SerializeField] private RuntimeAnimatorController _minionAnimCtrl;
+        [SerializeField] private Material _minionMaterial;
+
         private readonly List<Row> _rows = new List<Row>();
         private int _ghoulRowIndex;
         private bool _nextRowUnlocked;
@@ -142,7 +147,8 @@ namespace BM.Shaft
             rowGO.transform.localPosition = new Vector3(0f, yPos, 0f);
 
             Row row = rowGO.AddComponent<Row>();
-            row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab, _bloodManager);
+            row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab, _bloodManager, 1.5f,
+                _minionModelPrefab, _minionAnimCtrl, _minionMaterial);
 
             LeftoversGauge gauge = CreateGaugeForRow(rowGO, row);
             CreateUpgradeButtonForRow(rowGO, row, gauge);
@@ -178,11 +184,21 @@ namespace BM.Shaft
 
             if (_mainCamera != null)
             {
+                // Single camera: pan down to keep active row visible
+                // Center camera between surface (y=4.5) and active row, clamping so active row stays in view
+                float activeRowY = nextRow.transform.position.y;
+                float surfaceY = 4.5f;
+                float camY = (surfaceY + activeRowY) * 0.5f + 1f;
+                // Don't let camera go too high (surface only visible when rows are shallow)
+                float minCamY = activeRowY + 2f;
+                if (camY < minCamY) camY = minCamY;
                 Vector3 camPos = _mainCamera.transform.position;
-                camPos.y = nextRow.transform.position.y + 2.2f;
+                camPos.x = 2f;
+                camPos.y = camY;
                 _mainCamera.transform.position = camPos;
-                _mainCamera.transform.LookAt(nextRow.transform.position + new Vector3(0f, 1f, 0f));
             }
+
+            if (_gathererManager != null) _gathererManager.UpdateUnlockedBodies(_ghoulRowIndex);
 
             Debug.Log("[BM] ShaftManager: descended to Row_" + _ghoulRowIndex);
         }

@@ -20,6 +20,7 @@ namespace BM.Core
         [SerializeField] private BodyType _bodyType;
         [SerializeField] private double _baseBloodValue = 1;
         [SerializeField] private int _carryTierRequired = 1;
+        [SerializeField] private int _unlockRow = 1;
 
         [Header("Visuals")]
         [SerializeField] private GameObject _bodyPrefab;
@@ -33,6 +34,7 @@ namespace BM.Core
         public BodyType BodyType => _bodyType;
         public double BaseBloodValue => _baseBloodValue;
         public int CarryTierRequired => _carryTierRequired;
+        public int UnlockRow => _unlockRow;
         public GameObject BodyPrefab => _bodyPrefab;
         public GameObject GorePrefab => _gorePrefab;
         public Color ParticleColor => _particleColor;

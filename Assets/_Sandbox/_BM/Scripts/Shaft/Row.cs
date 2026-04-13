@@ -23,11 +23,17 @@ namespace BM.Shaft
         [SerializeField] private float _outletHeight = 1.5f;
         [SerializeField] private int _maxOutlets = 4;
 
+        [Header("Minion Visuals")]
+        [SerializeField] private GameObject _minionModelPrefab;
+        [SerializeField] private RuntimeAnimatorController _minionAnimCtrl;
+        [SerializeField] private Material _minionMaterial;
+
         public int RowIndex => _rowIndex;
         public int OutletCount => _outlets.Count;
         public PipeNetwork PipeNetwork => _pipeNetwork;
 
-        public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, BloodManager bloodManager, float outletSpacing = 1.5f)
+        public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, BloodManager bloodManager, float outletSpacing = 1.5f,
+            GameObject minionModel = null, RuntimeAnimatorController minionAnim = null, Material minionMat = null)
         {
             _rowIndex = rowIndex;
             _pipeNetwork = pipeNetwork;
@@ -35,6 +41,9 @@ namespace BM.Shaft
             _pipeVisualPrefab = pipeVisualPrefab;
             _bloodManager = bloodManager;
             _outletSpacing = outletSpacing;
+            _minionModelPrefab = minionModel;
+            _minionAnimCtrl = minionAnim;
+            _minionMaterial = minionMat;
         }
 
         public bool BuyOutlet()
@@ -94,8 +103,10 @@ namespace BM.Shaft
 
         public void OnChop(float amount)
         {
-            if (_leftoversGauge != null) _leftoversGauge.Add(amount);
-            if (_bloodManager != null) _bloodManager.AddBlood(amount);
+            float multiplier = _toolUpgrade != null ? 1f + _toolUpgrade.ToolTier : 1f;
+            float final = amount * multiplier;
+            if (_leftoversGauge != null) _leftoversGauge.Add(final);
+            if (_bloodManager != null) _bloodManager.AddBlood(final);
         }
 
         public RowOutlet AddOutlet()
@@ -145,6 +156,8 @@ namespace BM.Shaft
 
             ChopMinion minion = minionGO.AddComponent<ChopMinion>();
             minion.AssignedOutlet = outlet;
+            if (_minionModelPrefab != null)
+                minion.SetupModel(_minionModelPrefab, _minionAnimCtrl, _minionMaterial);
 
             _workers.Add(minion);
             Debug.Log("[BM] Row " + _rowIndex + " AddChopMinion for outlet " + outlet.name);

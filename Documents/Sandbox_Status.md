@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Project Path:** `E:\Unity\Sandbox`
 **Document Version:** Reconstructed Feb 23, 2026 (after data loss)
-**Last Updated:** April 11, 2026 (Session 74)
+**Last Updated:** April 12, 2026 (Session 77)
 
 > **NOTE:** This document was reconstructed after the Sandbox project became corrupt on Feb 23, 2026. Content recovered from session context and MEMORY.md.
 
@@ -20,6 +20,12 @@ Sandbox is a dedicated asset evaluation environment AND game incubator for ALL T
 **Primary output:** `Sandbox_AssetLog.md` -- 327 asset evaluations as of Session 72.
 
 **Reference doc:** `Sandbox_DevReference.md` -- coding standards, MCP gotchas, eval standards, AI rules. Read on demand.
+
+---
+
+## Session 77 (Apr 12, 2026) -- Blood Miner: Phase 7, Economy + Cameras + Save + UI Skin
+
+**Status:** All Phase 7 priorities complete. Tool tier multiplier wired, per-row body type escalation (7 types, GDD unlock rows), two-camera pinned-surface viewport, ES3 save/load, Synty Dark Fantasy Interface UI skin. Synty InterfaceDarkFantasyHUD + PolygonParticleFX imported. KayKit Skeletons + Character Animations noted for Phase 8 visual upgrade.
 
 ---
 
