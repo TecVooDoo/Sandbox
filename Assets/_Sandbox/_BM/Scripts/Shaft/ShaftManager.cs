@@ -16,6 +16,7 @@ namespace BM.Shaft
         [SerializeField] private Camera _mainCamera;
         [SerializeField] private BloodManager _bloodManager;
         [SerializeField] private GathererManager _gathererManager;
+        [SerializeField] private Transform _surfaceRoot;
 
         [Header("Minion Visuals")]
         [SerializeField] private GameObject _minionModelPrefab;
@@ -110,6 +111,44 @@ namespace BM.Shaft
             if (_rowParent == null) return;
             _rowParent.GetComponentsInChildren<Row>(true, _rows);
             if (_mainCamera == null) _mainCamera = Camera.main;
+            CreateSurfaceMask();
+            // Create empty row below Row 0 at game start
+            if (_rows.Count > 0) CreateEmptyRowBelow(_rows[0]);
+        }
+
+        private void CreateSurfaceMask()
+        {
+            if (_surfaceRoot == null) return;
+
+            Color bgColor = _mainCamera != null ? _mainCamera.backgroundColor : new Color(0.07f, 0.05f, 0.07f);
+            Material mat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            mat.SetColor("_BaseColor", bgColor);
+
+            // Camera at Z=16 looking -Z. Rows at Z=0.
+            // Mask at Z=0.5: between camera and rows, occludes rows behind it.
+            // Surface content pushed to Z=1: between camera and mask, visible.
+            // Quad faces +Z by default (toward camera) -- no rotation needed.
+            //
+            // Covers local Y=-1.5 to Y=29.5 (from just above active row outlets upward).
+            GameObject mask = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            mask.name = "SurfaceMask";
+            mask.transform.SetParent(_surfaceRoot, false);
+            mask.transform.localPosition = new Vector3(1.5f, 19f, 2f);
+            mask.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+            mask.transform.localScale = new Vector3(40f, 31f, 1f);
+            Collider col = mask.GetComponent<Collider>();
+            if (col != null) Object.Destroy(col);
+            Renderer rend = mask.GetComponent<Renderer>();
+            if (rend != null) rend.sharedMaterial = mat;
+
+            // Push all visible surface children in front of the mask (Z=3, closer to camera)
+            foreach (Transform child in _surfaceRoot)
+            {
+                if (child == mask.transform) continue;
+                Vector3 pos = child.localPosition;
+                pos.z = 3f;
+                child.localPosition = pos;
+            }
         }
 
         public Row GetRow(int index)
@@ -179,28 +218,55 @@ namespace BM.Shaft
             {
                 _ghoul.MoveToRow(_ghoulRowIndex);
                 _ghoul.transform.SetParent(nextRow.transform, false);
-                _ghoul.transform.localPosition = new Vector3(-1f, 0.65f, 0f);
+                _ghoul.transform.localPosition = new Vector3(-1f, 0f, 0f);
             }
 
-            if (_mainCamera != null)
+            // Camera stays fixed. Player stays at fixed screen position.
+            // Shift the entire [Shaft] parent UP by one row spacing so the next row
+            // slides up to where the player is. Completed rows scroll up behind the mask.
+            if (_rowParent != null)
             {
-                // Single camera: pan down to keep active row visible
-                // Center camera between surface (y=4.5) and active row, clamping so active row stays in view
-                float activeRowY = nextRow.transform.position.y;
-                float surfaceY = 4.5f;
-                float camY = (surfaceY + activeRowY) * 0.5f + 1f;
-                // Don't let camera go too high (surface only visible when rows are shallow)
-                float minCamY = activeRowY + 2f;
-                if (camY < minCamY) camY = minCamY;
-                Vector3 camPos = _mainCamera.transform.position;
-                camPos.x = 2f;
-                camPos.y = camY;
-                _mainCamera.transform.position = camPos;
+                Vector3 shaftPos = _rowParent.position;
+                shaftPos.y += _rowSpacing;
+                _rowParent.position = shaftPos;
             }
 
             if (_gathererManager != null) _gathererManager.UpdateUnlockedBodies(_ghoulRowIndex);
 
+            // Place a visual-only empty row below the active row (gauge bar only, no outlets)
+            CreateEmptyRowBelow(nextRow);
+
             Debug.Log("[BM] ShaftManager: descended to Row_" + _ghoulRowIndex);
+        }
+
+        private GameObject _emptyRowVisual;
+
+        private void CreateEmptyRowBelow(Row activeRow)
+        {
+            if (_emptyRowVisual != null) Object.Destroy(_emptyRowVisual);
+
+            float belowLocalY = activeRow.transform.localPosition.y - _rowSpacing;
+            _emptyRowVisual = new GameObject("EmptyRow_Visual");
+            _emptyRowVisual.transform.SetParent(_rowParent, false);
+            _emptyRowVisual.transform.localPosition = new Vector3(0f, belowLocalY, 0f);
+
+            // Dark gauge BG only
+            GameObject bg = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            bg.name = "BG";
+            bg.transform.SetParent(_emptyRowVisual.transform, false);
+            bg.transform.localPosition = new Vector3(1.5f, -0.3f, 0f);
+            bg.transform.localScale = new Vector3(6f, 0.1f, 2f);
+
+            Collider col = bg.GetComponent<Collider>();
+            if (col != null) Object.Destroy(col);
+
+            Renderer rend = bg.GetComponent<Renderer>();
+            if (rend != null)
+            {
+                Material mat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                mat.SetColor("_BaseColor", new Color(0.15f, 0.15f, 0.15f));
+                rend.sharedMaterial = mat;
+            }
         }
 
         private LeftoversGauge CreateGaugeForRow(GameObject rowGO, Row row)

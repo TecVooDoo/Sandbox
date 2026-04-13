@@ -6,13 +6,13 @@
     top: 0;
     left: 0;
     right: 0;
-    padding: 8px 16px 8px 16px;
+    padding: 20px 24px 16px 24px;
     background-image: url("project://database/Assets/Synty/InterfaceDarkFantasyHUD/Sprites/DarkFantasy/SPR_DarkFantasy_Box_Hotbar_01.png");
     -unity-background-scale-mode: stretch-to-fill;
-    -unity-slice-left: 280;
-    -unity-slice-right: 280;
-    -unity-slice-top: 80;
-    -unity-slice-bottom: 80;
+    -unity-slice-left: 60;
+    -unity-slice-right: 60;
+    -unity-slice-top: 40;
+    -unity-slice-bottom: 40;
     background-color: rgba(0, 0, 0, 0);
     flex-direction: column;
     align-items: center;
@@ -31,7 +31,7 @@
 }
 
 .blood-counter {
-    font-size: 32px;
+    font-size: 36px;
     color: rgb(220, 180, 120);
     -unity-font-style: bold;
     -unity-text-align: middle-center;
@@ -45,13 +45,13 @@
 }
 
 .row-label {
-    font-size: 12px;
+    font-size: 16px;
     color: rgb(200, 170, 120);
     margin-right: 8px;
 }
 
 .outlet-label {
-    font-size: 11px;
+    font-size: 14px;
     color: rgb(160, 140, 110);
 }
 
@@ -63,12 +63,12 @@
 
 /* ===== TOP BUTTONS (Gatherer Speed/Count) ===== */
 .top-btn {
-    margin: 0 4px;
-    padding: 4px 8px;
-    background-color: rgba(50, 35, 20, 0.85);
+    margin: 0 6px;
+    padding: 8px 12px;
+    background-color: rgba(50, 35, 20, 0.6);
     border-color: rgb(140, 100, 50);
     border-width: 1px;
-    border-radius: 4px;
+    border-radius: 6px;
     flex-direction: column;
     align-items: center;
 }
@@ -85,13 +85,13 @@
 }
 
 .top-btn-text {
-    font-size: 10px;
+    font-size: 14px;
     color: rgb(220, 180, 100);
     -unity-font-style: bold;
 }
 
 .top-btn-cost {
-    font-size: 9px;
+    font-size: 12px;
     color: rgb(160, 130, 80);
 }
 
@@ -101,13 +101,13 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 12px 12px 8px 12px;
+    padding: 24px 20px 16px 20px;
     background-image: url("project://database/Assets/Synty/InterfaceDarkFantasyHUD/Sprites/DarkFantasy/SPR_DarkFantasy_Box_Hotbar_03.png");
     -unity-background-scale-mode: stretch-to-fill;
-    -unity-slice-left: 80;
-    -unity-slice-right: 80;
-    -unity-slice-top: 60;
-    -unity-slice-bottom: 20;
+    -unity-slice-left: 40;
+    -unity-slice-right: 40;
+    -unity-slice-top: 30;
+    -unity-slice-bottom: 15;
     background-color: rgba(0, 0, 0, 0);
     flex-direction: row;
     justify-content: space-around;
@@ -116,12 +116,12 @@
 /* ===== ACTION BUTTONS ===== */
 .upgrade-btn {
     flex-grow: 1;
-    margin: 0 3px;
-    padding: 6px 4px;
-    background-color: rgba(100, 25, 20, 0.85);
+    margin: 0 6px;
+    padding: 12px 8px;
+    background-color: rgba(100, 25, 20, 0.55);
     border-color: rgb(180, 70, 50);
-    border-width: 1px;
-    border-radius: 4px;
+    border-width: 2px;
+    border-radius: 6px;
     flex-direction: column;
     align-items: center;
 }
@@ -142,7 +142,7 @@
 }
 
 .minion-btn {
-    background-color: rgba(25, 40, 90, 0.85);
+    background-color: rgba(25, 40, 90, 0.55);
     border-color: rgb(70, 100, 180);
 }
 
@@ -163,12 +163,12 @@
 
 .descend-btn {
     flex-grow: 1;
-    margin: 0 3px;
-    padding: 6px 4px;
-    background-color: rgba(25, 65, 25, 0.85);
+    margin: 0 6px;
+    padding: 12px 8px;
+    background-color: rgba(25, 65, 25, 0.55);
     border-color: rgb(60, 150, 60);
-    border-width: 1px;
-    border-radius: 4px;
+    border-width: 2px;
+    border-radius: 6px;
     flex-direction: column;
     align-items: center;
 }
@@ -190,15 +190,15 @@
 
 /* ===== TEXT STYLES ===== */
 .upgrade-title {
-    font-size: 13px;
+    font-size: 20px;
     color: rgb(240, 220, 180);
     -unity-font-style: bold;
 }
 
 .upgrade-cost {
-    font-size: 10px;
+    font-size: 16px;
     color: rgb(180, 150, 100);
-    margin-top: 1px;
+    margin-top: 2px;
 }
 
 .upgrade-level {

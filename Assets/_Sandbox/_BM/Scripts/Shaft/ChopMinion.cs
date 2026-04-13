@@ -23,8 +23,8 @@ namespace BM.Shaft
             var model = Instantiate(modelPrefab, transform);
             model.name = "MinionModel";
             model.transform.localPosition = Vector3.zero;
-            model.transform.localRotation = Quaternion.identity;
-            model.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            model.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            model.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             SetLayerRecursive(model, gameObject.layer);
 
             if (mat != null)

@@ -152,7 +152,7 @@ namespace BM.Shaft
 
             GameObject minionGO = new GameObject("ChopMinion_" + _workers.Count);
             minionGO.transform.SetParent(transform, false);
-            minionGO.transform.localPosition = new Vector3(outlet.transform.localPosition.x, 0f, 0.5f);
+            minionGO.transform.localPosition = new Vector3(outlet.transform.localPosition.x - 0.8f, 0f, 0f);
 
             ChopMinion minion = minionGO.AddComponent<ChopMinion>();
             minion.AssignedOutlet = outlet;

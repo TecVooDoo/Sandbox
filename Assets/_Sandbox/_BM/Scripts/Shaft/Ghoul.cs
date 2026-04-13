@@ -53,6 +53,11 @@ namespace BM.Shaft
             if (Vector3.Distance(transform.position, goal) > _arriveDistance)
             {
                 transform.position = Vector3.MoveTowards(transform.position, goal, _walkSpeed * Time.deltaTime);
+                // Rotate model to face movement direction
+                // Default model faces -X (270). Moving right (+X) needs to face +X (90).
+                Transform model = transform.childCount > 0 ? transform.GetChild(0) : null;
+                if (model != null)
+                    model.localRotation = Quaternion.Euler(0f, dirX > 0 ? 90f : 270f, 0f);
                 return;
             }
 

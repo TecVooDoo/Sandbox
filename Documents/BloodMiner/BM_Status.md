@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 12, 2026 (Session 77 -- Phase 7+8 economy, cameras, save/load, UI skin, skeleton characters)
+**Last Updated:** April 13, 2026 (Session 78 -- Phase 9 viewport scrolling, character fixes, surface masking)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,19 @@
 
 ## Current State
 
-**Phase:** Sprint 2 Phase 1-8 COMPLETE. Phase 7: economy (tool tier multiplier, body type escalation, 7 BodyConfigSOs), camera (single camera, portrait-first), save/load (ES3), UI skin (Synty Dark Fantasy). Phase 8: KayKit Skeleton characters replacing placeholder cubes (Skeleton_Warrior Ghoul, Skeleton_Minion ChopMinions, animated Idle/Walk/Attack).
+**Phase:** Sprint 2 Phase 1-8 COMPLETE, Phase 9 IN PROGRESS. Viewport scrolling working, character fixes done, surface masking functional but needs tweaking.
+
+**Session 78 (Apr 13, 2026) -- Phase 9 viewport scrolling + character fixes + surface masking:**
+- **Core viewport design established:** Camera is FIXED at (1.5, 2, 18) FOV 40. Player stays at fixed screen position. On descent, `_rowParent.position.y += _rowSpacing` shifts all rows UP so the next row slides into the player's position. Completed rows scroll up behind a surface mask. No camera movement at all.
+- **Camera overhaul:** FOV 65->40 (eliminated fish-eye distortion), rotation flattened (5,180,0)->(0,180,0), Z pushed from 10->18 to compensate for narrower FOV.
+- **Surface mask (functional):** Runtime-created quad parented to `_surfaceRoot` at localPosition (1.5, 19, 2) with Y=180 rotation (faces camera at +Z). Scale (40, 31, 1). Uses camera background color as URP/Unlit material. Hides completed rows scrolling behind gather area. Surface children pushed to Z=3 to render in front of mask.
+- **Empty row visual:** `CreateEmptyRowBelow()` places a dark gauge-BG-only decorative row below the active row to fill the viewport. Created both at game start (below Row 0) and on each descent. Single instance recycled.
+- **Surface pinning:** `_surfaceRoot` serialized field on ShaftManager. [Surface] parent Y=1.5 moves all gather content (funnel, gatherers, pickup/drop points) up together. Mask Y=19 compensates.
+- **Ghoul fixes:** Y position 0.65->0 (feet on ground). Scale reset (0.9,1.1,0.9)->(1,1,1). Purple placeholder cube MeshRenderer/MeshFilter removed. WarriorModel scaled to 0.5, faces sideways (Y=270).
+- **Ghoul facing:** Model child rotates between Y=270 (face left) and Y=90 (face right) based on movement direction during walk. Direction flipping in Update() based on `dirX`.
+- **Minion fixes:** Model scale 0.7->0.5. Rotated to face sideways (Y=90, facing right toward outlets). Spawn position changed from `(outlet.x, 0, 0.5)` to `(outlet.x - 0.8, 0, 0)` -- to the left of outlets, no longer overlapping with bodies.
+- **USS updates:** Top-bar 9-slice reduced (280->60), bottom-panel (80->40). Font sizes bumped across all elements (9-13px -> 14-20px). Button backgrounds made semi-transparent (0.85->0.55 alpha). Padding increased on all panels and buttons. Border width 1->2px, border-radius 4->6px.
+- **Scene changes:** [Surface] parent Y moved to 1.5. Ghoul MeshRenderer/MeshFilter removed. WarriorModel scale 0.5, rotation Y=270. Camera at (1.5, 2, 18) FOV 40 rotation (0, 180, 0).
 
 **Session 77 (Apr 12, 2026) -- Phase 7 economy + cameras + save/load + UI skin:**
 - **Tool tier multiplier wired:** `Row.OnChop` now multiplies blood by `1 + toolTier`. Both gauge fill and BloodManager currency get the boosted amount. Tier 0 = 1x, Tier 1 = 2x, etc.
@@ -207,15 +219,16 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 - KayKit prop orientation quirks -- still relevant for new scene, memory saved
 - Assembly Kit vs KayKit Skeletons decision -- irrelevant, new design has single reaper visual
 
-**Next (Session 78):**
+**Next (Session 79):**
 
-Phase 9 -- Polish + Tuning:
-1. Camera + UI tuning pass (single camera framing, UI frame padding at 1080x1920, mobile tap target sizes)
-2. Gatherer visual upgrade (small skeleton figure walking on surface)
-3. Pipe Dream Pack visual swap (replace KayKit pipe cylinders with PipeDreamPack prefabs)
-4. LeftoversGauge transparency/glass-top pass
-5. Ghoul facing direction (flip/rotate toward movement direction)
-6. Playtest + balance pass (cost curves, body values, tool tier scaling)
+Phase 9 cont. -- Tweaking + UI frames + remaining polish:
+1. **Surface mask tweaking:** Mask is functional but may need position/scale adjustments after playtesting on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19. Verify masking is clean on descent.
+2. **[Surface] parent Y=1.5 (scene change needed):** Must set [Surface] GameObject Y to 1.5 in Unity Editor and save scene (MCP was disconnected when this was needed).
+3. **UI frame fix:** Dark Fantasy 9-slice frames still don't contain buttons visually. USS changes applied (smaller slices, semi-transparent buttons, larger fonts) but frames appear behind buttons. May need UXML restructure or different approach.
+4. Gatherer visual upgrade (small skeleton figure walking on surface)
+5. Pipe Dream Pack visual swap (replace KayKit pipe cylinders with PipeDreamPack prefabs)
+6. LeftoversGauge transparency/glass-top pass
+7. Playtest + balance pass (cost curves, body values, tool tier scaling)
 
 Sprint 3 Polish (deferred):
 - Body gravity-drop from outlet to floor (Rigidbody + ground collider)
