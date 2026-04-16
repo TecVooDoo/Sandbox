@@ -3,127 +3,121 @@
 /* ===== TOP BAR ===== */
 .top-bar {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 20px 24px 16px 24px;
-    background-image: url("project://database/Assets/Synty/InterfaceDarkFantasyHUD/Sprites/DarkFantasy/SPR_DarkFantasy_Box_Hotbar_01.png");
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    padding: 12px 16px 10px 16px;
+    background-image: url("project://database/Assets/Synty/InterfaceDarkFantasyHUD/Sprites/DarkFantasy/SPR_DarkFantasy_Frame_Box_Large_07.png");
     -unity-background-scale-mode: stretch-to-fill;
-    -unity-slice-left: 60;
-    -unity-slice-right: 60;
-    -unity-slice-top: 40;
-    -unity-slice-bottom: 40;
+    -unity-slice-left: 80;
+    -unity-slice-right: 80;
+    -unity-slice-top: 80;
+    -unity-slice-bottom: 80;
     background-color: rgba(0, 0, 0, 0);
     flex-direction: column;
     align-items: center;
 }
 
-.currency-row {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-
 .blood-icon {
-    font-size: 24px;
-    margin-right: 6px;
+    font-size: 20px;
     color: rgb(200, 50, 50);
 }
 
 .blood-counter {
-    font-size: 36px;
+    font-size: 28px;
     color: rgb(220, 180, 120);
     -unity-font-style: bold;
     -unity-text-align: middle-center;
+    margin-bottom: 4px;
 }
 
-.row-info {
+.top-btn-row {
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-top: 2px;
+    justify-content: space-around;
+    align-items: stretch;
+    width: 100%;
 }
 
-.row-label {
-    font-size: 16px;
-    color: rgb(200, 170, 120);
-    margin-right: 8px;
-}
-
-.outlet-label {
-    font-size: 14px;
-    color: rgb(160, 140, 110);
-}
-
-.gatherer-row {
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 4px;
-}
-
-/* ===== TOP BUTTONS (Gatherer Speed/Count) ===== */
-.top-btn {
-    margin: 0 6px;
-    padding: 8px 12px;
-    background-color: rgba(50, 35, 20, 0.6);
+.top-action-btn {
+    flex-grow: 1;
+    margin: 0 3px;
+    padding: 6px 4px;
+    background-color: rgba(50, 35, 20, 0.55);
     border-color: rgb(140, 100, 50);
     border-width: 1px;
-    border-radius: 6px;
+    border-radius: 4px;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
-.top-btn:hover {
+.top-action-btn:hover {
     background-color: rgba(80, 55, 30, 0.95);
     border-color: rgb(200, 160, 80);
 }
 
-.top-btn:disabled {
+.top-action-btn:disabled {
     background-color: rgba(30, 25, 15, 0.5);
     border-color: rgb(70, 50, 25);
     opacity: 0.5;
 }
 
-.top-btn-text {
+.top-info-box {
+    flex-grow: 1;
+    margin: 0 3px;
+    padding: 6px 4px;
+    background-color: rgba(30, 25, 20, 0.55);
+    border-color: rgb(100, 80, 50);
+    border-width: 1px;
+    border-radius: 4px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.row-label {
     font-size: 14px;
-    color: rgb(220, 180, 100);
+    color: rgb(200, 170, 120);
     -unity-font-style: bold;
 }
 
-.top-btn-cost {
-    font-size: 12px;
-    color: rgb(160, 130, 80);
+.outlet-label {
+    font-size: 11px;
+    color: rgb(160, 140, 110);
+    margin-top: 1px;
 }
 
 /* ===== BOTTOM PANEL ===== */
 .bottom-panel {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 24px 20px 16px 20px;
-    background-image: url("project://database/Assets/Synty/InterfaceDarkFantasyHUD/Sprites/DarkFantasy/SPR_DarkFantasy_Box_Hotbar_03.png");
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    padding: 12px 16px 10px 16px;
+    background-image: url("project://database/Assets/Synty/InterfaceDarkFantasyHUD/Sprites/DarkFantasy/SPR_DarkFantasy_Frame_Box_Large_07.png");
     -unity-background-scale-mode: stretch-to-fill;
-    -unity-slice-left: 40;
-    -unity-slice-right: 40;
-    -unity-slice-top: 30;
-    -unity-slice-bottom: 15;
+    -unity-slice-left: 80;
+    -unity-slice-right: 80;
+    -unity-slice-top: 80;
+    -unity-slice-bottom: 80;
     background-color: rgba(0, 0, 0, 0);
     flex-direction: row;
     justify-content: space-around;
+    align-items: stretch;
 }
 
 /* ===== ACTION BUTTONS ===== */
 .upgrade-btn {
     flex-grow: 1;
-    margin: 0 6px;
-    padding: 12px 8px;
+    margin: 0 3px;
+    padding: 6px 4px;
     background-color: rgba(100, 25, 20, 0.55);
     border-color: rgb(180, 70, 50);
-    border-width: 2px;
-    border-radius: 6px;
+    border-width: 1px;
+    border-radius: 4px;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .upgrade-btn:hover {
@@ -161,16 +155,37 @@
     opacity: 0.5;
 }
 
+.autobutton-btn {
+    background-color: rgba(80, 50, 20, 0.55);
+    border-color: rgb(180, 140, 60);
+}
+
+.autobutton-btn:hover {
+    background-color: rgba(120, 75, 30, 0.95);
+    border-color: rgb(220, 180, 80);
+}
+
+.autobutton-btn:active {
+    background-color: rgba(150, 100, 40, 1);
+}
+
+.autobutton-btn:disabled {
+    background-color: rgba(40, 30, 15, 0.5);
+    border-color: rgb(80, 60, 30);
+    opacity: 0.5;
+}
+
 .descend-btn {
     flex-grow: 1;
-    margin: 0 6px;
-    padding: 12px 8px;
+    margin: 0 3px;
+    padding: 6px 4px;
     background-color: rgba(25, 65, 25, 0.55);
     border-color: rgb(60, 150, 60);
-    border-width: 2px;
-    border-radius: 6px;
+    border-width: 1px;
+    border-radius: 4px;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .descend-btn:hover {
@@ -190,15 +205,15 @@
 
 /* ===== TEXT STYLES ===== */
 .upgrade-title {
-    font-size: 20px;
+    font-size: 14px;
     color: rgb(240, 220, 180);
     -unity-font-style: bold;
 }
 
 .upgrade-cost {
-    font-size: 16px;
+    font-size: 11px;
     color: rgb(180, 150, 100);
-    margin-top: 2px;
+    margin-top: 1px;
 }
 
 .upgrade-level {

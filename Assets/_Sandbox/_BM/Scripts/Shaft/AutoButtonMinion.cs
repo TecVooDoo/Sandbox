@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace BM.Shaft
 {
-    public sealed class AutoButtonMinion : MonoBehaviour
+    public sealed class AutoButtonMinion : RowWorker
     {
         [SerializeField] private ToolUpgradeController _target;
         [SerializeField] private float _pressDelay = 0.25f;

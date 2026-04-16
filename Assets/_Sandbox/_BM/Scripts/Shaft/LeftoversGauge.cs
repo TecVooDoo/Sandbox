@@ -28,5 +28,10 @@ namespace BM.Shaft
             _current = 0f;
             if (OnEmptied != null) OnEmptied.Invoke();
         }
+
+        public void SetCapacity(float newCapacity)
+        {
+            _capacity = Mathf.Max(1f, newCapacity);
+        }
     }
 }

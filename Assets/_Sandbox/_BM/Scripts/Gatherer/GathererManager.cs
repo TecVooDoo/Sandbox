@@ -19,6 +19,11 @@ namespace BM.Gatherer
         [SerializeField] private float _speedPerTier = 0.5f;
         [SerializeField] private float _spawnStagger = 0.35f;
 
+        [Header("Gatherer Visuals")]
+        [SerializeField] private GameObject _gathererModelPrefab;
+        [SerializeField] private RuntimeAnimatorController _gathererAnimCtrl;
+        [SerializeField] private Material _gathererMaterial;
+
         private readonly List<Gatherer> _gatherers = new List<Gatherer>();
         private readonly List<BodyConfigSO> _filterBuffer = new List<BodyConfigSO>();
         private readonly List<BodyConfigSO> _unlockedBodies = new List<BodyConfigSO>();
@@ -88,6 +93,8 @@ namespace BM.Gatherer
             Gatherer g = Instantiate(_gathererPrefab, _pickupPoint.position + startOffset, Quaternion.identity, parent);
             g.CarryTier = _defaultCarryTier;
             g.Configure(this, _funnel, _pickupPoint, _dropPoint);
+            if (_gathererModelPrefab != null)
+                g.SetupModel(_gathererModelPrefab, _gathererAnimCtrl, _gathererMaterial);
             _gatherers.Add(g);
         }
 

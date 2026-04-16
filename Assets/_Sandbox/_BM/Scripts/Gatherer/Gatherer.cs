@@ -25,6 +25,10 @@ namespace BM.Gatherer
         private float _stateTimer;
         private BodyConfigSO _currentCarry;
 
+        private Transform _modelTransform;
+        private Animator _animator;
+        private static readonly int _animIsWalking = Animator.StringToHash("IsWalking");
+
         public int CarryTier { get => _carryTier; set => _carryTier = Mathf.Max(1, value); }
         public float WalkSpeed { get => _walkSpeed; set => _walkSpeed = Mathf.Max(0f, value); }
         public BodyConfigSO CurrentCarry => _currentCarry;
@@ -40,9 +44,31 @@ namespace BM.Gatherer
             _currentCarry = null;
         }
 
+        public void SetupModel(GameObject modelPrefab, RuntimeAnimatorController animCtrl, Material mat)
+        {
+            if (modelPrefab == null) return;
+            var model = Instantiate(modelPrefab, transform);
+            model.name = "GathererModel";
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            model.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+            _modelTransform = model.transform;
+
+            if (mat != null)
+                foreach (var rend in model.GetComponentsInChildren<Renderer>())
+                    rend.sharedMaterial = mat;
+
+            _animator = model.GetComponent<Animator>();
+            if (_animator == null) _animator = model.AddComponent<Animator>();
+            if (animCtrl != null) _animator.runtimeAnimatorController = animCtrl;
+        }
+
         private void Update()
         {
             if (_pickupPoint == null || _dropPoint == null) return;
+
+            bool isWalking = _state == State.WalkingToPickup || _state == State.WalkingToDrop;
+            if (_animator != null) _animator.SetBool(_animIsWalking, isWalking);
 
             switch (_state)
             {
@@ -80,7 +106,13 @@ namespace BM.Gatherer
         private bool WalkTowards(Vector3 goal)
         {
             Vector3 flatGoal = new Vector3(goal.x, transform.position.y, goal.z);
+            float dirX = flatGoal.x - transform.position.x;
             transform.position = Vector3.MoveTowards(transform.position, flatGoal, _walkSpeed * Time.deltaTime);
+
+            // Flip model to face movement direction
+            if (_modelTransform != null && Mathf.Abs(dirX) > 0.01f)
+                _modelTransform.localRotation = Quaternion.Euler(0f, dirX > 0 ? 90f : 270f, 0f);
+
             return Vector3.Distance(transform.position, flatGoal) < 0.05f;
         }
     }

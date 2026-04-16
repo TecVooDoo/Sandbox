@@ -25,15 +25,18 @@ namespace BM.Shaft
 
         private readonly List<Row> _rows = new List<Row>();
         private int _ghoulRowIndex;
+        private int _viewedRowIndex;
         private bool _nextRowUnlocked;
         private int _gathererSlotsAvailable;
 
         public int GhoulRowIndex => _ghoulRowIndex;
+        public int ViewedRowIndex => _viewedRowIndex;
         public int RowCount => _rows.Count;
         public BloodManager BloodManager => _bloodManager;
         public bool CanDescend => _ghoulRowIndex + 1 < _rows.Count;
 
         public Row ActiveRow => GetRow(_ghoulRowIndex);
+        public Row ViewedRow => GetRow(_viewedRowIndex);
 
         private double GetRowDepthMultiplier(Row row)
         {
@@ -67,6 +70,20 @@ namespace BM.Shaft
             double cost = GetMinionCost(row);
             if (_bloodManager == null || !_bloodManager.TrySpend(cost)) return false;
             return row.BuyMinion();
+        }
+
+        public double GetAutoButtonCost(Row row)
+        {
+            return 200 * GetRowDepthMultiplier(row);
+        }
+
+        public bool TryBuyAutoButton()
+        {
+            Row row = ActiveRow;
+            if (row == null || row.HasAutoButton || row.ToolUpgrade == null) return false;
+            double cost = GetAutoButtonCost(row);
+            if (_bloodManager == null || !_bloodManager.TrySpend(cost)) return false;
+            return row.BuyAutoButton();
         }
 
         public GathererManager GathererMgr => _gathererManager;
@@ -112,8 +129,14 @@ namespace BM.Shaft
             _rowParent.GetComponentsInChildren<Row>(true, _rows);
             if (_mainCamera == null) _mainCamera = Camera.main;
             CreateSurfaceMask();
-            // Create empty row below Row 0 at game start
-            if (_rows.Count > 0) CreateEmptyRowBelow(_rows[0]);
+            // Add auto-upgrade button to Row 0 (scene-placed row doesn't go through CreateUpgradeButtonForRow)
+            if (_rows.Count > 0)
+            {
+                Row row0 = _rows[0];
+                if (row0.ToolUpgrade != null)
+                    CreateAutoUpgradeButtonForRow(row0.ToolUpgrade.gameObject, row0);
+                CreateEmptyRowBelow(row0);
+            }
         }
 
         private void CreateSurfaceMask()
@@ -169,11 +192,25 @@ namespace BM.Shaft
                 _nextRowUnlocked = true;
             }
 
-            if (UnityEngine.InputSystem.Keyboard.current != null
-                && UnityEngine.InputSystem.Keyboard.current.dKey.wasPressedThisFrame)
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            if (kb != null)
             {
-                Descend();
+                if (kb.dKey.wasPressedThisFrame) Descend();
+                if (kb.upArrowKey.wasPressedThisFrame) ScrollView(-1);
+                if (kb.downArrowKey.wasPressedThisFrame) ScrollView(1);
             }
+        }
+
+        public void ScrollView(int direction)
+        {
+            int target = _viewedRowIndex + direction;
+            if (target < 0 || target > _ghoulRowIndex) return;
+            _viewedRowIndex = target;
+
+            if (_rowParent != null)
+                _rowParent.position = new Vector3(_rowParent.position.x, _viewedRowIndex * _rowSpacing, _rowParent.position.z);
+
+            CreateEmptyRowBelow(GetRow(_viewedRowIndex));
         }
 
         public void UnlockNextRow()
@@ -211,6 +248,7 @@ namespace BM.Shaft
             }
 
             _ghoulRowIndex = nextIndex;
+            _viewedRowIndex = nextIndex;
             _nextRowUnlocked = false;
             Row nextRow = GetRow(_ghoulRowIndex);
 
@@ -254,7 +292,7 @@ namespace BM.Shaft
             GameObject bg = GameObject.CreatePrimitive(PrimitiveType.Cube);
             bg.name = "BG";
             bg.transform.SetParent(_emptyRowVisual.transform, false);
-            bg.transform.localPosition = new Vector3(1.5f, -0.3f, 0f);
+            bg.transform.localPosition = new Vector3(1.0f, -0.3f, 0f);
             bg.transform.localScale = new Vector3(6f, 0.1f, 2f);
 
             Collider col = bg.GetComponent<Collider>();
@@ -273,7 +311,7 @@ namespace BM.Shaft
         {
             GameObject gaugeGO = new GameObject("LeftoversGauge");
             gaugeGO.transform.SetParent(rowGO.transform, false);
-            gaugeGO.transform.localPosition = new Vector3(1.5f, -0.3f, 0f);
+            gaugeGO.transform.localPosition = new Vector3(1.0f, -0.3f, 0f);
 
             LeftoversGauge gauge = gaugeGO.AddComponent<LeftoversGauge>();
 
@@ -372,7 +410,34 @@ namespace BM.Shaft
 
             typeof(Row).GetField("_toolUpgrade", bf).SetValue(row, controller);
 
-            Debug.Log("[BM] UpgradeButton created for Row_" + row.RowIndex);
+            CreateAutoUpgradeButtonForRow(upgradeGO, row);
+
+            Debug.Log("[BM] UpgradeButton + AutoUpgradeButton created for Row_" + row.RowIndex);
+        }
+
+        private void CreateAutoUpgradeButtonForRow(GameObject parentGO, Row row)
+        {
+            System.Reflection.BindingFlags bf = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+
+            GameObject autoCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            autoCube.name = "AutoUpgradeButton";
+            autoCube.transform.SetParent(parentGO.transform, false);
+            autoCube.transform.localPosition = new Vector3(2.13f, -0.3f, 0f);
+            autoCube.transform.localScale = new Vector3(0.6f, 0.4f, 0.6f);
+
+            Renderer autoRend = autoCube.GetComponent<Renderer>();
+            if (autoRend != null)
+            {
+                Material autoMat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+                autoMat.SetColor("_BaseColor", new Color(0.8f, 0.6f, 0.1f));
+                autoRend.sharedMaterial = autoMat;
+            }
+
+            WorldAutoUpgradeButton autoBtn = autoCube.AddComponent<WorldAutoUpgradeButton>();
+            typeof(WorldAutoUpgradeButton).GetField("_row", bf).SetValue(autoBtn, row);
+            typeof(WorldAutoUpgradeButton).GetField("_bloodManager", bf).SetValue(autoBtn, _bloodManager);
+            double autoCost = GetAutoButtonCost(row);
+            typeof(WorldAutoUpgradeButton).GetField("_cost", bf).SetValue(autoBtn, autoCost);
         }
     }
 }

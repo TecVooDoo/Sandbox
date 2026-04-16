@@ -31,11 +31,17 @@ namespace BM.Shaft
             if (OnReady != null) OnReady.Invoke();
         }
 
+        [SerializeField] private float _baseCapacity = 100f;
+        [SerializeField] private float _capacityGrowth = 1.5f;
+
         public void TryUpgrade()
         {
             if (!IsReady) return;
             _toolTier++;
             _leftoversGauge.Empty();
+            // Each tier makes the gauge harder to fill
+            float newCapacity = _baseCapacity * Mathf.Pow(_capacityGrowth, _toolTier);
+            _leftoversGauge.SetCapacity(newCapacity);
             if (OnTierChanged != null) OnTierChanged.Invoke(_toolTier);
         }
     }

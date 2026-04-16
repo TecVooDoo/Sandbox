@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 13, 2026 (Session 78 -- Phase 9 viewport scrolling, character fixes, surface masking)
+**Last Updated:** April 15, 2026 (Session 79 -- UI frame fix, auto-upgrade, gatherer skeletons, viewport scrolling)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,15 @@
 
 ## Current State
 
-**Phase:** Sprint 2 Phase 1-8 COMPLETE, Phase 9 IN PROGRESS. Viewport scrolling working, character fixes done, surface masking functional but needs tweaking.
+**Phase:** Sprint 2 Phase 1-9 IN PROGRESS. UI frames fixed, auto-upgrade per-row, gatherer skeletons, viewport scrolling.
+
+**Session 79 (Apr 15, 2026) -- UI frame fix + auto-upgrade + gatherer skeletons + viewport scrolling:**
+- **UI frame fix:** Swapped both HUD panels from `Box_Hotbar_01`/`Box_Hotbar_03` (no proper 9-slice) to `Frame_Box_Large_07` (1024x1024, uniform 80px borders). Root cause: Hotbar sprites had no top/bottom borders (280,0,280,0 and 0,0,0,0). Top bar restructured to 3-column layout mirroring bottom: Speed button | Info box | Gatherers button. Bottom panel back to 3 buttons (Buy Outlet, Buy Minion, Descend). 4px margin from screen edges.
+- **AutoButtonMinion (per-row auto-upgrade):** `AutoButtonMinion` now extends `RowWorker`. Each row gets a gold in-world `WorldAutoUpgradeButton` cube (0.6x0.4x0.6) below the tool upgrade button. Click to spend blood (200 * depth multiplier) and spawn an AutoButtonMinion that auto-presses the tool upgrade. Purchase button hides after click. Row 0 gets one in Awake.
+- **Gauge scaling:** `ToolUpgradeController.TryUpgrade()` now increases `LeftoversGauge` capacity by 1.5x per tier (100 -> 150 -> 225 -> 337...). Added `LeftoversGauge.SetCapacity()`.
+- **Gatherer skeleton models:** `Gatherer.SetupModel()` instantiates Skeleton_Minion at 0.4 scale with direction flipping based on movement. `AC_Gatherer` animator controller (Idle/Walk with IsWalking bool). `GathererManager` passes model/anim/material to spawned gatherers. Drives `IsWalking` in Update. Removed green cube MeshFilter/MeshRenderer from Gatherer prefab.
+- **Viewport scrolling:** Up/Down arrows scroll view between row 0 and active row. `_viewedRowIndex` tracks which row is in view. `ScrollView(direction)` shifts `_rowParent.position.y`. HUD shows "Viewing Row X" when scrolled away from active row. Descend resets view to new active row.
+- **Gauge/empty-row alignment:** Shifted gauge and empty row BG x from 1.5 to 1.0 (left 0.5 units) to align with row content.
 
 **Session 78 (Apr 13, 2026) -- Phase 9 viewport scrolling + character fixes + surface masking:**
 - **Core viewport design established:** Camera is FIXED at (1.5, 2, 18) FOV 40. Player stays at fixed screen position. On descent, `_rowParent.position.y += _rowSpacing` shifts all rows UP so the next row slides into the player's position. Completed rows scroll up behind a surface mask. No camera movement at all.
@@ -219,16 +227,17 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 - KayKit prop orientation quirks -- still relevant for new scene, memory saved
 - Assembly Kit vs KayKit Skeletons decision -- irrelevant, new design has single reaper visual
 
-**Next (Session 79):**
+**Next (Session 80):**
 
-Phase 9 cont. -- Tweaking + UI frames + remaining polish:
-1. **Surface mask tweaking:** Mask is functional but may need position/scale adjustments after playtesting on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19. Verify masking is clean on descent.
-2. **[Surface] parent Y=1.5 (scene change needed):** Must set [Surface] GameObject Y to 1.5 in Unity Editor and save scene (MCP was disconnected when this was needed).
-3. **UI frame fix:** Dark Fantasy 9-slice frames still don't contain buttons visually. USS changes applied (smaller slices, semi-transparent buttons, larger fonts) but frames appear behind buttons. May need UXML restructure or different approach.
-4. Gatherer visual upgrade (small skeleton figure walking on surface)
-5. Pipe Dream Pack visual swap (replace KayKit pipe cylinders with PipeDreamPack prefabs)
-6. LeftoversGauge transparency/glass-top pass
-7. Playtest + balance pass (cost curves, body values, tool tier scaling)
+Phase 9 cont. -- Polish + visual pass:
+1. **Surface mask tweaking:** Verify masking on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19.
+2. **Top bar UI fine-tuning:** 3-column layout done, verify content fits on mobile aspect ratios.
+3. Pipe Dream Pack visual swap (replace KayKit pipe cylinders with PipeDreamPack prefabs)
+4. LeftoversGauge transparency/glass-top pass
+5. Playtest + balance pass (cost curves, body values, tool tier scaling, gauge capacity growth)
+6. Save/load: persist auto-button state, gauge capacity, viewed row
+
+**Design consideration (undecided):** Rows feel very busy with 4 minions. Options: reduce to 1 minion per 2 outlets (shared, positioned between them) or 1 minion per row that moves between all 4 outlets. Would affect row completion logic (`IsFullyBuilt`), buy-minion cost curves, and minion spawn/assignment code. Evaluate during next playtest.
 
 Sprint 3 Polish (deferred):
 - Body gravity-drop from outlet to floor (Rigidbody + ground collider)

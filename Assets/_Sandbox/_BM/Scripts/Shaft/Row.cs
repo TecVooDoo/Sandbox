@@ -60,6 +60,22 @@ namespace BM.Shaft
         }
         public bool IsFullyBuilt => _outlets.Count >= _maxOutlets && ChopMinionCount >= _maxOutlets;
 
+        public bool HasAutoButton
+        {
+            get
+            {
+                for (int i = 0; i < _workers.Count; i++)
+                    if (_workers[i] is AutoButtonMinion) return true;
+                return false;
+            }
+        }
+
+        public bool BuyAutoButton()
+        {
+            if (HasAutoButton || _toolUpgrade == null) return false;
+            return AddAutoButtonMinion() != null;
+        }
+
         public int ChopMinionCount
         {
             get
@@ -162,6 +178,40 @@ namespace BM.Shaft
             _workers.Add(minion);
             Debug.Log("[BM] Row " + _rowIndex + " AddChopMinion for outlet " + outlet.name);
             return minion;
+        }
+
+        public AutoButtonMinion AddAutoButtonMinion()
+        {
+            if (HasAutoButton || _toolUpgrade == null) return null;
+
+            GameObject go = new GameObject("AutoButtonMinion");
+            go.transform.SetParent(transform, false);
+            // Position near the upgrade button (right side of row)
+            go.transform.localPosition = new Vector3(5.5f, 0f, 0f);
+
+            AutoButtonMinion abm = go.AddComponent<AutoButtonMinion>();
+
+            // Wire the target via reflection (serialized field)
+            System.Reflection.BindingFlags bf = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+            typeof(AutoButtonMinion).GetField("_target", bf).SetValue(abm, _toolUpgrade);
+
+            // Give it a visual
+            if (_minionModelPrefab != null)
+            {
+                var model = Instantiate(_minionModelPrefab, go.transform);
+                model.name = "AutoButtonModel";
+                model.transform.localPosition = Vector3.zero;
+                model.transform.localRotation = Quaternion.Euler(0f, 270f, 0f);
+                model.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+
+                if (_minionMaterial != null)
+                    foreach (var rend in model.GetComponentsInChildren<Renderer>())
+                        rend.sharedMaterial = _minionMaterial;
+            }
+
+            _workers.Add(abm);
+            Debug.Log("[BM] Row " + _rowIndex + " AddAutoButtonMinion");
+            return abm;
         }
     }
 }

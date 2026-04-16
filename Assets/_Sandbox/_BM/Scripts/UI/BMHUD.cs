@@ -74,8 +74,11 @@ namespace BM.UI
             if (_bloodCounter != null)
                 _bloodCounter.text = FormatNumber(_bloodManager.BloodBalance);
 
+            bool viewing = _shaftManager.ViewedRowIndex != _shaftManager.GhoulRowIndex;
             if (_rowLabel != null)
-                _rowLabel.text = "Row " + _shaftManager.GhoulRowIndex;
+                _rowLabel.text = viewing
+                    ? "Viewing Row " + _shaftManager.ViewedRowIndex
+                    : "Row " + _shaftManager.GhoulRowIndex;
 
             if (_outletLabel != null)
                 _outletLabel.text = "Outlets: " + row.OutletCount + "/" + row.MaxOutlets + "  Minions: " + row.ChopMinionCount + "/" + row.OutletCount;
