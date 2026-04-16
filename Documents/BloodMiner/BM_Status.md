@@ -229,13 +229,14 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 
 **Next (Session 80):**
 
-Phase 9 cont. -- Polish + visual pass:
-1. **Surface mask tweaking:** Verify masking on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19.
-2. **Top bar UI fine-tuning:** 3-column layout done, verify content fits on mobile aspect ratios.
-3. Pipe Dream Pack visual swap (replace KayKit pipe cylinders with PipeDreamPack prefabs)
-4. LeftoversGauge transparency/glass-top pass
-5. Playtest + balance pass (cost curves, body values, tool tier scaling, gauge capacity growth)
-6. Save/load: persist auto-button state, gauge capacity, viewed row
+Phase 9 cont. -- UI fix + scroll rework + polish:
+1. **Top bar UI fix (priority):** Content still overflows frame. Move blood counter number OUTSIDE the frame (below it), leaving only the 3-column button row inside the frame. This should resolve the persistent overflow.
+2. **Scroll rework:** Ghoul should physically move up/down with viewport scrolling so player can revisit completed rows and interact (click tool upgrade, auto-upgrade buttons). Currently only the viewport shifts -- ghoul needs to move too.
+3. **Surface mask tweaking:** Verify masking on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19.
+4. Pipe Dream Pack visual swap (replace KayKit pipe cylinders with PipeDreamPack prefabs)
+5. LeftoversGauge transparency/glass-top pass
+6. Playtest + balance pass (cost curves, body values, tool tier scaling, gauge capacity growth)
+7. Save/load: persist auto-button state, gauge capacity, viewed row
 
 **Design consideration (undecided):** Rows feel very busy with 4 minions. Options: reduce to 1 minion per 2 outlets (shared, positioned between them) or 1 minion per row that moves between all 4 outlets. Would affect row completion logic (`IsFullyBuilt`), buy-minion cost curves, and minion spawn/assignment code. Evaluate during next playtest.
 
