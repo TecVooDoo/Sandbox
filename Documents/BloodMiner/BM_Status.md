@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 15, 2026 (Session 79 -- UI frame fix, auto-upgrade, gatherer skeletons, viewport scrolling)
+**Last Updated:** April 16, 2026 (Session 79 cont. -- top bar UI fix, ghoul scroll movement)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -24,6 +24,8 @@
 - **Gatherer skeleton models:** `Gatherer.SetupModel()` instantiates Skeleton_Minion at 0.4 scale with direction flipping based on movement. `AC_Gatherer` animator controller (Idle/Walk with IsWalking bool). `GathererManager` passes model/anim/material to spawned gatherers. Drives `IsWalking` in Update. Removed green cube MeshFilter/MeshRenderer from Gatherer prefab.
 - **Viewport scrolling:** Up/Down arrows scroll view between row 0 and active row. `_viewedRowIndex` tracks which row is in view. `ScrollView(direction)` shifts `_rowParent.position.y`. HUD shows "Viewing Row X" when scrolled away from active row. Descend resets view to new active row.
 - **Gauge/empty-row alignment:** Shifted gauge and empty row BG x from 1.5 to 1.0 (left 0.5 units) to align with row content.
+- **Top bar UI fix (cont.):** Blood counter moved into center info box. Top bar changed from column to single horizontal row: Speed btn | Info (blood + Row + Outlets + Minions) | Gatherers btn. Row/Outlet/Minion info condensed to one line. Eliminated vertical stacking that caused overflow.
+- **Ghoul scroll movement:** ScrollView now reparents ghoul to the viewed row so player physically moves there. Can click tool upgrade and auto-upgrade buttons on any visited row. Buy Outlet/Minion buttons disabled when viewing non-active row. HUD shows viewed row's outlet/minion counts.
 
 **Session 78 (Apr 13, 2026) -- Phase 9 viewport scrolling + character fixes + surface masking:**
 - **Core viewport design established:** Camera is FIXED at (1.5, 2, 18) FOV 40. Player stays at fixed screen position. On descent, `_rowParent.position.y += _rowSpacing` shifts all rows UP so the next row slides into the player's position. Completed rows scroll up behind a surface mask. No camera movement at all.
@@ -230,9 +232,7 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 **Next (Session 80):**
 
 Phase 9 cont. -- UI fix + scroll rework + polish:
-1. **Top bar UI fix (priority):** Content still overflows frame. Move blood counter number OUTSIDE the frame (below it), leaving only the 3-column button row inside the frame. This should resolve the persistent overflow.
-2. **Scroll rework:** Ghoul should physically move up/down with viewport scrolling so player can revisit completed rows and interact (click tool upgrade, auto-upgrade buttons). Currently only the viewport shifts -- ghoul needs to move too.
-3. **Surface mask tweaking:** Verify masking on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19.
+1. **Surface mask tweaking:** Verify masking on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19.
 4. Pipe Dream Pack visual swap (replace KayKit pipe cylinders with PipeDreamPack prefabs)
 5. LeftoversGauge transparency/glass-top pass
 6. Playtest + balance pass (cost curves, body values, tool tier scaling, gauge capacity growth)

@@ -3,22 +3,24 @@
 
     <!-- Top Bar: Blood Currency + Gatherer Info -->
     <ui:VisualElement name="top-bar" class="top-bar" picking-mode="Position">
-        <ui:Label name="blood-icon" text="&#x1F6E2;" class="blood-icon" picking-mode="Ignore" />
-        <ui:Label name="blood-counter" text="0" class="blood-counter" picking-mode="Ignore" />
-        <ui:VisualElement class="top-btn-row" picking-mode="Position">
-            <ui:Button name="btn-gatherer-speed" class="top-action-btn">
-                <ui:Label name="gatherer-speed-label" text="Speed Lv1" class="upgrade-title" picking-mode="Ignore" />
-                <ui:Label name="gatherer-speed-cost" text="Cost: 100" class="upgrade-cost" picking-mode="Ignore" />
-            </ui:Button>
-            <ui:VisualElement class="top-info-box">
-                <ui:Label name="row-label" text="Row 0" class="row-label" picking-mode="Ignore" />
-                <ui:Label name="outlet-label" text="Outlets: 1/4  Minions: 0/4" class="outlet-label" picking-mode="Ignore" />
+        <ui:Button name="btn-gatherer-speed" class="top-action-btn">
+            <ui:Label name="gatherer-speed-label" text="Speed Lv1" class="upgrade-title" picking-mode="Ignore" />
+            <ui:Label name="gatherer-speed-cost" text="Cost: 100" class="upgrade-cost" picking-mode="Ignore" />
+        </ui:Button>
+        <ui:VisualElement class="top-info-box">
+            <ui:VisualElement class="blood-row" picking-mode="Ignore">
+                <ui:Label name="blood-icon" text="&#x1F6E2;" class="blood-icon" picking-mode="Ignore" />
+                <ui:Label name="blood-counter" text="0" class="blood-counter" picking-mode="Ignore" />
             </ui:VisualElement>
-            <ui:Button name="btn-gatherer-count" class="top-action-btn">
-                <ui:Label name="gatherer-count-label" text="Gatherers: 1" class="upgrade-title" picking-mode="Ignore" />
-                <ui:Label name="gatherer-count-cost" text="Locked" class="upgrade-cost" picking-mode="Ignore" />
-            </ui:Button>
+            <ui:VisualElement class="info-detail-row" picking-mode="Ignore">
+                <ui:Label name="row-label" text="Row 0" class="row-label" picking-mode="Ignore" />
+                <ui:Label name="outlet-label" text="Outlets:1/4  Minions:0/4" class="row-label" picking-mode="Ignore" />
+            </ui:VisualElement>
         </ui:VisualElement>
+        <ui:Button name="btn-gatherer-count" class="top-action-btn">
+            <ui:Label name="gatherer-count-label" text="Gatherers: 1" class="upgrade-title" picking-mode="Ignore" />
+            <ui:Label name="gatherer-count-cost" text="Locked" class="upgrade-cost" picking-mode="Ignore" />
+        </ui:Button>
     </ui:VisualElement>
 
     <!-- Bottom Panel: Row Action Buttons -->

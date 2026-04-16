@@ -210,7 +210,16 @@ namespace BM.Shaft
             if (_rowParent != null)
                 _rowParent.position = new Vector3(_rowParent.position.x, _viewedRowIndex * _rowSpacing, _rowParent.position.z);
 
-            CreateEmptyRowBelow(GetRow(_viewedRowIndex));
+            // Move ghoul to the viewed row so player can interact
+            Row viewedRow = GetRow(_viewedRowIndex);
+            if (_ghoul != null && viewedRow != null)
+            {
+                _ghoul.MoveToRow(_viewedRowIndex);
+                _ghoul.transform.SetParent(viewedRow.transform, false);
+                _ghoul.transform.localPosition = new Vector3(-1f, 0f, 0f);
+            }
+
+            CreateEmptyRowBelow(viewedRow);
         }
 
         public void UnlockNextRow()

@@ -71,25 +71,30 @@ namespace BM.UI
             Row row = _shaftManager.ActiveRow;
             if (row == null) return;
 
+            // Show info for the viewed row
+            Row viewedRow = _shaftManager.ViewedRow ?? row;
+
             if (_bloodCounter != null)
                 _bloodCounter.text = FormatNumber(_bloodManager.BloodBalance);
 
             bool viewing = _shaftManager.ViewedRowIndex != _shaftManager.GhoulRowIndex;
             if (_rowLabel != null)
                 _rowLabel.text = viewing
-                    ? "Viewing Row " + _shaftManager.ViewedRowIndex
+                    ? "Row " + _shaftManager.ViewedRowIndex
                     : "Row " + _shaftManager.GhoulRowIndex;
 
             if (_outletLabel != null)
-                _outletLabel.text = "Outlets: " + row.OutletCount + "/" + row.MaxOutlets + "  Minions: " + row.ChopMinionCount + "/" + row.OutletCount;
+                _outletLabel.text = "Outlets:" + viewedRow.OutletCount + "/" + viewedRow.MaxOutlets + "  Minions:" + viewedRow.ChopMinionCount + "/" + viewedRow.OutletCount;
 
+            // Purchases only work on the active row
+            bool onActiveRow = !viewing;
             bool outletAtMax = row.OutletCount >= row.MaxOutlets;
-            bool canBuyOutlet = !outletAtMax && _bloodManager.CanAfford(_shaftManager.GetOutletCost(row));
+            bool canBuyOutlet = onActiveRow && !outletAtMax && _bloodManager.CanAfford(_shaftManager.GetOutletCost(row));
             if (_btnBuyOutlet != null) _btnBuyOutlet.SetEnabled(canBuyOutlet);
             if (_outletCost != null) _outletCost.text = outletAtMax ? "MAX" : "Cost: " + FormatNumber(_shaftManager.GetOutletCost(row));
 
             bool hasUnminioned = row.GetNextUnminionedOutlet() != null;
-            bool canBuyMinion = hasUnminioned && _bloodManager.CanAfford(_shaftManager.GetMinionCost(row));
+            bool canBuyMinion = onActiveRow && hasUnminioned && _bloodManager.CanAfford(_shaftManager.GetMinionCost(row));
             if (_btnBuyMinion != null) _btnBuyMinion.SetEnabled(canBuyMinion);
             if (_minionCost != null) _minionCost.text = !hasUnminioned ? "ALL STAFFED" : "Cost: " + FormatNumber(_shaftManager.GetMinionCost(row));
 
