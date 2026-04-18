@@ -152,7 +152,8 @@ namespace BM.Shaft
                 GameObject pv = Instantiate(_pipeVisualPrefab, outletGO.transform);
                 pv.name = "PipeVisual";
                 pv.transform.localPosition = Vector3.zero;
-                pv.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+                pv.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                pv.transform.localScale = new Vector3(0.5f, 3f, 3f);
             }
 
             _outlets.Add(outlet);

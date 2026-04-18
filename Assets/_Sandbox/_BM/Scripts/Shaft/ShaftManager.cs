@@ -224,6 +224,13 @@ namespace BM.Shaft
 
         public void UnlockNextRow()
         {
+            // Safeguard: don't unlock if we'd end up with more than one row below the ghoul.
+            // The only row that should exist beyond the active row is the one just unlocked.
+            if (_rows.Count > _ghoulRowIndex + 1)
+            {
+                Debug.LogWarning("[BM] ShaftManager: UnlockNextRow skipped -- already have row below active (rows=" + _rows.Count + " ghoul=" + _ghoulRowIndex + ")");
+                return;
+            }
             int newIndex = _rows.Count;
             float yPos = -newIndex * _rowSpacing;
 
@@ -362,7 +369,7 @@ namespace BM.Shaft
             GameObject glass = GameObject.CreatePrimitive(PrimitiveType.Cube);
             glass.name = "GlassTop";
             glass.transform.SetParent(gaugeGO.transform, false);
-            glass.transform.localPosition = new Vector3(0f, 0.35f, 0f);
+            glass.transform.localPosition = new Vector3(0f, 0.265f, 0f);
             glass.transform.localScale = new Vector3(6f, 0.02f, 2f);
 
             Collider glassCol = glass.GetComponent<Collider>();
