@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 16, 2026 (Session 79 cont. -- top bar UI fix, ghoul scroll movement)
+**Last Updated:** April 18, 2026 (Session 80 -- save/load additions, glass-top, pipe swap)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,12 @@
 
 ## Current State
 
-**Phase:** Sprint 2 Phase 1-9 IN PROGRESS. UI frames fixed, auto-upgrade per-row, gatherer skeletons, viewport scrolling.
+**Phase:** Sprint 2 Phase 1-9 IN PROGRESS. Save/load complete, visual polish underway.
+
+**Session 80 (Apr 18, 2026) -- Save/load expansion + glass-top gauge + pipe swap:**
+- **Save/load auto-button + gauge capacity:** `BM_SaveManager` now persists `hasAutoButton` and `gaugeCapacity` per-row. On load, capacity is restored BEFORE fill so the cap applies correctly. Auto-button is re-bought via `row.BuyAutoButton()` and its purchase cube hidden so it doesn't require re-paying.
+- **Glass-top transparency:** `CreateGaugeForRow()` now adds a translucent glass quad (0.6, 0.7, 0.8, 0.25 alpha) at localY=0.35 on top of the gauge. URP/Unlit with transparent surface keywords. Characters appear to stand on a glass cover over the red fill instead of floating.
+- **Pipe Dream Pack swap:** `ShaftManager._pipeVisualPrefab` swapped from KayKit Platformer pipe to `OnePotatoKingdom_PipeDreamPack/Prefabs/RegularPipeShort.prefab`. Also replaced existing Row 0 Outlet_0 PipeVisual in scene with the new prefab (0.4 scale). New rows created via `UnlockNextRow()` inherit the new prefab through Row.Init.
 
 **Session 79 (Apr 15, 2026) -- UI frame fix + auto-upgrade + gatherer skeletons + viewport scrolling:**
 - **UI frame fix:** Swapped both HUD panels from `Box_Hotbar_01`/`Box_Hotbar_03` (no proper 9-slice) to `Frame_Box_Large_07` (1024x1024, uniform 80px borders). Root cause: Hotbar sprites had no top/bottom borders (280,0,280,0 and 0,0,0,0). Top bar restructured to 3-column layout mirroring bottom: Speed button | Info box | Gatherers button. Bottom panel back to 3 buttons (Buy Outlet, Buy Minion, Descend). 4px margin from screen edges.
@@ -229,14 +234,14 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 - KayKit prop orientation quirks -- still relevant for new scene, memory saved
 - Assembly Kit vs KayKit Skeletons decision -- irrelevant, new design has single reaper visual
 
-**Next (Session 80):**
+**Next (Session 81):**
 
-Phase 9 cont. -- UI fix + scroll rework + polish:
-1. **Surface mask tweaking:** Verify masking on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19.
-4. Pipe Dream Pack visual swap (replace KayKit pipe cylinders with PipeDreamPack prefabs)
-5. LeftoversGauge transparency/glass-top pass
-6. Playtest + balance pass (cost curves, body values, tool tier scaling, gauge capacity growth)
-7. Save/load: persist auto-button state, gauge capacity, viewed row
+Phase 9 cont. -- Verification + balance pass:
+1. **Playtest pass:** Verify glass-top visual, new PipeDreamPack prefab fits at outlets (scale may need tweaking), save/load restores auto-button + gauge capacity correctly across sessions.
+2. **Surface mask tweaking:** Verify masking on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19.
+3. Balance pass (cost curves, body values, tool tier scaling, gauge capacity growth)
+4. T-connector visual between rows on completion
+5. Blood splat VFX on chop
 
 **Design consideration (undecided):** Rows feel very busy with 4 minions. Options: reduce to 1 minion per 2 outlets (shared, positioned between them) or 1 minion per row that moves between all 4 outlets. Would affect row completion logic (`IsFullyBuilt`), buy-minion cost curves, and minion spawn/assignment code. Evaluate during next playtest.
 

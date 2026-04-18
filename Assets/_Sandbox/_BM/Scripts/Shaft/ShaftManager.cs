@@ -358,6 +358,33 @@ namespace BM.Shaft
             Collider fillCol = fill.GetComponent<Collider>();
             if (fillCol != null) Object.Destroy(fillCol);
 
+            // Glass-top cover so characters appear to stand on the gauge recess
+            GameObject glass = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            glass.name = "GlassTop";
+            glass.transform.SetParent(gaugeGO.transform, false);
+            glass.transform.localPosition = new Vector3(0f, 0.35f, 0f);
+            glass.transform.localScale = new Vector3(6f, 0.02f, 2f);
+
+            Collider glassCol = glass.GetComponent<Collider>();
+            if (glassCol != null) Object.Destroy(glassCol);
+
+            Renderer glassRend = glass.GetComponent<Renderer>();
+            if (glassRend != null)
+            {
+                Material glassMat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                // Transparent surface
+                glassMat.SetFloat("_Surface", 1f); // 0=Opaque, 1=Transparent
+                glassMat.SetFloat("_Blend", 0f); // 0=Alpha
+                glassMat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                glassMat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                glassMat.SetFloat("_ZWrite", 0f);
+                glassMat.renderQueue = 3000;
+                glassMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                glassMat.DisableKeyword("_ALPHATEST_ON");
+                glassMat.SetColor("_BaseColor", new Color(0.6f, 0.7f, 0.8f, 0.25f));
+                glassRend.sharedMaterial = glassMat;
+            }
+
             LeftoversGaugeVisual visual = gaugeGO.AddComponent<LeftoversGaugeVisual>();
             System.Reflection.BindingFlags bf = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
             typeof(LeftoversGaugeVisual).GetField("_leftoversGauge", bf).SetValue(visual, gauge);

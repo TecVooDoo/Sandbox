@@ -40,6 +40,8 @@ namespace BM.Core
                 ES3.Save(prefix + "minions", row.ChopMinionCount, SAVE_FILE);
                 ES3.Save(prefix + "toolTier", row.ToolUpgrade != null ? row.ToolUpgrade.ToolTier : 0, SAVE_FILE);
                 ES3.Save(prefix + "gaugeFill", row.LeftoversGauge != null ? row.LeftoversGauge.Current : 0f, SAVE_FILE);
+                ES3.Save(prefix + "gaugeCapacity", row.LeftoversGauge != null ? row.LeftoversGauge.Capacity : 100f, SAVE_FILE);
+                ES3.Save(prefix + "hasAutoButton", row.HasAutoButton, SAVE_FILE);
             }
 
             Debug.Log("[BM] SaveManager: saved " + rowCount + " rows, ghoul at row " + _shaftManager.GhoulRowIndex);
@@ -95,10 +97,26 @@ namespace BM.Core
                     }
                 }
 
+                // Restore gauge capacity BEFORE adding fill so capacity cap applies correctly
+                float savedCapacity = ES3.Load<float>(prefix + "gaugeCapacity", SAVE_FILE, 100f);
+                if (row.LeftoversGauge != null) row.LeftoversGauge.SetCapacity(savedCapacity);
+
                 float savedFill = ES3.Load<float>(prefix + "gaugeFill", SAVE_FILE, 0f);
                 if (row.LeftoversGauge != null && savedFill > 0f)
                 {
                     row.LeftoversGauge.Add(savedFill);
+                }
+
+                bool savedAutoButton = ES3.Load<bool>(prefix + "hasAutoButton", SAVE_FILE, false);
+                if (savedAutoButton && !row.HasAutoButton)
+                {
+                    row.BuyAutoButton();
+                    // Also hide the world-space auto-upgrade purchase button
+                    if (row.ToolUpgrade != null)
+                    {
+                        Transform autoBtn = row.ToolUpgrade.transform.Find("AutoUpgradeButton");
+                        if (autoBtn != null) autoBtn.gameObject.SetActive(false);
+                    }
                 }
             }
 
