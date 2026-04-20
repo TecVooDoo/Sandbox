@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using BM.Core;
 
@@ -7,6 +8,7 @@ namespace BM.Shaft
     {
         [SerializeField] protected RowOutlet _assignedOutlet;
         [SerializeField] protected float _chopAmount = 10f;
+        [SerializeField] protected float _chopImpactDelay = 0.7f;
 
         protected Row _row;
 
@@ -18,13 +20,24 @@ namespace BM.Shaft
             _row = GetComponentInParent<Row>();
         }
 
+        /// <summary>
+        /// Starts the chop: plays animation (via subclass) and schedules the body consumption
+        /// at the animation's impact frame so the body doesn't vanish before the swing lands.
+        /// </summary>
         public virtual void Chop()
         {
             if (_assignedOutlet == null || _assignedOutlet.IsClear) return;
+            StartCoroutine(ChopImpactRoutine(_assignedOutlet));
+        }
+
+        private IEnumerator ChopImpactRoutine(RowOutlet outlet)
+        {
+            yield return new WaitForSeconds(_chopImpactDelay);
+            if (outlet == null || outlet.IsClear) yield break;
             float bodyValue = 1f;
-            BodyConfigSO config = _assignedOutlet.CurrentConfig;
+            BodyConfigSO config = outlet.CurrentConfig;
             if (config != null) bodyValue = (float)config.BaseBloodValue;
-            _assignedOutlet.ConsumeBody();
+            outlet.ConsumeBody();
             if (_row != null) _row.OnChop(_chopAmount * bodyValue);
         }
     }

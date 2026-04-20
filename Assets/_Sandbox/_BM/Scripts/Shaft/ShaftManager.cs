@@ -23,6 +23,13 @@ namespace BM.Shaft
         [SerializeField] private RuntimeAnimatorController _minionAnimCtrl;
         [SerializeField] private Material _minionMaterial;
 
+        [Header("Row Backdrops")]
+        [SerializeField] private GameObject[] _backdropBlocks;
+        [SerializeField] private int _backdropTilesX = 10;
+        [SerializeField] private int _backdropTilesY = 3;
+        [SerializeField] private int _rowsPerBackdropVariant = 2;
+        [SerializeField] private Vector3 _backdropLocalCenter = new Vector3(1f, 0f, -1f);
+
         private readonly List<Row> _rows = new List<Row>();
         private int _ghoulRowIndex;
         private int _viewedRowIndex;
@@ -129,10 +136,11 @@ namespace BM.Shaft
             _rowParent.GetComponentsInChildren<Row>(true, _rows);
             if (_mainCamera == null) _mainCamera = Camera.main;
             CreateSurfaceMask();
-            // Add auto-upgrade button to Row 0 (scene-placed row doesn't go through CreateUpgradeButtonForRow)
+            // Add backdrop and auto-upgrade button to Row 0 (scene-placed row doesn't go through CreateUpgradeButtonForRow)
             if (_rows.Count > 0)
             {
                 Row row0 = _rows[0];
+                CreateRowBackdrop(row0);
                 if (row0.ToolUpgrade != null)
                     CreateAutoUpgradeButtonForRow(row0.ToolUpgrade.gameObject, row0);
                 CreateEmptyRowBelow(row0);
@@ -242,6 +250,7 @@ namespace BM.Shaft
             row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab, _bloodManager, 1.5f,
                 _minionModelPrefab, _minionAnimCtrl, _minionMaterial);
 
+            CreateRowBackdrop(row);
             LeftoversGauge gauge = CreateGaugeForRow(rowGO, row);
             CreateUpgradeButtonForRow(rowGO, row, gauge);
 
@@ -294,6 +303,36 @@ namespace BM.Shaft
         }
 
         private GameObject _emptyRowVisual;
+
+        private void CreateRowBackdrop(Row row)
+        {
+            if (_backdropBlocks == null || _backdropBlocks.Length == 0) return;
+
+            int variantIdx = Mathf.Clamp(row.RowIndex / Mathf.Max(1, _rowsPerBackdropVariant), 0, _backdropBlocks.Length - 1);
+            GameObject blockPrefab = _backdropBlocks[variantIdx];
+            if (blockPrefab == null) return;
+
+            GameObject backdropParent = new GameObject("Backdrop");
+            backdropParent.transform.SetParent(row.transform, false);
+            backdropParent.transform.localPosition = _backdropLocalCenter;
+
+            float halfX = (_backdropTilesX - 1) * 0.5f;
+            float halfY = (_backdropTilesY - 1) * 0.5f;
+
+            for (int x = 0; x < _backdropTilesX; x++)
+            {
+                for (int y = 0; y < _backdropTilesY; y++)
+                {
+                    GameObject block = Instantiate(blockPrefab, backdropParent.transform);
+                    block.name = "Block_" + x + "_" + y;
+                    block.transform.localPosition = new Vector3(x - halfX, y - halfY, 0f);
+                    block.transform.localRotation = Quaternion.identity;
+                    // Strip any colliders so they don't intercept clicks
+                    foreach (var col in block.GetComponentsInChildren<Collider>())
+                        Destroy(col);
+                }
+            }
+        }
 
         private void CreateEmptyRowBelow(Row activeRow)
         {

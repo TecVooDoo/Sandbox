@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 18, 2026 (Session 80 cont. -- pipe tuning, glass-top Y, row unlock safeguard)
+**Last Updated:** April 20, 2026 (Session 81 -- chop sync, row backdrops, visual polish)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,12 @@
 
 ## Current State
 
-**Phase:** Sprint 2 Phase 1-9 IN PROGRESS. Save/load complete, visual polish underway.
+**Phase:** Sprint 2 Phase 1-9 IN PROGRESS. Chop sync fixed, per-row dirt/stone backdrops in.
+
+**Session 81 (Apr 20, 2026) -- Chop animation sync + row backdrops:**
+- **Chop impact delay:** `RowWorker.Chop()` no longer consumes the body immediately. Instead it starts a coroutine that waits `_chopImpactDelay` (default 0.7s) before calling `ConsumeBody`/`OnChop`. Fixes the bug where animals disappeared during the chop wind-up; now they despawn when the swing lands. Tunable per-worker via serialized field.
+- **Row backdrops (KayKit BlockBits):** `ShaftManager.CreateRowBackdrop()` tiles 10x3 BlockBits cubes behind each row at local (1, 0, -1). Variant cycles by depth every `_rowsPerBackdropVariant` rows (default 2): dirt → gravel → stone → stone_dark → stone_with_copper → stone_with_silver → stone_with_gold. Colliders stripped. Called in Awake for Row 0 and in UnlockNextRow for dynamic rows. Array wired on ShaftManager in scene.
+- **Initial Z bug:** Backdrop defaulted to z=+1 (in front of rows); fixed to z=-1 (behind). Camera at Z=18 looking -Z means lower Z = further from camera.
 
 **Session 80 (Apr 18, 2026) -- Save/load expansion + glass-top gauge + pipe swap:**
 - **Save/load auto-button + gauge capacity:** `BM_SaveManager` now persists `hasAutoButton` and `gaugeCapacity` per-row. On load, capacity is restored BEFORE fill so the cap applies correctly. Auto-button is re-bought via `row.BuyAutoButton()` and its purchase cube hidden so it doesn't require re-paying.
@@ -238,13 +243,15 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 - KayKit prop orientation quirks -- still relevant for new scene, memory saved
 - Assembly Kit vs KayKit Skeletons decision -- irrelevant, new design has single reaper visual
 
-**Next (Session 81):**
+**Next (Session 82):**
 
-Phase 9 cont. -- Polish + balance:
-1. **T-connector visual between rows on completion** (PipeDreamPack `PipeTCrossLong`/`PipeTCrossSide` prefabs available)
-2. **Blood splat VFX on chop** (check available particle assets)
-3. **Surface mask tweaking:** Verify masking on different screen sizes. [Surface] parent at Y=1.5, mask at localY=19.
-4. Balance pass (cost curves, body values, tool tier scaling, gauge capacity growth)
+Phase 9 cont. -- Pipe rail + visual polish:
+1. **Row pipe rail:** Horizontal `RegularPipeLong` across each row's outlet strip, outlets branch off of it.
+2. **T-connector between rows:** `PipeTCrossLong` spawned on row unlock connecting Row N rail down to Row N+1 rail.
+3. **Funnel downpipe:** Decorative vertical pipe from bottom of funnel to Row 0's rail.
+4. **Blood splat VFX on chop** (check available particle assets)
+5. Balance pass (cost curves, body values, tool tier scaling, gauge capacity growth)
+6. Verify save/load still works after backdrop addition
 
 **Design consideration (undecided):** Rows feel very busy with 4 minions. Options: reduce to 1 minion per 2 outlets (shared, positioned between them) or 1 minion per row that moves between all 4 outlets. Would affect row completion logic (`IsFullyBuilt`), buy-minion cost curves, and minion spawn/assignment code. Evaluate during next playtest.
 
