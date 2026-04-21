@@ -33,7 +33,7 @@ namespace BM.Shaft
         [Header("Row Pipe Sides (per row, locked/unlocked)")]
         [SerializeField] private GameObject _pipesSidesLockedPrefab;
         [SerializeField] private GameObject _pipesSidesUnlockedPrefab;
-        [SerializeField] private Vector3 _pipesSidesLocalPos = new Vector3(-1.21f, 2.04f, -0.05f);
+        [SerializeField] private Vector3 _pipesSidesLocalPos = new Vector3(-1.21f, 1.94f, -0.05f);
         [SerializeField] private Vector3 _pipesSidesLocalRot = new Vector3(0f, 90f, 90f);
         [SerializeField] private Vector3 _pipesSidesLocalScale = new Vector3(3f, 3f, 3f);
 
@@ -148,7 +148,7 @@ namespace BM.Shaft
             {
                 Row row0 = _rows[0];
                 CreateRowBackdrop(row0);
-                CreateRowPipesSides(row0, unlocked: false); // no row below yet -> capped off
+                CreateRowPipesSides(row0, unlocked: true); // Row 0 is the deepest at start -> end cap visible
                 if (row0.ToolUpgrade != null)
                     CreateAutoUpgradeButtonForRow(row0.ToolUpgrade.gameObject, row0);
                 CreateEmptyRowBelow(row0);
@@ -259,13 +259,13 @@ namespace BM.Shaft
                 _minionModelPrefab, _minionAnimCtrl, _minionMaterial);
 
             CreateRowBackdrop(row);
-            CreateRowPipesSides(row, unlocked: false); // new row has nothing below it
+            CreateRowPipesSides(row, unlocked: true); // new row is now the deepest -> end cap visible
             LeftoversGauge gauge = CreateGaugeForRow(rowGO, row);
             CreateUpgradeButtonForRow(rowGO, row, gauge);
 
-            // Previous row now has a row below it -> swap its sides to unlocked state
+            // Previous row is no longer the deepest -> hide its end cap so the pipe flows through
             Row prevRow = _rows.Count > 0 ? _rows[_rows.Count - 1] : null;
-            if (prevRow != null) CreateRowPipesSides(prevRow, unlocked: true);
+            if (prevRow != null) HideRowEndCap(prevRow);
 
             RowOutlet firstOutlet = row.AddOutlet();
             _rows.Add(row);
@@ -370,6 +370,19 @@ namespace BM.Shaft
                 Destroy(col);
         }
 
+        /// <summary>
+        /// When a row gets a row below it, it's no longer the deepest — hide its end cap
+        /// so the pipe visually continues downward.
+        /// </summary>
+        private void HideRowEndCap(Row row)
+        {
+            if (row == null) return;
+            Transform sides = row.transform.Find("PipesSides");
+            if (sides == null) return;
+            Transform endCap = sides.Find("PipeCapRound (2)");
+            if (endCap != null) endCap.gameObject.SetActive(false);
+        }
+
         private void CreateEmptyRowBelow(Row activeRow)
         {
             if (_emptyRowVisual != null) Object.Destroy(_emptyRowVisual);
@@ -383,7 +396,7 @@ namespace BM.Shaft
             GameObject bg = GameObject.CreatePrimitive(PrimitiveType.Cube);
             bg.name = "BG";
             bg.transform.SetParent(_emptyRowVisual.transform, false);
-            bg.transform.localPosition = new Vector3(1.0f, -0.3f, 0f);
+            bg.transform.localPosition = new Vector3(1.5f, -0.3f, 0f);
             bg.transform.localScale = new Vector3(6f, 0.1f, 2f);
 
             Collider col = bg.GetComponent<Collider>();
@@ -402,7 +415,7 @@ namespace BM.Shaft
         {
             GameObject gaugeGO = new GameObject("LeftoversGauge");
             gaugeGO.transform.SetParent(rowGO.transform, false);
-            gaugeGO.transform.localPosition = new Vector3(1.0f, -0.3f, 0f);
+            gaugeGO.transform.localPosition = new Vector3(1.5f, -0.3f, 0f);
 
             LeftoversGauge gauge = gaugeGO.AddComponent<LeftoversGauge>();
 

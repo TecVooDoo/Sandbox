@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 21, 2026 (Session 82 -- pipe sides kit prefabs, reference scene BM_Shaft_Pipes)
+**Last Updated:** April 21, 2026 (Session 82 cont. -- PipesSides end-cap toggle + gauge alignment)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -22,6 +22,8 @@
 - **Prefabs extracted to `Assets/_Sandbox/_BM/Prefabs/Pipes/`:** `Pipes_Surface.prefab`, `Pipes_Outlet.prefab`, `Pipes_Sides_Unlocked.prefab`, `Pipes_Sides_Locked.prefab`.
 - **ShaftManager pipe sides integration:** Replaced rough pipe rail + T-connector (session 82 first pass) with a cleaner per-row "PipesSides" kit. `CreateRowPipesSides(Row row, bool unlocked)` instantiates the appropriate prefab as a child of the row and destroys any existing one so state swaps are idempotent. On row creation: locked state. When the next row is unlocked: previous row's sides swap to unlocked (pipe continues). Default local offset from user's eyeballed reference: pos (-1.21, 2.04, -0.05), rot (0, 90, 90), scale (3, 3, 3) -- all Inspector-exposed.
 - **Pipe rail + T-connector fields removed:** The old `_pipeRailPrefab` and `_tConnectorPrefab` serialized fields are gone (superseded by the kit prefabs).
+- **PipesSides end-cap toggle (after playtest):** Every row now spawns in UNLOCKED state (PipeCapRound (2) = end cap visible). When a new row is created below, the previous row's PipeCapRound (2) is hidden via `HideRowEndCap()` so the pipe visually flows through. New row becomes the new "end" with its own end cap.
+- **Gauge/BG X alignment fix:** `CreateGaugeForRow` and empty-row `BG` were placing new gauges at x=1.0, but Row 0 scene instance was at x=1.5. Aligned to 1.5 so dynamic rows match Row 0. Default `_pipesSidesLocalPos.y` tuned 2.04 -> 1.94 (scene field updated too).
 
 **Session 81 (Apr 20, 2026) -- Chop animation sync + row backdrops:**
 - **Chop impact delay:** `RowWorker.Chop()` no longer consumes the body immediately. Instead it starts a coroutine that waits `_chopImpactDelay` (default 0.7s) before calling `ConsumeBody`/`OnChop`. Fixes the bug where animals disappeared during the chop wind-up; now they despawn when the swing lands. Tunable per-worker via serialized field.

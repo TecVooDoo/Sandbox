@@ -246,7 +246,7 @@ MonoBehaviour:
     type: 3}
   _pipesSidesUnlockedPrefab: {fileID: 769665804543198178, guid: 5558feff26131a6409ff82f117424dd4,
     type: 3}
-  _pipesSidesLocalPos: {x: -1.21, y: 2.04, z: -0.05}
+  _pipesSidesLocalPos: {x: -1.21, y: 1.94, z: -0.05}
   _pipesSidesLocalRot: {x: 0, y: 90, z: 90}
   _pipesSidesLocalScale: {x: 3, y: 3, z: 3}
 --- !u!4 &155519923
