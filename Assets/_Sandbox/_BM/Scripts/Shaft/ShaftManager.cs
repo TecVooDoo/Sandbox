@@ -30,6 +30,13 @@ namespace BM.Shaft
         [SerializeField] private int _rowsPerBackdropVariant = 2;
         [SerializeField] private Vector3 _backdropLocalCenter = new Vector3(1f, 0f, -1f);
 
+        [Header("Row Pipe Sides (per row, locked/unlocked)")]
+        [SerializeField] private GameObject _pipesSidesLockedPrefab;
+        [SerializeField] private GameObject _pipesSidesUnlockedPrefab;
+        [SerializeField] private Vector3 _pipesSidesLocalPos = new Vector3(-1.21f, 2.04f, -0.05f);
+        [SerializeField] private Vector3 _pipesSidesLocalRot = new Vector3(0f, 90f, 90f);
+        [SerializeField] private Vector3 _pipesSidesLocalScale = new Vector3(3f, 3f, 3f);
+
         private readonly List<Row> _rows = new List<Row>();
         private int _ghoulRowIndex;
         private int _viewedRowIndex;
@@ -136,11 +143,12 @@ namespace BM.Shaft
             _rowParent.GetComponentsInChildren<Row>(true, _rows);
             if (_mainCamera == null) _mainCamera = Camera.main;
             CreateSurfaceMask();
-            // Add backdrop and auto-upgrade button to Row 0 (scene-placed row doesn't go through CreateUpgradeButtonForRow)
+            // Add backdrop + pipe sides + auto-upgrade button to Row 0 (scene-placed row doesn't go through CreateUpgradeButtonForRow)
             if (_rows.Count > 0)
             {
                 Row row0 = _rows[0];
                 CreateRowBackdrop(row0);
+                CreateRowPipesSides(row0, unlocked: false); // no row below yet -> capped off
                 if (row0.ToolUpgrade != null)
                     CreateAutoUpgradeButtonForRow(row0.ToolUpgrade.gameObject, row0);
                 CreateEmptyRowBelow(row0);
@@ -251,8 +259,13 @@ namespace BM.Shaft
                 _minionModelPrefab, _minionAnimCtrl, _minionMaterial);
 
             CreateRowBackdrop(row);
+            CreateRowPipesSides(row, unlocked: false); // new row has nothing below it
             LeftoversGauge gauge = CreateGaugeForRow(rowGO, row);
             CreateUpgradeButtonForRow(rowGO, row, gauge);
+
+            // Previous row now has a row below it -> swap its sides to unlocked state
+            Row prevRow = _rows.Count > 0 ? _rows[_rows.Count - 1] : null;
+            if (prevRow != null) CreateRowPipesSides(prevRow, unlocked: true);
 
             RowOutlet firstOutlet = row.AddOutlet();
             _rows.Add(row);
@@ -332,6 +345,29 @@ namespace BM.Shaft
                         Destroy(col);
                 }
             }
+        }
+
+        /// <summary>
+        /// Spawns the per-row "pipe sides" visual as a child of the row. `unlocked` controls which
+        /// prefab is used (unlocked = pipe continues down; locked = capped off).
+        /// Previous sides on this row (if any) are destroyed so callers can swap states.
+        /// </summary>
+        private void CreateRowPipesSides(Row row, bool unlocked)
+        {
+            GameObject prefab = unlocked ? _pipesSidesUnlockedPrefab : _pipesSidesLockedPrefab;
+            if (prefab == null) return;
+
+            // Remove any existing PipesSides child so swap calls replace cleanly.
+            Transform existing = row.transform.Find("PipesSides");
+            if (existing != null) Destroy(existing.gameObject);
+
+            GameObject go = Instantiate(prefab, row.transform);
+            go.name = "PipesSides";
+            go.transform.localPosition = _pipesSidesLocalPos;
+            go.transform.localRotation = Quaternion.Euler(_pipesSidesLocalRot);
+            go.transform.localScale = _pipesSidesLocalScale;
+            foreach (var col in go.GetComponentsInChildren<Collider>())
+                Destroy(col);
         }
 
         private void CreateEmptyRowBelow(Row activeRow)

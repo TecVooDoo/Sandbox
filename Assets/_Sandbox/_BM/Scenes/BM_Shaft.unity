@@ -242,6 +242,13 @@ MonoBehaviour:
   _backdropTilesY: 3
   _rowsPerBackdropVariant: 2
   _backdropLocalCenter: {x: 1, y: 0, z: -1}
+  _pipesSidesLockedPrefab: {fileID: 613573817760768674, guid: 120d48b6585713a4b94ccf41970b6259,
+    type: 3}
+  _pipesSidesUnlockedPrefab: {fileID: 769665804543198178, guid: 5558feff26131a6409ff82f117424dd4,
+    type: 3}
+  _pipesSidesLocalPos: {x: -1.21, y: 2.04, z: -0.05}
+  _pipesSidesLocalRot: {x: 0, y: 90, z: 90}
+  _pipesSidesLocalScale: {x: 3, y: 3, z: 3}
 --- !u!4 &155519923
 Transform:
   m_ObjectHideFlags: 0
@@ -489,7 +496,7 @@ Transform:
   m_GameObject: {fileID: 324469102}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.4, y: 0, z: 0}
   m_LocalScale: {x: 1.2, y: 0.4, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -849,7 +856,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 584576649}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.11320323, y: 0, z: 0, w: 0.9935719}
   m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -859,7 +866,7 @@ Transform:
   - {fileID: 1482842580}
   - {fileID: 1922510134}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 13, y: 0, z: 0}
 --- !u!1 &650987774
 GameObject:
   m_ObjectHideFlags: 0

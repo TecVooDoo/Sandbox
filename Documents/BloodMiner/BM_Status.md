@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 20, 2026 (Session 81 -- chop sync, row backdrops, visual polish)
+**Last Updated:** April 21, 2026 (Session 82 -- pipe sides kit prefabs, reference scene BM_Shaft_Pipes)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -15,7 +15,13 @@
 
 ## Current State
 
-**Phase:** Sprint 2 Phase 1-9 IN PROGRESS. Chop sync fixed, per-row dirt/stone backdrops in.
+**Phase:** Sprint 2 Phase 1-9 IN PROGRESS. Pipe "sides" kit integrated via prefabs; needs playtest tuning.
+
+**Session 82 (Apr 21, 2026) -- Pipe visual kit (PipeDreamPack) + reference scene:**
+- **Reference scene `BM_Shaft_Pipes`:** New scene at `Assets/_Sandbox/_BM/Scenes/BM_Shaft_Pipes.unity` with hand-placed pipe layouts showing the target look. Contains `Surface_Pipe_Connection` (funnel->pipe decor with togglable `PipeBlock`/`PipeBaloon`), 4 `PipesOutlets` instances, `PipesSides` (unlocked state), `PipesSides (1)` (locked state).
+- **Prefabs extracted to `Assets/_Sandbox/_BM/Prefabs/Pipes/`:** `Pipes_Surface.prefab`, `Pipes_Outlet.prefab`, `Pipes_Sides_Unlocked.prefab`, `Pipes_Sides_Locked.prefab`.
+- **ShaftManager pipe sides integration:** Replaced rough pipe rail + T-connector (session 82 first pass) with a cleaner per-row "PipesSides" kit. `CreateRowPipesSides(Row row, bool unlocked)` instantiates the appropriate prefab as a child of the row and destroys any existing one so state swaps are idempotent. On row creation: locked state. When the next row is unlocked: previous row's sides swap to unlocked (pipe continues). Default local offset from user's eyeballed reference: pos (-1.21, 2.04, -0.05), rot (0, 90, 90), scale (3, 3, 3) -- all Inspector-exposed.
+- **Pipe rail + T-connector fields removed:** The old `_pipeRailPrefab` and `_tConnectorPrefab` serialized fields are gone (superseded by the kit prefabs).
 
 **Session 81 (Apr 20, 2026) -- Chop animation sync + row backdrops:**
 - **Chop impact delay:** `RowWorker.Chop()` no longer consumes the body immediately. Instead it starts a coroutine that waits `_chopImpactDelay` (default 0.7s) before calling `ConsumeBody`/`OnChop`. Fixes the bug where animals disappeared during the chop wind-up; now they despawn when the swing lands. Tunable per-worker via serialized field.
@@ -243,15 +249,15 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 - KayKit prop orientation quirks -- still relevant for new scene, memory saved
 - Assembly Kit vs KayKit Skeletons decision -- irrelevant, new design has single reaper visual
 
-**Next (Session 82):**
+**Next (Session 83):**
 
-Phase 9 cont. -- Pipe rail + visual polish:
-1. **Row pipe rail:** Horizontal `RegularPipeLong` across each row's outlet strip, outlets branch off of it.
-2. **T-connector between rows:** `PipeTCrossLong` spawned on row unlock connecting Row N rail down to Row N+1 rail.
-3. **Funnel downpipe:** Decorative vertical pipe from bottom of funnel to Row 0's rail.
+Phase 9 cont. -- Pipe kit integration:
+1. **Playtest PipesSides system:** Verify Row 0 gets locked state at start, swaps to unlocked when Row 1 unlocks. Tune local pos/rot/scale on ShaftManager. Reference layout in `BM_Shaft_Pipes` scene.
+2. **Per-outlet Pipes_Outlet kit:** Replace single `RegularPipeShort` pipe in `Row.AddOutlet` with the full `Pipes_Outlet.prefab`. Logic: new outlet gets "last" cap (PipeCapRound active), all previous outlets switch to "middle" cap (PipeCapWhole (2) active, PipeCapRound inactive). Cap child names to toggle: see reference scene for exact hierarchy.
+3. **Surface_Pipe_Connection integration:** Either instantiate `Pipes_Surface.prefab` on `_surfaceRoot` in Awake, or hand-place in scene. Has `PipeBlock` child (PipeBaloon) for "blocked outlet" state — currently unused but hook up when body queue stalls.
 4. **Blood splat VFX on chop** (check available particle assets)
 5. Balance pass (cost curves, body values, tool tier scaling, gauge capacity growth)
-6. Verify save/load still works after backdrop addition
+6. Verify save/load still works after backdrop + pipe refactor
 
 **Design consideration (undecided):** Rows feel very busy with 4 minions. Options: reduce to 1 minion per 2 outlets (shared, positioned between them) or 1 minion per row that moves between all 4 outlets. Would affect row completion logic (`IsFullyBuilt`), buy-minion cost curves, and minion spawn/assignment code. Evaluate during next playtest.
 
