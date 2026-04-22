@@ -19,9 +19,22 @@ namespace BM.Shaft
         [SerializeField] private PipeNetwork _pipeNetwork;
         [SerializeField] private BodyPool _bodyPool;
         [SerializeField] private GameObject _pipeVisualPrefab;
-        [SerializeField] private float _outletSpacing = 2f;
+        [SerializeField] private float _outletSpacing = 1.39f;
         [SerializeField] private float _outletHeight = 1.5f;
         [SerializeField] private int _maxOutlets = 4;
+
+        [Header("Outlet Pipe Kit Transform")]
+        [SerializeField] private Vector3 _outletKitLocalPos = new Vector3(-0.63f, -0.14f, -0.01f);
+        [SerializeField] private Vector3 _outletKitLocalEuler = new Vector3(90f, 0f, 0f);
+        [SerializeField] private Vector3 _outletKitLocalScale = new Vector3(3f, 3f, 3f);
+
+        [Header("Worker Placement")]
+        [Tooltip("X offset from outlet where ChopMinion stands (negative = to the left).")]
+        [SerializeField] private float _minionXOffset = -1.15f;
+        [Tooltip("X offset from outlet where body drops / spawns (typical: -0.6 to line up with pipe kit).")]
+        [SerializeField] private float _bodyDropXOffset = -0.6f;
+
+        private readonly List<GameObject> _pipesOutletKits = new List<GameObject>();
 
         [Header("Minion Visuals")]
         [SerializeField] private GameObject _minionModelPrefab;
@@ -32,7 +45,62 @@ namespace BM.Shaft
         public int OutletCount => _outlets.Count;
         public PipeNetwork PipeNetwork => _pipeNetwork;
 
-        public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, BloodManager bloodManager, float outletSpacing = 1.5f,
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (!Application.isPlaying) return;
+            for (int w = 0; w < _workers.Count; w++)
+            {
+                var wk = _workers[w];
+                if (wk == null) continue;
+                if (wk is ChopMinion cm && cm.AssignedOutlet != null)
+                {
+                    Vector3 p = cm.transform.localPosition;
+                    p.x = cm.AssignedOutlet.transform.localPosition.x + _minionXOffset;
+                    cm.transform.localPosition = p;
+                }
+            }
+            for (int i = 0; i < _outlets.Count; i++)
+            {
+                var outlet = _outlets[i];
+                if (outlet == null) continue;
+                var bd = outlet.transform.Find("BodyDrop");
+                if (bd != null)
+                {
+                    Vector3 p = bd.localPosition;
+                    p.x = _bodyDropXOffset;
+                    bd.localPosition = p;
+                }
+            }
+        }
+#endif
+
+        private void Awake()
+        {
+            for (int i = 0; i < _outlets.Count; i++)
+            {
+                if (_outlets[i] == null) continue;
+                Transform kit = _outlets[i].transform.Find("PipesOutletKit");
+                if (kit == null)
+                {
+                    Transform legacy = _outlets[i].transform.Find("PipeVisual");
+                    if (legacy != null) Destroy(legacy.gameObject);
+                    if (_pipeVisualPrefab != null)
+                    {
+                        GameObject pv = Instantiate(_pipeVisualPrefab, _outlets[i].transform);
+                        pv.name = "PipesOutletKit";
+                        pv.transform.localPosition = _outletKitLocalPos;
+                        pv.transform.localRotation = Quaternion.Euler(_outletKitLocalEuler);
+                        pv.transform.localScale = _outletKitLocalScale;
+                        kit = pv.transform;
+                    }
+                }
+                if (kit != null) _pipesOutletKits.Add(kit.gameObject);
+            }
+            UpdateOutletCaps();
+        }
+
+        public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, BloodManager bloodManager, float outletSpacing = 1.39f,
             GameObject minionModel = null, RuntimeAnimatorController minionAnim = null, Material minionMat = null)
         {
             _rowIndex = rowIndex;
@@ -141,7 +209,7 @@ namespace BM.Shaft
 
             GameObject bodyDrop = new GameObject("BodyDrop");
             bodyDrop.transform.SetParent(outletGO.transform, false);
-            bodyDrop.transform.localPosition = new Vector3(0f, -_outletHeight, 0f);
+            bodyDrop.transform.localPosition = new Vector3(_bodyDropXOffset, -_outletHeight, 0f);
 
             System.Reflection.FieldInfo spField = typeof(RowOutlet).GetField("_spawnPoint",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -150,17 +218,39 @@ namespace BM.Shaft
             if (_pipeVisualPrefab != null)
             {
                 GameObject pv = Instantiate(_pipeVisualPrefab, outletGO.transform);
-                pv.name = "PipeVisual";
-                pv.transform.localPosition = Vector3.zero;
-                pv.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-                pv.transform.localScale = new Vector3(0.5f, 3f, 3f);
+                pv.name = "PipesOutletKit";
+                pv.transform.localPosition = _outletKitLocalPos;
+                pv.transform.localRotation = Quaternion.Euler(_outletKitLocalEuler);
+                pv.transform.localScale = _outletKitLocalScale;
+                _pipesOutletKits.Add(pv);
             }
 
             _outlets.Add(outlet);
             if (_pipeNetwork != null) _pipeNetwork.RegisterOutlet(outlet);
 
+            UpdateOutletCaps();
+
             Debug.Log("[BM] Row " + _rowIndex + " AddOutlet idx=" + idx + " pos=" + outletGO.transform.position);
             return outlet;
+        }
+
+        private void UpdateOutletCaps()
+        {
+            for (int i = 0; i < _pipesOutletKits.Count; i++)
+            {
+                bool isLast = (i == _pipesOutletKits.Count - 1);
+                SetKitLastState(_pipesOutletKits[i], isLast);
+            }
+        }
+
+        private static void SetKitLastState(GameObject kit, bool isLast)
+        {
+            if (kit == null) return;
+            Transform through = kit.transform.Find("PipeCapWhole (2)");
+            Transform end = kit.transform.Find("PipeCapRound (3)");
+            if (end == null) end = kit.transform.Find("PipeCapRound");
+            if (through != null) through.gameObject.SetActive(!isLast);
+            if (end != null) end.gameObject.SetActive(isLast);
         }
 
         public ChopMinion AddChopMinion(RowOutlet outlet)
@@ -169,7 +259,7 @@ namespace BM.Shaft
 
             GameObject minionGO = new GameObject("ChopMinion_" + _workers.Count);
             minionGO.transform.SetParent(transform, false);
-            minionGO.transform.localPosition = new Vector3(outlet.transform.localPosition.x - 0.8f, 0f, 0f);
+            minionGO.transform.localPosition = new Vector3(outlet.transform.localPosition.x + _minionXOffset, 0f, 0f);
 
             ChopMinion minion = minionGO.AddComponent<ChopMinion>();
             minion.AssignedOutlet = outlet;

@@ -7,7 +7,7 @@ namespace BM.Shaft
         [SerializeField] private int _currentRowIndex;
         [SerializeField] private float _walkSpeed = 2.5f;
         [SerializeField] private float _arriveDistance = 0.15f;
-        [SerializeField] private float _chopReach = 0.5f;
+        [SerializeField] private float _chopReach = 0.7f;
 
         private Animator _animator;
         private RowOutlet _targetOutlet;

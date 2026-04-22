@@ -28,7 +28,7 @@ namespace BM.Shaft
         [SerializeField] private int _backdropTilesX = 10;
         [SerializeField] private int _backdropTilesY = 3;
         [SerializeField] private int _rowsPerBackdropVariant = 2;
-        [SerializeField] private Vector3 _backdropLocalCenter = new Vector3(1f, 0f, -1f);
+        [SerializeField] private Vector3 _backdropLocalCenter = new Vector3(1f, 0f, -2f);
 
         [Header("Row Pipe Sides (per row, locked/unlocked)")]
         [SerializeField] private GameObject _pipesSidesLockedPrefab;
@@ -36,6 +36,12 @@ namespace BM.Shaft
         [SerializeField] private Vector3 _pipesSidesLocalPos = new Vector3(-1.21f, 1.94f, -0.05f);
         [SerializeField] private Vector3 _pipesSidesLocalRot = new Vector3(0f, 90f, 90f);
         [SerializeField] private Vector3 _pipesSidesLocalScale = new Vector3(3f, 3f, 3f);
+
+        [Header("Surface Pipe Connection")]
+        [SerializeField] private GameObject _pipesSurfacePrefab;
+        [SerializeField] private Vector3 _pipesSurfaceLocalPos = new Vector3(-1.21f, 0.51f, -0.17f);
+        [SerializeField] private Vector3 _pipesSurfaceLocalRot = new Vector3(0f, 90f, 90f);
+        [SerializeField] private Vector3 _pipesSurfaceLocalScale = new Vector3(3f, 3f, 3f);
 
         private readonly List<Row> _rows = new List<Row>();
         private int _ghoulRowIndex;
@@ -143,6 +149,7 @@ namespace BM.Shaft
             _rowParent.GetComponentsInChildren<Row>(true, _rows);
             if (_mainCamera == null) _mainCamera = Camera.main;
             CreateSurfaceMask();
+            CreateSurfacePipes();
             // Add backdrop + pipe sides + auto-upgrade button to Row 0 (scene-placed row doesn't go through CreateUpgradeButtonForRow)
             if (_rows.Count > 0)
             {
@@ -153,6 +160,28 @@ namespace BM.Shaft
                     CreateAutoUpgradeButtonForRow(row0.ToolUpgrade.gameObject, row0);
                 CreateEmptyRowBelow(row0);
             }
+        }
+
+        private void CreateSurfacePipes()
+        {
+            if (_surfaceRoot == null || _pipesSurfacePrefab == null) return;
+            if (_surfaceRoot.Find("Surface_Pipe_Connection") != null) return;
+
+            GameObject go = Instantiate(_pipesSurfacePrefab, _surfaceRoot);
+            go.name = "Surface_Pipe_Connection";
+            go.transform.localPosition = _pipesSurfaceLocalPos;
+            go.transform.localRotation = Quaternion.Euler(_pipesSurfaceLocalRot);
+            go.transform.localScale = _pipesSurfaceLocalScale;
+            SetLayerRecursive(go, _surfaceRoot.gameObject.layer);
+            foreach (var col in go.GetComponentsInChildren<Collider>())
+                Destroy(col);
+        }
+
+        private static void SetLayerRecursive(GameObject go, int layer)
+        {
+            go.layer = layer;
+            for (int i = 0; i < go.transform.childCount; i++)
+                SetLayerRecursive(go.transform.GetChild(i).gameObject, layer);
         }
 
         private void CreateSurfaceMask()
@@ -255,7 +284,7 @@ namespace BM.Shaft
             rowGO.transform.localPosition = new Vector3(0f, yPos, 0f);
 
             Row row = rowGO.AddComponent<Row>();
-            row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab, _bloodManager, 1.5f,
+            row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab, _bloodManager, 1.39f,
                 _minionModelPrefab, _minionAnimCtrl, _minionMaterial);
 
             CreateRowBackdrop(row);

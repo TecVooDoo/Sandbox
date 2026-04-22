@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 21, 2026 (Session 82 cont. -- PipesSides end-cap toggle + gauge alignment)
+**Last Updated:** April 21, 2026 (Session 83 -- Per-outlet Pipes_Outlet kit + KayKit anim import + layout alignment)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -16,6 +16,22 @@
 ## Current State
 
 **Phase:** Sprint 2 Phase 1-9 IN PROGRESS. Pipe "sides" kit integrated via prefabs; needs playtest tuning.
+
+**Session 83 (Apr 21, 2026) -- Per-outlet Pipes_Outlet kit + KayKit anim import + layout alignment:**
+- **Per-outlet Pipes_Outlet kit:** `Row.AddOutlet` now instantiates the full 5-piece `Pipes_Outlet.prefab` (T-cross + 3 caps) named `PipesOutletKit` instead of a single `RegularPipeShort`. Transform fields `_outletKitLocalPos/Euler/Scale` Inspector-tunable. `UpdateOutletCaps()` toggles children after each add: last kit shows `PipeCapRound (3)` (end cap), prior kits show `PipeCapWhole (2)` (through cap). Scene's `ShaftManager._pipeVisualPrefab` and Row 0's field both swapped to `Pipes_Outlet.prefab` (GUID `c52f4b7ae002cb24882d5c45064095ca`).
+- **Scene Row 0 migration:** Row 0's Outlet_0 still had the legacy single-mesh `PipeVisual` child. Replaced in-scene with a full `Pipes_Outlet` kit (named `PipesOutletKit`, end cap visible) via script-execute, so Scene view now shows the kit without needing play mode. `Row.Awake` also does this migration at runtime as a fallback: if an outlet has a legacy `PipeVisual` and no `PipesOutletKit`, destroy the legacy and spawn the kit.
+- **Outlet spacing 1.5 -> 1.39:** Outlet GameObject spacing now matches the visual pipe kit step so minions/ghoul positions align with the kit visuals. Removed the per-index `_outletKitXStepCorrection` drift correction (no longer needed). Changed in Row field default, Init param default, ShaftManager's call, and scene's Row 0 serialized value.
+- **Surface pipe connection:** `ShaftManager.CreateSurfacePipes()` instantiates `Pipes_Surface.prefab` under `_surfaceRoot` as `Surface_Pipe_Connection` with serialized local pos (-1.21, 0.51, -0.17), rot (0, 90, 90), scale (3, 3, 3). Runs AFTER `CreateSurfaceMask()` so the mask's Z=3 child-push doesn't clobber the serialized Z (user's decision -- Z push disconnected the pipe from PipesSides visually). `SetLayerRecursive()` pushes the whole kit onto `_surfaceRoot`'s layer so nested pipe pieces inherit the surface layer (7).
+- **KayKit animation import (10 FBXs):** Imported Rig_Large `CombatMelee, MovementAdvanced, Simulation, Special` and Rig_Medium `CombatMelee, CombatRanged, MovementAdvanced, Simulation, Special, Tools` from `E:\Game Assets\Itch\apps\kaykit-complete\...\KayKit Character Animations 1.1\Animations`. Import settings synced from `Rig_*_General.fbx` via script-execute (Generic rig, avatar setup, scale, compression, etc.) so all new FBXs drive the same skeleton.
+- **Layout alignment (Row/ChopMinion/Ghoul/BodyDrop):**
+  - `_bodyDropXOffset = -0.6f` serialized on Row -- BodyDrop shifts left under the kit visual instead of outlet-center.
+  - `_minionXOffset = -1.15f` serialized on Row -- ChopMinions stand 1.15 left of outlet (negative=left). `OnValidate` makes it live during play mode (repositions existing ChopMinions + BodyDrops without having to respawn).
+  - `Ghoul._chopReach = 0.7f` (was 0.5).
+  - Scene Ghoul moved from local (1.5, 0, 0) (stale from old 1.5 spacing) to (-1.15, 0, 0) so it starts beside outlet_0's body drop instead of floating where outlet_1 used to be.
+  - Backdrop local center Z -1 -> -2 (code default + scene Row 0 value) so it no longer overlaps the LeftoversGauge.
+- **ChopMinion polish:**
+  - Removed green placeholder cube leak: `Awake` created `CreatePlaceholderVisual()` (green cube) when no animator was detected, then `SetupModel` added the real model but never deleted the placeholder. `SetupModel` now destroys any `MinionVisual` child before instantiating the real model.
+  - `_modelYRotation` (default 90) serialized on ChopMinion with `OnValidate` -- tune live in Inspector if the model prefab's internal rotation makes Y=90 look like 45 visually.
 
 **Session 82 (Apr 21, 2026) -- Pipe visual kit (PipeDreamPack) + reference scene:**
 - **Reference scene `BM_Shaft_Pipes`:** New scene at `Assets/_Sandbox/_BM/Scenes/BM_Shaft_Pipes.unity` with hand-placed pipe layouts showing the target look. Contains `Surface_Pipe_Connection` (funnel->pipe decor with togglable `PipeBlock`/`PipeBaloon`), 4 `PipesOutlets` instances, `PipesSides` (unlocked state), `PipesSides (1)` (locked state).

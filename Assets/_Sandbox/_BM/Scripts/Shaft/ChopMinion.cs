@@ -5,10 +5,20 @@ namespace BM.Shaft
     public sealed class ChopMinion : RowWorker
     {
         [SerializeField] private float _chopInterval = 1f;
+        [SerializeField] private float _modelYRotation = 90f;
 
         private float _chopTimer;
         private Animator _animator;
+        private Transform _model;
         private static readonly int _animAttack = Animator.StringToHash("Attack");
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_model != null)
+                _model.localRotation = Quaternion.Euler(0f, _modelYRotation, 0f);
+        }
+#endif
 
         protected override void Awake()
         {
@@ -20,11 +30,14 @@ namespace BM.Shaft
         public void SetupModel(GameObject modelPrefab, RuntimeAnimatorController animCtrl, Material mat)
         {
             if (modelPrefab == null) return;
+            Transform placeholder = transform.Find("MinionVisual");
+            if (placeholder != null) Destroy(placeholder.gameObject);
             var model = Instantiate(modelPrefab, transform);
             model.name = "MinionModel";
             model.transform.localPosition = Vector3.zero;
-            model.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            model.transform.localRotation = Quaternion.Euler(0f, _modelYRotation, 0f);
             model.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            _model = model.transform;
             SetLayerRecursive(model, gameObject.layer);
 
             if (mat != null)
