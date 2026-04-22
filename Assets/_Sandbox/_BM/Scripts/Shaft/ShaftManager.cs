@@ -43,6 +43,10 @@ namespace BM.Shaft
         [SerializeField] private Vector3 _pipesSurfaceLocalRot = new Vector3(0f, 90f, 90f);
         [SerializeField] private Vector3 _pipesSurfaceLocalScale = new Vector3(3f, 3f, 3f);
 
+        [Header("Balance")]
+        [Tooltip("How many rows unlocked per gatherer slot earned (e.g. 5 = slot at rows 5, 10, 15...).")]
+        [SerializeField] private int _rowsPerGathererSlot = 5;
+
         private readonly List<Row> _rows = new List<Row>();
         private int _ghoulRowIndex;
         private int _viewedRowIndex;
@@ -60,18 +64,18 @@ namespace BM.Shaft
 
         private double GetRowDepthMultiplier(Row row)
         {
-            return 1.0 + row.RowIndex * 0.1;
+            return System.Math.Pow(1.2, row.RowIndex);
         }
 
         public double GetOutletCost(Row row)
         {
             int purchased = Mathf.Max(0, row.OutletCount - 1);
-            return 50 * System.Math.Pow(2, purchased) * GetRowDepthMultiplier(row);
+            return 100 * System.Math.Pow(2, purchased) * GetRowDepthMultiplier(row);
         }
 
         public double GetMinionCost(Row row)
         {
-            return 30 * System.Math.Pow(1.8, row.ChopMinionCount) * GetRowDepthMultiplier(row);
+            return 60 * System.Math.Pow(1.8, row.ChopMinionCount) * GetRowDepthMultiplier(row);
         }
 
         public bool TryBuyOutlet()
@@ -94,7 +98,7 @@ namespace BM.Shaft
 
         public double GetAutoButtonCost(Row row)
         {
-            return 200 * GetRowDepthMultiplier(row);
+            return 1600 * GetRowDepthMultiplier(row);
         }
 
         public bool TryBuyAutoButton()
@@ -111,7 +115,7 @@ namespace BM.Shaft
         public double GetGathererSpeedCost()
         {
             if (_gathererManager == null) return 0;
-            return 100 * System.Math.Pow(3, _gathererManager.SpeedTier - 1);
+            return 500 * System.Math.Pow(4, _gathererManager.SpeedTier - 1);
         }
 
         public int GathererSlotsAvailable => _gathererSlotsAvailable;
@@ -120,7 +124,7 @@ namespace BM.Shaft
         public double GetGathererCountCost()
         {
             if (_gathererManager == null) return 0;
-            return 80 * System.Math.Pow(2, _gathererManager.Count - 1);
+            return 500 * System.Math.Pow(3, _gathererManager.Count - 1);
         }
 
         public bool TryBuyGathererSpeed()
@@ -300,8 +304,12 @@ namespace BM.Shaft
             RowOutlet firstOutlet = row.AddOutlet();
             _rows.Add(row);
 
-            _gathererSlotsAvailable++;
-            Debug.Log("[BM] ShaftManager: +1 gatherer slot available, total=" + _gathererSlotsAvailable);
+            // Grant a gatherer slot every Nth row unlock (newIndex is the row we just added)
+            if (_rowsPerGathererSlot > 0 && newIndex % _rowsPerGathererSlot == 0)
+            {
+                _gathererSlotsAvailable++;
+                Debug.Log("[BM] ShaftManager: +1 gatherer slot available at row " + newIndex + ", total=" + _gathererSlotsAvailable);
+            }
 
             Debug.Log("[BM] ShaftManager: Row_" + newIndex + " unlocked at y=" + yPos + " with 1 outlet");
         }

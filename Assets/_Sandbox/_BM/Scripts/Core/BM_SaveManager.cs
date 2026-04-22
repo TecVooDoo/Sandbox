@@ -66,8 +66,17 @@ namespace BM.Core
             int gathererSpeed = ES3.Load<int>("gathererSpeedTier", SAVE_FILE, 1);
             int gathererSlots = ES3.Load<int>("gathererSlots", SAVE_FILE, 0);
 
-            // Unlock rows up to saved count (row 0 already exists in scene)
-            for (int i = _shaftManager.RowCount; i < savedRowCount; i++)
+            // Interleave UnlockNextRow + Descend so the safeguard in UnlockNextRow
+            // (which refuses to create a second row below the ghoul) doesn't block us.
+            // After this loop: rows = ghoulRow+1, ghoul sits at ghoulRow.
+            for (int i = 1; i <= ghoulRow && i < savedRowCount; i++)
+            {
+                _shaftManager.UnlockNextRow();
+                _shaftManager.Descend();
+            }
+            // If the save had one extra row unlocked below the ghoul (the normal "next row
+            // is ready, pending descend" state), create it too. Safeguard allows exactly one.
+            if (_shaftManager.RowCount < savedRowCount)
             {
                 _shaftManager.UnlockNextRow();
             }
@@ -120,13 +129,7 @@ namespace BM.Core
                 }
             }
 
-            // Descend ghoul to saved row
-            for (int i = 0; i < ghoulRow; i++)
-            {
-                _shaftManager.Descend();
-            }
-
-            // Restore gatherer state
+            // Gatherer state
             _gathererManager.SetSpeedTier(gathererSpeed);
             _gathererManager.SetCount(gathererCount);
 

@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 22, 2026 (Session 83 cont. -- Surface scene-placed + minion drift fix + Ghoul slot)
+**Last Updated:** April 22, 2026 (Session 84 -- Save/load multi-row fix + balance pass)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -16,6 +16,19 @@
 ## Current State
 
 **Phase:** Sprint 2 Phase 1-9 IN PROGRESS. Pipe "sides" kit integrated via prefabs; needs playtest tuning.
+
+**Session 84 (Apr 22, 2026) -- Save/load multi-row fix + balance pass:**
+- **Ghoul descent X fix (commit a9c78ba0):** `Descend()` and `ScrollView()` in ShaftManager were reparenting the Ghoul at hardcoded `(-1, 0, 0)` (old outlet_0-minion slot). Updated to `(0.24, 0, 0)` to match the scene starting slot after the outlet-layout overhaul.
+- **Save/load multi-row unlock fix:** Load could only unlock Row 0 and Row 1 — the UnlockNextRow safeguard (added Session 80 to prevent premature second-below-ghoul unlocks) blocked repeat unlocks because the ghoul index hadn't advanced yet. BM_SaveManager now interleaves `UnlockNextRow() + Descend()` pairwise, matching the saved ghoul row; a final single UnlockNextRow handles the "one extra unlocked below ghoul" case. Tested to row 24 with all rows restored and no click-to-descend needed.
+- **Balance pass (first pacing pass):**
+  - **Depth multiplier:** `1 + 0.1*row` (linear) -> `1.2^row` (exponential). Row 0 stays at 1.0; Row 5 = 2.49; Row 10 = 6.19; Row 25 = 95.4. Was the main culprit making post-Row-0 too fast.
+  - **Outlet base:** `50` -> `100` (doubled).
+  - **Minion base:** `30` -> `60` (doubled).
+  - **Auto-button base:** `200` -> `1600`. Was trivially cheap; now ~13% above the combined outlets+minions for that row at every depth. Ratio holds because it uses the same depth multiplier.
+  - **Gatherer speed cost:** `100 * 3^(tier-1)` -> `500 * 4^(tier-1)`. Old max-to-T5 cost was 4k (trivial); new is 42,500.
+  - **Gatherer count cost:** `80 * 2^(count-1)` -> `500 * 3^(count-1)`. Old was trivial at every tier.
+  - **Gatherer slot gating:** 1 slot per row unlocked -> 1 slot per N rows (`_rowsPerGathererSlot` serialized, default 5). With 25-row cap, 5 slots total earnable. Starting count 1 + 5 earned = max 6 gatherers per run.
+- **Numbers for Row 0 (depth=1.0) after balance:** outlets 100/200/400, minions 60/108/194/350, combined 1412, auto-button 1600.
 
 **Session 83 cont. (Apr 22, 2026) -- Surface scene-placed + minion drift fix + Ghoul slot:**
 - **Minion root-motion drift fix:** ChopMinions were slowly rotating toward camera and sinking into the gauge over time -- classic root motion accumulation, the animator clips had tiny positional/rotational deltas that compounded each cycle. `Animator.applyRootMotion = false` set in `ChopMinion.SetupModel()`, `ChopMinion.Awake()` auto-detect branch, and `Ghoul.Awake()`. Transforms are fully driven by code now; animation plays in place.
