@@ -262,7 +262,7 @@ namespace BM.Shaft
             {
                 _ghoul.MoveToRow(_viewedRowIndex);
                 _ghoul.transform.SetParent(viewedRow.transform, false);
-                _ghoul.transform.localPosition = new Vector3(-1f, 0f, 0f);
+                _ghoul.transform.localPosition = new Vector3(0.24f, 0f, 0f);
             }
 
             CreateEmptyRowBelow(viewedRow);
@@ -324,7 +324,7 @@ namespace BM.Shaft
             {
                 _ghoul.MoveToRow(_ghoulRowIndex);
                 _ghoul.transform.SetParent(nextRow.transform, false);
-                _ghoul.transform.localPosition = new Vector3(-1f, 0f, 0f);
+                _ghoul.transform.localPosition = new Vector3(0.24f, 0f, 0f);
             }
 
             // Camera stays fixed. Player stays at fixed screen position.
