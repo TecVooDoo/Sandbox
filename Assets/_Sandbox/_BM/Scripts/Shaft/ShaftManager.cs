@@ -187,6 +187,7 @@ namespace BM.Shaft
         private void CreateSurfaceMask()
         {
             if (_surfaceRoot == null) return;
+            if (_surfaceRoot.Find("SurfaceMask") != null) return;
 
             Color bgColor = _mainCamera != null ? _mainCamera.backgroundColor : new Color(0.07f, 0.05f, 0.07f);
             Material mat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
@@ -383,12 +384,12 @@ namespace BM.Shaft
         /// </summary>
         private void CreateRowPipesSides(Row row, bool unlocked)
         {
+            // Scene-placed PipesSides (e.g. Row 0) wins; leave it alone.
+            Transform existing = row.transform.Find("PipesSides");
+            if (existing != null) return;
+
             GameObject prefab = unlocked ? _pipesSidesUnlockedPrefab : _pipesSidesLockedPrefab;
             if (prefab == null) return;
-
-            // Remove any existing PipesSides child so swap calls replace cleanly.
-            Transform existing = row.transform.Find("PipesSides");
-            if (existing != null) Destroy(existing.gameObject);
 
             GameObject go = Instantiate(prefab, row.transform);
             go.name = "PipesSides";

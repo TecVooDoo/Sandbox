@@ -24,7 +24,8 @@ namespace BM.Shaft
         {
             base.Awake();
             _animator = GetComponentInChildren<Animator>();
-            if (_animator == null) CreatePlaceholderVisual();
+            if (_animator != null) _animator.applyRootMotion = false;
+            else CreatePlaceholderVisual();
         }
 
         public void SetupModel(GameObject modelPrefab, RuntimeAnimatorController animCtrl, Material mat)
@@ -47,6 +48,7 @@ namespace BM.Shaft
             _animator = model.GetComponent<Animator>();
             if (_animator == null) _animator = model.AddComponent<Animator>();
             if (animCtrl != null) _animator.runtimeAnimatorController = animCtrl;
+            _animator.applyRootMotion = false;
         }
 
         private static void SetLayerRecursive(GameObject go, int layer)

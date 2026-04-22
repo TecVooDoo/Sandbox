@@ -23,6 +23,7 @@ namespace BM.Shaft
         {
             base.Awake();
             _animator = GetComponentInChildren<Animator>();
+            if (_animator != null) _animator.applyRootMotion = false;
         }
 
         public void MoveToRow(int rowIndex)

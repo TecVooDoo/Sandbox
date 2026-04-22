@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 21, 2026 (Session 83 -- Per-outlet Pipes_Outlet kit + KayKit anim import + layout alignment)
+**Last Updated:** April 22, 2026 (Session 83 cont. -- Surface scene-placed + minion drift fix + Ghoul slot)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -16,6 +16,14 @@
 ## Current State
 
 **Phase:** Sprint 2 Phase 1-9 IN PROGRESS. Pipe "sides" kit integrated via prefabs; needs playtest tuning.
+
+**Session 83 cont. (Apr 22, 2026) -- Surface scene-placed + minion drift fix + Ghoul slot:**
+- **Minion root-motion drift fix:** ChopMinions were slowly rotating toward camera and sinking into the gauge over time -- classic root motion accumulation, the animator clips had tiny positional/rotational deltas that compounded each cycle. `Animator.applyRootMotion = false` set in `ChopMinion.SetupModel()`, `ChopMinion.Awake()` auto-detect branch, and `Ghoul.Awake()`. Transforms are fully driven by code now; animation plays in place.
+- **Ghoul starts in 2nd-minion slot:** Scene Ghoul moved from (-1.15, 0, 0) (outlet_0's minion slot, same side) to (0.24, 0, 0) = outlet_1's minion slot (1.39 + (-1.15)) -- on the right side of outlet_0 so Ghoul and the first ChopMinion don't stack.
+- **Surface area scene-placed for manual tuning:** User wanted to hand-tune the surface pieces. `SurfaceMask`, `Surface_Pipe_Connection`, and Row_0's `PipesSides` now live as persistent scene children. `CreateSurfaceMask`, `CreateSurfacePipes`, and `CreateRowPipesSides` all skip-if-exists so scene-placed wins, dynamic rows still auto-spawn. Surface mask Material baked as asset at `Assets/_Sandbox/_BM/Materials/SurfaceMask.mat`.
+- **Surface parent tilt discovery:** `[Surface]` root had an unexpected X tilt that threw off all child alignments. User manually retuned surface pipes (moved forward + reduced scale), funnel (moved to avoid mask occlusion), overlay. Pipes and funnel now FAKE the connection visually rather than aligning in world space. Explains the "odd" local values (e.g. Surface_Pipe_Connection at localZ=3.0 with smaller scale).
+- **Gatherer Z alignment:** PickupPoint + DropPoint under `[Surface]` moved from localZ=0 to localZ=3 so gatherers walk on the same Z plane as the surface pipe visual (which user tuned to Z=3). BodyFunnel left alone at its user-tuned localZ=2.71.
+- **Minion offset scene serialization fix:** Row_0's serialized `_minionXOffset` was stuck at -1 from when the field was first introduced with that default; bumping the source default to -1.15 didn't retroactively update the serialized instance. Scene value hand-patched to -1.15.
 
 **Session 83 (Apr 21, 2026) -- Per-outlet Pipes_Outlet kit + KayKit anim import + layout alignment:**
 - **Per-outlet Pipes_Outlet kit:** `Row.AddOutlet` now instantiates the full 5-piece `Pipes_Outlet.prefab` (T-cross + 3 caps) named `PipesOutletKit` instead of a single `RegularPipeShort`. Transform fields `_outletKitLocalPos/Euler/Scale` Inspector-tunable. `UpdateOutletCaps()` toggles children after each add: last kit shows `PipeCapRound (3)` (end cap), prior kits show `PipeCapWhole (2)` (through cap). Scene's `ShaftManager._pipeVisualPrefab` and Row 0's field both swapped to `Pipes_Outlet.prefab` (GUID `c52f4b7ae002cb24882d5c45064095ca`).
