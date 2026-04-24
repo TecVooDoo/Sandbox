@@ -84,19 +84,23 @@ namespace BM.UI
                     : "Row " + _shaftManager.GhoulRowIndex;
 
             if (_outletLabel != null)
-                _outletLabel.text = "Outlets:" + viewedRow.OutletCount + "/" + viewedRow.MaxOutlets + "  Minions:" + viewedRow.ChopMinionCount + "/" + viewedRow.OutletCount;
+                _outletLabel.text = "Outlets:" + viewedRow.OutletCount + "/" + viewedRow.MaxOutlets + "  Minions:" + viewedRow.ChopMinionCount + "/" + viewedRow.MaxChopMinions;
 
-            // Purchases only work on the active row
-            bool onActiveRow = !viewing;
-            bool outletAtMax = row.OutletCount >= row.MaxOutlets;
-            bool canBuyOutlet = onActiveRow && !outletAtMax && _bloodManager.CanAfford(_shaftManager.GetOutletCost(row));
+            // Purchases operate on the viewed row (can buy for any row you've scrolled to, like the auto-upgrade button).
+            bool outletAtMax = viewedRow.OutletCount >= viewedRow.MaxOutlets;
+            bool canBuyOutlet = !outletAtMax && _bloodManager.CanAfford(_shaftManager.GetOutletCost(viewedRow));
             if (_btnBuyOutlet != null) _btnBuyOutlet.SetEnabled(canBuyOutlet);
-            if (_outletCost != null) _outletCost.text = outletAtMax ? "MAX" : "Cost: " + FormatNumber(_shaftManager.GetOutletCost(row));
+            if (_outletCost != null) _outletCost.text = outletAtMax ? "MAX" : "Cost: " + FormatNumber(_shaftManager.GetOutletCost(viewedRow));
 
-            bool hasUnminioned = row.GetNextUnminionedOutlet() != null;
-            bool canBuyMinion = onActiveRow && hasUnminioned && _bloodManager.CanAfford(_shaftManager.GetMinionCost(row));
+            bool minionAtMax = !viewedRow.CanBuyMinion;
+            bool canBuyMinion = !minionAtMax && _bloodManager.CanAfford(_shaftManager.GetMinionCost(viewedRow));
             if (_btnBuyMinion != null) _btnBuyMinion.SetEnabled(canBuyMinion);
-            if (_minionCost != null) _minionCost.text = !hasUnminioned ? "ALL STAFFED" : "Cost: " + FormatNumber(_shaftManager.GetMinionCost(row));
+            if (_minionCost != null)
+            {
+                if (minionAtMax) _minionCost.text = "MAX";
+                else if (viewedRow.ChopMinionCount >= 1) _minionCost.text = "BONUS: " + FormatNumber(_shaftManager.GetMinionCost(viewedRow));
+                else _minionCost.text = "Cost: " + FormatNumber(_shaftManager.GetMinionCost(viewedRow));
+            }
 
             bool canDescend = _shaftManager.CanDescend;
             if (_btnDescend != null) _btnDescend.SetEnabled(canDescend);

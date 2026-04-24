@@ -92,7 +92,7 @@ namespace BM.Core
                 while (row.OutletCount < savedOutlets) row.BuyOutlet();
 
                 int savedMinions = ES3.Load<int>(prefix + "minions", SAVE_FILE, 0);
-                while (row.ChopMinionCount < savedMinions) row.BuyMinion();
+                while (row.ChopMinionCount < savedMinions && row.BuyMinion()) { }
 
                 int savedTier = ES3.Load<int>(prefix + "toolTier", SAVE_FILE, 0);
                 if (row.ToolUpgrade != null)

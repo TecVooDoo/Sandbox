@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 22, 2026 (Session 84 -- Save/load multi-row fix + balance pass)
+**Last Updated:** April 23, 2026 (Session 85 -- Mobile minions + unlock-ready gate + viewed-row purchases + HUD readability)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -16,6 +16,27 @@
 ## Current State
 
 **Phase:** Sprint 2 Phase 1-9 IN PROGRESS. Pipe "sides" kit integrated via prefabs; needs playtest tuning.
+
+**Session 85 (Apr 23, 2026) -- Mobile minions + unlock-ready gate + viewed-row purchases + HUD readability:**
+- **Descend fix when scrolled up:** `ShaftManager.Descend()` incremented `_rowParent.y` by one row spacing, assuming viewport was aligned to active row. If player scrolled up to a lower row and pressed descend, the shaft position was one row past the view anchor, making the new active row fly offscreen. Now sets `_rowParent.y = _viewedRowIndex * _rowSpacing` directly (matches `ScrollView` pattern).
+- **Mobile minions + count redesign:**
+  - `Row._maxChopMinions = 2` (new serialized field). Minion AI rewrite in ChopMinion: walk/chop like Ghoul, find nearest unclaimed outlet with body, claim/release via new `Row.IsOutletClaimedByMinion(outlet, except)` helper so two minions can't race the same body. Serialized `_walkSpeed=2.0`, `_arriveDistance=0.15`, `_chopReach=0.7`.
+  - `AddChopMinion()` no longer takes an outlet arg; spawns minion N at outlet-N's column so they start apart.
+  - Target-release on ConsumeBody happens naturally: after the chop impact, the outlet goes `IsClear`, next Update frame clears `_target`, minion re-picks.
+- **Unlock gate + luxury minion:**
+  - Renamed `Row.IsFullyBuilt` -> `IsUnlockReady` (4 outlets + 1 minion). Added `IsComplete` (4 outlets + 2 minions) for informational/UI use.
+  - Next-row unlock now fires on `IsUnlockReady`. 2nd minion is an optional "bonus" purchase; not required to descend.
+  - Minion cost refactored: `count==0 ? 480 : 2640` times depth (flat values, no 1.8 exponent since count caps at 2). M1 is the required worker; M2 is luxury (~5.5x).
+- **Viewed-row purchases:** `TryBuyOutlet()` and `TryBuyMinion()` now operate on `ViewedRow ?? ActiveRow` instead of strictly `ActiveRow`. HUD uses `viewedRow` for cost labels + button gates. Player can scroll to any unlocked row and buy outlets/minions for it (matching the auto-upgrade button's per-row behavior). Descend gate still locked to active row's `IsUnlockReady`.
+- **Gatherer tuning:**
+  - Starting count 1 -> 2 (code default + scene patch -- scene had stale `_count: 1` from before the code bump).
+  - Slot gating: 1 per 5 rows via `_rowsPerGathererSlot` (configurable). 25-row cap -> 5 earnable slots + 2 start = 7 max.
+  - Speed cost `100*3^(t-1)` -> `500*4^(t-1)`; count cost `80*2^(c-1)` -> `500*3^(c-1)` (steeper, from session 84).
+- **HUD readability:**
+  - Fonts bumped ~30%: blood counter 22->26, blood icon 16->20, row label 12->16, upgrade title 14->18, upgrade cost 11->14, upgrade level 9->12.
+  - Bottom buttons given near-opaque dark base (alpha 0.55 -> 0.92) with darkened color tint preserved via border: upgrade `(40,10,10,.92)`, minion `(10,15,35,.92)`, auto `(35,22,8,.92)`, descend `(10,30,10,.92)`. Row backdrop blocks no longer bleed through button text.
+  - Minion cost label shows "BONUS: X" after M1 is bought, "MAX" at 2, "Cost: X" at 0. Outlet label shows `X/MaxChopMinions` instead of `X/OutletCount`.
+- **Save/load guard for reduced max:** `while (row.ChopMinionCount < savedMinions && row.BuyMinion())` now bails if BuyMinion returns false, protecting against old saves with 3-4 minions against new cap of 2.
 
 **Session 84 (Apr 22, 2026) -- Save/load multi-row fix + balance pass:**
 - **Ghoul descent X fix (commit a9c78ba0):** `Descend()` and `ScrollView()` in ShaftManager were reparenting the Ghoul at hardcoded `(-1, 0, 0)` (old outlet_0-minion slot). Updated to `(0.24, 0, 0)` to match the scene starting slot after the outlet-layout overhaul.

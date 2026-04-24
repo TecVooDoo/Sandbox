@@ -26,13 +26,13 @@
 }
 
 .blood-icon {
-    font-size: 16px;
+    font-size: 20px;
     color: rgb(200, 50, 50);
     margin-right: 3px;
 }
 
 .blood-counter {
-    font-size: 22px;
+    font-size: 26px;
     color: rgb(220, 180, 120);
     -unity-font-style: bold;
     -unity-text-align: middle-center;
@@ -82,7 +82,7 @@
 }
 
 .row-label {
-    font-size: 12px;
+    font-size: 16px;
     color: rgb(200, 170, 120);
     -unity-font-style: bold;
     margin: 0 3px;
@@ -112,7 +112,7 @@
     flex-grow: 1;
     margin: 0 3px;
     padding: 6px 4px;
-    background-color: rgba(100, 25, 20, 0.55);
+    background-color: rgba(40, 10, 10, 0.92);
     border-color: rgb(180, 70, 50);
     border-width: 1px;
     border-radius: 4px;
@@ -137,7 +137,7 @@
 }
 
 .minion-btn {
-    background-color: rgba(25, 40, 90, 0.55);
+    background-color: rgba(10, 15, 35, 0.92);
     border-color: rgb(70, 100, 180);
 }
 
@@ -157,7 +157,7 @@
 }
 
 .autobutton-btn {
-    background-color: rgba(80, 50, 20, 0.55);
+    background-color: rgba(35, 22, 8, 0.92);
     border-color: rgb(180, 140, 60);
 }
 
@@ -180,7 +180,7 @@
     flex-grow: 1;
     margin: 0 3px;
     padding: 6px 4px;
-    background-color: rgba(25, 65, 25, 0.55);
+    background-color: rgba(10, 30, 10, 0.92);
     border-color: rgb(60, 150, 60);
     border-width: 1px;
     border-radius: 4px;
@@ -206,19 +206,19 @@
 
 /* ===== TEXT STYLES ===== */
 .upgrade-title {
-    font-size: 14px;
+    font-size: 18px;
     color: rgb(240, 220, 180);
     -unity-font-style: bold;
 }
 
 .upgrade-cost {
-    font-size: 11px;
+    font-size: 14px;
     color: rgb(180, 150, 100);
     margin-top: 1px;
 }
 
 .upgrade-level {
-    font-size: 9px;
+    font-size: 12px;
     color: rgb(130, 110, 80);
     margin-top: 1px;
 }

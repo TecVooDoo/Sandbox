@@ -358,6 +358,7 @@ MonoBehaviour:
   _pipesSurfaceLocalPos: {x: -1.21, y: 0.51, z: -0.17}
   _pipesSurfaceLocalRot: {x: 0, y: 90, z: 90}
   _pipesSurfaceLocalScale: {x: 3, y: 3, z: 3}
+  _rowsPerGathererSlot: 5
 --- !u!4 &155519923
 Transform:
   m_ObjectHideFlags: 0
@@ -715,7 +716,7 @@ PrefabInstance:
     - target: {fileID: 3923070863413878072, guid: c52f4b7ae002cb24882d5c45064095ca,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.14
+      value: -0.17
       objectReference: {fileID: 0}
     - target: {fileID: 3923070863413878072, guid: c52f4b7ae002cb24882d5c45064095ca,
         type: 3}
@@ -1058,6 +1059,7 @@ MonoBehaviour:
   _outletSpacing: 1.39
   _outletHeight: 1.5
   _maxOutlets: 4
+  _maxChopMinions: 2
   _outletKitLocalPos: {x: -0.63, y: -0.14, z: -0.01}
   _outletKitLocalEuler: {x: 90, y: 0, z: 0}
   _outletKitLocalScale: {x: 3, y: 3, z: 3}
@@ -2317,7 +2319,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f0b0d519e37e04b4a8b915d0a9b6396c, type: 2}
   - {fileID: 11400000, guid: 606b8af0042ac004681c1698e9fc7396, type: 2}
   - {fileID: 11400000, guid: 4ce179984b1f70a4aa247c1815d087f5, type: 2}
-  _count: 1
+  _count: 2
   _speedTier: 1
   _defaultCarryTier: 1
   _baseSpeed: 4

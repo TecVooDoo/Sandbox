@@ -75,12 +75,15 @@ namespace BM.Shaft
 
         public double GetMinionCost(Row row)
         {
-            return 60 * System.Math.Pow(1.8, row.ChopMinionCount) * GetRowDepthMultiplier(row);
+            // Minion 1 is the required worker. Minion 2 is a luxury (5.5x M1) — not required to descend.
+            double baseCost = row.ChopMinionCount == 0 ? 480 : 2640;
+            return baseCost * GetRowDepthMultiplier(row);
         }
 
         public bool TryBuyOutlet()
         {
-            Row row = ActiveRow;
+            // Buy for the currently-viewed row (players can scroll up to a lower row and buy there).
+            Row row = ViewedRow ?? ActiveRow;
             if (row == null || row.OutletCount >= row.MaxOutlets) return false;
             double cost = GetOutletCost(row);
             if (_bloodManager == null || !_bloodManager.TrySpend(cost)) return false;
@@ -89,8 +92,8 @@ namespace BM.Shaft
 
         public bool TryBuyMinion()
         {
-            Row row = ActiveRow;
-            if (row == null || row.GetNextUnminionedOutlet() == null) return false;
+            Row row = ViewedRow ?? ActiveRow;
+            if (row == null || !row.CanBuyMinion) return false;
             double cost = GetMinionCost(row);
             if (_bloodManager == null || !_bloodManager.TrySpend(cost)) return false;
             return row.BuyMinion();
@@ -236,7 +239,7 @@ namespace BM.Shaft
             Row activeRow = GetRow(_ghoulRowIndex);
             if (activeRow == null) return;
 
-            if (!_nextRowUnlocked && activeRow.IsFullyBuilt)
+            if (!_nextRowUnlocked && activeRow.IsUnlockReady)
             {
                 UnlockNextRow();
                 _nextRowUnlocked = true;
@@ -336,13 +339,12 @@ namespace BM.Shaft
             }
 
             // Camera stays fixed. Player stays at fixed screen position.
-            // Shift the entire [Shaft] parent UP by one row spacing so the next row
-            // slides up to where the player is. Completed rows scroll up behind the mask.
+            // Align the [Shaft] parent so the new active row is centered in view.
+            // Setting directly (not incrementing) so descending from a scrolled-up view
+            // still lands on the ghoul's row instead of one-row-offset from wherever we were.
             if (_rowParent != null)
             {
-                Vector3 shaftPos = _rowParent.position;
-                shaftPos.y += _rowSpacing;
-                _rowParent.position = shaftPos;
+                _rowParent.position = new Vector3(_rowParent.position.x, _viewedRowIndex * _rowSpacing, _rowParent.position.z);
             }
 
             if (_gathererManager != null) _gathererManager.UpdateUnlockedBodies(_ghoulRowIndex);

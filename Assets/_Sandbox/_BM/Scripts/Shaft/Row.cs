@@ -22,6 +22,7 @@ namespace BM.Shaft
         [SerializeField] private float _outletSpacing = 1.39f;
         [SerializeField] private float _outletHeight = 1.5f;
         [SerializeField] private int _maxOutlets = 4;
+        [SerializeField] private int _maxChopMinions = 2;
 
         [Header("Outlet Pipe Kit Transform")]
         [SerializeField] private Vector3 _outletKitLocalPos = new Vector3(-0.63f, -0.14f, -0.01f);
@@ -122,11 +123,30 @@ namespace BM.Shaft
 
         public bool BuyMinion()
         {
-            RowOutlet target = GetNextUnminionedOutlet();
-            if (target == null) return false;
-            return AddChopMinion(target) != null;
+            if (ChopMinionCount >= _maxChopMinions) return false;
+            return AddChopMinion() != null;
         }
-        public bool IsFullyBuilt => _outlets.Count >= _maxOutlets && ChopMinionCount >= _maxOutlets;
+        public bool CanBuyMinion => ChopMinionCount < _maxChopMinions;
+        public int MaxChopMinions => _maxChopMinions;
+        /// <summary>4 outlets + 1 minion. Triggers next-row unlock.</summary>
+        public bool IsUnlockReady => _outlets.Count >= _maxOutlets && ChopMinionCount >= 1;
+        /// <summary>4 outlets + 2 minions (second minion is a luxury purchase, not required to progress).</summary>
+        public bool IsComplete => _outlets.Count >= _maxOutlets && ChopMinionCount >= _maxChopMinions;
+
+        /// <summary>
+        /// True if another ChopMinion in this row is already targeting this outlet.
+        /// Used by ChopMinion target selection to prevent two minions racing the same body.
+        /// </summary>
+        public bool IsOutletClaimedByMinion(RowOutlet outlet, ChopMinion except)
+        {
+            if (outlet == null) return false;
+            for (int i = 0; i < _workers.Count; i++)
+            {
+                if (_workers[i] is ChopMinion cm && cm != except && cm.Target == outlet)
+                    return true;
+            }
+            return false;
+        }
 
         public bool HasAutoButton
         {
@@ -253,21 +273,25 @@ namespace BM.Shaft
             if (end != null) end.gameObject.SetActive(isLast);
         }
 
-        public ChopMinion AddChopMinion(RowOutlet outlet)
+        public ChopMinion AddChopMinion()
         {
-            if (outlet == null) return null;
+            if (ChopMinionCount >= _maxChopMinions) return null;
+
+            // Spawn each minion next to a different outlet column so they don't pile up at start.
+            int minionIdx = ChopMinionCount;
+            RowOutlet spawnRef = minionIdx < _outlets.Count ? _outlets[minionIdx] : (_outlets.Count > 0 ? _outlets[0] : null);
+            float spawnX = spawnRef != null ? spawnRef.transform.localPosition.x + _minionXOffset : 0f;
 
             GameObject minionGO = new GameObject("ChopMinion_" + _workers.Count);
             minionGO.transform.SetParent(transform, false);
-            minionGO.transform.localPosition = new Vector3(outlet.transform.localPosition.x + _minionXOffset, 0f, 0f);
+            minionGO.transform.localPosition = new Vector3(spawnX, 0f, 0f);
 
             ChopMinion minion = minionGO.AddComponent<ChopMinion>();
-            minion.AssignedOutlet = outlet;
             if (_minionModelPrefab != null)
                 minion.SetupModel(_minionModelPrefab, _minionAnimCtrl, _minionMaterial);
 
             _workers.Add(minion);
-            Debug.Log("[BM] Row " + _rowIndex + " AddChopMinion for outlet " + outlet.name);
+            Debug.Log("[BM] Row " + _rowIndex + " AddChopMinion (#" + ChopMinionCount + "/" + _maxChopMinions + ")");
             return minion;
         }
 

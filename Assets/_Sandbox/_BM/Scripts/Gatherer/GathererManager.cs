@@ -12,7 +12,7 @@ namespace BM.Gatherer
         [SerializeField] private Transform _pickupPoint;
         [SerializeField] private Transform _dropPoint;
         [SerializeField] private BodyConfigSO[] _allBodies;
-        [SerializeField] private int _count = 1;
+        [SerializeField] private int _count = 2;
         [SerializeField] private int _speedTier = 1;
         [SerializeField] private int _defaultCarryTier = 1;
         [SerializeField] private float _baseSpeed = 1.5f;
