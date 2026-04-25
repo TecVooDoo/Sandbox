@@ -133,12 +133,15 @@ See `Sandbox_AssetLog.md` (315+ entries) for full eval details on any package.
 See [MCP_ConnectionBrief.md](MCP_ConnectionBrief.md) for full details.
 
 **Quick version:**
-1. MCP plugin installs server exe to `Library/mcp-server/win-x64/`
-2. Note port from AI Game Developer panel in Unity Editor
-3. Create `.vscode/mcp.json` (Unity MCP + Blender)
-4. Create `.claude/mcp.json` manually (Unity MCP + Blender)
-5. Add project path to `additionalDirectories` in global `~/.claude/settings.json`
-6. Update port registry in MCP_ConnectionBrief.md
+1. MCP plugin (v0.66+) installs server exe to `Library/mcp-server/win-x64/`
+2. Open AI Game Developer panel in Unity, note the port number
+3. In the panel: set **Transport: http**, then click **Reconfigure** under MCP — writes `.mcp.json` in URL+`type:http` form
+4. Mirror the `ai-game-developer` entry into `.claude/mcp.json` by hand
+5. Manually add Blender entry to both `.mcp.json` and `.claude/mcp.json`
+6. Add project path to `additionalDirectories` in global `~/.claude/settings.json`
+7. Update port registry in MCP_ConnectionBrief.md
+
+**Critical:** never put `command`/`args` for `ai-game-developer` in `.mcp.json` — that re-introduces the pre-v0.66 stdio port-race that fails intermittently while showing a green connection light.
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Purpose:** Track every asset, package, and technique evaluated in Sandbox. This is the primary document for the project.
 
-**Last Updated:** April 9, 2026 (TecVooDoo Session 2 -- 4 new TMCP tool groups + TVG + TVU updates)
+**Last Updated:** April 25, 2026 (TecVooDoo Session 4 -- COZY 3 TMCP tool group built)
 
 > **NOTE:** This document was reconstructed on Feb 23, 2026 after the Sandbox project became corrupt and the Documents folder was lost. The summary table (all 135 entries) has been fully recovered from session context. Detailed ENTRY blocks for entries 001-115 are pending recovery from session JSONL at `C:\Users\steph\.claude\projects\e--Unity-Sandbox\99250266-b660-4ea0-88f0-61e5b98f52e1.jsonl`. Entries 116-135 (Session 35 UI Toolkit batch) are summarized in the session transcript.
 
@@ -422,6 +422,17 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 325 | Lumen: Stylized Light FX 2.0.5 (Distant Lands) | Asset Store | VFX (Stylized Mesh-Based Volumetric Lighting) | Approved | VFX, Environment | 2026-04-09 |
 | 326 | Ultimate Terrain (Pampel Games) | Asset Store | Tools (Procedural Terrain Generation + Runtime Editing) | Approved | Recommended, Environment | 2026-04-09 |
 | 327 | Map Graph (Insane Scatterbrain) | Asset Store | Tools (Graph-Based Procedural 2D Map Generation) | Approved | -- | 2026-04-09 |
+| 328 | uLipSync 3.1.5 (hecomi) | GitHub / UPM | Audio (Phoneme Detection + Lip Sync) | Approved | Recommended | 2026-04-10 |
+| 329 | Real Blood (Knife) | Asset Store | VFX / Gore (Blood Decals, Liquid Surface, Damage) | Rejected (URP) / Recommended (HDRP) | -- | 2026-04-11 |
+| 330 | Technie Collider Creator 2 (Triangular Pixels) | Asset Store | Editor Tool (Paint-Based Collider Authoring + VHACD Auto-Decomp) | Approved | Recommended | 2026-04-21 |
+| 331 | Synty InterfaceCore | SyntyPass | UI (Shared Framework for Synty Interface Packs) | Approved | -- | 2026-04-21 |
+| 332 | Synty InterfaceDarkFantasyHUD | SyntyPass | UI (Dark Fantasy HUD Prefab Library) | Approved | Recommended, UI | 2026-04-21 |
+| 333 | MK Edge Detection (Michael Kremmel) | Asset Store | VFX / Post-Processing (Edge Detection / Cel Outlines / Sketch Look) | Approved | Recommended, VFX | 2026-04-21 |
+| 334 | PressE PRO 2 (Fast Studios) | Asset Store | Gameplay Framework (Interaction Prompt / Grab / Deposit / Key System) | Approved | Recommended | 2026-04-21 |
+| 335 | The Coolest Chess (Freedom Developer) | Asset Store | Gameplay (Complete Chess Game w/ AI, Stockfish, PGN, Puzzle Editor) | Approved | -- | 2026-04-21 |
+| 336 | Poly Art: Animal Forest Set (Malbers Animations) | Asset Store | Art / Animation (Low-Poly Forest Animals for Animal Controller) | Approved | Recommended, Character | 2026-04-21 |
+| 337 | COZY 3: Stylized Weather (Distant Lands) | Asset Store | Environment / Sky (Stylized Weather, Day/Night, Atmosphere, Biomes) | Approved | Recommended, Environment | 2026-04-21 |
+| 338 | RPG Monster Bundle Polyart (Pxltiger) | Asset Store | Art / Animation (30 Stylized Low-Poly Fantasy Monsters w/ Full Anim Sets) | Approved | Conditional, Character | 2026-04-25 |
 
 ---
 
@@ -10826,6 +10837,7 @@ Tracks assets evaluated for MCP tool potential. "Not listed" means not yet evalu
 | Lumen | ENTRY-325 | Built | 2 tools: lumen-query, lumen-configure. `#if HAS_LUMEN` |
 | uLipSync | ENTRY-328 | Built | 3 tools: lipsync-query, lipsync-configure, lipsync-bake. `#if HAS_ULIPSYNC`. Built M3 S2. |
 | Timeflow | ENTRY-100 | Built | 4 tools: timeflow-query, timeflow-control, timeflow-configure-tween, timeflow-configure-event. `#if HAS_TIMEFLOW`. Built TVD2. Re-eval Conditional -> Recommended. |
+| COZY 3 Stylized Weather | ENTRY-337 | Built | 5 tools: cozy-query, cozy-set-weather, cozy-set-time, cozy-configure-module, cozy-set-biome. `MCPTools.Cozy.Editor` asmdef + direct refs to `DistantLands.Cozy.Runtime`. Built TVD4. |
 
 ### MCP Controllability Evaluated -- Audio (AudioProject Sessions 6 + 8)
 
@@ -11874,6 +11886,847 @@ The pre-bake + Timeline workflow is ideal for offline animated series production
 
 **TecVooDoo Utilities Candidate:** No -- domain-specific gore VFX system, no general-purpose utility code.
 **TecVooDoo Games Candidate:** No -- third-party package, not something to re-implement or absorb.
+
+---
+
+### ENTRY-330: Technie Collider Creator 2 (Triangular Pixels)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Technie Collider Creator 2 |
+| **Publisher** | Triangular Pixels |
+| **Source** | Unity Asset Store |
+| **Category** | Editor Tool / Physics (Paint-Based Collider Authoring) |
+| **Price** | Paid |
+| **Version** | v2 series (install directory is `Technie/PhysicsCreator/`) |
+| **Unity Versions** | Unity 2017.4+ / 2018.4+ / 6000.x (verified on 6000.3.10f1) |
+| **Pipeline** | **Pipeline-agnostic** -- output is native Unity colliders (Box / Sphere / Capsule / MeshCollider) |
+| **Dependencies** | None. Ships its own VHACD native plugin (BSD 3-Clause) + embedded QHull (separate license). |
+| **Install Size** | Medium (~3 editor asmdefs, 49 scripts, 4 platform VHACD binaries, example scene + models) |
+| **Evaluated** | Apr 21, 2026 |
+| **Evaluated in** | Sandbox `Assets/Technie/PhysicsCreator/`, EvalTestScene |
+| **Verdict** | **Approved, Recommended** -- best-in-class collider authoring for low-poly kits (KayKit, Synty, Suriyun, PolygonHorror*, etc.) |
+
+**What It Does:** Editor-only tool that lets you author Unity colliders for arbitrary meshes by **painting triangles** directly in the Scene View. Each painted selection becomes a "hull" that Unity generates into a standard Collider at commit time. Seven hull types cover the full spectrum: `Box`, `Sphere`, `Capsule`, `ConvexHull` (QHull from selected faces), `Face` (thin extruded mesh), `FaceAsBox` (oriented bounding box on the painted face), and `Auto` (VHACD-driven convex decomposition, optionally clipped to the painted bounds). Also ships a `Skinned` workflow for `SkinnedMeshRenderer` targets and a `PhysicsSeeder` (menu-driven "Generate Colliders From Selection" that clones the selection under a `Generated Physics` root with starter BoxColliders).
+
+**Architecture:**
+- **49 editor + runtime scripts** in `Technie/PhysicsCreator/Scripts/` (runtime) and `Technie/PhysicsCreator/Editor/` (editor)
+- **3 asmdefs:** `TechniePhysicsCreator.asmdef` (runtime), `TechniePhysicsCreatorEditor.asmdef` (editor), `Technie.PhysicsCreator.Updater.asmdef` (update checker)
+- **Runtime components (MonoBehaviour):** `RigidColliderCreator`, `RigidColliderCreatorChild` (child-collider marker), plus a skinned equivalent. These hold `PaintingData` + `HullData` references.
+- **Data (ScriptableObject):** `PaintingData` (per-mesh painting state: `hulls[]`, `activeHull`, `autoHullPreset` {Low/Medium/High/Placebo/Custom}, `vhacdParams`, `sourceMeshHash`), `HullData` (stores the generated meshes).
+- **Fitters** (`Scripts/Fitters/`): `AlignedCapsuleFitter`, `RotatedCapsuleFitter`, `AxisAlignedBoxFitter`, `RotatedBoxFitter`, `FaceAlignmentBoxFitter`, `SphereFitter`.
+- **Convex hull:** embedded `QuickHull3D` port (`Scripts/QHull/`) + `HullSimplifier` (simplify to N max planes) + `MeshCutter` for Auto-clip.
+- **VHACD native plugin:** `Plugins/VHACD/libvhacd.dll` (win), `liblibvhacd.so` (linux), `liblibvhacd.dylib` (osx). BSD 3-Clause (Khaled Mamou). Called from `VhacdInterface.cs` / `VhacdTask.cs` asynchronously via `EditorCoroutines`.
+- **Editor windows:** `RigidColliderCreatorWindow` + `HullPainterWindow` + `SkinnedColliderCreatorWindow`. Each uses a `SceneManipulator` for per-triangle picking with brush sizes (Precise / Small / Medium / Large), additive/subtractive modes, xray toggle, and keyboard shortcuts (`Shortcuts.cs`, `HullPainterShortcuts.cs`).
+
+**Key Public API (for scripting / batch gen):**
+- `RigidColliderCreatorWindow.ShowWindow()` / `.instance` / `.IsOpen()`
+- `RigidColliderCreatorWindow.GenerateAsset(GameObject, Mesh)` -> `PaintingData` (creates the sibling .asset files named after the mesh)
+- `window.AddHull()` -> `Hull`
+- `window.DeleteActiveHull()`
+- `window.SceneManipulator.PaintAllFaces()` / `UnpaintAllFaces()` / `PaintRemainingFaces()` / `GrowPaintedFaces()` / `ShrinkPaintedFaces()`
+- `window.GenerateColliders()` (async; poll `window.IsGeneratingColliders`)
+- `window.DeleteGenerated()` / `window.StopPainting()`
+- `window.CycleHullType()` / `ToggleIsTrigger()` / `ToggleIsChild()`
+- `paintingData.AddHull(type, material, isChild, isTrigger)` / `RemoveHull(int)` / `RemoveAllHulls()` / `HasAutoHulls()`
+- `paintingData.autoHullPreset` (AutoHullPreset enum) / `paintingData.vhacdParams` (VhacdParameters)
+- `RigidColliderCreator.SetAllTypes(HullType)` / `SetAllMaterials(PhysicsMaterial)` / `SetAllAsChild(bool)` / `SetAllAsTrigger(bool)` / `SetAllMaxPlanes(int)`
+- `RigidColliderCreator.CreateColliderComponents(Mesh[])` / `RemoveAllColliders()` / `RemoveAllGenerated()`
+- `HullType` enum: `Box`, `ConvexHull`, `Sphere`, `Face`, `FaceAsBox`, `Auto`, `Capsule`
+- Menu entries: `Window/Technie Collider Creator/Run API Example (Bulk Collider Generate)`, `Window/Technie Collider Creator/Generate Colliders From Selection`, `Window/Technie Collider Creator/Span From Selection`
+
+**Compile Status (Unity 6, 2026-04-21):** Clean. Editor asmdefs build, no runtime asmdef conflicts, no obsolete-API warnings seen during inspection. Version guards in place for `UNITY_2017_4_OR_NEWER` and `UNITY_2018_4_OR_NEWER` (MeshCollider.skinWidth / inflateMesh removed in 2018.4, cookingOptions added in 2017.4). VHACD native DLLs ship for win/linux/osx.
+
+**Hands-On Workflow (ApiExample.cs pattern, from the shipped `Examples/Editor/ApiExample.cs`):**
+```csharp
+GameObject[] objects = Selection.gameObjects;
+RigidColliderCreatorWindow.ShowWindow();
+var win = RigidColliderCreatorWindow.instance;
+
+foreach (GameObject target in objects)
+{
+    var mf = target.GetComponent<MeshFilter>();
+    if (mf == null) continue;
+    Selection.activeGameObject = target;
+    PaintingData data = RigidColliderCreatorWindow.GenerateAsset(target, mf.sharedMesh);
+    win.DeleteActiveHull();                    // remove default starter hull
+    data.autoHullPreset = AutoHullPreset.High; // VHACD quality
+    Hull hull = win.AddHull();
+    hull.type = HullType.Auto;
+    win.SceneManipulator.PaintAllFaces();
+    win.GenerateColliders();
+    while (win.IsGeneratingColliders) yield return null;
+}
+win.Close();
+```
+The `do { yield return null; } while (IsGeneratingColliders)` poll lets any MCP wrapper wait for the VHACD coroutine to finish cleanly.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **Blood Miner** | Outlet meshes, KayKit body pieces, chop-targets needing non-box colliders | **HIGH** -- Auto/VHACD on KayKit character bodies >> the current "one box per body" approach |
+| **HOK** | Kharon body attachments, scene props (boats, urns, pillars), river fish variants | **HIGH** -- paint-hull for hand-placed scene props, Auto for organic fish shapes |
+| **FearSteez** | Character hitboxes (Sidekick bodies with combat rigs), environment props | **HIGH** -- Face/FaceAsBox perfect for damage-zone authoring on humanoid rigs |
+| **AQS** | Quokka + animal colliders, 2.5D terrain props | **HIGH** -- Mega Cute Pet Zoo models (ENTRY-314) often ship with generic capsules; paint-hull gives species-accurate collision |
+| **HideNReap** | Stealth props, level geometry | **HIGH** -- paint colliders on Synty props for reliable line-of-sight/cover |
+| **SetDesign** | All environment/set building | **HIGH** -- the universal collider workflow for every hub scene |
+| **TecVooDoo project** | -- | install for TMCP dev once we build the tool group |
+
+**Asset Store Label:** **Default** (this is a general-purpose editor tool that every 3D project benefits from). Consider **Default 3D** specifically.
+
+**MCP Controllability:** **HIGH** -- rating matches the `ApiExample.cs` evidence. Everything flows through `RigidColliderCreatorWindow` (singleton + static entry), `PaintingData` (SO), and `RigidColliderCreator` (MonoBehaviour). Async work has a clean `IsGeneratingColliders` flag. No OnGUI-only operations block programmatic use (unlike ASE in ENTRY-329). Proposed TMCP tool group `technie-collider` or `tcc`:
+- `tcc-create` -- wrap `GenerateAsset(go, mesh)` + initial hull config (type, isChild, isTrigger, material)
+- `tcc-add-hull` -- wrap `paintingData.AddHull(type, material, isChild, isTrigger)` with optional `paintAll: true` for Auto workflows
+- `tcc-generate` -- wrap `GenerateColliders()` with coroutine wait + return `{colliderCount, types, hasErrors}`
+- `tcc-configure-vhacd` -- set `autoHullPreset` + `vhacdParams` (resolution, concavity, planeDownsampling, etc.)
+- `tcc-bulk` -- wrap `SetAllTypes` / `SetAllMaterials` / `SetAllAsChild` / `SetAllAsTrigger` / `SetAllMaxPlanes`
+- `tcc-query` -- list hulls on a GO (name, type, isChild, isTrigger, numSelectedTriangles, generatedCollider name) + painting data asset path
+- `tcc-delete-generated` -- wrap `DeleteGenerated()` / `RemoveAllGenerated()` to clean a GO
+
+MCP rating: **High**. TMCP Candidate: **Yes** -- queue for TecVooDoo project build after Synty eval backlog.
+
+**Key Gotchas:**
+- **Selection-driven window:** the editor window operates on `Selection.activeGameObject`, so any scripted batch must set `Selection.activeGameObject = target` before calling window methods. Documented in the API example's header comment as "not ideal and will be addressed in future updates."
+- **VHACD preset timings vary wildly:** `Placebo` is an intentionally slow high-quality preset. For MCP wrappers, default to `Medium` and let caller opt into `High`/`Placebo`. `PaintingData.lastVhacdDurationSecs` caches the last run for UI.
+- **MeshCollider cooking:** code explicitly clears `MeshColliderCookingOptions.EnableMeshCleaning` in Unity 2017.4+ ("Unity likes to collapse our nice accurate hulls into garbage"). Leave that default.
+- **Coroutine-bound:** `GenerateColliders()` is asynchronous via `EditorCoroutines` -- synchronous callers will see no immediate result. `IsGeneratingColliders` is the correct gate.
+- **Auto-hulls live on children by default when `isChildCollider = true`:** creates `Hull.1`, `Hull.2` ... child GameObjects with their own `MeshCollider` + `RigidColliderCreatorChild` marker. Be aware when diffing prefab changes.
+- **`PhysicsSeeder` clones the entire subtree:** `Window/Technie Collider Creator/Generate Colliders From Selection` creates a new `Generated Physics` root GameObject and clones the selection under it. Useful as a starting template but not idempotent -- repeated runs duplicate.
+- **Native plugin platforms:** VHACD ships win64 (`libvhacd.dll`), linux (`liblibvhacd.so`), osx (`liblibvhacd.dylib`). No ARM64 macOS binary visible -- verify on Apple Silicon before adopting for iOS/Mac projects.
+- **No WebGL/iOS/Android native VHACD** -- tool is editor-only, so target platform is irrelevant at runtime. Generated colliders are pure Unity components and ship to any platform.
+
+**Verdict Rationale:** **Approved, Recommended.** This is the missing piece for every project on the backlog. KayKit, Synty, Suriyun, and PolygonHorror* assets arrive with generic box colliders or none at all -- Technie Collider Creator 2 turns that from a half-hour-per-mesh manual chore into a paint-and-commit workflow with Auto/VHACD as the ultimate fallback. Pipeline-agnostic output means it ships to URP/BiRP/HDRP identically. The scriptable API (`ApiExample.cs` demonstrates the full flow) makes it a prime TMCP candidate -- 6-7 tools would cover ~95% of collider authoring across all projects. Install cost is trivial, removal is trivial, no runtime footprint beyond the generated colliders themselves.
+
+**MCP Candidate:** **High** -- 6-7 tools in a new `tcc` group (see MCP Controllability above). Queue for TecVooDoo project once Synty eval backlog clears.
+**TecVooDoo Utilities Candidate:** No -- third-party editor tool; the QHull + VHACD implementations have their own licenses and are domain-specific.
+**TecVooDoo Games Candidate:** No -- third-party authoring tool, not game logic.
+
+---
+
+### ENTRY-331: Synty InterfaceCore
+
+| Field | Value |
+|-------|-------|
+| **Asset** | InterfaceCore |
+| **Publisher** | Synty Studios |
+| **Source** | SyntyPass |
+| **Category** | UI (Shared Framework / Dependency for Synty Interface Packs) |
+| **Price** | Bundled with SyntyPass |
+| **Version** | Current SyntyPass |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **Pipeline-agnostic** -- UI-only shaders work on BiRP, URP, and HDRP |
+| **Dependencies** | None. TextMeshPro (comes with Unity). |
+| **Install Size** | Small (3 runtime scripts, 4 shaders, 514 master sprite assets, no prefabs) |
+| **Evaluated** | Apr 21, 2026 |
+| **Evaluated in** | Sandbox `Assets/Synty/InterfaceCore/`, imported as dependency for InterfaceDarkFantasyHUD (Session 77) |
+| **Verdict** | **Approved** -- required dependency for any Synty Interface pack. No standalone value. |
+
+**What It Does:** Shared scaffolding pack that Synty's branded Interface products (DarkFantasy, SciFi, Cyberpunk, etc.) all depend on. Ships the common UI shaders, UI-extension runtime scripts, and a master-sprite sheet library (514 sprites) that individual theme packs reference. Synty's README treats it as a transparent dependency rather than a product you use on its own.
+
+**Architecture:**
+- **Runtime scripts (3)** in `Scripts/UnityUIExtensions/` -- all ported from the open-source [Unity UI Extensions](https://bitbucket.org/UnityUIExtensions/unity-ui-extensions) project, renamed into `namespace Synty.Interface.Extensions` to dodge Asset Store conflicts:
+  - `SoftMaskScript.cs` -- alpha-based RectTransform masking using an alpha texture + cutoff + hardblend. Credit: NemoKrad / valtain.
+  - `UIParticleSystem.cs` -- ParticleSystem renderer adapted to Unity UI (CanvasRenderer).
+  - `ShaderLibrary.cs` -- helper utilities.
+- **Shaders (4)** in `Shaders/` -- all UI overlay shaders:
+  - `SyntyStudios_UI_Additive.shader`
+  - `SyntyStudios_UI_AdditiveSprite.shader`
+  - `SyntyStudios_UI_AlphaBlended.shader`
+  - `SyntyStudios_UI_Multiply.shader`
+- **Sprites (514)** in `Sprites/` -- "Master Sprites" atlas sheets used as a source of truth for icons/glyphs shared across Interface packs.
+- **No asmdef** -- scripts live in the default Assembly-CSharp. Scripts are trivial (~100-200 LOC each) so the missing asmdef is a minor cost.
+- **No prefabs** -- InterfaceCore is pure plumbing; theme packs bring the prefabs.
+
+**Compile Status (Unity 6, 2026-04-21):** Clean. Scripts use standard `UnityEngine.UI` types (`MonoBehaviour`, `RectTransform`, `CanvasRenderer`, `MaskableGraphic`). No deprecated APIs observed.
+
+**Project Fit:**
+- **Any project using Synty Interface packs:** install alongside the theme pack. Currently used by InterfaceDarkFantasyHUD (Blood Miner UI skin, Session 77).
+- **Standalone:** no value. The sprites and shaders are only useful through the theme packs' prefabs.
+- **Blood Miner:** already installed, verified working as the HUD stack's dependency.
+
+**Asset Store Label:** **Default UI** (when installed alongside any Synty Interface pack). Without a theme pack this asset has no purpose.
+
+**MCP Controllability:** **N/A** -- the runtime scripts have a handful of serialized fields (`SoftMaskScript` exposes MaskArea, AlphaMask, CutOff, HardBlend, FlipAlphaMask, DontClipMaskScalingRect) which are fully reachable via generic `gameobject-component-modify`. No behavior or state worth wrapping with dedicated TMCP tools.
+
+**Key Gotchas:**
+- **No asmdef** -- scripts land in `Assembly-CSharp`. If the project later adopts asmdefs for `_Sandbox/` code, InterfaceCore won't reference those asmdefs cleanly without the user adding an asmdef here or keeping those callers in Assembly-CSharp. Low-priority cleanup.
+- **Shader names matter for prefab references** -- if you rename or move the `SyntyStudios_UI_*.shader` files, InterfaceDarkFantasyHUD materials will break. Leave them where they are.
+- **`SoftMaskScript` uses `[ExecuteInEditMode]`** -- expect it to run in the editor. Normal for UI effects but worth knowing if you profile.
+- **Uses `CamelCase` public fields (`MaskArea`, `AlphaMask`, `CutOff`)** not the Unity standard lowercase-first convention -- cosmetic only, inherited from the UI Extensions source.
+
+**Verdict Rationale:** **Approved** as a transparent dependency. There's nothing to evaluate standalone -- its value is entirely expressed through the theme packs that consume it. Install only when you install an Interface-series theme pack; remove when you remove the last one.
+
+**MCP Candidate:** No -- minimal surface, fully reachable by generic component tools.
+**TecVooDoo Utilities Candidate:** No -- the `SoftMaskScript` and `UIParticleSystem` are already available open-source as Unity UI Extensions if we want them upstream. Synty's copy is namespaced for their packs, so don't cherry-pick; go to the open-source upstream instead.
+**TecVooDoo Games Candidate:** No -- third-party dependency bundle.
+
+---
+
+### ENTRY-332: Synty InterfaceDarkFantasyHUD
+
+| Field | Value |
+|-------|-------|
+| **Asset** | InterfaceDarkFantasyHUD |
+| **Publisher** | Synty Studios |
+| **Source** | SyntyPass |
+| **Category** | UI (Themed HUD Prefab Library -- Dark Fantasy) |
+| **Price** | Bundled with SyntyPass |
+| **Version** | Current SyntyPass |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **Pipeline-agnostic** -- UGUI + SDF TMP fonts |
+| **Dependencies** | **InterfaceCore (ENTRY-331) -- required**, TextMeshPro (Unity built-in), UGUI (Unity built-in) |
+| **Install Size** | Large (~317 prefabs, 1671 sprites, 35 demo scenes, 2 SDF fonts, 12 sample scripts) |
+| **Evaluated** | Apr 21, 2026 |
+| **Evaluated in** | Sandbox `Assets/Synty/InterfaceDarkFantasyHUD/`, in active use in Blood Miner (Session 77) |
+| **Verdict** | **Approved, Recommended** -- the go-to HUD skin for fantasy / gothic / souls-like / dark-themed projects |
+
+**What It Does:** Production-quality Dark Fantasy HUD prefab library. Ships **317 prefabs** organised into 20 functional categories (ActionBar, HotBar, HUD containers, Compass, Minimap, Flasks, WeaponWheels, Weapon Cross, Portraits, HP bars, Enemy data overlays, Reticles/Crosshairs, Dialogue subtitles, Objectives/Story/Location, Events, FullscreenFX, FullscreenOverlays, Greebles, Input Interaction icons, Timed indicators). Six pre-assembled HUD screens cover major genres: `Screen_DarkFantasy_HUD_1stPerson_01`, `HUD_3rdPerson_01`, `HUD_ARPG_01`, `HUD_ARPG_02`, `HUD_SoulsLike_01`, `HUD_Survival_01`. All prefabs are UGUI (Canvas / RectTransform) and use the shared Synty UI shaders from InterfaceCore.
+
+**Architecture:**
+- **Prefabs (317)** in `Prefabs/` -- 20 subfolders:
+  - `_CommonComponents/` (Dials, Labels, Sliders)
+  - `_PreMadeHUDs/` (6 full-screen HUD templates)
+  - `ActionBar/` (hotbar + action-bar buttons and containers)
+  - `Buttons/`, `Compass/`, `Events/`, `Flasks/`, `FullscreenFX/`, `FullscreenOverlays/`, `Greebles/`
+  - `Input_Interactions/` (gamepad/keyboard glyphs for Xbox, PlayStation, Switch, SteamDeck, K&M)
+  - `Minimap/`, `NPC_HealthBars_EnemyData/`, `Objectives_Story_Location/`
+  - `Player_Health_Equipment/`, `Portraits/`, `Reticles_Crosshairs/`, `Subtitles/`, `Timed/`
+  - `WeaponWheel_WeaponCross/`
+- **Sprites (1,671)** in `Sprites/` -- weapon icons, resource icons, status icons, frame decorations, greebles, input glyphs, objective markers. Categorized into Weapons, Weapons Side, Resources, Misc, Icons, Master Sprites.
+- **Demo Scenes (35)** in `Samples/Scenes/` -- one demo per major component plus full-HUD walkthroughs and platform-specific input-glyph scenes. Title screen + components + HUDs + icons + input + misc.
+- **Sample Scripts (12)** in `Samples/Scripts/` -- demo-only glue: `SampleCountdownLabel`, `SampleXPBar`, `SampleRadialFillBar`, `SampleOscillateSliders`, `SampleLoopAnimator`, `SampleSceneLoader`, `SampleButtonAction`, `SampleAnimatorActionData`, `SampleAutoInputModule`, `SampleScrollUV`, `SampleTimeLabel`, `SampleURL`. **Not production code** -- lift the pattern (e.g. XP bar animation) and replace with project-local equivalents.
+- **Fonts (2 SDF):**
+  - `Markazi/MarkaziText-SemiBold SDF.asset` + `.ttf` -- body text / labels
+  - `Pirata One/PirataOne-Regular SDF.asset` + `.ttf` -- display / headers (gothic, souls-like)
+- **Materials** referenced via InterfaceCore shaders (`SyntyStudios_UI_Additive`, `_AdditiveSprite`, `_AlphaBlended`, `_Multiply`)
+- **No asmdef** -- Samples live in Assembly-CSharp alongside InterfaceCore
+
+**Compile Status (Unity 6, 2026-04-21):** Clean. Installed in Session 77 (Apr 12) for Blood Miner and has been shipping stable since. Sample scripts compile without warnings in Unity 6.
+
+**Project Fit:**
+
+| Project | Fit | Notes |
+|---------|-----|-------|
+| **Blood Miner** | **ACTIVE USE** | Adopted Session 77 as the HUD skin. Row counters, tool-tier indicators, gauge frames |
+| **HOK** | **HIGH** | Dark fantasy / underworld aesthetic lines up perfectly. Souls-like pre-made HUD + flask prefabs would fit Kharon's underworld UI |
+| **FearSteez** | MEDIUM | Beat 'em up is more arcade; DarkFantasy may be too gothic. Check companion pack `InterfaceSciFi` or lighter theme |
+| **AQS** | LOW | Cute/quokka aesthetic -- too grim |
+| **HideNReap** | **HIGH** | Stealth / horror fit; reticles, enemy HP, subtitles all directly applicable |
+| **SetDesign** | MEDIUM-HIGH | Per-project HUD authoring hub |
+| **VNPC** | MEDIUM | Has subtitle/dialogue prefabs that could supplement a point-and-click UI |
+
+**Asset Store Label:** **Default UI** / **Recommended, UI** when dark/fantasy/souls/survival themes match the project. Don't install for cute/casual/sci-fi projects -- Synty has themed siblings (`InterfaceCartoon`, `InterfaceSciFi`, `InterfaceCyberpunk`, etc.) for those.
+
+**Ecosystem Notes:**
+- **InterfaceCore (ENTRY-331) is required** -- install both or neither. Synty's SyntyPass importer handles the dependency automatically when you pick the theme pack.
+- **Complements PolygonParticleFX (ENTRY-266)** -- `FullscreenFX` prefabs pair naturally with PolygonParticleFX for impact feedback.
+- **Pairs with Feel (Feel / MMFeedbacks) for juice** -- these prefabs are static skins; they don't animate themselves beyond the Sample scripts. Add Feel feedbacks for punch/shake/scale on hit.
+- **Asset Inventory (ENTRY-252) indexes it** -- you can cherry-pick individual prefabs into other Sandbox projects via `asset-inventory-import` without adopting the whole pack.
+
+**MCP Controllability:** **N/A for new tools** -- prefabs are pure UGUI so the existing `assets-prefab-instantiate` + `gameobject-component-modify` + `assets-find-prefabs` + `flexalon-*` tools already cover every authoring operation. There is no runtime state, no ScriptableObject configuration, no system to wrap. MCP rating: **Low / No tools needed.**
+
+**Key Gotchas:**
+- **InterfaceCore is a hard dependency** -- installing DarkFantasyHUD alone = broken material references. SyntyPass importer auto-pulls it; if importing by .unitypackage manually, install InterfaceCore first.
+- **317 prefabs → large GUID surface** -- avoid renaming prefab paths after scenes reference them, or be prepared for meta GUID stability. The `_CommonComponents/`, `_PreMadeHUDs/` underscore prefix is intentional sort order.
+- **Sample scripts ship without asmdef** -- they'll compile into Assembly-CSharp. Not a blocker for Sandbox; worth wrapping in a `Samples.asmdef` for a cleaner project or marking the `Samples/` folder as excluded from production builds.
+- **35 demo scenes bloat the Scenes section of the Editor** -- leave `Samples/Scenes/` in place during active dev, but delete or move before shipping to cut build size and avoid Scenes-in-Build contamination.
+- **Fonts default to TMP SDF assets** -- both fonts already have pre-generated SDF atlases shipped. No font-generation step required. TMP must be present (Unity auto-installs via Package Manager).
+- **Input glyph prefabs are platform-specific** -- separate prefabs exist for Xbox / PlayStation / Switch / SteamDeck / K&M. Pick the set matching your target input scheme or rely on an input-prompt switcher (RewiredGlyphs, Control Freak, InControl, or Unity's InputSystem's device layout detection).
+- **Pairs naturally with 2D Art Maker Casual Characters (ENTRY-300)** for portrait slots if you need 2D portrait art -- DarkFantasyHUD ships frames, not the face art.
+
+**Verdict Rationale:** **Approved, Recommended.** This is one of Synty's strongest products and already proven in Blood Miner. The prefab coverage is comprehensive, the premade HUD templates let you ship a credible HUD in an afternoon, and the pipeline-agnostic UGUI output means zero render-pipeline integration work. 1,671 sprites means you rarely need to source icons elsewhere for fantasy/gothic/souls content. Install cost is high-ish (317 prefabs + 1,671 sprites + 35 scenes), but the import-then-delete-samples pattern trims it to a reasonable footprint.
+
+**MCP Candidate:** No -- fully covered by existing generic tools.
+**TecVooDoo Utilities Candidate:** No -- proprietary Synty art + sample glue scripts; no general-purpose utility code.
+**TecVooDoo Games Candidate:** No -- third-party art/prefab pack.
+
+---
+
+### ENTRY-333: MK Edge Detection (Michael Kremmel)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | MK Edge Detection |
+| **Publisher** | Michael Kremmel (michaelkremmel.de) |
+| **Source** | Unity Asset Store |
+| **Category** | VFX / Post-Processing (Edge Detection / Cel Outlines / Sketch Look) |
+| **Price** | Paid |
+| **Version** | Shader exports dated 2026-03-21 (MK Shader Cross-Compiler v1.2.8); asset `Assets/MK/MKEdgeDetection/` |
+| **Unity Versions** | Unity 2020.1+ / 2021.3+ / 2022.x / 2023.3+ / Unity 6 (6000.3+). RenderGraph path guarded by `UNITY_2023_3_OR_NEWER`, legacy Execute path guarded by `!UNITY_6000_4_OR_NEWER` |
+| **Pipeline** | **Full coverage** -- ships 5 deployment flavors: Legacy Image Effects (BiRP MonoBehaviour), PostProcessingStackV2, URP Renderer Feature, URP Volume Component, HDRP Volume Component. Install Wizard picks the right set and toggles scripting defines (`MK_URP`, `MK_HDRP`, `MK_PPV2`, `MK_URP_COMPONENT`, `MK_SELECTIVE_MASK_ENABLED`) |
+| **Dependencies** | None. Optional (pipeline-dependent): `com.unity.render-pipelines.universal`, `com.unity.render-pipelines.high-definition`, or PPSv2 (`com.unity.postprocessing`) |
+| **Install Size** | Medium-Large (~90 scripts across 9 asmdefs, 5 shaders + 1 shadergraph, 1 noise texture, 1 example scene, 4 scripting examples) |
+| **Evaluated** | Apr 21, 2026 |
+| **Evaluated in** | Sandbox `Assets/MK/MKEdgeDetection/`, left in project for production consideration |
+| **Verdict** | **Approved, Recommended** -- best-in-class screen-space edge detection / outline / sketch post-processing with full pipeline coverage and clean runtime API |
+
+**What It Does:** Screen-space edge detection post-processing effect that reads any combination of depth, normals, and scene color buffers and writes black (or HDR-colored) outlines + optional sketch/hatching overlay. Three configurable kernel tiers (Small / Medium / Large), each with its own operator family: Large = Sobel / Scharr / Prewitt; Medium = Roberts Cross (Diagonal / Axis); Small = Half Cross (Horizontal / Vertical). Three precision levels (High / Medium / Low). Per-input line sizes, thresholds (MinMax ranges), fade-distance near/far, and fade-limit ranges. HDR line + overlay colors. Sketch mode adds animated hatching using a noise map with its own intensity, frequency, fade. Supports RenderGraph on Unity 2023.3+/Unity 6, XR/stereo, and dynamic resolution.
+
+**Architecture:**
+- **9 asmdefs** (aggressive pipeline isolation):
+  - `MKEdgeDetection.asmdef` (root / generic / PostProcessing.Generic types)
+  - `MKEdgeDetectionComponents.asmdef` (component glue)
+  - `MKEdgeDetectionUniversalRendererFeature.asmdef` (URP RendererFeature)
+  - `MKEdgeDetectionUniversalVolumeComponent.asmdef` (URP VolumeComponent)
+  - `MKEdgeDetectionSelectiveMaskModule.asmdef` (legacy selective-mask feature, gated)
+  - `MKEdgeDetectionEditor.asmdef` (main editor)
+  - `MKEdgeDetectionBuildPreProcessor.asmdef` (strip unused shader variants at build)
+  - `MKEdgeDetectionInstallWizard.asmdef` (install wizard picks pipeline + sets defines)
+  - `MKEdgeDetectionExamples.asmdef` (scripting examples)
+- **5 shaders:**
+  - `Shader/MKEdgeDetection.shader` (main edge pass)
+  - `Shader/MKEdgeDetectionSketchLines.shader` (sketch overlay)
+  - `Shader/GradientSkybox.shader` (example-scene backdrop)
+  - `Components/UniversalRendererFeature/MKEdgeDetectionUniversalCopyShader.shader` (URP blit helper)
+  - `Legacy/SelectiveMaskModule/Selective Mask.shadergraph` (legacy, feature-gated)
+- **Core `Core/PostProcessing/`** -- shared property system (`AbsFloatProperty`, `AbsIntProperty`, `BitmaskProperty<T>`, `BoolProperty`, `ColorProperty`, `EnumProperty<T>`, `FloatProperty`, `IntProperty`, `MinMaxRangeProperty`, `RangeProperty`, `StepProperty`, `Texture2DProperty`, `Vector2/3/4Property`) with custom editor drawers. `MKBlitter`, `KernelCollection`, `Keywords`, `PropertyIDs`, `Config`, `ICameraData` shared utilities.
+- **Components** -- one per pipeline, each implements an `IParameters` interface exposing ~36 getters. Volume/RendererFeature components use Unity's `VolumeComponent` / `ScriptableRendererFeature` base classes. `ImageEffects/MKEdgeDetection.cs` is a legacy `MonoBehaviour` on the camera (`[RequireComponent(typeof(Camera))]` + `[ImageEffectAllowedInSceneView]`).
+- **Install Wizard** -- first-run flow detects active pipeline, sets the right scripting define, and toggles asmdefs accordingly.
+- **Code generation watermark** -- every C# file header reads `File created using: MK Shader - Cross Compiling Shaders Version: 1.2.8 Exported on: 21.03.2026 14:58:26`. The asset is effectively generated from a cross-compiler, so per-pipeline implementations share identical parameter surfaces.
+
+**Key Parameters (36):** `precision`, `largeKernel`, `mediumKernel`, `smallKernel`, `inputData` (bitmask: Depth | Normal | SceneColor | None), `lineHardness`, `fade`, `lineSizeMatchFactor`, `globalLineSize`, `depthLineSize`, `normalLineSize`, `depthFadeLimits`, `normalFadeLimits`, `depthThreshold`, `lineColor` (HDR+alpha), `overlayColor` (HDR+alpha), `depthNearFade`, `depthFarFade`, `normalNearFade`, `normalsFarFade`, `normalThreshold`, `sceneColorThreshold`, `sceneColorLineSize`, `sceneColorNearFade`, `sceneColorFarFade`, `sceneColorFadeLimits`, `visualizeEdges` (debug), `enhanceDetails` (sub-pixel sharpening), `sketch`, `sketchIntensity`, `sketchFrequency`, `sketchAdditionalNoiseMap`, `sketchFadeLimits`, `sketchNearFade`, `sketchFarFade`, `workflow` (Generic / Selective).
+
+URP RendererFeature additionally exposes `workMode` enum: `PostProcessVolumes` (blends per-volume) or `Global` (applies uniformly regardless of volumes).
+
+**Compile Status (Unity 6, 2026-04-21):** Clean. Pipeline guards (`#if MK_URP`, `#if MK_HDRP`) keep unused pipelines out of compilation. RenderGraph path (`#if UNITY_2023_3_OR_NEWER`) co-exists with legacy Execute path via `#if !UNITY_6000_4_OR_NEWER` guards. No warnings observed during inspection. `VolumeManager.instance.stack.GetComponent<MKEdgeDetection>()` is the standard URP Volume API -- future-proof.
+
+**Runtime Scripting API (from shipped examples):**
+```csharp
+// URP Volume Component workflow
+public UnityEngine.Rendering.Volume volume;
+void Start()
+{
+    MK.EdgeDetection.UniversalVolumeComponents.MKEdgeDetection comp;
+    volume.TryGetComponent(out comp);
+    comp.globalLineSize.value = new RangeProperty(1f,
+        comp.globalLineSize.value.minValue,
+        comp.globalLineSize.value.maxValue);
+}
+```
+All parameters are `SerializeField` with public setters via their wrapper properties (`RangeParameter.value`, `BoolParameter.value`, etc.). Works in play mode and editor.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Underworld ink-line / souls-like aesthetic -- outlines on Charon, river fish, acheron props | **HIGH** -- perfect match. Sketch mode could sell the "drawn-by-candlelight" mood. Install as URP Volume Component. |
+| **FearSteez** | Comic-book / beat-em-up outlines on Sidekick bodies | **HIGH** -- cel-shaded outline is a core beat-em-up aesthetic. Depth + Normal inputs, no SceneColor (saves a render target copy). |
+| **AQS** | Storybook quokka -- optional stylized toggle | **MEDIUM** -- cute animals with thin outlines read as illustrated. Consider low globalLineSize + Scharr for soft lines. |
+| **HideNReap** | Stealth / ink horror look; sketch mode for "Reap" vision | **HIGH** -- sketch mode is perfect for a possession/vision camera state. Toggle via WorkMode swap at runtime. |
+| **Blood Miner** | Mobile idle -- clarity for outlet + body silhouettes | **MEDIUM** -- mobile GPU cost concern. Depth-only + Low precision + Small kernel is cheap, could improve readability on small screens. Verify framerate on target device before adoption. |
+| **SetDesign** | Universal look-dev / storyboard previs | **HIGH** -- add to every hub scene's default Volume profile; switch off for final renders if unwanted. |
+| **VNPC** | Point-and-click illustrated scenes | **HIGH** -- outlines + sketch overlay make 3D scenes read as hand-drawn backgrounds. |
+| **M3AnimatedSeries** | Animated-series production, stylized rendering | **HIGH** -- strong candidate for the animated series lookdev. 2D-style outline at HDRP fidelity is the big win here. |
+| **TecVooDoo project** | Not applicable | -- |
+
+**Asset Store Label:** **Default 3D** for any project using URP or HDRP and wanting stylized rendering. **Recommended, VFX.** Not appropriate for photoreal projects; ideal for stylized / cel / painterly / illustrated games.
+
+**Ecosystem Notes:**
+- **Pairs with Lumen (ENTRY-325)** -- stylized god-rays + edge outlines together sell a strong illustrated look.
+- **Pairs with Feel** -- toggle sketch mode via MMF feedback on "vision" state changes (HnR Reap mode, FS hit-pause, etc.).
+- **Pairs with Synty Polygon libraries** -- outline-on-flat-shaded low-poly is the canonical cel-shaded look; MK Edge Detection is the screen-space layer for that pipeline.
+- **Complements / alternative to** Quibli, Inkyline, Linework, and Unity's own URP "Screen Space Outlines" renderer feature. MK Edge Detection is more configurable than Unity's built-in and ships all 3 pipelines in one product.
+- **Alternative for HOK specifically:** could evaluate alongside Lumen + Stylized Water 3 (future eval) for a coherent Acheron lookdev pass.
+
+**MCP Controllability:** **HIGH** -- all parameters are `SerializeField` on either `VolumeComponent` (URP/HDRP) or `ScriptableRendererFeature` (URP Global) or `MonoBehaviour` (BiRP ImageEffects). Existing generic MCP tools (`object-modify`, `gameobject-component-modify`, `assets-modify` on the Volume Profile asset) can reach every parameter. However, the parameter count (36) + nested property wrapper types (`RangeProperty{value,min,max}`, `MinMaxRangeProperty{minValue, maxValue, min, max}`, `ColorProperty{r,g,b,a,hdr,alpha}`) make one-shot configuration painful via generic tools. A small dedicated tool group is well worth building.
+
+Proposed TMCP tool group `mkedge`:
+- `mkedge-configure` -- set any subset of the ~36 parameters on a target Volume's MKEdgeDetection component OR on the URP RendererFeature. Auto-detects target flavor (Volume vs RendererFeature vs ImageEffects) from the GameObject/Asset argument. Accepts flat parameter args (`globalLineSize: 1.0`, `lineColor: "#000000"`, `inputData: "Depth|Normal"`, `largeKernel: "Sobel"`, etc.) and translates into the property wrapper types internally.
+- `mkedge-query` -- read the full current state of MK Edge Detection on a target, returning all 36 parameters in a flat, human-readable structure. Also reports pipeline variant and active/enabled state.
+- `mkedge-preset` -- apply named presets. Ship with: `subtle-outline`, `comic`, `blueprint`, `sketch`, `ink-wash`, `souls-like`, `toon`, `noir`. Each preset is a static parameter set in the tool code.
+- `mkedge-toggle` -- enable/disable the effect (VolumeComponent.active or RendererFeature.isActive). Optional `fadeTime` arg for smooth camera-based transitions.
+
+4 tools, Medium-High surface area. Queue for TecVooDoo project after `tcc` (ENTRY-330) lands.
+
+**Key Gotchas:**
+- **Install Wizard required on first import.** It sets scripting defines; skipping it or canceling will leave asmdefs referencing types that don't exist for your active pipeline. If something fails to compile after import, re-run `Window/MK/MK Edge Detection/Install Wizard`.
+- **Scripting defines are the gate.** Unless `MK_URP` (or `MK_HDRP` / `MK_PPV2`) is defined, the pipeline-specific code is `#if`'d out. This means adding the Renderer Feature to your URP renderer asset will silently fail until the define is set.
+- **Property wrapper types are nested.** `comp.globalLineSize` is a `RangeParameter`, and `comp.globalLineSize.value` is a `RangeProperty` with `{value, minValue, maxValue}`. You write `comp.globalLineSize.value = new RangeProperty(newVal, minVal, maxVal)`. Pass the current min/max back through -- don't overwrite them with defaults. (The example script demonstrates this pattern.)
+- **`IsActive()` requires `globalLineSize > 0` OR `visualizeEdges == true`.** Setting `inputData = None` or `globalLineSize = 0` silently disables the effect regardless of Volume weight. Good for perf gating; confusing if you're debugging "why is my volume not rendering outlines?"
+- **RendererFeature has `WorkMode` enum** -- `PostProcessVolumes` means respect Volume weights/blends; `Global` means apply uniformly regardless of volumes in the scene. For scene-wide uniform outlines (no per-area tuning), `Global` is simpler.
+- **URP depth + normals feed cost:** setting `inputData = Depth|Normal` forces `ScriptableRendererPassInput.Depth | Normal` on the URP Renderer. This adds a depth+normals prepass if not already present. Test framerate impact on mobile before shipping.
+- **HDRP volume is a separate component** -- HDRP users must use `MK.EdgeDetection.HighDefinitionVolumeComponents.MKEdgeDetection`, not the URP version. MCP tools should branch on pipeline detection.
+- **Sketch mode allocates an extra RenderTexture (`edgeMask`) per frame.** Cost is real but bounded. On mobile, disable sketch unless specifically needed.
+- **Selective Mask module is legacy and feature-gated** behind `MK_SELECTIVE_MASK_ENABLED`. Default off. Skip unless you need per-object mask-based outlines (rare).
+- **Generated code watermark** -- do NOT hand-edit files with the `MK Shader - Cross Compiling Shaders` header; they'll be overwritten on the next update. If you need local tweaks, subclass or wrap, don't modify.
+
+**Verdict Rationale:** **Approved, Recommended.** Top-tier post-processing asset with clean architecture, all three render pipelines covered in one product, RenderGraph-ready for Unity 6, and a simple runtime API (`volume.TryGetComponent<MKEdgeDetection>()` + direct property sets). The kernel/precision/input matrix gives far more control than Unity's built-in "Screen Space Outlines" URP renderer feature. Pairs naturally with every stylized project in the TecVooDoo catalog (HOK, FearSteez, AQS, HideNReap, VNPC, M3AnimatedSeries, SetDesign). Cost of install/uninstall is low, cost of per-project lookdev experimentation is low. The 36-parameter surface justifies a small TMCP tool group (4 tools) rather than forcing generic `object-modify` chains.
+
+**MCP Candidate:** **High** -- 4 tools in new `mkedge` group. Queue after `tcc` TMCP work in TecVooDoo project.
+**TecVooDoo Utilities Candidate:** No -- screen-space post-processing is domain-specific (rendering), not general-purpose utility code.
+**TecVooDoo Games Candidate:** No -- third-party asset, not game logic.
+
+---
+
+### ENTRY-334: PressE PRO 2 (Fast Studios)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | PressE PRO 2 |
+| **Publisher** | Fast Studios |
+| **Source** | Unity Asset Store |
+| **Category** | Gameplay Framework (Interaction Prompts, Grab / Deposit, Keys, Conditions, Lerps, Inspection UI) |
+| **Price** | Paid |
+| **Version** | "Press E - 2" series (asset folder `Assets/Fast Studios/Press E - 2/`) |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **Pipeline-agnostic** -- pure C# + UGUI prompt templates |
+| **Dependencies** | None. Uses Unity's built-in Input (new Input System compatible via PressEInputBind drawer) |
+| **Install Size** | Small-Medium (~40 runtime scripts, ~20 editor scripts, 1 example scene, 4 prompt templates, CC0 demo assets) |
+| **Evaluated** | Apr 21, 2026 |
+| **Evaluated in** | Sandbox `Assets/Fast Studios/Press E - 2/` |
+| **Verdict** | **Approved, Recommended** -- plug-and-play interaction-prompt framework with clean component architecture and custom inspectors for every authoring step |
+
+**What It Does:** Turnkey "press E to interact" system for first-person / third-person games. Ships a full interaction stack: `Interactable` (on objects that can be interacted with) + `InteractionManager` (per-player driver) + `Key` (interaction trigger/input) + `Reference`/`GrabReference`/`GrabDeposit` (pickup/drop/place workflows) + `Condition` system (gate interactions on state) + `InspectionUI` (held-item rotate/zoom examination) + a Lerp helper family (Position/Rotation/Scale/Transform) for animated prompts. Four prompt prefab templates ship out of the box (`InspectionUI`, `InteractionPrompt`, `ScreenPrompt`, `WorldPrompt`) so you can pick screen-space vs world-space per project. All major components have custom inspectors + custom drawers (`ConditionDrawer`, `ObjectDepositDataDrawer`, `PressEInputBindDrawer`, `ValueBindingDrawer`), so authoring happens in the Inspector, not via code.
+
+**Architecture:**
+- **Runtime scripts organized by role:**
+  - `Scripts/Runtime/Core/` -- `Condition.cs`, `Enums.cs`, `Helper.cs` (core types + gating)
+  - `Scripts/Runtime/Interactions/` -- `Interactable`, `InteractionManager` (the hot path)
+  - `Scripts/Runtime/Complementary/` -- `GrabReference`, `GrabDeposit`, `Reference`, `Key`, `CameraReference`, `AnchorChanger`, `BlockPlacementArea`, `ItemPositionAdjustment`, `TemporaryManager`
+  - `Scripts/Runtime/Lerps/` -- `PositionLerp`, `RotationLerp`, `ScaleLerp`, `TransformLerp` (reusable prompt animation primitives)
+  - `Scripts/Runtime/UI/` -- prompt-UI behaviors
+  - `Scripts/Runtime/Universals/` -- shared utilities
+- **Editor scripts** (CustomInspector + Drawers + Universals + `InspectionEditorDeadzonePreview`) provide full-UX inspectors for every core component.
+- **Templates** (`Templates/*.prefab`) -- four pre-built prompt prefabs ready to drop into any scene.
+- **Resources/FastStudios/** -- fonts + editor icons.
+- **`OfflineDocumentation.pdf`** ships alongside the scripts folder.
+- **No asmdef** -- scripts land in `Assembly-CSharp`. Consistent with Fast Studios' other products.
+- **Demo assets** (CC0) include a knife, key, bin, valve, button, drawer, desk, Greek inscription + a Particle System -- enough to immediately see every feature without sourcing art.
+
+**Compile Status (Unity 6, 2026-04-21):** Clean. Standard `UnityEngine.UI` + `UnityEngine` runtime; no pipeline-specific code.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Kharon interacting with boat, urns, coins, NPCs on the shore | **HIGH** -- exactly the genre this asset is designed for. WorldPrompt for "[E] Pick up coin", GrabReference for holding urns, Condition for gate-interactions, InspectionUI for reading inscribed tablets on the riverbank |
+| **FearSteez** | Beat-em-up interaction with scene objects (pickups, weapons) | **MEDIUM-HIGH** -- lighter than full RPG use, but "press to grab weapon" + "press to interact with door" maps 1:1 |
+| **HideNReap** | Stealth item pickup, examining clues, key use on doors | **HIGH** -- stealth genre's bread-and-butter. InspectionUI for inspecting found items is especially strong |
+| **AQS** | Quokka interacting with food, doors, NPCs | **MEDIUM** -- simple enough, but if AQS already uses Malbers AC interaction hooks, adding PressE may duplicate surface |
+| **VNPC** | Point-and-click is the primary loop, but first-person exploration segments could use this | **MEDIUM** -- not the primary interaction model for VNPC, but useful for mixed-mode scenes |
+| **Blood Miner** | Mobile idle, tap-driven | **LOW** -- totally wrong genre. Skip. |
+| **M3AnimatedSeries** | Not interactive | **N/A** |
+| **SetDesign** | Lookdev + set building, no gameplay | **N/A** |
+| **TecVooDoo project** | Tooling project, no gameplay | **N/A** |
+
+**Asset Store Label:** **Default 3D** for first/third-person projects. **Recommended** for any HOK/HNR-style interaction-driven game.
+
+**Ecosystem Notes:**
+- **Overlaps with** Adventure Creator (ENTRY-251), TopDown Engine (ENTRY-301), and Ultimate Character Controller interaction hooks -- PressE PRO is lighter weight than any of those. Best as a standalone add-on to a hand-rolled controller, or as the interaction layer on top of Unity's new Input System.
+- **Pairs with Feel** -- add MMF feedback on `Interactable.OnInteract` for punch/shake/camera feedback.
+- **Pairs with InterfaceDarkFantasyHUD (ENTRY-332)** -- swap the shipped InteractionPrompt.prefab for DarkFantasyHUD's `Button_DarkFantasy_Prompt_*` variants for a themed look.
+- **CC0 demo assets** are a nice bonus but replaceable -- swap them for Synty / KayKit when shipping.
+
+**MCP Controllability:** **Medium-High** -- every authoring-facing component has a custom editor with structured fields, meaning `gameobject-component-modify` already reaches them. However, the multi-component setup (Interactable + Key + Condition + Reference) is tedious to wire via generic tools. A small `pe` tool group would cut setup time substantially. Proposed:
+- `pe-create-interactable` -- add Interactable + InteractionPrompt + optional Key child on a target GO with sensible defaults
+- `pe-configure-interactable` -- set Condition(s), interaction range, prompt template choice, held-item requirement, output events
+- `pe-create-grabbable` -- configure a GameObject as a GrabReference + GrabDeposit pair (held/placed workflow)
+- `pe-query` -- list all Interactables/Keys/Conditions in a scene with their state and linked prompts
+
+4 tools. Rating: **Medium-High.** Queue after `tcc` + `mkedge` in TecVooDoo project.
+
+**Key Gotchas:**
+- **No asmdef** -- scripts land in `Assembly-CSharp`. If the consumer project uses asmdefs heavily, consider wrapping PressE in a local asmdef that references UI + PhysicsModule.
+- **`InspectionEditorDeadzonePreview`** hints at a "don't rotate inside this deadzone" feature on inspected items -- useful for preventing accidental mis-rotations on mobile / gamepad.
+- **Prompt UI templates are Screen-Space by default** -- for VR or world-space UI, swap to `WorldPrompt.prefab` or wrap your own Canvas.
+- **PressEInputBind drawer** suggests native Input System binding support -- verify the project has the InputSystem package installed before importing, or verify the drawer gracefully falls back.
+- **The `Condition` system is component-driven, not ScriptableObject-driven** -- re-using condition sets across scenes may require duplicating components. Not a dealbreaker, just a pattern to know.
+- **Demo scene "Everything.unity"** is named non-idiomatically; rename/copy to `_PressE_Demo_Everything.unity` if it sits in the project root scenes folder to avoid clashes.
+- **`TemporaryManager`** -- unclear role from filename alone; read the PDF if you rely on it before shipping.
+
+**Verdict Rationale:** **Approved, Recommended.** Solid interaction framework at a useful abstraction level -- higher than rolling your own `if (Vector3.Distance(...) < 2f && Input.GetKeyDown(E))` loop, lower than pulling in a full RPG framework like Adventure Creator. Strong custom-inspector coverage means non-programmer tuning works well. HOK and HideNReap specifically benefit; install in either project when next interaction work happens. Removal is trivial (no runtime footprint unless components present).
+
+**MCP Candidate:** **Medium-High** -- 4 tools in new `pe` group. Queue after higher-priority Sandbox-wide tooling lands.
+**TecVooDoo Utilities Candidate:** No -- gameplay framework, not utility code. Specific to the interaction-prompt problem.
+**TecVooDoo Games Candidate:** No -- third-party framework. If we ever replace it with our own, the shipped shape (Interactable + Key + Condition + Lerp helpers + prompt templates) is a decent blueprint.
+
+---
+
+### ENTRY-335: The Coolest Chess (Freedom Developer)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | The Coolest Chess |
+| **Publisher** | Freedom Developer |
+| **Source** | Unity Asset Store |
+| **Category** | Gameplay / Complete Game (Chess with AI, Stockfish, PGN, Puzzle Editor) |
+| **Price** | Paid |
+| **Version** | Asset folder `Assets/TheChess/` |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **Pipeline-agnostic** -- 2D + 3D prefabs, standard materials |
+| **Dependencies** | Unity Test Framework (for shipped unit tests), optionally a Stockfish binary for strongest AI tier (WebGL bridge + C# bridge shipped; desktop Stockfish user-provides) |
+| **Install Size** | Large (~177 scripts, 7 asmdefs incl. 2 unit test asmdefs, 9 scenes, 2D + 3D piece prefabs, PGN corpus, Stockfish WebGL template) |
+| **Evaluated** | Apr 21, 2026 |
+| **Evaluated in** | Sandbox `Assets/TheChess/` |
+| **Verdict** | **Approved** -- comprehensive, well-structured complete chess game with solid engineering, but narrow use case (chess minigame or standalone chess product) |
+
+**What It Does:** Ships a **complete, production-ready chess game** with two built-in AI tiers (Type I, Type II -- both C# native), a Stockfish integration for strongest play (WebGL via JS bridge, desktop via `StockfishBridge.cs` calling a provided engine binary), full PGN support (parsing + playback of real chess games from shipped corpus), a puzzle editor for authoring chess puzzles, puzzle playback mode, multi-AI matchup mode, two-player local, and a "Playground" freeform scene. Nine scenes, each a different mode. The architecture is heavily decoupled: `Mechanism/` (pure chess rules), `AI/` (move search + evaluation), `Main/{Controllers, GUIs, Mono, ScriptableObjects, Communicators}` (game driver + UI), `Openings/` (opening book). Ships unit tests in both EditMode and PlayMode asmdefs.
+
+**Architecture:**
+- **177 scripts** across 7 asmdefs:
+  - `AI/AI.asmdef` -- `ChessAI` (base), `ChessAITypeI/II` (native), `ChessAITypeIMechanism/IIMechanism`, `ChessAITypeStockfish`, `ChessGameAI`, `ChessGameAITypeStockfish`, `ChessAIBoardRater`, `ChessAIDrawCommentSO`, `ISOLoader`, `StockfishBridge`
+  - `Main/Main.asmdef` -- split into Communicators (`ChessEnquiryManager`, `ChessEventManager`), Controllers (`ChessController`, `ChessMultiTouchController`, `ChessPuzzleEditorController`), GUIs (one per mode: AI, MultiAI, PGN, Stockfish, Puzzle, PuzzleEditor, QueueableGame, SinglePlayer, TwoPlayer, Playground), Mono (`ChessObjectManager`, `ChessTile`, `ChessPuzzleEditorTile`, `MultiControlTilesEffectManager`), ScriptableObjects, UIs
+  - `Mechanism/Mechanism.asmdef` -- pure chess rules split into Classes/Core/Structs
+  - `Openings/Openings.asmdef` -- opening book data
+  - `Editor/Editor.asmdef` -- `ChessPuzzleEditorGUIEditor`, `ChessPuzzleGUIEditor`
+  - `UnitTests/EditMode/EditMode.asmdef` + `UnitTests/PlayMode/PlayMode.asmdef` -- shipped test coverage
+- **Scenes (9):** ChessAI (single-player vs C# AI), ChessMultiAI (AI vs AI), ChessPGN (PGN playback), ChessPuzzle (puzzle solver), ChessPuzzleEditor (authoring), ChessWithStockfish (vs Stockfish), MainMenu, Playground (freeform), TwoPlayer (local hotseat)
+- **Prefabs** -- Pieces in `Prefabs/Pieces/2D/` + `Prefabs/Pieces/3D/`, organized UI prefab library under `Prefabs/UIs/{Buttons, Dropdowns, Essential, InputFields, Others, Panels, ScrollViews}`
+- **Resources:** PGN text files under `Resources/PGN/TextFiles/`, ScriptableObjects for AI / PGN / Puzzle config in `Resources/ScriptableObjects/`
+- **Materials:** Piece + ChessBoard mats (Darker / Lighter / Edge)
+- **WebGLTemplates/stockfish/** -- Stockfish.js WebGL integration
+
+**Compile Status (Unity 6, 2026-04-21):** Clean. Ships with shipped unit test asmdefs (runnable via `tests-run` MCP tool).
+
+**Stockfish Integration:**
+- **WebGL:** ships `WebGLTemplates/stockfish` with a JS bridge -- works out of the box in WebGL builds.
+- **Desktop (Win/Mac/Linux):** `StockfishBridge.cs` + `ChessAITypeStockfish.cs` spawn a subprocess; user must supply the Stockfish binary (not bundled due to GPL licensing). Expected location is configurable.
+- **Mobile (iOS/Android):** No bundled bridge. Users have shipped mobile Stockfish integrations externally, but not turnkey here.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **Stand-alone chess game** | Ship as-is or reskin | **HIGH** -- complete product, ship-ready |
+| **HOK** | Charon plays chess with souls? Underworld chess scene? | **LOW-MEDIUM** -- narrative minigame fit only if the design calls for it |
+| **FearSteez** | No fit | **N/A** |
+| **HideNReap** | Stealth chess? No | **N/A** |
+| **VNPC** | Chess minigame inside a visual novel / point-and-click | **MEDIUM** -- the 9 scenes give flexibility to embed the whole thing or cherry-pick mechanism-only |
+| **AQS** | No fit | **N/A** |
+| **Blood Miner** | No fit | **N/A** |
+| **M3AnimatedSeries** | Could visualize chess scenes rendered for episode content | **LOW** |
+| **SetDesign** | No fit | **N/A** |
+| **TecVooDoo project** | Install only if building a chess minigame | **N/A** |
+
+**Asset Store Label:** no default label. Tag: **Gameplay**, **Complete Game**. Install only when a chess feature is specifically in scope.
+
+**Ecosystem Notes:**
+- **Self-contained** -- no runtime dependencies on other evaluated Sandbox assets.
+- **The `Mechanism/` asmdef is the real gem if you just want the rules engine** -- you can strip everything else and ship just the move validator + board state for a custom UI. Clean separation.
+- **Unit tests shipped in both EditMode + PlayMode** -- rare for asset store content and a good sign of engineering quality.
+- **PGN corpus** is a ready-made library of real grandmaster games for training/demo.
+
+**MCP Controllability:** **Low-Medium.** The asset is a complete game, not a composable component library. Potentially useful dedicated tools would be narrow: `chess-load-fen` (load a position), `chess-load-pgn` (replay a game), `chess-set-ai-type` (pick Type I / II / Stockfish), `chess-start-puzzle` (load a puzzle SO and run puzzle mode). But these are only valuable to someone building a chess-centric game using this asset -- not a general-purpose tool surface. Rating: **Low** as shipped; **Medium** if a project adopts it. Existing MCP tools (`scene-open`, `gameobject-find`, `gameobject-component-modify`, `script-execute` for arbitrary Lua-free code) cover incidental use.
+
+**Key Gotchas:**
+- **Stockfish binary NOT bundled (GPL).** Users must provide one for desktop play. WebGL ships with a compatible JS build.
+- **Nine scenes** -- pick the one matching your use case and either copy it into your project or strip scenes you won't use before building (saves build size).
+- **`Resources/` uses aggressive loading** -- PGN text files + ScriptableObjects under `Resources/` will be baked into every build. Move out to Addressables if memory-constrained.
+- **UI prefab library is sized for standalone product.** If embedding the rules engine only, leave the UI folder out.
+- **Piece scaling:** 2D + 3D piece sets are separate prefab folders -- pick one to avoid shipping both.
+- **MainMenu scene is authored as the entry point** -- if you embed only a specific mode scene, you'll need to bypass the intended menu flow.
+
+**Verdict Rationale:** **Approved.** Engineering quality is high (178 scripts organized by concern across 7 asmdefs, unit tests included, clean Mechanism ↔ UI separation). Use cases are narrow but valuable when they hit: chess minigame inside a bigger game, standalone chess product, a rules engine to strip out and reuse. The shipped Stockfish WebGL bridge is the best way to get 2500+ ELO chess AI into a Unity WebGL build without writing the bridge yourself. **No default label** because the fit is context-specific -- install only when chess is in scope.
+
+**MCP Candidate:** No (shipped) / Medium (if a project adopts it). Not queued for TMCP.
+**TecVooDoo Utilities Candidate:** No -- domain-specific game logic, not reusable utility code. However, the `Mechanism/` asmdef (pure rules engine) is a study-quality reference if we ever write a move-validator for anything chess-adjacent.
+**TecVooDoo Games Candidate:** No -- third-party complete game; we'd install it wholesale rather than absorb it.
+
+---
+
+### ENTRY-336: Poly Art: Animal Forest Set (Malbers Animations)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Poly Art: Animal Forest Set |
+| **Publisher** | Malbers Animations |
+| **Source** | Unity Asset Store |
+| **Category** | Art / Animation (Low-Poly Forest Animals) |
+| **Price** | Paid |
+| **Version** | `01 Forest Pack` -- part of Malbers "Poly Art" animal series |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **Pipeline-agnostic** -- standard Unity materials, humanoid animation rigs |
+| **Dependencies** | **Malbers Animal Controller (MAC) recommended** -- ships `_Forest Pack (AC)` folder with AC-ready prefabs. Works standalone with Legacy prefabs + demo scenes too. |
+| **Install Size** | Large (~134 FBX, 52 prefabs, 10 per-animal demo scenes, Textures + Materials per animal) |
+| **Evaluated** | Apr 21, 2026 |
+| **Evaluated in** | Sandbox `Assets/Malbers Animations/Animals Packs/01 Forest Pack/` |
+| **Verdict** | **Approved, Recommended** -- the definitive low-poly forest-animal set when the project already uses Malbers Animal Controller |
+
+**What It Does:** Ships **10 fully animated, Animal-Controller-ready forest animals** at a low-poly Poly Art style: **Bear, Boar, Cougar, Deer, Fox, Moose, Rabbit, Raccoon, Tiger, Wolf**. Each animal comes with its own dedicated subfolder containing Models/ (FBX + rig), Anims/ (AnimationClips), Materials/, Textures/, an individual Demo scene showcasing the animal under AC, and (for Bear) a Legacy non-AC demo. A shared `_Forest Pack (AC)` folder carries cross-pack AC integration assets. A Common/ folder holds shared rigs or textures.
+
+**Architecture:**
+- **Per-animal subfolder structure** (consistent for all 10):
+  - `Anims/` -- AnimationClips (idle, walk, run, attack, death, eat, sleep, etc.)
+  - `Materials/PolyArt/` -- shared low-poly materials + URP/Lit variants
+  - `Models/` -- FBX rig + mesh (LODs likely present -- confirm per-animal)
+  - `Textures/` -- albedo + normal (Fox, Cougar at least)
+  - `{Animal} Demo PolyArt.unity` -- standalone demo scene with AC-ready prefab + environment
+- **`_Forest Pack (AC)/`** -- AC integration assets (state/mode configs specific to the forest pack)
+- **10 demo scenes** (one per animal) -- each demonstrates the animal in its native AC configuration, ready for testing behaviors
+- **Only 2 scripts** in the whole pack -- this is an art+animation asset, AC itself carries the runtime behaviors
+- **No asmdef** -- relies on MAC's own asmdef structure
+- **134 FBX files** -- mostly individual AnimationClips + per-animal rigs (typical Malbers breakdown)
+- **52 prefabs** -- multiple variants per animal (AC-configured + non-AC / Legacy / Poly Art aesthetic variants)
+- **README!.asset** at pack root -- open in Unity Inspector for publisher notes
+- **Common/** shared folder -- probably shared materials or base rig
+
+**Compile Status (Unity 6, 2026-04-21):** Clean (art asset; 2 scripts only, likely AC extension glue).
+
+**Animal Roster & Project Fit:**
+
+| Animal | Species | AQS Fit | HOK Fit | FS Fit | HnR Fit | Notes |
+|--------|---------|---------|---------|--------|---------|-------|
+| Bear | Ursus arctos | **HIGH** -- boss-tier predator | MEDIUM -- underworld beast | LOW | **HIGH** -- ambush enemy | Only animal with Legacy demo |
+| Boar | Sus scrofa | **HIGH** -- roaming enemy | LOW | LOW | MEDIUM | |
+| Cougar | Puma concolor | **HIGH** -- stalking predator | LOW | LOW | **HIGH** -- stealth predator foe | Textures folder present |
+| Deer | Cervidae | **HIGH** -- peaceful NPC | MEDIUM -- psychopomp | LOW | **HIGH** -- non-aggressive critter | |
+| Fox | Vulpes vulpes | **HIGH** -- small predator | MEDIUM -- underworld companion | LOW | MEDIUM | Textures folder present |
+| Moose | Alces alces | **HIGH** -- big peaceful | LOW | LOW | MEDIUM | |
+| Rabbit | Leporidae | **HIGH** -- critter | LOW | LOW | **HIGH** -- prey animal | Dedicated Demo PolyArt folder |
+| Raccoon | Procyon lotor | **HIGH** -- pest NPC | LOW | LOW | MEDIUM | |
+| Tiger | Panthera tigris | MEDIUM -- wrong biome | LOW | LOW | **HIGH** -- boss predator | |
+| Wolf | Canis lupus | **HIGH** -- pack predator | MEDIUM -- hellhound candidate | LOW | **HIGH** -- pack threat | |
+
+**Project Fit (rollup):**
+- **AQS:** **HIGH** -- strong alignment with the quokka-in-the-forest aesthetic. Covers the companion + predator + critter roster needs. Pairs with Mega Cute Pet Zoo (ENTRY-314) which supplies cuter stylistic variants if needed. AC integration is already wired -- drop the AC-ready prefab into the scene and go.
+- **HOK:** **MEDIUM** -- forest-animal bestiary is thematically off (underworld), but Wolf + Deer + Fox could be re-skinned/darkened as underworld variants. Skip unless a specific underworld creature needs a base rig.
+- **HideNReap:** **HIGH** -- stealth horror with forest-animal encounters (Bear, Cougar, Tiger, Wolf as threats; Rabbit, Deer as prey/ambient). Pairs with Tiger + Cougar for boss-tier enemies.
+- **FearSteez:** **LOW** -- beat-em-up is urban/stylized; forest animals off-genre.
+- **Blood Miner:** **LOW** -- mobile idle; already uses Suriyun Mega Cute Pet Zoo for bodies.
+- **M3AnimatedSeries:** **MEDIUM-HIGH** -- animated series content often needs forest animals in one or more episodes. High-quality rigs + anims make this a good source.
+- **VNPC:** **LOW-MEDIUM** -- could populate background forest scenes ambient-wise.
+- **SetDesign:** **HIGH** -- universal forest-set population asset; drop animals into any forest hub/vignette scene.
+
+**Asset Store Label:** **Default** for AC projects (AQS). Also **Recommended, Character** for any project in the forest/stealth/survival/adventure genre.
+
+**Ecosystem Notes:**
+- **Requires / pairs with Malbers Animal Controller** (evaluated previously) -- the AC tool group (`ac-query-animal`, `ac-configure-state`, `ac-configure-mode`, `ac-configure-speed`, `ac-query-stats`, `ac-configure-stat`, `ac-configure-damageable`, `ac-add-lock-axis`) already covers controlling these animals in scenes. **No new MCP tools needed.**
+- **Pairs with Mega Cute Pet Zoo (ENTRY-314)** -- Malbers Poly Art is realistic-low-poly while MCPZ is cute-chibi. Pick by art direction. AQS uses MCPZ for quokka; Forest Pack supplements for non-quokka animals.
+- **Pairs with Drake the Dragonkin (ENTRY-294), Undead Horse & Knight (ENTRY-295), Low Poly Cowboy (ENTRY-296)** -- same publisher, same AC integration, same Poly Art style. Consistent asset family.
+- **Pairs with A* Pathfinding (evaluated elsewhere)** -- AC animals use NavMeshAgent or A* for navigation. No conflicts.
+- **Pairs with Technie Collider Creator 2 (ENTRY-330)** -- generate better-fit body/limb colliders than the default capsules Malbers ships with.
+
+**MCP Controllability:** **Covered by existing AC tool group.** The 10 animals are configured via standard AC components (`MAnimal`, `Stats`, `MDamageable`, `LockAxis`) which already have dedicated MCP tools. No new tools needed. Rating: **N/A new tools.**
+
+**Key Gotchas:**
+- **Malbers Animal Controller is the expected backbone** -- installing this pack without MAC means you get FBX/anims/materials but miss the plug-and-play AC integration in `_Forest Pack (AC)/`. Standalone use is possible (Legacy Bear demo proves it) but costs time.
+- **Each animal ships a demo scene** -- 10 demo scenes at the pack root bloat the Scenes panel. Move `Animals Packs/01 Forest Pack/*/` demo scenes into an `_AnimalDemos/` folder or exclude from build.
+- **Bear includes a Legacy (non-AC) variant** in `Bear/Bear (Legacy)/`; other animals are AC-only. If building a non-AC project, Bear is the template to follow; other animals need manual rigging to substitute a different controller.
+- **Textures directory present for some animals (Cougar, Fox) but not explicitly surfaced for others** -- likely shared materials via `Materials/PolyArt/`. Verify per-animal if doing art QA.
+- **Only 2 scripts in the whole pack** -- indicates everything is data-driven via AC, which is the right design but means asset breaks if MAC breaks.
+- **Common/ folder is present but purpose isn't obvious from directory alone** -- read `README!.asset` for intent. Don't delete Common/ without checking.
+- **Check the `_Forest Pack (AC)` folder after importing MAC updates** -- AC version upgrades occasionally require re-importing the pack's AC configs. Malbers' practice.
+- **Demo scenes and models are organized per-animal** -- renaming or moving folders breaks the shipped demo scenes' references. If reorganizing, verify demos or accept their loss.
+
+**Verdict Rationale:** **Approved, Recommended** for AQS and HideNReap specifically, and for any project using Malbers Animal Controller + needing forest animal content. Art quality is consistent with the Malbers Poly Art line (Drake, Undead Horse, Cowboy), making it a coherent source. AC integration saves weeks of rigging + state-machine authoring per animal. The 10-species roster covers the staples (predator/prey/critter archetypes) for most forest scenes. No MCP work needed -- existing AC tool group is the interface. Removal cost is zero (art-only folder), install cost is the storage size.
+
+**MCP Candidate:** No -- fully covered by existing Malbers AC tool group (`ac-*`).
+**TecVooDoo Utilities Candidate:** No -- proprietary Malbers art + AC configuration; no generic utility code.
+**TecVooDoo Games Candidate:** No -- third-party art/animation pack.
+
+---
+
+### ENTRY-337: COZY 3: Stylized Weather (Distant Lands)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | COZY 3: Stylized Weather |
+| **Publisher** | Distant Lands |
+| **Source** | Unity Asset Store (shipped as UPM local package under `Packages/com.distantlands.cozy.core`) |
+| **Category** | Environment / Sky (Stylized Weather, Day/Night Cycle, Atmosphere, Biomes, Time, Climate) |
+| **Price** | Paid |
+| **Version** | **3.6.17** (`package.json` at `Packages/com.distantlands.cozy.core/`) |
+| **Unity Versions** | Unity 2022.3+ (Unity 6 verified) |
+| **Pipeline** | **URP / HDRP / BiRP** -- ships per-pipeline Post FX in `Content/Post FX/{URP, HDRP, BiRP}` + pipeline-gated source via `COZY_URP` / `COZY_HDRP` defines. Install flow drives setup via the **Cozy Hub** editor window. |
+| **Dependencies** | `UnityEngine.WindZone` requires `com.unity.modules.wind` (add to manifest). `com.unity.shadergraph` used for Shader Graph cloud/fog variants. Optional integrations: Microsplat, The Vegetation Engine (TVE), Pure Nature, Buto, MasterAudio. |
+| **Install Size** | Large (~76 runtime scripts, 3 asmdefs, 11+ stylized shaders, 5 sample packages, multiple default profile SOs, demo scenes + terrain + textures) |
+| **Evaluated** | Apr 21, 2026 (this session) |
+| **Evaluated in** | Sandbox UPM `Packages/com.distantlands.cozy.core` v3.6.17 |
+| **Verdict** | **Approved, Recommended** -- top-tier stylized weather + atmosphere system with strong modular architecture, same publisher as Lumen (ENTRY-325). Strong fit for every outdoor-scene project in the catalog. |
+
+**What It Does:** Full-stack stylized sky + weather + atmosphere + time-of-day + biome system. Drives the sun/moon/stars, sky gradient, cloud layers (8 artistic styles -- Ghibli Desktop / Ghibli Mobile / Luxury / Painted Skies / Soft / Desktop / Mobile / Static Texture), fog (Desktop / Height-Based / Stepped), precipitation, wind, ambient audio, post FX overlays, and per-biome climate rules. Everything is profile-driven (`ScriptableObject` assets you blend between at runtime). Modular architecture: a single `CozyWeather` MonoBehaviour hosts any combination of 17 `CozyModule` subclasses -- you only pay for the features you enable.
+
+**Architecture:**
+- **Core (7 scripts):** `CozyWeather` (1,312 LOC, main driver + event bus), `CozySystem` (minimal singleton glue), `CozyModule` (base for all modules, 286 LOC), `CozyProfile` (base SO), `CozyBiome` + `CozyBiomeModule` (biome system), `CozyEcosystem` (multi-biome world).
+- **Modules (17 runtime + 2 utility):**
+  - `CozyTimeModule` (day/night cycle, 390 LOC) + `SystemTimeModule` (real-world clock binding)
+  - `CozyWeatherModule` (294 LOC -- weather selection, forecast, transitions)
+  - `CozyAtmosphereModule` (sky gradient, sun/moon/stars)
+  - `CozyAmbienceModule` (ambient audio beds)
+  - `CozyClimateModule` (temperature, humidity, seasonality)
+  - `CozyWindModule` (wind direction + shader wind + WindZone driver)
+  - `CozyEventModule` (timed event hooks)
+  - `CozyInteractionsModule` (object reactions to weather)
+  - `CozySatelliteModule` (sun/moon/planet positioning)
+  - `CozySaveLoadModule` (persistence)
+  - `CozyDebugModule` (gizmos + debug HUD)
+  - `CozyReflectionsModule` (reflection probe driver)
+  - `CozyTransitModule` (scene-to-scene transitions)
+  - `CozyMicrosplatModule`, `CozyPureNatureModule`, `CozyTVEModule`, `CozyButoModule` (3rd-party integrations)
+  - `CozyDateOverride`, `CozyTimeOverride` (utility modules for scene-specific overrides)
+  - `ExampleModule` (template for custom modules)
+- **Data (Profile ScriptableObjects, 8 types):** `AmbienceProfile`, `AtmosphereProfile`, `ClimateProfile`, `ForecastProfile`, `MaterialManagerProfile`, `PerennialProfile`, `SatelliteProfile`, `WeatherProfile`.
+- **FX system (12 types in `Data/FX/`):** `FXProfile` (base), `MultiFXProfile`, plus leaf types `AudioFX`, `ClimateFX`, `CloudFX`, `EventFX`, `FilterFX`, `ParticleFX`, `PrecipitationFX`, `ThunderFX`, `VisualFX` (post-processing), `WindFX`. `CustomFXExample.cs` is a template for your own. Each FX is a SO you can author, swap, and blend.
+- **Auxiliary runtime:** `CozyParticles`, `CozySatellite`, `CozySetMoonDirection`, `CozyThunder`, `CozyThunderManager`, `CozyVolume`, plus a `Weighted Random Chance` folder with chance-based effector scripts.
+- **Shaders (11+ stylized):**
+  - 8 cloud variants: Desktop, Mobile, Ghibli Desktop, Ghibli Mobile, Luxury, Painted Skies, Soft, Static Texture
+  - 3 fog variants: Desktop, Height Based, Stepped
+  - Auxiliaries: Disabled Shader, Fog Culling, Stylized Butterfly, Stylized Grass
+  - Plus Shader Graph sources + Amplify Functions + Compiler Scripts folder (`CozyShaderImporter`, `CozyShaderPackage`, `CozyShaderPostProcessor`, `EmptyShaderGUI`)
+- **Editor tooling:** Dedicated **Cozy Hub** window (`Tools → Cozy: Stylized Weather 3 → Open Cozy Hub`), Setup Wizard, pipeline detector, module/profile inspectors, UIToolkit-based inspector family under `Editor/UI/` (Components, Cozy Hub, Inspectors, Modules, Profiles, Stylesheets, Window).
+- **Asmdefs (3):** `DistantLands.Cozy.Runtime`, `DistantLands.Cozy.Editor`, `DistantLands.Cozy.UI.Runtime` (UI Samples package).
+- **Shipped samples (5, import via Package Manager → Samples):**
+  - Core Samples -- main module showcase scenes
+  - Biome Samples -- global vs local biomes, biome modules, transitions
+  - UI Samples -- time / temperature / weather / date HUD
+  - Fog Cards (URP) -- 3D placeable fog card shaders
+  - Legacy Integrations -- old shader-include paths for backwards compatibility
+
+**Compile Status (Unity 6, 2026-04-21):** Clean after two fixes applied this session:
+1. **Added `com.unity.modules.wind`** to `Packages/manifest.json` -- resolves `UnityEngine.WindZone` reference in `CozyWindModule.cs:18`. Unity 2022.3+ made Wind an optional module.
+2. **Added `COZY_URP` define + removed stale `UNITY_POST_PROCESSING_STACK_V2` define** on the Standalone build target in `ProjectSettings.asset:862`. The PPSv2 define was leftover from an old import, but `com.unity.postprocessing` isn't installed. `VisualFX.cs` guards its PPSv2 `using UnityEngine.Rendering.PostProcessing;` behind `#elif UNITY_POST_PROCESSING_STACK_V2`; without the package installed, the reference errored. Setting `COZY_URP` makes the `#if COZY_URP` branch win first, taking the URP `Volume` path and skipping PPSv2 entirely.
+
+**Post-fix:** Open Cozy Hub (menu above) on first use to verify pipeline detection and import desired samples.
+
+**Public API Surface (CozyWeather):**
+- **Event bus** -- strongly typed events on `CozyWeather`: `RaiseOnEvening`, `RaiseOnMorning`, `RaiseOnNewHour`, `RaiseOnMinutePass`, `RaiseOnNight`, `RaiseOnDay`, `RaiseOnDawn`, `RaiseOnAfternoon`, `RaiseOnTwilight`, `RaiseOnWeatherChange`, `RaiseOnDayChange`, `RaiseOnYearChange`, `RaiseOnFrameReset`, `UpdateWeatherWeights`, `UpdateFXWeights`, `PropogateVariables`, `CozyUpdateLoop`.
+- **Setup/lifecycle:** `SetupReferences()`, `SetupSystems()`, `ResetFXTriggers()`, `UpdateTriggersInScene(Scene)`, `RemoveTriggersInScene(Scene)`, `RefreshTriggers()`, `ResetQuality()`, `ResetVariables()`, `ResetModules()`.
+- **Module management:** `InitializeModule(Type)`, `ResetModule(CozyModule)`, `ResetModuleRoutine(CozyModule)` (coroutine), `DeintitializeModule(CozyModule)`, `GetModule(Type)`.
+- **Rendering:** `UpdateSkydomePositionAndScale()`, `UpdateShaderVariables()`, `FilterColor(Color)`, `SetStyle(SkyStyle)`.
+- **Hierarchy:** `GetChild(string)`, `UpdateOnSceneLoaded`, `UpdateOnSceneUnLoaded`.
+- Exposed fields (selected from `AtmosphereProfile`): `cumulus`, `cirrus`, `altocumulus`, `cirrostratus`, `chemtrails`, `nimbus`, `fogDensity`, `sunDirection`, `sunPitch`, `moonDirection`, 13 HDR color fields (sky zenith/horizon, cloud, cloud highlight, sunlight, star, ambient horizon/zenith, fog 5 tiers, fog flare, fog moon flare, fog shadow, fog lit), `gradientExponent`, `sunSize`, `moonFalloff`, `lightScatteringColor`, etc.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Acheron underworld -- Ghibli Soft / Painted Skies clouds for underworld sky, Height-Based Fog for river valley atmosphere, manual time override for "eternal dusk" feel | **HIGH** -- matches the stylized aesthetic Kharon world needs |
+| **AQS** | Quokka forest -- day/night cycle, weather variety (rain / sunny / stormy), biome-based climate shifts | **HIGH** -- exactly the asset category AQS needs for outdoor scenes. Pairs with 2.5D Terrain (ENTRY-311) and Mega Cute Pet Zoo / Forest Pack animals. |
+| **HideNReap** | Stealth horror -- dusk/night defaults, thunder/lightning events, fog for concealment mechanics, eerie ambient audio beds | **HIGH** -- the Thunder / Precipitation / Ambience FX types directly feed HnR's tone. Fog density + weather could become a gameplay layer. |
+| **FearSteez** | Urban beat-em-up -- mostly interior or street-level | **MEDIUM** -- stylized clouds less relevant; could use Atmosphere for dramatic rooftop scenes. Skip unless an outdoor combat scene is in scope. |
+| **Blood Miner** | Mobile idle -- interior / vertical shaft gameplay | **LOW-MEDIUM** -- mobile perf budget + the scene is underground. Skip. |
+| **VNPC** | Point-and-click visual novel -- outdoor backdrops benefit from mood control | **MEDIUM-HIGH** -- Atmosphere + Ambience + light time-of-day control would elevate outdoor VN backdrops. Skip weather simulation, lean on static profiles. |
+| **M3AnimatedSeries** | Animated series production -- every outdoor episode needs a sky + time-of-day system | **HIGH** -- stylized cloud library is exactly on-brand for an animated series. Ghibli cloud styles especially. |
+| **SetDesign** | Universal set building / look-dev | **HIGH** -- drop Cozy into every outdoor hub scene as the default sky/weather layer. |
+| **TecVooDoo project** | Tooling only | **N/A** |
+
+**Asset Store Label:** **Default 3D / Environment** for outdoor stylized projects. **Recommended, Environment.**
+
+**Ecosystem Notes:**
+- **Same publisher as Lumen (ENTRY-325)** -- the stylized volumetric god-rays pack is a natural companion. Distant Lands assets share a cohesive visual language.
+- **Complementary to Real Time Weather Pro (ENTRY-322)** -- RTW Pro is realistic API-driven weather (news ticker / actual meteorology); Cozy is stylized / designer-driven. Pick by art direction, not both.
+- **Complementary to Ultimate Terrain (ENTRY-326)** and **2.5D Terrain (ENTRY-311)** -- both are ground systems; Cozy handles everything above ground.
+- **Integrates with Microsplat, Pure Nature, TVE (The Vegetation Engine), Buto** -- dedicated modules exist. If any of these are adopted in a project, flip the matching Cozy module on.
+- **MasterAudio pairing** -- `CozyAmbienceModule` drives ambient audio; pairs well with MA buses. An integration pattern worth documenting if AQS or HOK pull it in.
+- **Feel integration** -- weather change events (`UpdateWeatherWeights`, `RaiseOnWeatherChange`) are perfect Feel feedback triggers.
+- **Extension modules sold separately** on Asset Store (referenced in `package.json` description). Investigate Cozy Forecasting / Cozy Lighting if core modules prove insufficient later.
+- **Fog Cards (URP)** sample is distinct -- placeable 3D fog volumes for local pockets of fog (caves, ravines). Useful for HOK cave scenes.
+
+**MCP Controllability:** **MEDIUM-HIGH** -- `CozyWeather` is a per-scene singleton with ~40 public methods, a clean module registry, and profile-asset-based configuration. All runtime state is serialized on `CozyWeather` + sub-modules, meaning `gameobject-component-modify` reaches everything generically. The profile-swap pattern (assign a different `WeatherProfile` SO → system re-blends) is perfect for MCP workflows. Proposed dedicated tool group `cozy`:
+- `cozy-query` -- report full runtime state: current weather profile, time-of-day, date, temperature, active modules + their config, biome, fog/cloud/wind snapshot. Gives MCP agents ground truth for weather-aware changes.
+- `cozy-set-weather` -- swap the active `WeatherProfile` asset (by path or name) with optional transition-time arg. Wraps `CozyWeatherModule`'s internal weather-change path + raises `RaiseOnWeatherChange`.
+- `cozy-set-time` -- set time-of-day (hour/minute, optional date) via `CozyTimeModule`. Useful for cinematics, screenshots, lookdev.
+- `cozy-configure-module` -- add/enable/disable/configure any `CozyModule` subclass by type name. Covers the 17 runtime modules uniformly.
+- `cozy-set-biome` -- swap active `CozyBiome` in scenes using the biome system.
+
+5 tools. Rating: **Medium-High.** Queue after `tcc` (now shipped as `tcc-*`), `mkedge`, and `pe` groups.
+
+**Key Gotchas:**
+- **Wind module dependency** -- `UnityEngine.WindZone` requires `com.unity.modules.wind` in manifest. Fixed this session.
+- **Pipeline define mandatory** -- `COZY_URP` or `COZY_HDRP` must be set on the active build target's scripting defines. Fixed this session for Standalone. If switching build target to Android / WebGL / etc., add the matching `COZY_*` define to that platform's line too.
+- **`UNITY_POST_PROCESSING_STACK_V2` define must NOT be set unless `com.unity.postprocessing` is actually installed.** Cozy's `VisualFX.cs` checks PPSv2 before URP only via `#elif`, so as long as `COZY_URP` is defined first the `#elif` branch is dead code. But a bare PPSv2 define without the package will break compile. Clean up the define on other platforms when you switch targets.
+- **Blending time-of-day is expensive at realtime speeds** -- `CozyWeather.Update` does a lot per frame. For mobile (Blood Miner), either disable the module or set `CozyTimeModule.timeScale = 0` and drive time manually.
+- **UPM local package path = `Packages/com.distantlands.cozy.core`**, not `Assets/`. Uninstall is via Package Manager, not folder deletion. Editing shipped scripts in place is risky (upgrades overwrite). For customizations, extend via custom `CozyModule` subclasses in `Assets/`.
+- **Sample scenes live under `Samples~/`** (tilde hides from Unity by default). Import via Package Manager → Samples tab. Don't move them into `Assets/` unless you plan to ship them.
+- **`Legacy Integrations` sample** exists solely for projects migrating from Cozy 1/2 or for third-party assets that still reference old shader-include paths. Skip unless you hit broken shader includes.
+- **ShaderGraph + Amplify Shader Functions** are both shipped -- Cozy detects whether Amplify is installed and picks the right source. Safe to have both (we do, ENTRY-158).
+- **`ExecuteAlways` on modules** means CozyWeather runs in the editor. Expect Scene View to update continuously -- fine for lookdev, but can be distracting if not expected.
+- **Demo scene uses a large terrain** (`Content/Demo/Terrain/`) -- delete or move out of build scope before shipping.
+- **Cozy Hub is the single source of truth for pipeline setup.** If setup drifts or compile errors appear after a Unity version upgrade, re-run the Hub.
+
+**Verdict Rationale:** **Approved, Recommended.** COZY 3 is the best-in-class stylized weather/sky system available for Unity and a natural fit for at least five active TecVooDoo projects (HOK, AQS, HideNReap, M3AnimatedSeries, SetDesign). The modular architecture (one `CozyWeather` GameObject + 17 optional modules + 8 profile SOs + 12 FX types) means projects can adopt only the surface area they need -- a cute day/night cycle for AQS, full atmospheric horror for HNR, Ghibli-styled skies for HOK. Pipeline coverage (URP/HDRP/BiRP) + per-platform Post FX folders are the right shape for a multi-project eval environment. Editor UX (Cozy Hub, UIToolkit inspectors, setup wizard) is polished and reduces configuration friction. Same-publisher cohesion with Lumen (ENTRY-325) means we can build a consistent stylized-rendering stack.
+
+**MCP Candidate:** **BUILT (TVD4, Apr 25)** -- 5 tools in `cozy` group (`cozy-query`, `cozy-set-weather`, `cozy-set-time`, `cozy-configure-module`, `cozy-set-biome`). `MCPTools.Cozy.Editor` asmdef + direct refs to `DistantLands.Cozy.Runtime`. `HAS_COZY` define auto-set when `DistantLands.Cozy.CozyWeather` is present. See `TMCP_Reference.md` -> "COZY 3 Stylized Weather" section.
+**TecVooDoo Utilities Candidate:** No -- domain-specific environmental simulation, not reusable utility code.
+**TecVooDoo Games Candidate:** No -- third-party asset, not gameplay logic.
+
+---
+
+### ENTRY-338: RPG Monster Bundle Polyart (Pxltiger)
+
+**Date Evaluated:** 2026-04-25 (Session 79)
+**Driver:** Blood Miner -- candidate body-pool expansion for deeper rows / boss-coffin contents.
+**Source:** Asset Store (3-pack bundle of `RPG Monster Wave 01/02/03 Polyart`)
+**Install Path:** `Assets/RPGMonsterBundlePolyart/` (~523 MB)
+**State:** Imported in Built-in RP default state (NOT swapped to URP yet — see Pipeline Risk below). Eval done from filesystem inspection + shader/scene structure; no in-project render test.
+
+**Contents (574 FBX, 83 prefabs, 31 animator controllers, 6 textures, ~523 MB):**
+
+- **Wave 01 (10 monsters):** Bat, Dragon, EvilMage, Golem, MonsterPlant, Orc, Skeleton, Slime, Spider, TurtleShell + StageMesh
+- **Wave 02 (10 monsters):** Beholder, BlackKnight, ChestMonster, CrabMonster, FlyingDemon, LizardWarrior, RatAssassin, Specter, Werewolf, WormMonster + StageMesh
+- **Wave 03 (10 monsters):** BattleBee, BishopKnight, Cactus, Cyclops, DemonKing, Fishman, Mushroom, NagaWizard, Salamander, StingRay + Stage
+- **Per-monster animation set (~14-17 clips each):** Attack01, Attack02, Defense, DefenseGetHit, Die, Dizzy, GetHit, IdleBattle, IdleNormal, Run, SenseSomethingStart/Routine, SentryWalkFront, Taunt, Victory, Walk + WalkBack/Left/Right. Each as a separate FBX (Generic rig, not Humanoid).
+- **Per-monster prefabs:** Two material variants per monster — `CharacterPADefault` (single albedo + emission) and `CharacterPAMaskTint` (3-channel mask + 9 tint colors via custom ASE shader). 60 character prefabs total (30 monsters × 2 variants).
+- **Per-wave weapon prefabs** in `CommonStuffs/Prefab/Wave0X/Weapons/` (separate from character prefabs — designed for hand-attach).
+- **Animator controllers** wired per monster (not per material variant) under `RPGMonsterWaveXXPolyart/Animators/`.
+- **CommonStuffs/:** Shared materials (PolyartDefault, 3 PAMaskTint variants, Skybox, Stage), 6 shared textures (Albedo + Emission for default, Mask01/02/03 + MaskTintAlbedo for tinted), shipped `PAMaskTint.shader` (ASE-generated surface shader, **Built-in RP only**).
+- **Demo scenes:** `CommonStuffs/Scene/{Wave01, Wave02, Wave03, AllTogether}` showing the full roster.
+- **HDRP_URP/:** Two zip files (`HDRP.zip`, `URP.zip`) containing pipeline-converted versions of CommonStuffs. Install instruction in `HowToTestHDRP_URP.txt`: **delete `CommonStuffs/`, then unzip the matching SRP zip in its place.**
+
+**Pipeline Risk (CRITICAL):**
+
+The shipped `PAMaskTint.shader` is Built-in RP (`#pragma surface surf Standard` — Amplify Shader Editor surface shader, same risk pattern as ENTRY-329 Real Blood). Default install = magenta in URP. Same fix path as Real Blood is unavailable here — the package author shipped pre-converted `URP.zip` precisely so we don't have to ASE-port. Procedure must be: **delete `Assets/RPGMonsterBundlePolyart/CommonStuffs/`, unzip `HDRP_URP/URP.zip` to `Assets/RPGMonsterBundlePolyart/CommonStuffs/`, refresh.** Until that's done, this asset is unusable in our URP project.
+
+**BM Fit Analysis:**
+
+| Use Case | Fit | Reasoning |
+|----------|-----|-----------|
+| **Deep-row body type expansion** (rows 10+) | **STRONG** | Current pool is Cute Pet animals (Cat→Cow). Adding Skeleton/Slime/Orc/Spider as deeper-row bodies expands the fiction (gatherers reach into monster zones) and supports much higher per-chop blood multipliers. Polyart aesthetic is chunky-stylized, sits between Cute Pet's rounded look and KayKit's more angular fantasy — coherent enough at body-prop scale. |
+| **Boss-coffin contents** | **STRONG** | GDD calls out occasional coffin drops for bonus rewards. Demon King / Cyclops / Dragon as a "rare boss body" with massive blood payout is a natural fit. Single-use spectacle, doesn't need to coexist on screen with regular bodies. |
+| **Replace KayKit Skeleton for Ghoul / ChopMinion** | **WEAK** | Pack ships its own Skeleton with 17 anims (richer than KayKit's set), but the Skeleton model style differs from KayKit Skeleton_Warrior in proportions. Swapping mid-development would force a re-tune of all chop timings, animator state names, and body slot positions. Not worth the churn. |
+| **Mini-boss enemies (post-Sprint-6)** | **STRONG** | If BM ever adds combat (e.g. an "underworld boss fight" mode), this pack is a ready-made roster. Defer until that scope materializes. |
+
+**Style coherence concern:** BM currently mixes **Suriyun Cute Pet** (bodies) + **KayKit Skeletons** (Ghoul/Minion) + **KayKit Block Bits** (backdrops) + **PipeDreamPack** (pipes). Adding Polyart is a 5th visual style. Mitigated by limiting Polyart to body-pool only (which is already a heterogeneous mix — cat next to cow next to chicken — so a slime or skeleton fits in that bucket). DO NOT use Polyart characters for hero/minion roles where they'd directly compare against KayKit Skeletons in the same frame.
+
+**Bodies as bodies (gameplay note):** These are full skeletal characters with animator controllers, not static meshes. For BM's "body-on-the-conveyor" use case, only Idle / Die / GetHit anims matter. Most of the 17-clip set is dead weight at runtime — that's fine, but the import settings should be pruned (Read/Write off, animations stripped on duplicate prefab variants used as bodies) before mobile build to keep APK size sane.
+
+| Project | Use | Priority |
+|---------|-----|----------|
+| **Blood Miner** | Body pool for rows 10+ (Skeleton, Slime, Spider, Orc, Werewolf, Crab Monster) and rare boss-coffin contents (Demon King, Cyclops, Dragon) | **HIGH** -- driver of this eval |
+| **HOK** (Hooked on Kharon) | Underworld monster spawns -- Specter, Skeleton, Demon King fit Hades aesthetic | MEDIUM |
+| **HideNReap** | Halloween monster set -- Werewolf, Specter, Skeleton, Bat, Mushroom | MEDIUM |
+| **AQS** | None -- Polyart fantasy monsters clash with quokka-cute aesthetic | N/A |
+| **FearSteez** | None -- modern setting | N/A |
+| **VNPC** | Possible sprite renders for monster encounters in dungeon scenes if VNPC ever adds combat | LOW |
+| **M3AnimatedSeries** | Possible "Monsters" episode stock characters | LOW |
+| **SetDesign** | Stage prefabs (3 included) could go into the set library as stylized arena platforms | LOW |
+| **TecVooDoo project** | None -- tooling only | N/A |
+
+**Asset Store Label:** **Default 3D / Character** for stylized fantasy projects. **Conditional, Character** -- only after URP zip swap; only as body-pool / non-hero roles to avoid style clash with KayKit characters.
+
+**Ecosystem Notes:**
+- **Compare to Cute Pet (Suriyun, ENTRY-314 Mega Cute Pet Zoo & predecessor):** Cute Pet is rounded chibi; Polyart is chunky stylized fantasy. Fit different niches but can co-exist in a body pool where heterogeneity is the point.
+- **Compare to KayKit Skeletons (used in BM Ghoul/Minion):** KayKit is more angular, hand-painted texture. Polyart is flat-shaded faceted poly. Don't mix in hero roles.
+- **Compare to Poly Art: Animal Forest Set (ENTRY-336):** Same "Poly Art" naming convention but different publisher (Malbers vs Pxltiger). Forest Set is animals (Bear/Wolf/etc.), this is fantasy monsters. Both adopt the flat-shaded poly aesthetic.
+- **Two-variant prefab pattern (Default + MaskTint)** is good for scenarios where you want palette variants of the same monster (e.g. five different-colored Slime bodies from one mesh). MaskTint variant uses the custom ASE shader with 9 tunable colors — useful for the BM "body type" gameplay if we want palette-shift bodies as a cheap variation hook.
+- **Stage prefabs** (3 arena floors) are decent stylized platform meshes; flag for SetDesign library if we get to that.
+- **Generic rig (not Humanoid)** -- per-monster bone structure differs (a Slime has a totally different rig than a Dragon), so Mecanim humanoid retargeting is N/A. Anims are bound 1:1 to the source rig.
+
+**MCP Controllability:** **N/A** -- pure art asset. Fully covered by existing tools: `assets-find`, `assets-prefab-instantiate`, `gameobject-modify`, `animator-modify`, `assets-modify` (for material color tweaks on PAMaskTint variants). No new tool group needed.
+
+**Key Gotchas:**
+- **Pipeline swap is non-optional** before any in-project use. Default install renders magenta in URP. Procedure: delete `CommonStuffs/`, unzip `HDRP_URP/URP.zip` into `Assets/RPGMonsterBundlePolyart/CommonStuffs/`, AssetDatabase refresh. Until then, eval data is structural only.
+- **523 MB on disk** — not trivial. If only using a subset (BM body pool = ~6-8 monsters), strongly prefer extracting just those character folders + their anims/prefabs/materials and removing the rest before standalone migration.
+- **574 separate FBX files** for animations (one anim per FBX) — bloats import time and asset database. Consider merging anims into per-character anim FBXs at standalone migration.
+- **`Read/Write Enabled` defaults** on import — turn off for mobile builds (BM is mobile-first).
+- **Generic rig + per-monster skeleton** means no humanoid retargeting. Animator controllers are 1:1 monster-to-controller; you cannot share controllers across monsters.
+- **MaskTint variant uses custom ASE shader** -- if a future Unity upgrade breaks the shader, the URP.zip versions need to be re-validated. For BM, the simpler `PolyartDefault` (single albedo + emission) variant is the safer pick.
+- **No LODs shipped** — fine for BM (always close to camera), problematic for HOK (open-world distant viewing).
+- **No demo prefabs are mobile-optimized** — texture import, mesh compression, and material variants need review pass before BM ships.
+
+**Verdict Rationale:** **Approved, Conditional.** The 30-monster Polyart roster is a strong body-pool expansion candidate for Blood Miner's deeper rows and a credible monster source for HOK and HideNReap. The mandatory URP shader swap is the only real friction — and the publisher ships the converted shaders, so no porting work is required. Style coherence is the main constraint: limit to body-pool / non-hero roles to avoid clashing with KayKit Skeletons used as Ghoul/ChopMinion. Storage footprint (523 MB) demands a cherry-pick subset extract before standalone migration rather than wholesale inclusion. Defer in-project rendering test until the URP zip is unpacked.
+
+**Next Steps (if accepted for BM):**
+1. Unpack `HDRP_URP/URP.zip` into `CommonStuffs/`, refresh, verify `Wave01.unity` demo scene renders correctly.
+2. Identify 6-8 monsters to keep for BM body pool (recommended: Skeleton, Slime, Spider, Orc, Werewolf, Crab Monster, Bat — Bat for an aerial body-type if BM adds aerial gatherers).
+3. Add corresponding `BodyConfigSO` assets with appropriate `_unlockRow` values (Skeleton row 12, Slime row 14, etc.) and `BaseBloodValue` multipliers (Slime ~5x, Werewolf ~15x, Demon King ~50x as boss).
+4. Strip non-essential anims from kept characters (keep Idle, Die, GetHit; drop Attack/Walk/Run/Taunt/Victory).
+5. Delete unused waves before standalone migration to reclaim the ~400 MB of unused content.
+
+**MCP Candidate:** No — covered by existing generic asset/animator/gameobject tools. Pure art content.
+**TecVooDoo Utilities Candidate:** No — pure art, not utility code.
+**TecVooDoo Games Candidate:** No — third-party art, not gameplay logic. (Body-config patterns added to BM may eventually generalize into a `TVG.Bodies` namespace, but not from this eval.)
 
 ---
 

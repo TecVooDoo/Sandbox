@@ -98,10 +98,15 @@
 
 ## MCP Setup (after Phase 2)
 
-1. Open AI Game Developer panel in Unity
+1. Open AI Game Developer panel in Unity (`Window > AI Game Developer`)
 2. Note the port number
-3. Update `.vscode/mcp.json` and `.claude/mcp.json` with the port
-4. Update `MCP_ConnectionBrief.md` port registry
+3. In the panel: set **Transport: http** (do NOT use stdio)
+4. Click **Reconfigure** under Model Context Protocol (MCP) — writes `.mcp.json` in URL+`type:http` form
+5. Mirror the `ai-game-developer` entry into `.claude/mcp.json` by hand (plugin doesn't touch this file)
+6. Manually add Blender entry to both `.mcp.json` and `.claude/mcp.json` (Reconfigure only writes ai-game-developer)
+7. Update port registry in `MCP_ConnectionBrief.md`
+
+See [MCP_ConnectionBrief.md](MCP_ConnectionBrief.md) for full details.
 
 ---
 
