@@ -190,7 +190,7 @@ grep -nE "^[0-9]{4}-[0-9]{2}-[0-9]{2}" Library/mcp-server/win-x64/logs/server-lo
 |---------|------|------|---------------|
 | Sandbox | 24815 | `E:/Unity/Sandbox` | ✅ 2026-04-25 |
 | FearSteez | 59431 | `E:/Unity/FearSteez` | — |
-| HOK | 54111 | `E:/Unity/HookedOnKharon` | — |
+| HOK | 54111 | `E:/Unity/HookedOnKharon` | ✅ 2026-04-25 |
 | AudioProject | 50774 | `E:/Unity/AudioProject` | — |
 | AnimationProject | 52516 | `E:/Unity/AnimationProject` | — |
 | SpaceSucks | 29794 | `E:/Unity/SpaceSucks` | — |

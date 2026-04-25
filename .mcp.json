@@ -1,13 +1,17 @@
 {
   "mcpServers": {
     "ai-game-developer": {
+      "url": "http://localhost:24815",
+      "type": "http"
+    },
+    "blender": {
+      "command": "C:/Users/steph/AppData/Local/Microsoft/WinGet/Packages/astral-sh.uv_Microsoft.Winget.Source_8wekyb3d8bbwe/uvx.exe",
       "args": [
-        "port=24815",
-        "plugin-timeout=10000",
-        "client-transport=stdio",
-        "authorization=none"
+        "blender-mcp"
       ],
-      "command": "E:/Unity/Sandbox/Library/mcp-server/win-x64/unity-mcp-server.exe"
+      "env": {
+        "DISABLE_TELEMETRY": "true"
+      }
     }
   }
 }
