@@ -433,6 +433,8 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 336 | Poly Art: Animal Forest Set (Malbers Animations) | Asset Store | Art / Animation (Low-Poly Forest Animals for Animal Controller) | Approved | Recommended, Character | 2026-04-21 |
 | 337 | COZY 3: Stylized Weather (Distant Lands) | Asset Store | Environment / Sky (Stylized Weather, Day/Night, Atmosphere, Biomes) | Approved | Recommended, Environment | 2026-04-21 |
 | 338 | RPG Monster Bundle Polyart (Pxltiger) | Asset Store | Art / Animation (30 Stylized Low-Poly Fantasy Monsters w/ Full Anim Sets) | Approved | Conditional, Character | 2026-04-25 |
+| 339 | Vefects Blood VFX URP (Vefects) | Asset Store | VFX (Blood Particle Library — Decals, Bursts, Slashes, Wounds, Underwater, Drips, Puddles; 12-Color Variants) | Approved | Recommended, VFX | 2026-04-26 |
+| 340 | CityGen3D (Citygen Technologies) | Asset Store | Editor Tool / World Generation (Procedural Real-World City Builder w/ Mapbox + SRTM + GeoJSON Imports, 3-Pipeline) | Approved | Recommended, Environment (removed post-eval) | 2026-04-26 |
 
 ---
 
@@ -12727,6 +12729,260 @@ The shipped `PAMaskTint.shader` is Built-in RP (`#pragma surface surf Standard` 
 **MCP Candidate:** No — covered by existing generic asset/animator/gameobject tools. Pure art content.
 **TecVooDoo Utilities Candidate:** No — pure art, not utility code.
 **TecVooDoo Games Candidate:** No — third-party art, not gameplay logic. (Body-config patterns added to BM may eventually generalize into a `TVG.Bodies` namespace, but not from this eval.)
+
+---
+
+### ENTRY-339: Vefects Blood VFX URP (Vefects)
+
+**Date Evaluated:** 2026-04-26 (Session 80)
+**Driver:** Cross-project blood/impact VFX library — primary BM use (chop minion gore, body-arrival splash, row-clear cascade), with strong fit for FearSteez, HideNReap, M3 episodes, and lookdev passes on HOK combat.
+**Source:** Asset Store (Vefects publisher, URP edition — separate BiRP/HDRP SKUs exist)
+**Install Path:** `Assets/Vefects/Blood VFX URP/` (~798 MB)
+**State:** Imported clean. URP shaders compile (Amplify-built, `RenderPipeline=UniversalPipeline` tagged). Demo scene `Vefects_Blood_VFX_Overview.unity` opens. No render-time visual confirmation captured (Unity screenshot tools not surfacing this session) — eval is structural + shader/prefab inspection.
+
+**Contents (759 prefabs, 397 materials, 78 TGA textures, 20 FBX meshes, 15 hand-written `.shader` files, 7 WAV SFX, 2 demo scenes, 0 scripts, 798 MB):**
+
+| Category | Prefab Count | Variants Shipped |
+|----------|--------------|------------------|
+| **Blood Drip** | 24 | size + color variants |
+| **Blood Puddle** | 12 | 1 base + 11 color variants (Blue, Brown, Censor, Cyan, Dark, Orange, Pink, Purple, Toxic, White, Yellow) — decal-based, lit puddle shader |
+| **Decals** (general blood splatter) | 108 | unlit + lit decal variants × multiple sizes × color set |
+| **Wound Decals** (static wound stickers) | 60 | sized + colored wound silhouettes |
+| **Underwater Blood** | 120 | mesh-based blood-in-water effect with 6-way motion-vector shader for parallax |
+| **Performance Versions / Bullet Hit** | 96 | Looped + Once × sizes × colors |
+| **Performance Versions / Bursts** | 72 | Looped + Once × Large/Medium/Small × colors |
+| **Performance Versions / Slashes** | 72 | Looped + Once × sizes × colors |
+| **Performance Versions / Splashes** | 72 | Looped + Once × sizes × colors |
+| **Performance Versions / Wounds** (active emitting wounds) | 120 | Looped + Once × sizes × colors |
+
+- **Color palette:** 12 variants per category (default red + Blue, Brown, Censor, Cyan, Dark, Orange, Pink, Purple, Toxic, White, Yellow). Color tinting is shader-driven via LUT remap, not material-baked, so per-instance hue tweaks are cheap.
+- **Loop vs Once modes** for the 5 "Performance Versions" categories — drag-drop fire-and-forget vs continuous bleed.
+- **Shared meshes:** 9 FBX cards/cubes/spheres + slash/splash/splatter directional meshes. Plus a `VATs/` folder with 7 vertex-animated splatter/slash/splash meshes used by the non-perf prefabs (note: the PDF says "no VATs" applies to the Performance Versions specifically — the VAT meshes ship for use in shared/decal prefabs).
+- **Gore Chunks** (`Shared/Meshes/Gore Chunks/`): 3 FBX (Brain Piece, Flesh Piece, Skull Piece) — drop-in physics rigid pieces for execution moments.
+- **Audio:** 7 WAV SFX, one per category (Bullet Hit, Burst, Drip, Slashes, Splashes, Underwater, Wounds). Not embedded in prefabs — separate dropbox for game-side wiring.
+- **Demo scenes:** `Vefects_Blood_VFX_Overview.unity` (showcase grid) + `Vefects_Blood_VFX_Overview_Loop.unity` (looped variant). 6 root GameObjects in overview scene.
+
+**Pipeline:** **URP, no swap needed.** All 15 shaders explicitly tag `"RenderPipeline"="UniversalPipeline"`. Built with Amplify Shader Editor 1.9.7.1 (project already has ASE installed) — graphs are recoverable for visual edits, but the compiled `.shader` files work standalone in any URP project without ASE present (ASE is only required to *edit* the graphs).
+
+**Shader Architecture:**
+- `SH_Vefects_VFX_URP_Blood_Single_Sprite_01` — main blood sprite shader. Lit (Specular + Smoothness), normal mapping, edge erosion via secondary normal map, depth fade, camera depth fade, LUT-driven color remap, HDRI-driven environmental specular, configurable cull/blend/zwrite/ztest as material props.
+- `SH_Vefects_VFX_URP_Blood_Single_Sprite_SubUV_01` — same but with sub-UV flipbook support for animated frames.
+- `SH_Vefects_VFX_URP_Flip_01` — billboard flip shader (likely for paper-flat decals).
+- `SH_Vefects_VFX_URP_Gore_Piece_01` — lit shader for the 3 gore chunk meshes.
+- `SH_Vefects_VFX_URP_Splash_Mesh_Erosion_01` — VAT-mesh splash with edge erosion masking.
+- `SH_Vefects_VFX_URP_Blood_Drip_Droplet_01` + `SH_Vefects_VFX_URP_Blood_Flow_01` — drip-specific droplet + flow shaders.
+- `SH_Vefects_VFX_URP_Blood_Puddle_Decal_Lit_01` — lit puddle decal (specular reflection on wet surface).
+- `SH_Vefects_VFX_URP_Blood_Decal_01` + `_Lit_01` — general decals (unlit + lit pair).
+- `SH_Vefects_VFX_URP_Underwater_Blood_MV` + `_MV_6way` — motion-vector + 6-way lighting for underwater plume parallax.
+- `SH_Vefects_VFX_URP_Wound_Decal_Lit_01` — lit wound decal.
+- 2 demo-only shaders (`SH_Vefects_Grid_01`, `SH_Vefects_VFX_URP_Character_Showoff`) for the showcase scene mannequin/grid.
+
+**Prefab Structure (sample: `VFX_Blood_Burst_Large.prefab` from Performance Versions/Bursts/Once):**
+- Root `Splash Mesh` GameObject with Transform + ParticleSystem + ParticleSystemRenderer (3 components).
+- `looping: 0`, `playOnAwake: 1`, `lengthInSec: 1` — drop into scene, plays once, stops.
+- `_Looped` variants: same prefab with `looping: 1` instead.
+- **No scripts on prefabs** — pure ParticleSystem-driven content. Lifetime management is the consumer's responsibility (typical pattern: spawn + `Destroy(go, particleSystem.main.duration)` or pool with auto-return).
+
+**Project Fit Analysis:**
+
+| Project | Use | Priority |
+|---------|-----|----------|
+| **Blood Miner** | Per-chop burst on minion strikes, body-arrival splash at outlets, row-clear cascade puddle, deeper-row gore chunks for boss-coffin contents. Censor/Toxic variants give "kid-friendly mode" toggle path for App Store optionality. **Drip/Puddle decals can persist on the Surface texture for visual feedback per row.** | **HIGH** -- primary driver |
+| **FearSteez** | Survivors-loop kill VFX (burst per zombie kill, splash on melee impact, persistent ground decals as kill-marker). Bullet Hit perf variants for ranged weapons. | **HIGH** |
+| **HideNReap** | Reap-kill VFX (slashes/wounds for harvest moment), persistent decals where a body fell, underwater blood for any pond/well environments. | **HIGH** |
+| **M3AnimatedSeries** | "Murder, Malady and Monsters" episodes — episode-level kill sequences in the M3 universe. Color variants (Toxic, Dark, Brown) extend to non-blood: alien gore, ichor, mud splatter, tar — episode-flexible. | **HIGH** -- on-genre |
+| **HOK** (Hooked on Kharon) | Combat-impact VFX if HOK adds direct combat. Underworld setting tolerates stylized blood; Dark/Brown variants fit Hades aesthetic. | MEDIUM -- pending HOK combat scope |
+| **VNPC** | Spot-use for dramatic 2D-to-3D moments (an interactive kill scene cut). Censor variant for non-violent dramatic transitions (paint splatter, ink). | LOW |
+| **AQS** (A Quokka Story) | **Censor variant only** — explicit non-blood option could work for cartoon "impact stars" moments, but family-friendly aesthetic generally clashes. Skip unless a specific scene calls for it. | N/A by default |
+| **SetDesign** | Persistent decal library — can pre-stage blood splatter/puddles/drips into kill-scene set dressing for environment showcases. | LOW |
+| **TecVooDoo project** | None -- tooling only | N/A |
+
+**Asset Store Label:** **Default 3D / VFX** for any combat or horror project. **Recommended, VFX** -- broadly applicable, well-engineered, no pipeline swap, generous variant coverage.
+
+**Ecosystem Notes:**
+- **Compare to Real Blood (ENTRY-329):** Real Blood was Built-in RP with magenta-in-URP risk and required ASE port work. This pack ships URP-native, no port — straight upgrade for our URP-first stack. Real Blood can be deprecated in our libraries.
+- **Compare to KayKit gore / generic Unity ParticleSystem starter blood:** Vefects is significantly higher-quality (lit puddle reflections, edge erosion, depth-fade, HDRI specular). The 12-color palette is the standout — most blood packs ship red-only.
+- **Pairs with Heathen Damage Numbers (DamageNumbersPro):** Vefects on hit + DNP number popup is a complete impact-feedback combo.
+- **Pairs with FEEL (MMF_Player):** The 7 WAV SFX can be wired into FEEL Sound feedbacks alongside Camera Shake + Position feedbacks for full juice. Standard FEEL recipe: `MMFeedback_ParticleSystemPlay` (point at Vefects prefab) + `MMFeedback_AudioSource` (point at the matching WAV).
+- **Pairs with Ballistic Toolkit:** Blood Bursts as on-impact VFX for projectile hits.
+- **Censor variant** is unique — explicit "no-blood" path for App Store / kid-mode toggles. Few packs ship this.
+- **Underwater Blood (120 prefabs, 6-way motion-vector shader)** is a specialty subsystem — unlikely to be used outside specific scenes, but high quality if/when needed.
+
+**MCP Controllability:** **Low.** Pure art content with zero runtime scripts. Existing tools cover everything:
+- `assets-find` with path filter to enumerate prefabs by category
+- `assets-prefab-instantiate` to spawn at world position (drop-in)
+- `particle-system-get` / `particle-system-modify` for emission tweaks
+- `assets-modify` for material color overrides at runtime/edit time
+
+A thin convenience wrapper `vefects-spawn(category, size, color, position)` could enum-validate the 12 colors × 5 sizes × 10 categories combinatorial space, but this is cosmetic — the existing prefab-instantiate flow with a path lookup works fine. **No MCP tools queued.**
+
+**Key Gotchas:**
+- **798 MB on disk** — significant. If using only a subset (BM = Bursts + Decals + Wound Decals + Puddles, ~250 MB), strongly prefer pruning unused categories (especially Underwater Blood at 120 prefabs / large texture set) before standalone migration.
+- **No scripts = no spawn/lifetime helpers shipped.** Each consumer must implement: spawn, attach to spawner transform, destroy/pool when emission completes. PDF explicitly disclaims game logic. Trivial to write but not zero-effort.
+- **All blood materials use transparent queue with `ZWrite Off`** — typical sorting concerns with other transparents (water, glass, particle UI). May need camera-depth or render-feature ordering tweaks per project.
+- **`_Cull` defaults to 2 (Back)** on most blood materials — for ground decals viewed from any angle, may need `_Cull = 0 (Off)` per material instance for camera-rotational use cases.
+- **`_Src=5, _Dst=10`** = SrcAlpha / OneMinusSrcAlpha (standard alpha blend). Different categories may want additive (e.g. underwater plume) — adjustable per-material.
+- **VATs ship in `Shared/Meshes/VATs/`** despite the PDF claim "no VATs" — that claim applies specifically to the *Performance Versions* of Bursts/Slashes/Splashes/Wounds/BulletHit, which are particle-only. The shared VAT meshes are consumed by non-perf prefabs (which appear NOT to ship in this URP variant — the perf versions are the only emitter prefabs in `VFX/Performance Versions/`). So in practice, the URP edition is perf-only for emitters; VATs may be used by demo or wound-decal prefabs only. Verify before assuming VAT-quality available.
+- **Amplify Shader Editor base** — if migrating to a project without ASE installed, the compiled `.shader` files still render correctly; you just can't reopen the shader graphs to edit. For 99% of consumers (use-as-shipped) this is fine. For fork-and-modify workflows, ASE is a hard dependency.
+- **No LODs on shared/gore meshes** — fine for closeup VFX which is the only use case here, but worth noting if reusing Gore Chunks as decorative props at distance.
+- **Audio is loose WAVs, not AudioClips inside prefabs** — wire-up step required. Recommended: route through Master Audio (existing TMCP `ma-*` tools) by creating sound groups (`Vefects_Burst`, `Vefects_Slash`, etc.) and triggering via `ma-play` on prefab spawn. Or wire into FEEL feedbacks.
+
+**Verdict Rationale:** **Approved, Recommended.** Vefects Blood VFX URP is a high-craft, URP-native, drop-in blood/impact library that maps directly onto BM, FearSteez, HideNReap, and M3 episode needs, with strong cross-project reusability and a Censor variant that makes content-rating toggles trivial. URP shader compatibility is verified via shader headers (no port work needed), prefabs are clean ParticleSystem-only structures (no script dependencies, no asmdef proliferation), and the 12-color × Loop/Once × multi-size variant grid covers most gameplay scenarios out of the box. Storage footprint and the no-game-logic disclaimer are the only meaningful constraints — both manageable. Strong upgrade over the older Real Blood (ENTRY-329) which can be deprecated in favor of this pack.
+
+**Next Steps (per project):**
+1. **BM (immediate):** Wire `VFX_Blood_Burst_Large` (Once mode) to chop-minion strike via `BodyChopController.OnChopHit` → `Instantiate(prefab, hitPoint, rotation)`. Test default red + Censor variant for "kid-mode" toggle. Add ground decal cascade on row-clear.
+2. **FearSteez:** Add Burst (Once) as `OnZombieKill` VFX, Bullet Hit (Once) as `OnRangedHit` VFX, Decal (Lit) for persistent kill-site marker. Pool spawning via existing FS object pool.
+3. **HideNReap:** Slash (Once) on harvest moment, Wound Decal (Once) on victim mesh as persistent kill mark. Defer Underwater Blood until pond environments are built.
+4. **M3:** Test Burst Toxic variant + Wounds for "Monsters" episode kill scenes; Burst Brown for "Malady" disease/decay aesthetic.
+5. **Cross-project:** Pair Vefects Burst + DamageNumbersPro popup + FEEL camera-shake + MasterAudio SFX route as a standard "Impact Combo" preset (potential TVG candidate: `TVG.Combat.ImpactCombo` ScriptableObject wiring all four).
+
+**Asset Retention Decision (post-eval):** **Retain in Sandbox** for Session 81+ deeper integration tests. Mark for inclusion in BM standalone migration manifest (subset: Bursts, Slashes, Decals, Puddles, Wound Decals — drop Underwater Blood + half the color variants if BM size budget tight).
+
+**MCP Candidate:** No — pure art content, zero scripts. Existing `assets-find` / `assets-prefab-instantiate` / `particle-system-modify` cover all interactions. Optional convenience wrapper `vefects-spawn(category, size, color, position)` deferred unless usage friction emerges across 3+ projects.
+**TecVooDoo Utilities Candidate:** No — pure art, not utility code.
+**TecVooDoo Games Candidate:** **Conditional** — the "Impact Combo" pattern (Vefects + DNP + FEEL + MasterAudio orchestration) could generalize as `TVG.Combat.ImpactCombo` ScriptableObject + spawner. Defer until pattern is implemented in 2+ projects (BM + FearSteez) and proven worth abstracting.
+
+---
+
+### ENTRY-340: CityGen3D (Citygen Technologies)
+
+**Date Evaluated:** 2026-04-26 (Session 80)
+**Driver:** Heavy procedural city / world-scale environment toolkit candidate for SetDesign asset library + M3 episode location backplates + FearSteez urban survivor maps. Considered as the procedural alternative to hand-built or modular-kit city environments.
+**Source:** Asset Store (Citygen Technologies, manual v1.19)
+**Install Path:** `Assets/CityGen3D/` (~2.0 GB — by far the largest single eval to date)
+**State:** Imported clean. URP demo scene `New City URP.unity` opens with no errors (only `FreeCam URP` + `Environment URP` root objects — the city itself is generated via the editor pipeline, not pre-baked into the scene). 13 .cs scripts compile clean. Custom `.citygenshader` files import via the bundled ShaderPackager. Eval done from filesystem inspection + DLL component reflection (61 components in `CityGen3D.*` namespace) + scene-data probe + Generator prefab YAML. Manual PDF (21 MB) read failed — `pdftoppm` not available in this environment — so structural eval only.
+
+**Contents (2.0 GB, 13 .cs scripts, 2 closed-source DLLs w/ .pdb, 121 prefabs, 121 materials, 13 .citygenshader files, 30 OBJ + 13 FBX meshes, 272 PNG textures, 10 .asset ScriptableObjects, 3 demo scenes, 1 SRTM elevation tile, 1 coastline GeoJSON):**
+
+| Folder | Size | Purpose |
+|--------|------|---------|
+| `Textures/` | **1.1 GB** | Building facades, terrain splatmaps, prop diffuse/normal/roughness sets |
+| `Facades/` | 432 MB | 13+ facade prefabs (Apartments x3, Church x2, Commercial x4, Glass, Office, Industrial, Residential variants) |
+| `Meshes/` | 226 MB | OBJ + FBX building primitives + tree meshes; includes `Ambient-Occlusion/` baked AO variants for 5 trees |
+| `Skybox/` | 77 MB | Skybox materials + textures |
+| `Data/` | 73 MB | **Real-world geographic data:** `HGT/n51w001.hgt` (SRTM elevation tile, ~UK area) + `Coastlines/UK & Ireland [-11_49_2_63].json` (GeoJSON coastline) |
+| `Shaders/` | 51 MB | 13 `.citygenshader` packaged shaders (Bark, Cutout, Decal, Facade, Facade2x2, Facade4x4, FacadeSimple, Leaves, Surface, Terrain, Transparent, Unlit, Wall, Waves) + ShaderPackager importer source |
+| `Documentation/` | 21 MB | `CityGen3D Manual v1.19.pdf` |
+| `Prefabs/` | 15 MB | 121 prop prefabs: trees (Birch, Coconut Palm, Fir, Oak, Willow w/ baked AO variants), bushes, fences (chainlink, plank, metal, brick), benches, bus stops, fountains, guard rails, hedges, post boxes, power towers, rail/sleepers, street lights, water (fresh/sea/ocean), 5 Generator prefab variants |
+| `Materials/` | 9.9 MB | 121 .mat assets matching the prefab/facade set |
+| `Icons/` | 5.4 MB | UI icons for editor tooling (atm, bench, bus_stop, fountain, etc.) |
+| `Resources/` | 5.4 MB | Resources-folder prefabs |
+| `Blueprints/` | 4.8 MB | 19 building blueprint prefabs (Apartment, Church, Office variants, Factory R/G/B, Glass Office, Houses, Shops, Superstores R/G/B/O, Primitive {Commercial, Industrial, Residential, Default}) |
+| `Plugins/` | 2.9 MB | **`CityGen3D.dll` (943 KB) + `CityGen3D.EditorExtension.dll` (431 KB) w/ matching `.pdb` debug symbols** |
+| `Effects/` | 2.3 MB | 5 ScriptableObject post-processing profiles (BiRP, URP, HDRP) + Sun.flare/mat/psd |
+| `Scripts/` | 2.2 MB | 8 user-facing scripts (BuildingLights, FreeCam, EditorFreeCam, RoadInfo, ShowNearestRoad, TerrainInfo, Screenshot, CreateBuilding) + 5 ShaderPackager scripts |
+| `Scenes/` | 768 KB | `New City.unity` (BiRP), `New City URP.unity`, `New City HDRP.unity` |
+
+**Pipeline Support:** **All three pipelines (BiRP, URP, HDRP).** The `Shaders/ShaderPackager/` system (Jason Booth's tool — same `__BETTERSHADERS__` define hooks as his Better Shaders package) auto-detects the active render pipeline via `RenderPipelineDefine.IsHDRP/IsURP/IsStandardRP` and the `[ScriptedImporter]` for `.citygenshader` extracts the correct shader variant on import. **No manual swap step needed** — works out of the box on URP. Three demo scenes ship for the three pipelines.
+
+**Architecture (61 components in `CityGen3D.*` namespace, two assemblies):**
+
+**Runtime — `CityGen3D.dll` (in `Plugins/`):**
+- **Singleton + data layer:** `Map` (root singleton), `MapRoads` / `MapRoad`, `MapBuildings` / `MapBuilding`, `MapEntities` / `MapEntity`, `MapSurfaces` / `MapSurface`, `MapTrees` / `MapTree`, `MapFeatures` / `MapFeature`, `Coastline`, `Data`. Confirmed runtime API includes e.g. `Map.Instance.mapRoads.GetMapRoadAtWorldPosition(x, z, radius)` for spatial queries.
+- **Building primitives:** `Blueprint`, `Plan`, `Plot`, `Level`, `Highway`, `BoundsHelper`.
+- **Mesh ops:** `MeshExtender`, `MeshExtrusion`, `MeshSlicer`, `Shape`, `ShapeMesh`, `ShapeNode`, `RestrictTransform`.
+- **Streaming + scale:** `Landscape`, `LandscapeManager`, `UnloadedLandscape`, `LayerManager`, `LayerCulling`, **`OriginManager` (floating origin support)** — confirms world-scale support.
+- **Instancing:** `DetailInstancer`, `TreeInstancer` (GPU instancing for vegetation).
+- **Utility:** `FPSDisplay`, `SingletonMonoBehaviour<T>`.
+
+**Editor — `CityGen3D.EditorExtension.dll` (16 components in `CityGen3D.EditorExtension.*`):**
+- **Generator orchestrator:** `Generator`.
+- **Per-system editor modules** (each is a child of the Generator prefab, all tagged `EditorOnly`): `Buildings`, `Detail`, `Entities`, `Features`, `Heightmap`, `Highways`, `Mapbox`, `MeshBatcher`, `MeshExtruder`, `PlaneExtruder`, `PrefabCollection`, `PrefabSpawner`, `Roadside`, `SplatMap`, `Trees`, `Water`.
+- The Generator prefab's hierarchy exposes 11 named child modules: Water / Highways / Heightmap / Generator (root config) / Entities / Features / Buildings / Detail / Splatmap / Roadside / Trees. The remaining EditorExtension components (Mapbox, MeshBatcher, etc.) are conditionally instantiated by the Mapbox or specialized variants.
+- **Five Generator prefab variants ship:**
+  1. `Generator.prefab` — BiRP, primitive-data driven.
+  2. `Generator - Primitive Buildings.prefab` — BiRP, primitive buildings only.
+  3. `Generator - Mapbox.prefab` — BiRP, Mapbox real-world data.
+  4. `Generator HDRP.prefab` — HDRP variant.
+  5. `Generator HDRP - Mapbox.prefab` — HDRP + Mapbox.
+  - **No URP-specific Generator prefab** — the BiRP one works under URP (the ShaderPackager handles the shader swap; the Generator's logic is pipeline-agnostic). Workflow: drop a Generator prefab into the URP demo scene, configure modules, run generation.
+
+**User-Facing Scripts (`Assets/CityGen3D/Scripts/`):**
+| Script | Purpose |
+|--------|---------|
+| `BuildingLights.cs` | Day/night driver — sets `solarTime`, `lightsOn`, `lightDistribution` global shader floats. Window-emission lighting controlled by sun-angle threshold. Hookable to any time-of-day system (Cozy, Enviro, Azure, custom). |
+| `FreeCam.cs` + `EditorFreeCam.cs` | Demo camera rig (runtime + editor). |
+| `RoadInfo.cs` | Periodically queries `Map.Instance.mapRoads.GetMapRoadAtWorldPosition(...)` to find current road under a transform. Useful template for "what road am I on" gameplay logic. |
+| `ShowNearestRoad.cs` | Debug visualizer for nearest-road queries. |
+| `TerrainInfo.cs` | Equivalent for terrain queries. |
+| `Screenshot.cs` | Hi-res screenshot tool for marketing shots. |
+| `CreateBuilding.cs` (Editor) | Editor menu helper to author new building blueprints. |
+
+**Demo Scene Layout (`New City URP.unity` after open):**
+- 2 root GameObjects only: `FreeCam URP` (camera rig) + `Environment URP` (Sun, Wind, PostProcessing, BuildingsLights).
+- **Empty of city content** — confirms editor-driven workflow: drop Generator prefab in, configure, generate. The pre-baked demo scenes are deliberately small in repo so the user runs the generation pipeline themselves to populate.
+
+**Real-World Data Sources Supported:**
+- **SRTM `.hgt` elevation tiles** (NASA Shuttle Radar Topography Mission). One sample tile shipped: `n51w001.hgt` (~UK 51°N 1°W).
+- **GeoJSON coastlines.** One sample shipped: UK & Ireland.
+- **Mapbox** (third-party API key required) — provides road network + building footprints + street names. The "Mapbox" Generator prefab variant pulls live Mapbox data for any selected lat/lon bounding box. Implication: any real-world city is generatable provided you have a Mapbox API key.
+- **OpenStreetMap (OSM)** — implied by the `Mapbox` and `MapEntities` design (Mapbox layers OSM data); the manual likely covers direct OSM import too.
+
+**Project Fit Analysis:**
+
+| Project | Use | Priority |
+|---------|-----|----------|
+| **SetDesign** | **Primary candidate** — large-scale procedural city / town environment generation for any project that needs urban backdrops. Generate once, save the populated scene as a SetDesign library entry, reuse across projects. | **HIGH** -- driver |
+| **M3AnimatedSeries** | Real-world city backplates for episodes set in real locations. "Murder, Malady and Monsters" with Mapbox-imported actual city geography lends authenticity (one episode in London, one in NY, etc.). | **HIGH** |
+| **FearSteez** | Survivors-style horror needs urban combat zones. CityGen3D can pre-bake an abandoned-city map; FearSteez doesn't need runtime generation, just one good baked scene. Strong fit. | MEDIUM-HIGH |
+| **HideNReap** | If HnR's setting is urban/suburban, CityGen3D produces a town/neighborhood map. If HnR is woodland-only (per current GDD), N/A. | CONDITIONAL on setting |
+| **VNPC** | Background-only — pre-render city scenes from CityGen3D as 2D backdrop plates for 3D-rendered scenes. | LOW-MEDIUM |
+| **HOK** (Hooked on Kharon) | None -- mythological underworld, not modern city. | N/A |
+| **Blood Miner** | None -- vertical conveyor factory, not urban. | N/A |
+| **AQS** (A Quokka Story) | None -- family quokka game, not urban. | N/A |
+| **TecVooDoo project** | None -- tooling project, not environment. | N/A |
+
+**Asset Store Label:** **Default 3D / Environment** for any project needing real-world or large-scale procedural cities. **Recommended, Environment** -- but with a learning-curve caveat (this is a multi-day toolkit, not a drop-in asset).
+
+**Ecosystem Notes:**
+- **Compare to GAIA / Gena / Sectr-like world tools:** CityGen3D is more specialized (cities, not generic terrain), more data-driven (real-world Mapbox/SRTM sources), and DLL-locked (vs. Gaia's open scripts). Trade-off: less customizable internally, more powerful for its specific niche.
+- **Compare to ProBuilder + manual modular building kits (KayKit, Synty, etc.):** Hand-modular gives you total control + smaller footprint; CityGen3D gives you scale + automation. Cherry-pick: use CityGen3D for the macro layout (roads, building placements, terrain), then dress hero areas with KayKit/Synty modular pieces in Unity.
+- **Pairs with COZY 3 (ENTRY-337):** CityGen3D's `BuildingLights.cs` reads `solarTime` from a TOD source — Cozy's TOD module can directly drive it via `Shader.SetGlobalFloat("solarTime", cozyContext.timeModule.dayPercentage)` integration.
+- **Pairs with MK Edge Detection (ENTRY-333):** stylized cel-shaded city renders; could give M3's animated-series look an immediate "anime city" aesthetic.
+- **Pairs with PostProcessing profiles shipped:** asset includes pre-tuned URP/HDRP/BiRP post-processing volumes (`Effects/*.asset`). Use as starting points; override per project.
+- **ShaderPackager (Jason Booth)** — same author as Better Shaders / MicroVerse / MegaSplat. If we install Better Shaders in TecVooDoo project, the `__BETTERSHADERS__` define would let CityGen3D shaders re-author through Better Shaders for further customization.
+
+**MCP Controllability:** **Medium.** The runtime API is exposed via DLL with a clean public surface (`Map.Instance.*`, `MapRoad`, `MapBuilding`, etc.). The editor pipeline is via `CityGen3D.EditorExtension.*` MonoBehaviours on the Generator prefab. The .pdb files ship, so MethodInfo / reflection introspection is straightforward. Candidate `cg-*` MCP tool group:
+- `cg-generator-configure(prefabPath, module, params)` — set fields on the Generator's child modules (Buildings density, Trees coverage, Heightmap source, Mapbox lat/lon bounds, etc.)
+- `cg-generate(prefabPath)` — invoke the editor generation pipeline (likely via reflection on `Generator` or `EditorExtension.Generator` editor methods)
+- `cg-query-map()` — read `Map.Instance` state: bounds, road count, building count, surface count
+- `cg-find-road-at(x, z, radius)` — wrap `Map.mapRoads.GetMapRoadAtWorldPosition`
+- `cg-find-feature-at(x, z)` — wrap `MapFeatures` queries
+- `cg-add-blueprint(name, params)` — create new building blueprint via the `CreateBuilding` editor flow
+
+**Defer MCP build** until SetDesign or M3 actively uses CityGen3D for a real environment task. The setup is heavy (download Mapbox API key, pick lat/lon, configure 11 modules) — not worth wrapping until we have a concrete workflow to optimize. If/when built, queue under the `cg` group in TMCP.
+
+**Key Gotchas:**
+- **2.0 GB on disk** — largest eval to date. 1.1 GB is textures alone. Cherry-picking is essential before standalone migration: drop unused facade sets, drop unused tree variants, drop the `n51w001.hgt` sample if not using SRTM, drop the BiRP/HDRP scenes + Generator variants if URP-only.
+- **DLL-based core** — closed source. Bug fixes / customization require either decompilation (legally questionable per asset license — check Asset Store EULA) or vendor support (Discord/email per the doc page seen). Mitigated by `.pdb` debug symbols shipping, which preserves stack traces in errors.
+- **No asmdef** — DLL is the assembly boundary. Older asset structure. Adding asmdefs around the user `Scripts/` folder would speed compilation; not necessary but a valid hygiene step.
+- **PDF manual unreadable** in Claude tooling this session (pdftoppm missing) — manual review needs to happen outside Claude. The asset is non-trivial; expect a half-day to a full-day of manual study before first useful generation.
+- **Mapbox API key required for Mapbox variant** — third-party dependency. Free tier exists but check current pricing if doing heavy generation. Without Mapbox, you can still use SRTM heightmaps + primitive building gen.
+- **All Generator children tagged `EditorOnly`** — generation tooling is stripped from builds (correct), but verify Map singleton runtime data persists into builds (it should — it lives on a separate non-EditorOnly object after generation).
+- **Floating origin (`OriginManager`)** is supported but optional — for cities under ~5km radius standard floats are fine; for larger continental-scale builds (whole-country SRTM tiles), enable OriginManager to avoid Z-fighting and physics drift.
+- **No URP-specific Generator prefab** — use the BiRP `Generator.prefab` under URP; ShaderPackager handles shader swap. The `Generator HDRP.prefab` is HDRP-specific because HDRP needs different post-processing setup, not because the generation logic differs.
+- **Custom shader format `.citygenshader`** is opaque — to edit the shader, you need to open the bundled shader source (likely embedded JSON), not a .shader file. Better Shaders integration (`__BETTERSHADERS__` define) provides a graph-editing path if Better Shaders is installed.
+- **Old import API** — `UnityEditor.Experimental.AssetImporters` namespace still referenced for Unity <2020.2; Unity 6 uses `UnityEditor.AssetImporters`. The code has both branches under `#if UNITY_2020_2_OR_NEWER`, so works fine on Unity 6.
+
+**Verdict Rationale:** **Approved, Recommended.** CityGen3D is enterprise-grade procedural city generation with real-world data import (Mapbox, SRTM, GeoJSON coastlines), full BiRP/URP/HDRP support via a custom ShaderPackager, and a clean DLL-based runtime with a documented public API. It's overpowered for any current TecVooDoo project running standalone, but for **SetDesign** (environment library hub) and **M3AnimatedSeries** (real-location episode backplates) it's directly load-bearing. **FearSteez** could pre-bake an urban map with it as a one-shot. The 2.0 GB footprint is the only major drawback — strict cherry-pick policy required before any standalone migration. DLL-locked core is acceptable given vendor support exists; debug-symbol shipping mitigates the closed-source risk for stack-trace inspection. Defer hands-on generation test until SetDesign or M3 has a concrete environment task; until then, retain in Sandbox for reference and as a known-quantity backstop.
+
+**Next Steps (when adopted):**
+1. **SetDesign:** Install CityGen3D in SetDesign project, generate one mid-size town (~1 km²) using the primitive-buildings Generator (no Mapbox key needed), save as `SD_Library/Cities/PrimitiveTown_v1.unity`. Document the generation parameters in `SD_DevReference.md` so re-runs are deterministic.
+2. **M3:** Pick a concrete M3 episode location (e.g. London murder mystery), get a Mapbox API key, generate the actual neighborhood from real-world data. Save as M3 episode-specific scene asset. Test render quality at episode camera angles.
+3. **FearSteez:** Decide if FS wants a procedural-city map or stays modular. If procedural, replicate SetDesign's primitive-buildings recipe with FS-specific prop set (boarded windows, debris, etc.) layered on top.
+4. **TVD MCP:** Defer `cg-*` tool group build until a concrete task (#1 or #2 above) reveals which workflow steps are bottlenecks. Likely `cg-generate` and `cg-generator-configure` come first.
+
+**Asset Retention Decision (post-eval):** **Removed from Sandbox** at end of session 80 to reclaim the 2 GB. Re-import directly into SetDesign or M3 when a concrete environment task arrives — no value sitting idle in Sandbox at that footprint. Eval data captured here is sufficient as the reference snapshot until then.
+
+**Install-residue left in `Packages/manifest.json` after CityGen3D removal** (same pattern as Session 78 COZY residue):
+- `com.unity.collections` 2.6.4 — Unity Collections package, generic utility, harmless to leave installed.
+- `com.unity.postprocessing` 3.5.1 — legacy PPSv2; not used by URP project but harmless. Removable if a future hygiene pass clears stale dependencies.
+
+Both packages were auto-pulled in by CityGen3D's import and were not auto-removed when the asset folder was deleted. Document, do not revert — matches prior practice.
+
+**MCP Candidate:** **Medium** — `cg` tool group queued (6 tools: `cg-generator-configure`, `cg-generate`, `cg-query-map`, `cg-find-road-at`, `cg-find-feature-at`, `cg-add-blueprint`). Build deferred until SetDesign or M3 uses the asset for a real task — wrapper value only emerges once a concrete generation workflow is in motion.
+**TecVooDoo Utilities Candidate:** No — third-party DLL-based asset, not utility code we can extract. The pattern of "render-pipeline-aware asset importer" (the ShaderPackager design) is interesting as a TVU technique but the Jason Booth implementation is licensed to CityGen3D specifically; we'd write our own if we needed it.
+**TecVooDoo Games Candidate:** No — environment generation tool, not gameplay logic.
 
 ---
 

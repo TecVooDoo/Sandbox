@@ -6,6 +6,44 @@
 
 ---
 
+## Session 78 (Apr 21, 2026) -- Asset Evals: 8-Entry Eval Marathon (ENTRY-330 through 337)
+
+**Status:** Eight new asset evaluations. Physics authoring, UI skin, stylized post-processing, interaction framework, standalone chess game, forest-animal content, and stylized weather. Four MCP candidates queued (`tcc`, `mkedge`, `pe`, `cozy`).
+
+**New Evals (8):**
+
+| ENTRY | Asset | Verdict | Highlights |
+|-------|-------|---------|------------|
+| 330 | Technie Collider Creator 2 (Triangular Pixels) | **Approved, Recommended** | Paint-based collider authoring + VHACD auto-decomp. 7 hull types. Pipeline-agnostic output. Scriptable API via `RigidColliderCreatorWindow`. MCP: **High** -- 6-7 tools proposed for new `tcc` group |
+| 331 | Synty InterfaceCore | Approved | Required dependency for any Synty Interface pack. 3 UI scripts (ported from Unity UI Extensions), 4 UI shaders, 514 master sprites. No standalone value. MCP: N/A |
+| 332 | Synty InterfaceDarkFantasyHUD | **Approved, Recommended** | 317 prefabs across 20 categories, 6 pre-made HUD screens (1st/3rd-person, ARPG x2, SoulsLike, Survival), 1,671 sprites, 35 demo scenes, 2 SDF fonts. Already in use in Blood Miner. MCP: covered by existing generic tools |
+| 333 | MK Edge Detection (Michael Kremmel) | **Approved, Recommended** | Screen-space edge detection / outline / sketch post-processing. **5 pipeline flavors** (BiRP ImageEffects, PPSv2, URP RendererFeature, URP VolumeComponent, HDRP VolumeComponent). 36 parameters, RenderGraph-ready on Unity 6. Strong lookdev fit for HOK, FS, HnR, VNPC, M3. MCP: **High** -- 4 tools proposed for new `mkedge` group |
+| 334 | PressE PRO 2 (Fast Studios) | **Approved, Recommended** | "Press E to interact" framework. Interactable / InteractionManager / Key / Condition / Lerp helpers / 4 prompt templates. Strong fit for HOK, HnR. MCP: **Medium-High** -- 4 tools proposed for new `pe` group |
+| 335 | The Coolest Chess (Freedom Developer) | Approved | Complete chess game w/ 2 native AI tiers + Stockfish integration (WebGL bundled, desktop user-provides). PGN parsing + corpus, puzzle editor, 9 scenes, 177 scripts, 7 asmdefs, shipped unit tests. Narrow use case (chess minigame / standalone). MCP: **Low-Medium**, no tools queued |
+| 336 | Poly Art: Animal Forest Set (Malbers Animations) | **Approved, Recommended** | 10 forest animals (Bear/Boar/Cougar/Deer/Fox/Moose/Rabbit/Raccoon/Tiger/Wolf), AC-ready prefabs + per-animal demo scenes. 134 FBX, 52 prefabs. Strong fit for AQS + HideNReap. MCP: **N/A** -- fully covered by existing `ac-*` tool group |
+| 337 | COZY 3: Stylized Weather (Distant Lands) | **Approved, Recommended** | UPM pkg v3.6.17. Modular weather/atmosphere/time-of-day/biome system. 76 runtime scripts, 17 modules, 8 profile SOs, 12 FX types, 11 stylized cloud/fog shaders (Ghibli/Luxury/Painted Skies/etc.), 5 sample packs, URP+HDRP+BiRP support. Strong fit for HOK, AQS, HideNReap, M3, SetDesign. MCP: **Medium-High** -- 5 tools proposed for new `cozy` group |
+
+**TMCP Candidates Queued:**
+- **`tcc` group (ENTRY-330):** 6-7 tools -- `tcc-create`, `tcc-add-hull`, `tcc-generate`, `tcc-configure-vhacd`, `tcc-bulk`, `tcc-query`, `tcc-delete-generated` -- **shipped** (visible as `tcc-*` in the available TMCP toolset this session)
+- **`mkedge` group (ENTRY-333):** 4 tools -- `mkedge-configure`, `mkedge-query`, `mkedge-preset` (shipped named presets: comic / sketch / blueprint / souls-like / etc.), `mkedge-toggle`
+- **`pe` group (ENTRY-334):** 4 tools -- `pe-create-interactable`, `pe-configure-interactable`, `pe-create-grabbable`, `pe-query`
+- **`cozy` group (ENTRY-337):** 5 tools -- `cozy-query`, `cozy-set-weather`, `cozy-set-time`, `cozy-configure-module`, `cozy-set-biome`
+
+Remaining (mkedge + pe + cozy) implementation deferred to TecVooDoo project.
+
+**Compile fixes applied this session (for COZY install):**
+1. `Packages/manifest.json` -- added `com.unity.modules.wind` (`UnityEngine.WindZone` dependency for `CozyWindModule`).
+2. `ProjectSettings/ProjectSettings.asset:862` -- added `COZY_URP` define and removed stale `UNITY_POST_PROCESSING_STACK_V2` (the package wasn't installed; `VisualFX.cs` took the URP branch correctly after the swap). Other platform targets still have PPSv2 defined -- clean up on build-target switch.
+
+**Assets currently in project (post-eval state):**
+- **Retained:** Technie Collider Creator 2 (user request), Synty InterfaceCore + InterfaceDarkFantasyHUD (Blood Miner active use)
+- **Removed post-eval:** MK Edge Detection, PressE PRO 2, The Coolest Chess, Poly Art: Animal Forest Set, COZY 3: Stylized Weather. All five are Approved (four Recommended) and should be re-imported when their target project/use case is in scope.
+- **Compile-fix residue left in project after Cozy uninstall:** `com.unity.modules.wind` in `manifest.json` (harmless — generic Unity module), `COZY_URP` scripting define in `ProjectSettings.asset:862` (harmless — unused when Cozy is absent), and **stale `UNITY_POST_PROCESSING_STACK_V2` remains removed from Standalone** (clean-up, correct to leave removed since `com.unity.postprocessing` is not installed).
+
+**Docs Updated:** `Sandbox_AssetLog.md` (10 new summary rows 328-337 + 8 new detailed entries), `Sandbox_Status.md` (this).
+
+---
+
 ## Session 77 (Apr 12, 2026) -- Blood Miner: Phase 7, Economy + Cameras + Save + UI Skin
 
 **Status:** All Phase 7 priorities complete. Tool tier multiplier wired, per-row body type escalation (7 types, GDD unlock rows), two-camera pinned-surface viewport, ES3 save/load, Synty Dark Fantasy Interface UI skin. Synty InterfaceDarkFantasyHUD + PolygonParticleFX imported. KayKit Skeletons + Character Animations noted for Phase 8 visual upgrade.
