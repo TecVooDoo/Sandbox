@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Project Path:** `E:\Unity\Sandbox`
 **Document Version:** Reconstructed Feb 23, 2026 (after data loss)
-**Last Updated:** April 26, 2026 (Session 80)
+**Last Updated:** April 27, 2026 (Session 81)
 
 > **NOTE:** This document was reconstructed after the Sandbox project became corrupt on Feb 23, 2026. Content recovered from session context and MEMORY.md.
 
@@ -17,9 +17,40 @@
 
 Sandbox is a dedicated asset evaluation environment AND game incubator for ALL TecVooDoo projects. Assets are imported, tested, and evaluated here before being used in actual projects. New game projects bootstrap here with on-demand asset loading, then migrate to standalone when proven.
 
-**Primary output:** `Sandbox_AssetLog.md` -- 340 asset evaluations as of Session 80.
+**Primary output:** `Sandbox_AssetLog.md` -- 345 asset evaluations as of Session 81.
 
 **Reference doc:** `Sandbox_DevReference.md` -- coding standards, MCP gotchas, eval standards, AI rules. Read on demand.
+
+---
+
+## Session 81 (Apr 27, 2026) -- Asset Evals: Modular 3D Text + Pipe Dream + Ultimate Preview + EasyPooling + ORK Framework (ENTRY-341 through 345)
+
+**Status:** Five asset evaluations completed. Three were retroactive documentation of pre-existing installs (Pipe Dream Pack already in BM use, Ultimate Preview daily-driver, EasyPooling installed but unevaluated). Two were fresh installs this session (Modular 3D Text — installed during session, ORK Framework — installed mid-session).
+
+**New Evals (5):**
+
+| ENTRY | Asset | Verdict | Highlights |
+|-------|-------|---------|------------|
+| 341 | Modular 3D Text (Tiny Giant Studio) | **Approved, Recommended** | Mesh-based 3D text + UI controls (Buttons, Sliders, Toggles, Dropdowns, InputFields, Lists, HorizontalSelector). 85 bundled font assets, 16 demo scenes, Modules system (`AddPhysics` / `PlayParticles` / `ScaleChange` per character). All 3 RPs via packaged setup files (URP applied). Compilation green; 2 cosmetic warnings about publisher's own moved stylesheets. Strong fit for **VNPC** (3D dialog framing), **AQS** (stylized signs), **M3** (chapter cards), **HOK** (carved-stone inscriptions). Coexists cleanly with TMP (screen-space) and DamageNumbersPro (high-volume billboards). 538 MB Plugins + 45 MB Sample. **MCP: Medium-High** — `m3dt-*` group queued (6 tools) but defer until a project scripts runtime usage. |
+| 342 | Pipe Dream Pack (One Potato Kingdom) | **Approved** | **Active in Blood Miner** — eval is retrospective documentation. 37 stylized pipe + valve + balloon + cap meshes, 37 URP materials, 222 textures, 1 demo scene. URP-only shaders (no BiRP/HDRP). Single utility `PipeShaker.cs` (47-line Perlin-noise shake component). 2 ShaderGraphs (Heat_Effect for refraction, Pipe_GrassWindShader for demo terrain). 371 MB total — most is demo-scene textures, prunable to ~70-100 MB at standalone migration. Niche art content; no Default/Recommended label. **MCP: N/A**. |
+| 343 | Ultimate Preview (Voxel Labs) | **Approved, Default (QoL)** | **Daily-driver editor tool** — eval is retrospective documentation. v1.3.4. Replaces Unity's built-in asset preview window with rich camera/lighting/skybox/VFX/animator/grid controls. Harmony-injection-based (`VoxelLabs.Harmony.dll`) + 2 closed-source DLLs + small open-source `Lib/` helper layer. 40 MB editor-only footprint, zero runtime cost. Optional URP/HDRP PRO upgrade unitypackages ship unextracted. Should be on every TecVooDoo standalone project's standard install list alongside vHierarchy / vFolders. **MCP: N/A** — editor window. |
+| 344 | EasyPooling 2025 (GUPS) | **Approved** | Source-based singleton pooling framework. `GlobalPool` (persistent), `AGamePool<T>` (abstract), named `BlueprintPoolDefinition` sub-pools, `EPoolingStrategy` (DEFAULT/FILL/GROW), `SpawnPolicy` + shapes (Box/EPlane) + random distributions (Uniform/Gaussian/PerlinNoise), `IDecorator`/`IUnDecorator` lifecycle hooks, `IPoolAble` interface (DefaultPoolAble shipped). Two demo scenes (BlackHole + Sun). 40 MB w/ demos. Strong fit for **BM** (body + VFX pool), **FearSteez** (zombies + projectiles), **HnR** (corpses + VFX). Already noted as Medium MCP candidate at line 10922 — `script-execute` adequate; not property-dense enough for dedicated tools. |
+| 345 | ORK Framework 3.19.5 + Makinom 2.23 (Gaming Is Love) | **Approved, Recommended** | Canonical Asset Store RPG framework. **DLL-based with Pro source-code zips bundled** (full license install). 8 DLLs (4 runtime + 4 editor, ORK + Makinom split): ORK runtime 6.1 MB, Makinom runtime 2.4 MB. 45 component icons (24 Makinom + 21 ORK). Pipeline-agnostic. Editor window at `Window > Gaming Is Love > Makinom`. Combatants/Battles/Equipment/Items/Move AI/Battle Grids/Shops/Quests + Makinom schematic engine underneath. Best fit: **HOK** (boatman + soul cargo + optional combat). Selective-use fit: **VNPC** (inventory + quests alongside Dialogue System). Pairs deeply with Dialogue System (ENTRY-214), BD Pro (ENTRY-229), SensorToolkit, MasterAudio, FinalIK, Vefects, DNP. Frequent vendor updates (3.0 → 3.19.5 lifecycle), large community (forum.orkframework.com). **MCP: High** — `ork-*` group queued (7 tools) but defer until HOK or another project actively scripts ORK runtime calls. |
+
+**Asset retention (post-eval):**
+- **Modular 3D Text:** Retained in Sandbox for hands-on integration tests against VNPC/AQS use cases in subsequent sessions. Cherry-pick fonts at standalone migration.
+- **Pipe Dream Pack:** Retained — referenced by BM body-pool prefab work. Cherry-pick to ~70-100 MB subset (drop demo textures, drop unused shader) at BM standalone migration.
+- **Ultimate Preview:** Retained — daily-driver QoL.
+- **EasyPooling:** Retained — reference framework for future BM/FearSteez/HnR optimization passes.
+- **ORK Framework:** **Removed mid-session by user** before commit. ENTRY-345 captures the structural eval data (DLL listing, component surface, architecture, project fit) but the asset itself is no longer in the project. Re-import directly into HOK standalone when HOK enters its content-heavy phase. Install-residue: orphan folder `meta` files for `Assets/Gaming Is Love/`, `Assets/Gaming Is Love/Makinom 2/`, `Assets/Gaming Is Love/Makinom 2/DLL/` left untracked in the working tree (delete in a future hygiene pass or let Unity GC them on next refresh).
+
+**TMCP Candidates Queued (this session):**
+- **`m3dt` group (ENTRY-341):** 6 tools — `m3dt-query`, `m3dt-set-text`, `m3dt-configure`, `m3dt-add-module`, `m3dt-find-fonts`, `m3dt-create-control`.
+- **`ork` group (ENTRY-345):** 7 tools — `ork-query-combatant`, `ork-modify-combatant`, `ork-inventory`, `ork-quest`, `ork-battle`, `ork-schematic-run`, `ork-database-query`.
+
+Both groups defer build until a project actively uses runtime APIs.
+
+**Docs Updated:** `Sandbox_AssetLog.md` (5 new summary rows + ENTRY-341 through 345 detailed entries), `Sandbox_Status.md` (this).
 
 ---
 
@@ -51,22 +82,6 @@ All three files auto-modified by Unity during CityGen3D import; not auto-reverte
 **PDF reader gap discovered this session:** `Read` tool failed on the CityGen3D 21 MB PDF manual (`pdftoppm not found`). All other inspection paths (DLL reflection via `gameobject-component-list-all`, scene probe via `scene-get-data`, prefab YAML via `Read`) worked. Workaround for future large-PDF evals: open PDF outside Claude, or rely on DLL reflection + filesystem inspection (sufficient for structural eval but misses workflow narrative).
 
 **Docs Updated:** `Sandbox_AssetLog.md` (2 new summary rows + ENTRY-339 + ENTRY-340 detailed entries), `Sandbox_Status.md` (this), `Sandbox_StatusArchive.md` (Session 78 moved per archive rule).
-
----
-
-## Session 79 (Apr 25, 2026) -- Asset Eval: RPG Monster Bundle Polyart (ENTRY-338)
-
-**Status:** One asset eval (BM body-pool driver) and a session-cleanup pass — committed pile of Session 78 residue + new MCP infra + the new monster bundle as separate logical commits, then pushed.
-
-**New Eval (1):**
-
-| ENTRY | Asset | Verdict | Highlights |
-|-------|-------|---------|------------|
-| 338 | RPG Monster Bundle Polyart (Pxltiger) | **Approved, Conditional** | 30 stylized fantasy monsters (3 waves, 10 each: Skeleton/Slime/Dragon/Demon King/...). Per-monster animator + 14-17 anims. ~523 MB, 574 FBX, 83 prefabs. **Built-in RP shader** ships as default — `HDRP_URP/URP.zip` must be unpacked over `CommonStuffs/` before any URP render works. **BM fit:** body-pool expansion for rows 10+ + boss-coffin contents. Style-clash risk if used as Ghoul/ChopMinion (KayKit Skeleton already in those roles). MCP: N/A (covered by generic asset/animator/gameobject tools). |
-
-**Session-cleanup pass:** Per new workflow rule (saved as `feedback_session_close_trigger.md` — "update docs as necessary" = doc updates + grouped commits + push), separated working tree into 4 commits: (1) Session 78 eval residue (8 evals + Cozy package wiring + retained Synty/Technie assets), (2) MCP/skills infra (mcp.json + tcc-* skills + MCP docs), (3) ENTRY-338 eval + asset import, (4) stragglers (_SM.meta delete, harmless BM_SaveManager.meta auto-rewrite, drifted Killers.mat). Then pushed to origin/master.
-
-**Docs Updated:** `Sandbox_AssetLog.md` (1 new summary row + ENTRY-338 detailed entry), `Sandbox_Status.md` (this), `MEMORY.md` (added session-close trigger pointer + new feedback memory file).
 
 ---
 

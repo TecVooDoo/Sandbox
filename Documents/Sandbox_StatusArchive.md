@@ -6,6 +6,22 @@
 
 ---
 
+## Session 79 (Apr 25, 2026) -- Asset Eval: RPG Monster Bundle Polyart (ENTRY-338)
+
+**Status:** One asset eval (BM body-pool driver) and a session-cleanup pass — committed pile of Session 78 residue + new MCP infra + the new monster bundle as separate logical commits, then pushed.
+
+**New Eval (1):**
+
+| ENTRY | Asset | Verdict | Highlights |
+|-------|-------|---------|------------|
+| 338 | RPG Monster Bundle Polyart (Pxltiger) | **Approved, Conditional** | 30 stylized fantasy monsters (3 waves, 10 each: Skeleton/Slime/Dragon/Demon King/...). Per-monster animator + 14-17 anims. ~523 MB, 574 FBX, 83 prefabs. **Built-in RP shader** ships as default — `HDRP_URP/URP.zip` must be unpacked over `CommonStuffs/` before any URP render works. **BM fit:** body-pool expansion for rows 10+ + boss-coffin contents. Style-clash risk if used as Ghoul/ChopMinion (KayKit Skeleton already in those roles). MCP: N/A (covered by generic asset/animator/gameobject tools). |
+
+**Session-cleanup pass:** Per new workflow rule (saved as `feedback_session_close_trigger.md` — "update docs as necessary" = doc updates + grouped commits + push), separated working tree into 4 commits: (1) Session 78 eval residue (8 evals + Cozy package wiring + retained Synty/Technie assets), (2) MCP/skills infra (mcp.json + tcc-* skills + MCP docs), (3) ENTRY-338 eval + asset import, (4) stragglers (_SM.meta delete, harmless BM_SaveManager.meta auto-rewrite, drifted Killers.mat). Then pushed to origin/master.
+
+**Docs Updated:** `Sandbox_AssetLog.md` (1 new summary row + ENTRY-338 detailed entry), `Sandbox_Status.md` (this), `MEMORY.md` (added session-close trigger pointer + new feedback memory file).
+
+---
+
 ## Session 78 (Apr 21, 2026) -- Asset Evals: 8-Entry Eval Marathon (ENTRY-330 through 337)
 
 **Status:** Eight new asset evaluations. Physics authoring, UI skin, stylized post-processing, interaction framework, standalone chess game, forest-animal content, and stylized weather. Four MCP candidates queued (`tcc`, `mkedge`, `pe`, `cozy`).

@@ -2,7 +2,7 @@
 
 **Purpose:** Track every asset, package, and technique evaluated in Sandbox. This is the primary document for the project.
 
-**Last Updated:** April 25, 2026 (TecVooDoo Session 4 -- COZY 3 TMCP tool group built)
+**Last Updated:** April 27, 2026 (Session 81 -- ENTRY-341 through 345: Modular 3D Text, Pipe Dream Pack, Ultimate Preview, EasyPooling, ORK Framework)
 
 > **NOTE:** This document was reconstructed on Feb 23, 2026 after the Sandbox project became corrupt and the Documents folder was lost. The summary table (all 135 entries) has been fully recovered from session context. Detailed ENTRY blocks for entries 001-115 are pending recovery from session JSONL at `C:\Users\steph\.claude\projects\e--Unity-Sandbox\99250266-b660-4ea0-88f0-61e5b98f52e1.jsonl`. Entries 116-135 (Session 35 UI Toolkit batch) are summarized in the session transcript.
 
@@ -435,6 +435,11 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 338 | RPG Monster Bundle Polyart (Pxltiger) | Asset Store | Art / Animation (30 Stylized Low-Poly Fantasy Monsters w/ Full Anim Sets) | Approved | Conditional, Character | 2026-04-25 |
 | 339 | Vefects Blood VFX URP (Vefects) | Asset Store | VFX (Blood Particle Library — Decals, Bursts, Slashes, Wounds, Underwater, Drips, Puddles; 12-Color Variants) | Approved | Recommended, VFX | 2026-04-26 |
 | 340 | CityGen3D (Citygen Technologies) | Asset Store | Editor Tool / World Generation (Procedural Real-World City Builder w/ Mapbox + SRTM + GeoJSON Imports, 3-Pipeline) | Approved | Recommended, Environment (removed post-eval) | 2026-04-26 |
+| 341 | Modular 3D Text (Tiny Giant Studio) | Asset Store | UI / Text (3D Mesh Text + Buttons, Sliders, Toggles, Dropdowns, Input Fields, Lists; 85 Built-In Fonts; Modules) | Approved | Recommended, Text | 2026-04-27 |
+| 342 | Pipe Dream Pack (One Potato Kingdom) | Asset Store | Art (37 Stylized Pipe + Vent Industrial Props; 2 ShaderGraph Heat/Wind Shaders; PipeShaker Component) | Approved | -- | 2026-04-27 |
+| 343 | Ultimate Preview (Voxel Labs) | Asset Store | Editor Tool (Enhanced Asset Preview Window — Lighting, Skybox, VFX, Animator, Camera Controls) | Approved | Default, QoL | 2026-04-27 |
+| 344 | EasyPooling 2025 (GUPS) | Asset Store | Runtime Framework (Singleton GameObject Pool w/ Blueprint Definitions, Spawn Policies, Decorators, Strategies) | Approved | -- | 2026-04-27 |
+| 345 | ORK Framework 3.19.5 (Gaming Is Love) | Asset Store | Gameplay Framework (RPG Editor — Combatants, Battles, Equipment, Items, Move AI, Battle Grids; built on Makinom 2.23) | Approved | Recommended | 2026-04-27 |
 
 ---
 
@@ -12983,6 +12988,506 @@ Both packages were auto-pulled in by CityGen3D's import and were not auto-remove
 **MCP Candidate:** **Medium** — `cg` tool group queued (6 tools: `cg-generator-configure`, `cg-generate`, `cg-query-map`, `cg-find-road-at`, `cg-find-feature-at`, `cg-add-blueprint`). Build deferred until SetDesign or M3 uses the asset for a real task — wrapper value only emerges once a concrete generation workflow is in motion.
 **TecVooDoo Utilities Candidate:** No — third-party DLL-based asset, not utility code we can extract. The pattern of "render-pipeline-aware asset importer" (the ShaderPackager design) is interesting as a TVU technique but the Jason Booth implementation is licensed to CityGen3D specifically; we'd write our own if we needed it.
 **TecVooDoo Games Candidate:** No — environment generation tool, not gameplay logic.
+
+---
+
+### ENTRY-341: Modular 3D Text (Tiny Giant Studio)
+
+**Date Evaluated:** 2026-04-27 (Session 81)
+**Driver:** Cross-project mesh-based 3D text + UI control framework — 3D-text HUD, in-world signs, diegetic UI panels (M3 episodes, BM in-world numbers, AQS quokka shop signs, FearSteez kill counters, HOK underworld inscriptions, VNPC dialog lower-thirds done in 3D).
+**Source:** Asset Store (Tiny Giant Studio publisher, "Modular 3D Text")
+**Install Path:** `Assets/Plugins/Tiny Giant Studio/` (~538 MB) + `Assets/Tiny Giant Studio/Modular 3D Text/` (~45 MB sample folder)
+**State:** URP setup package extracted clean. Compilation green. Two cosmetic Warning logs (`ThemeSwitcherStyleSheet.uss` + `TGSStyleSheet` reference URLs in publisher's own UXML — point to old paths after publisher refactor; pure log-noise, asset functions correctly). 16 sample scenes ship, 65 runtime/editor C# scripts, 85 prefab font assets bundled.
+
+**Contents:**
+
+| Folder | Purpose |
+|--------|---------|
+| `Plugins/Tiny Giant Studio/Common/` | Shared artworks + fonts used across publisher's tools |
+| `Plugins/Tiny Giant Studio/Common Scripts/Editor/` | `MText_Editor_Classes.cs` + `MText_Editor_Methods.cs` — shared editor helpers |
+| `Plugins/Tiny Giant Studio/Modular 3D Text/Scripts/Core Text/` | `Modular3DText` (main MonoBehaviour), `TextUpdater`, `MeshPostProcessing`, `CharacterCleanUp`, `DelayCallCharacterCleanUp`, `DebugLogger` |
+| `Plugins/Tiny Giant Studio/Modular 3D Text/Scripts/UI Element/` | `IInteractable`, `UIState` — interaction abstractions |
+| `Plugins/Tiny Giant Studio/Modular 3D Text/Scripts/` (top-level UI) | `Button`, `Character`, `GetCharacterObject`, `HorizontalSelector`, `InputField`, `List`, `Slider`, `SliderHandle`, `Toggle` |
+| `Plugins/Tiny Giant Studio/Modular 3D Text/Scripts/Input/` | `ButtonInputProcessor`, `ButtonInputSystemGlobal`, `ButtonInputSystemLocal`, `RaycastInputProcessor`, `RaycastSelector` — Input System integration |
+| `Plugins/Tiny Giant Studio/Modular 3D Text/Scripts/Examples/` | `Countdown`, `DamageText`, `LoopAnimation`, `StatusToolTip`, `Typewriter` — copy-paste reference scripts |
+| `Plugins/Tiny Giant Studio/Modular 3D Text/Fonts/` | **85 mesh-font assets** (`.asset` ScriptableObjects with pre-extracted character meshes — Amarante, Audiowide, Bangers, Barrio, Berkshire, Blackout, Bungee, etc.) |
+| `Plugins/Tiny Giant Studio/Modular 3D Layouts/Scripts/Layout Types/` | `CircularLayoutGroup`, `GridLayoutGroup`, `LinearLayoutGroup`, `VolumeLayoutGroup` — separate sub-product layout system |
+| `Plugins/Tiny Giant Studio/Modular 3D Layouts/Scripts/ElementUpdaters/` | Update drivers for the layout system |
+| `Plugins/Tiny Giant Studio/Modules/Scripts/` | `Module` (base), `ModuleApplier`, `ModuleContainer`, `ModuleCore`, `AddPhysics`, `RemovePhysics`, `PlayParticles`, `ScaleChange` — per-character behavior modules |
+| `Plugins/Tiny Giant Studio/Package Importer/` | Editor utility for the URP/HDRP/SRP unitypackage selection (deletable post-install per Readme) |
+| `Tiny Giant Studio/Modular 3D Text/Sample Scenes/` | 16 demo scenes: Text, Input Field, Button, Slider, Toggle, Fonts, Lists, Dropdown, Typewriter, Countdown, Modules Tutorial, Shop Signs, Damage Effects, Particle System Module, Horizontal Selector, Screen Space Canvas |
+| `Tiny Giant Studio/Modular 3D Text/Setup Files/` | `3D Modular Text URP/HDRP/SRP.unitypackage`, `XR Toolkit Setup.unitypackage`, `Assembly Definition.unitypackage`, `Modular 3D Text Package Importer.asset` |
+
+**Pipeline Support:** **All three pipelines.** Setup is gated by extracting the matching `.unitypackage` from `Tiny Giant Studio/Modular 3D Text/Setup Files/` (URP applied for this eval). Default materials (`MText_Black`, `MText_Red`, `MText_White Transparent`, `MText_Emission Material`, etc.) live in `Assets/Tiny Giant Studio/Modular 3D Text/Materials/` and are swappable via `Tools > Tiny Giant Studio > Modular 3D Text > Preference`.
+
+**Core Component (`Modular3DText` — namespace `TinyGiantStudio.Text`):**
+- `[RequireComponent(typeof(TextUpdater))]` — auto-adds an updater that batches mesh rebuilds at end-of-frame (deferred dirty-flag pattern, avoids redundant work when multiple props change in the same frame).
+- Public API: `Text` (string property, dirty-flagged), `oldText` (diff cache for char-level rebuild), plus alignment, font asset, character spacing, line spacing, color, material, depth, generate-on-awake, etc. (full inspector surface — 65-script project means deep configurability).
+- `Modules` system: each character is a child GameObject; modules (e.g. `AddPhysics`, `PlayParticles`, `ScaleChange`) attach to characters at spawn time via `ModuleApplier` → `ModuleContainer`. Lets you per-letter physics-eject (DamageText), per-letter particle bursts (Particle System Module example), etc.
+- `[HelpURL("https://ferdowsur.gitbook.io/modular-3d-text/...")]` — vendor docs are GitBook-hosted, not bundled PDF.
+
+**UI Controls (Mesh-Based, Not uGUI/UI Toolkit):**
+- `Button` — clickable 3D button mesh, hooks UnityEvent OnClick.
+- `Toggle`, `Slider` (+ `SliderHandle`), `InputField`, `List` (dropdown/list selector), `HorizontalSelector` — full 3D control suite.
+- All controls implement `IInteractable` + use `UIState` for state machine.
+- Input wiring: New Input System actions ship in `3D Text UI Controls.inputactions` (Plugins folder). Raycast-based selection via `RaycastSelector` (supports VR + screen-space + world-space pointers).
+
+**Layouts Sub-Product:**
+- Separate `Modular 3D Layouts` package nested under same vendor folder — Linear/Grid/Circular/Volume layout groups for arranging 3D content (text characters, button rows, dropdown lists, etc.). Compatible but independent of the Text component itself.
+
+**Project Fit Analysis:**
+
+| Project | Use | Priority |
+|---------|-----|----------|
+| **M3AnimatedSeries** | In-world 3D titles, episode chapter cards rendered as 3D text in scene, character-level damage/count animations for action beats. | **HIGH** — diegetic typography is on-genre |
+| **BM (Blood Miner)** | Floating row-clear count, in-world tutorial signs above outlets, "+blood" damage popups (alongside DamageNumbersPro choice — Modular3DText is the heavier 3D-mesh option vs DNP's billboard sprites). | MEDIUM — overlaps with DNP |
+| **AQS (A Quokka Story)** | Stylized 3D shop signs, quokka name plates, world-space tutorial text. The 85 fonts give per-region typography variety. Modules (PlayParticles + ScaleChange) suit the playful aesthetic. | **HIGH** |
+| **VNPC** | 3D lower-thirds, location-card 3D text, stylized chapter intros, button selectors (`HorizontalSelector` for Choice nodes). Pairs with Dialogue System. | **HIGH** |
+| **HOK (Hooked on Kharon)** | Underworld inscriptions on stelae, drachma/soul counters, NPC name plates rendered as carved stone (with material swap). | MEDIUM-HIGH |
+| **FearSteez** | Kill counter HUD as floating 3D digits, weapon-name pickup popups, in-world danger signs. | MEDIUM |
+| **HideNReap** | Reap-counter, in-world tombstone inscriptions, hub menu 3D buttons. | MEDIUM |
+| **SetDesign** | Library item — pre-built 3D sign prefabs ("Open", "Closed", "Caution", "Mine") for environment dressing across all projects. | MEDIUM |
+| **TecVooDoo project** | None — tooling project. | N/A |
+
+**Asset Store Label:** **Recommended, Text.** Best-in-class for 3D-mesh text + diegetic UI. Does not displace TMP or UI Toolkit (different domain — those are 2D screen-space). Co-exists cleanly with `Text Animator` (Febucci, ENTRY-? — ta-* TMCP tools): TextAnimator drives styled per-character animation on TMP/uGUI text; M3DText is the equivalent surface for actual 3D meshes. **Default 3D / Text** for any project using diegetic UI.
+
+**Ecosystem Notes:**
+- **Compare to TMP:** TMP renders flat textured glyphs in screen-space (or world-space billboards). M3DText extrudes/instances actual 3D meshes per character. TMP wins on perf for paragraphs of text; M3DText wins on stylized 3D look + per-char physics/VFX.
+- **Compare to TextAnimator (Febucci, supported by `ta-*` TMCP tools):** TextAnimator is per-character behavior + appearance effects on TMP/uGUI text. M3DText's `Modules` system is the rough equivalent for 3D meshes. The two are complementary, not competing — different rendering substrates.
+- **Compare to DamageNumbersPro (DNP, supported by `dnp-*` TMCP tools):** DNP is fast-spawn billboard sprite numbers (pooled, scrolly, fade-out, performance-tuned). M3DText is heavier 3D meshes with more visual richness. **Recommendation:** DNP for high-frequency combat number popups; M3DText for hero/HUD text + diegetic signage. Use both.
+- **Pairs with Animation Rigging / Final IK / Cinemachine:** in-world 3D text positioned via `MultiAimConstraint` (face camera while staying world-anchored) or `LookAt` IK — same rig as character gaze.
+- **Pairs with FEEL / DOTween:** `DOTweenAnimation` on the M3DText GameObject for entry/exit animations; FEEL `Position`/`Scale` feedbacks for procedural reactivity.
+- **Modules system + Particle Systems + AddPhysics modules** = recipe for stylized "letters explode and fall" effects (DamageText.cs example demonstrates).
+
+**MCP Controllability:** **Medium-High — strong candidate, defer build.** `Modular3DText` has a clean public surface (`Text` setter, font, alignment, color, material, modules) that maps well to MCP. Key candidate tools:
+- `m3dt-query` — list all `Modular3DText` components in scene with text + font + module list.
+- `m3dt-set-text` — set the `Text` property (single-call wrapper for the most common operation).
+- `m3dt-configure` — set font asset, color, material, alignment, character spacing, depth, module list.
+- `m3dt-add-module` — attach a module (`AddPhysics`, `PlayParticles`, `ScaleChange`, etc.) to characters; configure module params.
+- `m3dt-find-fonts` — list the 85 bundled font assets by name.
+- `m3dt-create-control` — instantiate a 3D Button/Toggle/Slider/List with default config + UnityEvent wiring helper.
+
+**Defer build** until a project (likely M3, AQS, or VNPC) actively scripts M3DText for in-world signage. Setup is currently inspector-driven (copy demo prefabs); MCP value emerges when programmatic spawning or runtime-data-driven labels are needed.
+
+**Key Gotchas:**
+- **538 MB Plugins folder + 45 MB Sample folder** — 583 MB total. The 85 font assets account for most of it (per-character meshes are not lightweight). Cherry-pick to ~5 fonts per project at standalone migration to reclaim 90%+.
+- **Setup Files unitypackages must be extracted manually** before first use — install URP package via the bundled `Modular 3D Text Package Importer.asset` editor tool. Already done this session.
+- **Two cosmetic warnings** in console after fresh install: `ThemeSwitcherStyleSheet.uss` and `TGSStyleSheet` URI references in publisher's own UXML files point to pre-refactor paths. Asset functions correctly; warnings are pure log noise. Could be silenced by editing the two UXML files but not worth doing.
+- **Sample folder (`Assets/Tiny Giant Studio/Modular 3D Text/`) is deletable** per the bundled Readme — only required for sample scenes + default materials. Remove before standalone migration once you've copied the materials you want.
+- **Cleanup behavior:** `CharacterCleanUp` + `DelayCallCharacterCleanUp` handle character-mesh garbage. If you script aggressive text changes (e.g. Typewriter at high speed) the deferred cleanup is correct — don't manually destroy character GOs mid-update.
+- **No UPM package** — installs purely via Asset Store unitypackage. To use across multiple Unity projects, copy the entire `Plugins/Tiny Giant Studio/` tree (or convert to a local UPM package per Tiny Giant Studio's optional `Assembly Definition.unitypackage` setup file).
+- **XR Toolkit setup is opt-in** — separate `XR Toolkit Setup.unitypackage` in Setup Files for VR projects. N/A for current TecVooDoo lineup but worth noting.
+- **Per-letter physics + particles via Modules can get expensive** at high character counts (>50 chars on screen with AddPhysics) — modules instantiate per-character GameObjects + colliders. Profile before shipping mobile.
+- **Modular 3D Layouts is a separate sub-product** (different namespace `TinyGiantStudio.Layout`). Bundled in Plugins folder but works independently — Flexalon already covers most layout needs (TecVooDoo project uses `flexalon-*` tools); use M3D Layouts only if you specifically need layouts driven by character cleanup/text-update events.
+
+**Verdict Rationale:** **Approved, Recommended.** Modular 3D Text is the canonical pick for diegetic 3D typography across the TecVooDoo project lineup. Strong fit for M3 (animated-series chapter cards), AQS (stylized shop signs + UI), VNPC (3D dialog framing), and HOK (carved-stone underworld inscriptions). Coexists cleanly with TMP (screen-space) and DamageNumbersPro (high-volume billboard popups) — use the right tool per use case. Footprint is heavy (538 MB) but cherry-picking fonts down to per-project subsets reclaims most of it. The Modules system (AddPhysics, PlayParticles, ScaleChange) gives unique per-character animation hooks no other text asset matches. Compilation clean, no pipeline swap blockers post-URP package extraction, two cosmetic warnings can be ignored.
+
+**Next Steps:**
+1. **VNPC integration:** Wire DialogueSystem → M3DText for 3D lower-thirds + 3D `HorizontalSelector` for Choice nodes. Cherry-pick 3 fonts (1 narrator, 1 character bark, 1 chapter title).
+2. **AQS integration:** Build 5-6 reusable 3D sign prefabs in `_AQS/Art/Signs/` (Shop, Mine, Quokka Crossing, Tutorial Hint) using 2-3 quokka-friendly fonts.
+3. **M3 integration:** Test as episode chapter-card overlay vs. comp'd 2D — compare quality. If M3DText wins, build a per-episode card prefab.
+4. **TMCP build:** Defer `m3dt-*` tool group until #1, #2, or #3 hits MCP-friction.
+
+**Asset Retention Decision:** **Retain in Sandbox** for hands-on integration tests against VNPC/AQS use cases in subsequent sessions. Mark for inclusion in standalone project migrations on a project-by-project basis with cherry-picked font subsets.
+
+**MCP Candidate:** **Medium-High** — `m3dt-*` tool group queued (6 tools: `m3dt-query`, `m3dt-set-text`, `m3dt-configure`, `m3dt-add-module`, `m3dt-find-fonts`, `m3dt-create-control`). Build deferred until a project actively scripts M3DText runtime usage. (Added to MCP Candidates section.)
+**TecVooDoo Utilities Candidate:** No — third-party UI/text framework, not extractable utility code.
+**TecVooDoo Games Candidate:** No — third-party content/UI asset, not gameplay logic.
+
+---
+
+### ENTRY-342: Pipe Dream Pack (One Potato Kingdom)
+
+**Date Evaluated:** 2026-04-27 (Session 81)
+**Driver:** **In active use by Blood Miner** as the industrial-pipe set dressing for the conveyor/factory aesthetic — 37 stylized pipe + valve + balloon + cap meshes. Eval is retroactive documentation since the asset is already shipping in BM.
+**Source:** Asset Store (One Potato Kingdom publisher)
+**Install Path:** `Assets/OnePotatoKingdom_PipeDreamPack/` (~371 MB)
+**State:** Imported clean. Active use in BM project (rows, outlet manifolds, vent backdrops). One demo scene (`MainDemoScene.unity`). Includes a `_Documentation/Documentation_PipeDream.pdf`.
+
+**Contents (37 FBX, 37 prefabs, 37 URP materials, 222 textures, 1 script, 2 ShaderGraphs, 371 MB):**
+
+| FBX Family | Count | Notes |
+|------------|-------|-------|
+| **Pipe Baloons** | 4 | `PipeBaloon`, `PipeBaloon2/3/4` — stylized expanded-pressure-balloon meshes that go inline with pipes. Hero/visual-interest props. |
+| **Pipe Caps** | 5 | `PipeCap`, `PipeCapRound`, `PipeCapWheel`, `PipeCapRoundWheel`, `PipeCapWhole` — terminators (valves, blanks, wheel-handle valves). |
+| **Pipe Curves** | 4 | `PipeCurveLong/Long2/Long3`, `PipeCurveShort` — 90° elbows in long + short variants. |
+| **Pipe T-Cross** | 3 | `PipeTCrossLong`, `PipeTCrossSide`, `PipeTCrossSmall` — branching joints. |
+| **Pipe Thingies** | 8 | `PipeThingy1`–`PipeThingy8` — decorative inline elements (gauges, regulators, motors, pumps — non-functional aesthetic props). |
+| **Regular Pipes** | 5 | `RegularPipeLong`, `RegularPipeMed/Med2`, `RegularPipeShort/Short2` — straight lengths. |
+| **Thin Pipes** | 3 | `ThinPipeLong/Medium/Short` — narrow secondary pipes. |
+| **U-Pipes** | 5 | `UPipeBothShort`, `UPipeLong`, `UPipeOneShort`, `UPipeThinLong`, `UPipeThinOneShort` — full 180° U-bends, regular + thin variants. |
+
+**Pipeline:** **URP shipped (`URP_Materials/`).** All 37 materials are URP-targeted. Two `.shadergraph` shaders ship: `Heat_Effect.shadergraph` (heat haze / refraction near hot pipes) + `Pipe_GrassWindShader.shadergraph` (used by demo terrain foliage, not core pipe content). No BiRP/HDRP variant ships.
+
+**Demo Scene Assets:**
+- `_DemoScene/MainDemoScene.unity` + `DemoAssets/` (Background, ParticleSystems with Misc + ParticlePrefabs + ParticlesMaterials, TerraiLayers [sic], TerraiMaterials, TerrainData, TerrainFBX, TerrainPrefabs, TerrainTextures with SmallGrassClump / StylizedGrass2K / StylizedGrassV2K / StylizedGroundDirt2K / StylizedGroundTiles2K / WeedClump).
+- The demo scene includes terrain + grass shaders that aren't part of the pipe content per se but ship for the showcase.
+
+**The Single Script (`Scripts/PipeShaker.cs` — namespace `PipeEffects`):**
+- 47-line MonoBehaviour. `enableShaking`, `shakeMagnitude`, `shakeSpeed`, `SetShaking(bool)`. Uses `Mathf.PerlinNoise` × 3 axes with random per-axis offset for noise-driven pipe shake (sells "high-pressure rumble" on pipes that should feel alive).
+- Public `SetShaking(bool)` lets you toggle from anywhere. Trivial component — fine as-shipped, would be a candidate for TecVooDoo Utilities inclusion if more variants existed but at one component / one class it's fine to leave in-place.
+
+**Project Fit Analysis:**
+
+| Project | Use | Priority |
+|---------|-----|----------|
+| **Blood Miner** | **Active use** — body conveyor pipes, outlet manifolds, row-hardware backdrop, mine industrial dressing. | **HIGH — load-bearing** |
+| **HideNReap** | If HnR adds an industrial/lab/factory area, drop in. Otherwise N/A. | LOW (conditional on setting) |
+| **FearSteez** | Industrial level dressing for survivor combat zones. | LOW-MEDIUM |
+| **SetDesign** | Modular industrial-pipe library entry — combines well with KayKit Industrial / Synty PolygonPrototype. | MEDIUM |
+| **M3AnimatedSeries** | "Malady" episodes set in hospitals/labs/refineries can use pipes as background detail. | LOW-MEDIUM |
+| **HOK (Hooked on Kharon)** | Underworld styylze does not match industrial pipe aesthetic. N/A. | N/A |
+| **AQS (A Quokka Story)** | Family game, doesn't match. N/A. | N/A |
+| **VNPC** | 3D background detail for industrial scenes if needed. | LOW |
+| **TecVooDoo project** | None — tooling. | N/A |
+
+**Asset Store Label:** *(no Default/Recommended label.)* Niche art content — tagged Art / Low Poly. **Approved** for current BM use; Recommended status would require it being best-in-class for stylized pipes and we haven't surveyed alternatives. Already proven in BM, so the Sandbox label stays unlabeled — situational pick.
+
+**Ecosystem Notes:**
+- **Pairs with KayKit Industrial / Synty PolygonPrototype:** the pipe meshes drop into either kit's industrial scenes for additional vertical-pipe vocabulary.
+- **Pairs with Vefects Blood VFX URP (ENTRY-339):** in BM, the Vefects blood splash decals attach to the inside of pipe outlets for the "body squeezed through" arrival effect.
+- **Pairs with Heathen Damage Numbers (DNP) + FEEL:** pipe-shaking via `PipeShaker.SetShaking(true)` triggers naturally on combat hits with FEEL `MMFeedback_TriggerEvent` calls.
+- **Pairs with COZY 3 (ENTRY-337):** in outdoor industrial scenes, pipe materials respond to the COZY weather system if URP global lighting is wired through.
+- **Compare to procedural tube assets (DreamTeck Splines tube-mesh, Mega Wires):** procedural tubing is more flexible (any path, any length) but lacks the hand-modeled hero details (Pipe Baloons, decorative Thingies). Use both: procedural pipes for runs, hand-model props for set-piece interest.
+
+**MCP Controllability:** **N/A** — pure art content with one trivial 47-line MonoBehaviour. Fully covered by existing tools: `assets-find` (locate prefabs by family), `assets-prefab-instantiate` (drop into scene), `gameobject-modify` (rotate/scale/position), `gameobject-component-add` + `gameobject-component-modify` (add and configure `PipeShaker` from MCP). No new tools needed.
+
+**Key Gotchas:**
+- **URP-only.** No BiRP/HDRP support shipped. If migrating to a BiRP project (VNPC if it's BiRP), need to manually port `Heat_Effect.shadergraph` to BiRP equivalent.
+- **`Heat_Effect.shadergraph` uses URP scene-color sampling** for refraction — requires `Opaque Texture` enabled in the URP renderer asset. Verify in BM URP settings.
+- **`Pipe_GrassWindShader.shadergraph`** is for demo-scene grass, not pipes — don't ship it if the demo scene/foliage isn't used. Removable in a hygiene pass.
+- **371 MB on disk** — most of it is the 222 demo-scene textures, not the pipes themselves. Cherry-picking the 37 FBX/prefab/material set + just the pipe textures would shrink to ~50-100 MB easily. Already standard practice for BM standalone migration.
+- **`PipeShaker` adds Update() per pipe** — for a screen with many shaking pipes, profile or batch into a manager. BM scenes typically have ≤10 shaking pipes so non-issue.
+- **No LODs shipped** — fine for BM (close camera) and most fixed-camera setups; inadequate for open-world distant viewing.
+- **PDF documentation shipped (`_Documentation/Documentation_PipeDream.pdf`) but not read this session** (pdftoppm gap, same as ENTRY-340 CityGen3D session). Likely covers pipe-snapping workflow + shader props. Worth a manual read pre-extending BM pipework.
+- **Folder typo:** `_DemoScene/DemoAssets/TerraiLayers/` and `TerraiMaterials/` (missing 'n'). Cosmetic — won't break anything but worth noting if writing scripts that scan paths.
+- **`PipeShaker.cs` namespace is `PipeEffects`** (not vendor-prefixed) — minor namespace pollution but unlikely to collide.
+
+**Verdict Rationale:** **Approved.** Pipe Dream Pack is doing its job in Blood Miner as the load-bearing industrial-pipe set dressing — eval is retrospective documentation rather than green-light for adoption. URP-native shaders, hand-modeled stylized-poly meshes match BM's aesthetic, single utility script (PipeShaker) gives "alive" pipe rumble for combat moments. No Default/Recommended label — niche art content — but no concerns either. Standalone-migration pass for BM should cherry-pick the 37 pipe FBX/prefab/material trio and drop the ~270 MB demo-scene textures.
+
+**Next Steps:**
+1. **BM (already in use):** No action — continue using as-is.
+2. **BM standalone migration:** Cherry-pick `FBX/`, `Prefabs/`, `URP_Materials/`, `Textures/` (pipe-only subset), `Shader/Heat_Effect.shadergraph`, `Scripts/PipeShaker.cs`. Drop `_DemoScene/`, `_Documentation/`, `Pipe_GrassWindShader.shadergraph`. Estimated 70-100 MB after cull.
+3. **SetDesign:** Defer until SetDesign environment library work begins — drop in as one of the modular industrial-pipe set entries.
+
+**Asset Retention Decision:** **Retain in Sandbox** as it's referenced by BM's body-pool prefab work. Migrate cherry-picked subset to BM standalone alongside other BM assets when BM standalone gets its environment-asset pass.
+
+**MCP Candidate:** No — pure art content with a trivial Update-component (PipeShaker). Fully covered by generic asset/gameobject tools.
+**TecVooDoo Utilities Candidate:** **Conditional / Low** — `PipeShaker` could be generalized as `TVU.Effects.PerlinObjectShake` (drop "Pipe" specificity, parameterize per-axis amplitude). Not load-bearing — current implementation works fine where it sits. Mark as a tiny TVU candidate but not high priority.
+**TecVooDoo Games Candidate:** No — third-party art asset, not gameplay logic.
+
+---
+
+### ENTRY-343: Ultimate Preview (Voxel Labs)
+
+**Date Evaluated:** 2026-04-27 (Session 81)
+**Driver:** **Already in active daily use by user** as a daily-driver editor QoL tool (replaces Unity's built-in asset preview window). Eval is retroactive documentation.
+**Source:** Asset Store (Voxel Labs publisher)
+**Install Path:** `Assets/Voxel Labs/Ultimate Preview/` (~40 MB)
+**State:** Imported clean. Version `v1.3.4` (per `Editor/Scripts/Lib/Constants.cs`). Installed in Sandbox; user uses it across Sandbox + standalone projects daily for asset/prefab inspection.
+
+**Contents:**
+
+| Folder | Purpose |
+|--------|---------|
+| `Demo/Demo Scene.unity` | Sample scene to test the preview with various asset types |
+| `Editor/Plugins/Third party/Harmony/` | `VoxelLabs.Harmony.dll` — Harmony patcher (used to inject into Unity's asset import / preview pipeline). Also includes `Harmony.License.txt` |
+| `Editor/Resources/UltimatePreviewWindow/GUI/` | ~32 PNG icons (camera, lights, skybox, layers, vfx, animator, scene-preview, premium, etc., light + dark variants) |
+| `Editor/Resources/UltimatePreviewWindow/Settings/` | `UltimatePreview - Settings.asset` (user prefs), `UltimatePreview - SettingsReferenceHolder.asset`, `Readme.txt` |
+| `Editor/Resources/UltimatePreviewWindow/Shaders/preview-floor.shader` | Custom floor/ground shader for the preview viewport |
+| `Editor/Scripts/Assembly/VoxelLabs.UltimatePreview.Core.dll` | Core preview window logic (closed-source) |
+| `Editor/Scripts/Assembly/VoxelLabs.UltimatePreview.Shared.dll` | Shared utilities (closed-source) |
+| `Editor/Scripts/Lib/` | `AssetImporterEditorBase.cs`, `ObjectPreviewBase.cs`, `Utils.cs`, `Constants.cs` (just holds version "v1.3.4"), `VoxelLabs.UltimatePreview.Lib.asmdef` — open-source helper layer that the DLLs depend on |
+| `Packages/PRO_UltimatePreview_URP.unitypackage` + `_HDRP.unitypackage` | Optional pro pipeline-specific upgrade (premium tier) |
+
+**Functionality (per icon set + readme + active user usage):**
+- Replaces / augments Unity's default `Inspector → Preview` panel and `Project → Asset Preview Generator` for prefabs, models, materials, animations, VFX.
+- Toolbar for preview window: **camera** (rotate XYZ + reset), **scene-object preview** (preview a scene GO instead of an asset), **layers** toggle, **lights** toggle, **skybox** toggle, **VFX play/pause**, **animator add-on** (preview animation states), **grid on/off**, **force-fx enable/disable**, **windows** (multi-preview windows), **bug** (bug report), **rate-us**, **website**, **discord**, **docs**, **premium upgrade** badge.
+- Editor-time only (`Editor/` folder). Zero runtime cost.
+- The PRO unitypackages add URP/HDRP-specific upgrades — premium tier, optional. Not extracted in this Sandbox install.
+
+**Pipeline Support:** Editor-only tool. Compatible with all RPs (the optional URP/HDRP unitypackages enhance preview rendering quality with pipeline-specific features). Base BiRP-render preview ships in the Core DLL.
+
+**Project Fit Analysis:**
+
+| Project | Use | Priority |
+|---------|-----|----------|
+| **All TecVooDoo projects** | Daily-use editor tool — asset/prefab inspection during eval, level building, art review. Already adopted by user. | **HIGH — daily driver** |
+| **TecVooDoo project** | Same — useful for inspecting any installed asset. | HIGH |
+
+**Asset Store Label:** **Default, QoL.** Editor productivity tool that's already become daily-driver workflow. Belongs in every TecVooDoo Unity project the user sets up.
+
+**Ecosystem Notes:**
+- **Pairs with AssetInventory (TMCP `asset-inventory-*` tools):** AssetInventory finds assets cross-project; Ultimate Preview gives a richer preview window when reviewing them in the project browser. Two halves of the asset-discovery flow.
+- **Pairs with vHierarchy + vFolders (ENTRY-003 / 004):** the trifecta of editor QoL — vFolders/vHierarchy organize what you see, Ultimate Preview shows it better.
+- **Compare to Unity built-in asset preview:** Built-in is a tiny non-resizable square in the Inspector with no controls. Ultimate Preview is a dockable window with full lighting/skybox/animation/VFX control.
+- **Compare to Asset Studio external tools:** Asset Studio is for ripping/inspecting compiled bundles. Ultimate Preview is for in-Editor preview of project assets — different use case.
+- **Harmony injection (`VoxelLabs.Harmony.dll`)** — uses Harmony 2.x patching to hook into Unity's editor pipeline. Means: if a Unity Editor version changes the internal API surface, Ultimate Preview may break and need a vendor update. Not unique to Ultimate Preview; many editor extensions take this approach. Track vendor responsiveness.
+
+**MCP Controllability:** **N/A.** Editor-only window-based tool. Not a runtime MonoBehaviour; doesn't expose meaningful programmatic surface for scene/gameplay manipulation. The closest MCP-relevant action would be "open the preview window for asset X" which is a single editor command — not worth a dedicated tool.
+
+**Key Gotchas:**
+- **DLL-based core** — `VoxelLabs.UltimatePreview.Core.dll` + `Shared.dll` are closed-source. Bug fixes / customization require vendor support (Discord/website per the icon links in the GUI). Mitigated by widespread asset usage and the open-source `Lib/` helper layer being present (3-4 .cs files there can be patched if absolutely needed).
+- **Harmony injection-based** — relies on patching Unity Editor internals. Major Unity version upgrades may temporarily break the asset until vendor releases an updated build. Currently working on Unity 6 (6000.3.10f1) per active user.
+- **Two pipeline-specific PRO unitypackages ship but unextracted** — `Packages/PRO_UltimatePreview_URP.unitypackage` + `_HDRP.unitypackage`. These are premium-tier upgrades; unclear from Sandbox install whether the user has activated them or is using the free tier. Functionality stays even in free tier; PRO adds richer pipeline-native rendering in the preview window.
+- **40 MB footprint** — modest for an editor tool. No concern.
+- **Editor-only — zero runtime cost.** No build artifacts, no asmdef leaks into runtime assemblies.
+- **`Constants.cs` only holds version string** — versioning via a static field, not via an asset. Track upgrades by manually checking this field after package updates.
+
+**Verdict Rationale:** **Approved, Default (QoL).** Ultimate Preview is in active daily use by the user across Sandbox and standalone projects — it's already adopted and proven valuable. Documenting it as Default/QoL labels recognizes it as "would be wrong not to install" tier. Editor-only with zero runtime impact, modest footprint, Harmony-injection caveats are typical for productivity editor tools and accepted given the daily value. No MCP relevance (editor window, not gameplay surface). Ships free tier with optional premium URP/HDRP packs — keep current free-tier install unless a project specifically needs the premium pipeline-rendering upgrades.
+
+**Next Steps:**
+1. **Standalone projects:** Install Ultimate Preview in every project where user does daily asset/prefab review (HOK, FearSteez, AQS, BM, VNPC, HideNReap, M3, SetDesign). Already covered as a "Default" QoL — should be on the standard install list alongside vHierarchy / vFolders / Editor Console Pro.
+2. **PRO upgrade decision:** If a project's preview workflow benefits from URP-specific rendering (URP-only shaders that don't preview cleanly in BiRP-render), extract the PRO_URP unitypackage. Otherwise leave free tier.
+3. **Track Unity 7 / future upgrades:** When upgrading Unity major versions, verify Ultimate Preview still works (Harmony injection is the failure point). Monitor vendor Discord for compat notes.
+
+**Asset Retention Decision:** **Retain in Sandbox** as part of the daily-driver QoL stack. Mark for inclusion in the standard install list for all TecVooDoo standalone projects.
+
+**MCP Candidate:** No — editor-only window tool, no runtime surface. The only MCP-shaped action ("open preview for asset X") is a single editor menu command.
+**TecVooDoo Utilities Candidate:** No — third-party DLL-based editor tool, not extractable utility code.
+**TecVooDoo Games Candidate:** No — editor-only QoL, not gameplay logic.
+
+---
+
+### ENTRY-344: EasyPooling 2025 (GUPS)
+
+**Date Evaluated:** 2026-04-27 (Session 81)
+**Driver:** Object pooling framework eval — candidate for high-frequency spawn/despawn workloads across BM (chop minions, blood VFX), FearSteez (zombies, projectiles), HideNReap (reaper bodies), M3 (episode-level spawns).
+**Source:** Asset Store (GUPS publisher — German Unity Pro Solutions; ships a `Editor/Resources/EasyPooling_Card.png` alongside cards for sibling products: AntiCheat, EasyLocalization, EasyPerformanceMonitor, Obfuscator, Serialization)
+**Install Path:** `Assets/GUPS/EasyPooling/` (~40 MB)
+**State:** Imported clean. 39 runtime + 1 editor + ~16 demo C# scripts compile clean. Two demo scenes ship: `Demo_A_BlackHole/Scene_A` (asteroid-spawning black hole + planet system) + `Demo_B_Sun/Scene_B` (solar flare emitter). All source-based (no DLLs); MIT-friendly publisher pattern. Tests folder ships with mock prefabs (`Tests/Resources/EP/Test/Prefabs/`).
+
+**Contents (40 MB, all source):**
+
+| Folder | Purpose |
+|--------|---------|
+| `Source/` | Runtime framework — `GlobalPool` (singleton), `AGamePool<T>` (abstract base), `DefaultPoolAble`, plus `Blueprint/`, `Decorator/`, `Policy/Random/`, `Pooling/`, `Shapes/`, `Singleton/`, `Strategy/` subfolders |
+| `Editor/Source/Property/` | `BlueprintPoolDefinitionPropertyDrawer.cs` — editor inspector for `BlueprintPoolDefinition` field arrays |
+| `Demos/Demo_A_BlackHole/` | Asteroid + Planet + Black Hole demo scene (16 scripts, 9 prefabs, 9 materials with 9 planet textures) |
+| `Demos/Demo_B_Sun/` | Solar flare arcing-projectile demo scene |
+| `Demos/Source/Monitor/` | `Fps.cs`, `GCMemory.cs`, `TimeScaler.cs` — perf monitoring helpers for the demos |
+| `Tests/` | Unit tests + `Mock/` + `Resources/EP/Test/Prefabs/` |
+| `Editor/Resources/` | Publisher product cards (also surface their other 5 products: AntiCheat, EasyLocalization, EasyPerformanceMonitor, Obfuscator, Serialization) |
+
+**Architecture (`GUPS.EasyPooling` namespace + sub-namespaces):**
+
+**Core types:**
+- `GlobalPool : AGamePool<GlobalPool>` — singleton pool, `IsPersistent => true` (persists across scenes).
+- `AGamePool<T> : Singleton<T>, IPool` — abstract base, generic over derived type. Holds an `emptyPool` (for empty-GO spawning) + `Dictionary<string, GameObjectPool> blueprintPools` (named sub-pools for prefab variants).
+- `GameObjectPool : MonoBehaviour, IPool` — single-prefab pool. Methods: `Spawn()`, `Spawn(Vector3 pos, Quaternion rot)`, `Spawn(SpawnPolicy)`, `Spawn(IDecorator)`, etc. + `Despawn(GameObject)` variants with delay + un-decorator hooks.
+- `IPoolAble` — interface for poolable objects with lifecycle methods: `OnCreate`, `OnSpawn`, `OnDespawn`, `OnDestroy`. `Owner` (back-ref to owning `IPool`) + `IsPooled` flag. `DefaultPoolAble` is a ready-made implementation; users can attach to any prefab without writing a custom poolable.
+
+**Configuration (`BlueprintPoolDefinition` ScriptableSerializable struct):**
+- `[Serializable]` class with public fields: `PoolName`, `Blueprint` (GameObject ref), `Strategy` (enum), `InitialSize`. Surfaced in Inspector via the editor PropertyDrawer.
+- Pool registration via `GlobalPool.Instance.Register(blueprintPoolDef)` or inspector-driven: `StartupBlueprints` array on `AGamePool<T>` is iterated in `Awake()` and auto-registered.
+
+**`EPoolingStrategy` enum** (`[Flags]`):
+- `DEFAULT = 0` — empty pool on register, no growth/shrinkage.
+- `FILL = 1` — fill to capacity on register (for loading-screen warm-up).
+- `GROW = 2` — adaptive: grow when often empty, shrink when long-time at capacity.
+
+**Spawn API surface (overloaded combinatorically):**
+- `Spawn()` / `Spawn(Vector3, Quaternion)` / `Spawn(SpawnPolicy)` — empty pool.
+- `Spawn(IDecorator)` / `Spawn(IDecorator, Vector3, Quaternion)` / `Spawn(IDecorator, SpawnPolicy)` — empty pool, with decorator applied at spawn.
+- `Spawn(string blueprintName)` / `Spawn(string, Vector3, Quaternion)` / `Spawn(string, SpawnPolicy)` — blueprint pool.
+- `Spawn(string, IDecorator)` / `Spawn(string, IDecorator, Vector3, Quaternion)` / `Spawn(string, IDecorator, SpawnPolicy)` — blueprint pool with decorator.
+- `SpawnMany(int)` / `SpawnMany(int, SpawnPolicy)` / `SpawnMany(IDecorator, int)` / `SpawnMany(IDecorator, int, SpawnPolicy)` / `SpawnMany(string, int)` / etc. — batch spawning.
+
+**Despawn API:**
+- `Despawn(GameObject)` — auto-routes via `IPoolAble.Owner` back-ref to correct pool.
+- `Despawn(GameObject, float delay)` — coroutine-driven delayed despawn.
+- `Despawn(GameObject, IUnDecorator)` — cleanup decorator (e.g. reset transform, particle system).
+- `Despawn(GameObject, IUnDecorator, float delay)` — combined.
+- `FullUnDecorator` ships as built-in for "reset everything" use cases.
+
+**Spawn Policies (`SpawnPolicy` + `SpawnPolicyBuilder`):**
+- Customizable via builder pattern. Predefined random distributions: `UniformRandom`, `GaussianRandom`, `PerlinNoiseRandom` (under `Policy/Random/`).
+- Shape constraints: `Box`, `EPlane` — define a volume the spawn must land within.
+- Use case: spawning particle effects in a Box shape with Gaussian distribution centered on origin = realistic dispersion.
+
+**Decorator Pattern (`IDecorator` / `IUnDecorator`):**
+- Interface for arbitrary "do this to the GO at spawn / un-do at despawn" logic.
+- Lets users plug in cross-cutting behavior (assign random material, add a force, set parent, etc.) without modifying pool logic.
+
+**Project Fit Analysis:**
+
+| Project | Use | Priority |
+|---------|-----|----------|
+| **Blood Miner** | Pool the body prefabs (30+ Polyart monsters), chop-VFX (Vefects), blood decals, body-arrival pop instances. High spawn frequency at deeper rows = pooling wins meaningful. | **HIGH** |
+| **FearSteez** | Survivors-loop zombie pool, projectile pool, kill-VFX pool. Classic high-spawn pooling target. | **HIGH** |
+| **HideNReap** | Reap-corpse pool, combat-VFX pool. | MEDIUM-HIGH |
+| **M3AnimatedSeries** | Episode-specific spawn pools (monsters, props, particles). Per-episode `AGamePool<T>` subclass per scene. | MEDIUM |
+| **SpaceSucks** | DOTS-based — likely uses ECS pooling instead. EasyPooling is GameObject-based. N/A. | N/A |
+| **HOK (Hooked on Kharon)** | Boatman cargo (souls), particle effects. Low spawn frequency — pooling optional. | LOW |
+| **AQS (A Quokka Story)** | Simple gameplay, low spawn frequency. Native instantiation likely fine. | LOW |
+| **VNPC** | Sprite/scene transitions. Native instantiation fine. | N/A |
+| **TecVooDoo project** | Tooling — N/A | N/A |
+
+**Asset Store Label:** *(no Default / Recommended.)* Solid pooling framework but the domain has many viable choices (Unity 6's built-in `UnityEngine.Pool`, ObjectPooler classics, custom per-project pools). EasyPooling is a credible pick for projects with rich pool config needs (named blueprints, strategies, decorators, spawn policies) but doesn't displace simpler alternatives for single-prefab cases. **Approved** for the projects with high-frequency-spawn workloads (BM, FearSteez, HnR).
+
+**Ecosystem Notes:**
+- **Compare to Unity 6 `UnityEngine.Pool` (`ObjectPool<T>`, `LinkedPool<T>`):** Unity built-in is generic + lightweight + zero-config. EasyPooling adds named blueprints, multiple sub-pools, decorators, spawn shapes, growth strategies, lifecycle interfaces. Use Unity built-in for trivial pools; EasyPooling for rich multi-prefab + cross-cutting-decorator cases.
+- **Compare to Lean Pool (Lean Unity Pool, common asset):** Lean is simpler and component-driven. EasyPooling is API-driven (string-keyed lookup) which is more flexible for runtime-data-driven spawning.
+- **Compare to Pool Boss (DarkTonic, MasterAudio publisher):** Pool Boss is integrated with MasterAudio for audio pooling. EasyPooling is generic. Use MasterAudio's own audio pool for SFX; EasyPooling for non-SFX GameObjects.
+- **Pairs with Vefects Blood VFX (ENTRY-339):** EasyPooling solves the "no-script-shipped" gotcha in Vefects — register Vefects prefabs as blueprints, spawn via `GlobalPool.Instance.Spawn("Burst_Large", pos, rot)`, despawn-with-delay matching `particleSystem.main.duration`. Clean recipe.
+- **Pairs with FEEL (`feel-*` TMCP tools):** FEEL feedbacks can spawn-via-pool by wiring an `MMFeedback_GameObject` that calls into EasyPooling instead of `Instantiate`.
+- **Pairs with RPG Monster Bundle Polyart (ENTRY-338):** for BM body-pool, register Polyart monster prefabs as blueprints — `Skeleton_Body`, `Slime_Body`, etc. — and spawn-by-name from BodyPool.
+
+**MCP Controllability:** **Low — already documented in MCP Candidates section (line 10922).** Method-driven API where each spawn/despawn is a single static call. `script-execute` covers the use cases adequately; not property-dense enough to warrant dedicated MCP tools. The candidate row in the MCP Candidates section matches this assessment ("Not property-dense enough for dedicated MCP tools — `script-execute` covers the use cases").
+
+If a future need emerges (e.g. heavy pool-config debugging across many blueprints), candidate tools could be:
+- `gups-pool-query()` — list registered blueprints, current capacity, spawn counts per blueprint.
+- `gups-pool-register(name, prefabPath, strategy, capacity)` — register at edit-time.
+- `gups-pool-spawn(name, pos, rot)` — runtime debug helper.
+
+But none of these are load-bearing. Stay with `script-execute`.
+
+**Key Gotchas:**
+- **Singleton pattern (`AGamePool<T> : Singleton<T>`)** — only one `GlobalPool` instance ever. For per-scene non-persistent pools, derive your own (e.g. `class CombatPool : AGamePool<CombatPool>` with `IsPersistent => false` override). Worth knowing before architecting.
+- **Blueprint identifiers are name-keyed (`string PoolName`)** — typo risk in calling code. Recommend wrapping in an `enum` → `string` mapping or const class per-project.
+- **`GetBlueprintIdentifier()` uses XOR of `Component.GetType().Name.GetHashCode()`** for the de-dup hash — *but* the implementation seeds with literal `42` and lacks collision protection. Practically, the user-facing string `PoolName` is the de-dup key (`blueprintPools.ContainsKey(_Name)`). The hash-based identifier in `GetBlueprintIdentifier()` is computed but doesn't appear in the dedup path — minor dead code; doesn't affect correctness.
+- **`Despawn(GameObject)` requires the GO to have an `IPoolAble` component** — without one, logs warning + returns. `DefaultPoolAble` ships as a drop-in. If you spawn a prefab that has no `IPoolAble`, despawn won't work — the `Register()` flow auto-adds `DefaultPoolAble` if missing per the doc comment but verify behavior on first use.
+- **Coroutine-based delayed despawn** uses `WaitForSeconds` — bound to `Time.timeScale`. For pause/menu scenarios that pause game time, delayed despawns will pile up unexpectedly. Workaround: use `WaitForSecondsRealtime` (not provided by the asset; need a small modification or wrap the despawn call externally).
+- **Tests folder ships** (`Tests/Mock/`, `Tests/Resources/EP/Test/Prefabs/`) — unit tests + mock data. Helpful for confidence; remove before standalone migration if size matters.
+- **Demo content (~25 MB of textures)** is stylish but unrelated to the framework. Strip before standalone migration.
+- **Publisher product cards (`Editor/Resources/AntiCheat_Card.png`, etc.)** in the Editor folder advertise sibling products. Cosmetic, removable.
+- **`#pragma warning disable CS0252`** at line 612 of `AGamePool.cs` — an intentional reference comparison the publisher chose to silence. Not a bug, but worth understanding (`if (var_Pool == this.emptyPool)`). Means: comparing unboxed instance to typed instance; works as intended.
+- **Thread safety:** uses `lock(blueprintLock)` on register/exists/despawn — good. But `Spawn()` is unlocked. Spawning from non-main threads (e.g. job threads) is unsafe — pooling on Unity's main thread only.
+
+**Verdict Rationale:** **Approved.** EasyPooling is a credible source-based pooling framework with rich config (blueprints, strategies, decorators, spawn policies) appropriate for BM / FearSteez / HnR's high-frequency-spawn workloads. Comparable to Unity's built-in `UnityEngine.Pool` for trivial cases but adds named blueprint sub-pools, growth strategies, and decorator hooks that pay off when multiple prefab types share a scene. Source-based (no DLLs) means full debuggability and customization. Singleton pattern + string-keyed lookup are the main API ergonomics — manageable with disciplined naming. No load-bearing MCP tooling needed; `script-execute` covers debugging needs.
+
+Already noted in the MCP Candidates section (line 10922) — this entry promotes that placeholder note to a proper asset eval entry.
+
+**Next Steps:**
+1. **BM:** Register monster body prefabs + Vefects VFX prefabs as named blueprints in a `BloodMinerPool : AGamePool<BloodMinerPool>` subclass. Use `Strategy = FILL` for boot-time warm-up of common bodies, `GROW` for VFX. Profile chop sequences.
+2. **FearSteez:** Wrap zombie pool + projectile pool in a per-scene `CombatPool` subclass.
+3. **TVU candidate:** None — EasyPooling itself is the framework, nothing to extract.
+4. **TVG candidate:** Defer — pooling is generic enough that the EasyPooling abstractions cover it. If we converge on a "spawn-prefab-via-pool" recipe across 2+ projects, generalize as `TVG.Pooling.SpawnRecipe` ScriptableObject (prefab ref + strategy + initial size). Not now.
+
+**Asset Retention Decision:** **Retain in Sandbox** as a reference framework. Re-import into BM / FearSteez / HnR standalones when those projects start optimizing spawn paths.
+
+**MCP Candidate:** Low — already documented in MCP Candidates section (line 10922). Method-driven API; `script-execute` adequate.
+**TecVooDoo Utilities Candidate:** No — the asset *is* a utility, not extractable utility code.
+**TecVooDoo Games Candidate:** **Conditional / Deferred** — a `TVG.Pooling.SpawnRecipe` SO (prefab + strategy + initial size + decorator chain) that wraps EasyPooling could become a TVG entry once 2+ projects need consistent pool wiring. Not now.
+
+---
+
+### ENTRY-345: ORK Framework 3.19.5 + Makinom 2.23 (Gaming Is Love)
+
+**Date Evaluated:** 2026-04-27 (Session 81)
+**Driver:** Heavy RPG-game framework eval. Candidate framework for any TecVooDoo project with classic-RPG mechanics: Combatants/Stats/Battles/Equipment/Items/Quests/Shops/Move AI/Battle Grids. Most strongly relevant to a hypothetical full-RPG project, with partial-fit niches in HOK (combatant/inventory layer for the boatman + soul cargo), VNPC (dialogue/quest pairing with Dialogue System), AQS (companion/inventory layer for quokka + joeys), HideNReap (combat layer if HnR adds combat).
+**Source:** Asset Store (Gaming Is Love publisher; ORK Framework 3 ships bundled with Makinom 2 Pro)
+**Install Path:** `Assets/Gaming Is Love/Makinom 2/` (~45 MB DLLs + source-code zips) + `Assets/Gizmos/GamingIsLove/` (~13 MB component icons)
+**State:** DLL-based install. Compilation green per active Unity console (no compile errors related to ORK/Makinom). 8 DLLs total (4 runtime + 4 editor, ORK + Makinom split). Runtime ORK alone is 6 MB (substantial framework). `ORK_Source_Code.zip` + `Makinom_Source_Code.zip` ship inside Asset folder (Pro / Full version content).
+
+**Architecture (DLLs):**
+
+| DLL | Size | Purpose |
+|-----|------|---------|
+| `Makinom2.dll` | 2.4 MB | Core Makinom 2 runtime — schematics engine, game state, save/load, scene management, machines (event/auto/tick/trigger/template/tagged/render/animation/application/collision/interaction), UI Boxes, HUDs, sound/music, variables, formulas. |
+| `Makinom2.UnityUI.dll` | 330 KB | Unity UI module — all UI-related runtime components for Makinom UI (UI Boxes, HUDs, dialogues, menus). |
+| `ORKFramework3.dll` | 6.1 MB | ORK runtime — Combatants, Battle System, Equipment, Items, Status Effects, Move AI, Battle Grids, AI patterns, factions, classes, abilities, levels, attributes, shops, quests. Layered on top of Makinom 2. |
+| `ORKFramework3.UnityUI.dll` | 136 KB | ORK Unity UI — battle HUDs, menu screens, equipment viewers, shop UI. |
+| `Makinom2Editor.dll` | 843 KB | Makinom editor window + node editor for schematics. |
+| `Makinom2Editor.UnityUI.dll` | 84 KB | Editor for Makinom Unity UI components. |
+| `ORKFramework3Editor.dll` | 327 KB | ORK editor extensions — combatant editor, battle settings, item editor, etc. (drives the Makinom editor's ORK-specific tabs). |
+| `ORKFramework3Editor.UnityUI.dll` | 97 KB | Editor for ORK Unity UI components. |
+
+**Component Surface (45 component icons across `Gizmos/GamingIsLove/`):**
+
+**Makinom 2 components (24 — `Gizmos/GamingIsLove/Makinom/Components/`):**
+- **Machines:** AnimationMachineComponent, ApplicationMachineComponent, AutoMachineComponent, CollisionMachineComponent, InteractionMachineComponent, RenderMachineComponent, TaggedMachineComponent, TemplateMachineComponent, TickMachineComponent, TriggerMachineComponent — all flavors of "schematic-driven event handlers" tied to different Unity message sources.
+- **Game flow:** GameStarter (boots Makinom from scene), SceneChanger, SavePointComponent, SpawnPoint.
+- **Audio:** MusicPlayer, SoundChannelComponent, SoundAssignmentComponent.
+- **Object plumbing:** ObjectVariablesComponent (per-GameObject variable storage), VariableChangerComponent, PoolComponent (Makinom's own object pool — overlaps with EasyPooling/ENTRY-344), PlaceOnGround (auto-snap to ground), SceneObjectComponent (scene-object lifecycle), WaypointPathComponent (waypoint paths for AI/cutscenes).
+- **Camera:** CameraEvent (camera-driven schematic triggers).
+- **Interaction:** InteractionController.
+
+**ORK Framework components (21 — `Gizmos/GamingIsLove/ORKFramework/Components/`):**
+- **Combatant lifecycle:** AddCombatant, CombatantSpawner, BlockCombatantSpawn, ORKGameStarter (ORK boot wrapper around Makinom GameStarter).
+- **Battle system:** BattleComponent, BattleGridComponent, RandomBattleArea, RealTimeBattleArea, AreaComponent (battle area scope), CameraBorder (battle camera bounds).
+- **Damage/zones:** DamageDealer, DamageZone, LevelZone (zone-based level scaling).
+- **Equipment/items:** EquipmentViewer (equipment-on-character visualizer), ItemCollector (loot pickup), ShopInteraction (in-world shop trigger).
+- **Move AI:** MoveAIArea (AI traversal area), MoveAIHidingAreaComponent (hide spots), MoveAIRangeComponent (engagement ranges), NoRandomPatrol (suppress random patrolling).
+- **POI/quest:** PointOfInterest (quest waypoints + AI POI). Note: distinct namespace from our `qf-create-poi` POI system; ORK has its own POI concept.
+
+**Pipeline Support:** **Pipeline-agnostic** — pure runtime/UI framework, no shaders. Works with BiRP, URP, HDRP. The visual content (sprites, models, particle effects) is supplied by the user; ORK only orchestrates.
+
+**Editor:** Custom editor window opens via `Window > Gaming Is Love > Makinom` or `Window > Gaming Is Love > ORK Framework` (both open the same editor — ORK is a Makinom extension). Project asset auto-creates at `Assets/Gaming Is Love/_Data/Makinom Project.asset` on first open. Backups auto-saved to `_Backups/`. Extensions downloadable via in-editor `Makinom Extension Manager`.
+
+**Versioning Status:**
+- ORK Framework 3.19.5 (latest at install time per `ORK_CHANGELOG.txt`).
+- Makinom 2.23.0 (latest per `MAKINOM_CHANGELOG.txt`).
+- Last DLL build date: 2026-04-08 (per file mtime).
+
+**Project Fit Analysis:**
+
+| Project | Use | Priority |
+|---------|-----|----------|
+| **Hypothetical full-RPG project** | All systems load-bearing — combatants, battles, items, equipment, shops, AI. Not a current TecVooDoo project but ORK is canonical for this genre. | **HIGH** if RPG project starts |
+| **HOK (Hooked on Kharon)** | Soul cargo as Items, Charon as Combatant w/ stats, soul-payment shops via ShopInteraction, optional combat layer if HOK adds enemies. Pairs with Dialogue System for boatman dialogue. | **MEDIUM-HIGH** |
+| **VNPC** | Quest/inventory layer if VNPC's chapter system maps to ORK quests. Pairs with Dialogue System (DS handles narrative; ORK handles inventory/stats/combat). | MEDIUM (use selective subsystems) |
+| **AQS (A Quokka Story)** | Joey as Combatant (Mom + Joeys = party), inventory for collected items (eucalyptus, etc.), no combat layer. Use ORK as inventory + party manager only — most ORK features ignored. | LOW-MEDIUM (heavy framework for limited use) |
+| **HideNReap** | If HnR adds combat in v3+, ORK provides combatants/abilities/AI. Currently stealth-focused; ORK overkill unless combat is added. | CONDITIONAL on scope expansion |
+| **M3AnimatedSeries** | Episodes with RPG-style content could borrow ORK for inventory/stats. Animated-series production is mostly cinematic, so partial-fit at best. | LOW |
+| **FearSteez** | Survivors loop is more Vampire-Survivors than RPG. Status effects + combatant stats applicable; full ORK overkill. | LOW |
+| **BM (Blood Miner)** | Mobile idle factory loop. RPG framework wrong fit. | N/A |
+| **HOK / standalone** | See HOK row above. | -- |
+| **TecVooDoo project** | None — tooling project. | N/A |
+
+**Asset Store Label:** **Recommended.** Best-in-class RPG framework on the Asset Store; canonical pick for any team building a classic-RPG project. Not Default-tier (not every project benefits) but Recommended whenever combat + inventory + stats are load-bearing. The ORK community is large + active (forum.orkframework.com); vendor (Gaming Is Love / Makinom team) ships frequent updates (v3.19.5 latest at install time, v3.0 → 3.19 over the framework's lifecycle).
+
+**Ecosystem Notes:**
+- **Pairs with Dialogue System for Unity (`ds-*` TMCP tools, ENTRY-214):** DS handles conversation graphs + Lua variables + actor/conversation database; ORK handles combatants + inventory + battles. Recipe: DS conversations trigger ORK actions (e.g. "give item X" via DS-to-ORK bridge — there are official integration packages on the ORK extension manager). Foundational pairing for any RPG with heavy story.
+- **Pairs with Behavior Designer Pro (`bd-*` TMCP tools, ENTRY-229):** ORK's built-in Move AI is competent for most RPG enemies, but BD Pro's behavior trees give richer authoring for boss AI / complex enemies. Use ORK for RPG-data-aware AI (target stat-aware abilities), BD for non-RPG-aware behavior trees (patrol routes, alarm responses).
+- **Pairs with Sensor Toolkit (`sensor-*` TMCP tools):** Detection sensors feed into ORK's perception system for enemy detection of player.
+- **Pairs with Master Audio (`ma-*` TMCP tools):** ORK's sound channels can route through MasterAudio sound groups via Schematic actions.
+- **Pairs with Final IK / Animation Rigging (`finalik-*`, `rig-*` TMCP tools):** Combatant aim/look IK during battle.
+- **Pairs with Modular 3D Text (ENTRY-341):** in-world battle damage numbers, combat status text.
+- **Pairs with EasyPooling (ENTRY-344):** Makinom ships its own `PoolComponent`. Use Makinom's pool for Makinom-managed objects (combatant prefabs, schematic-spawned objects); EasyPooling for non-ORK content (VFX, projectiles outside ORK).
+- **Pairs with Vefects Blood VFX URP (ENTRY-339):** Combat hit VFX for ORK battle action animations.
+- **Pairs with Damage Numbers Pro (DNP, `dnp-*` TMCP tools):** ORK can call into DNP for floating damage popups during combat (alternative to ORK's built-in HUD damage display).
+- **Compare to RPG Builder (Blink Studios), Inventory Pro, etc.:** ORK is broader (full RPG, not just inventory). RPG Builder is a specific competitor — ORK has a more mature lineage (3 major versions) and includes the Makinom schematic system as a generic event-driven foundation that's useful even outside RPG contexts.
+- **Cross-feature with Quest Framework (ENTRY-? + `qf-*` TMCP tools):** ORK has its own quest system. If both are installed, pick one — running both will fork quest state. ORK's quest system is more deeply integrated with combatants/items; QF is lighter and integrates with our minimap/POI systems. Likely best to use ORK if RPG combat is in scope, QF for non-combat questing.
+
+**MCP Controllability:** **High — strong candidate, defer build.** Despite DLL distribution, ORK + Makinom expose extensive static APIs (`ORK.Game`, `ORK.Combatants`, `ORK.Inventory`, `ORK.Quests`, etc.) and runtime singletons. Likely candidate `ork-*` tool group:
+- `ork-query-combatant(name)` — read combatant state: stats, status effects, equipment, level, class.
+- `ork-modify-combatant(name, params)` — adjust stats/level/HP at runtime or design-time.
+- `ork-inventory(action, item, count, combatant)` — add/remove items, equip/unequip.
+- `ork-quest(action, quest, state)` — get/set quest state, advance steps.
+- `ork-battle(action, params)` — start/end battles, query active battle state.
+- `ork-schematic-run(schematicAsset, params)` — invoke a schematic by reference.
+- `ork-database-query(type)` — list combatants, items, abilities, status effects, classes from project database.
+
+**Defer build** until a project (HOK most likely candidate) actively scripts ORK runtime calls. ORK's editor-driven workflow means most config happens in the Makinom editor window (visual node graph for schematics + form-driven combatant/item authoring). MCP value emerges for runtime debug + database queries + cross-system orchestration once a project is live with ORK content.
+
+**Key Gotchas:**
+- **DLL-locked unless Pro license active.** The Sandbox install includes `ORK_Source_Code.zip` + `Makinom_Source_Code.zip` (Full/Pro version), so source is recoverable for debugging. Without Pro, DLLs are opaque.
+- **Limited version watermark:** if running the limited (free) tier, an in-game watermark renders + commercial release blocked. Verify license tier per project before shipping. The Sandbox install ships with Pro source — likely fully licensed.
+- **45 MB DLL footprint + 13 MB Gizmos** — moderate. Not heavy by RPG-framework standards but adds to baseline project size. Cherry-pick is hard since the DLLs are integrated; you take the whole framework or none of it.
+- **Project Asset auto-creates on first editor open** — `Assets/Gaming Is Love/_Data/Makinom Project.asset`. Migrate this asset (and `_Backups/`) when moving to standalone projects.
+- **Schematic system is the foundation.** All ORK actions are authored as Makinom schematics (visual node graphs). New users face a meaningful learning curve — community tutorials at orkframework.com/guide/ are extensive but plan ~1-2 weeks of ramp before productive RPG content authoring.
+- **Two editor entry points for the same window:** `Window > Gaming Is Love > Makinom` and `Window > Gaming Is Love > ORK Framework` open the same editor. Use either; ORK is a tab inside the Makinom editor.
+- **DOTS / ECS incompatibility:** ORK is GameObject-based + heavily reflective. Not compatible with SpaceSucks-style ECS-first architecture. Stays in the GameObject lane.
+- **Pool system overlap with EasyPooling (ENTRY-344):** Makinom's own `PoolComponent` covers RPG-spawn pooling. Don't double-pool the same prefabs; pick one per content category (RPG content via Makinom Pool, non-RPG via EasyPooling).
+- **POI naming overlap with our minimap POI system (`qf-create-poi`):** ORK has its own `PointOfInterest` component (RPG/AI POI). If both systems coexist, the user must distinguish via namespace + folder convention. Recommend keeping ORK POIs in `_<Project>/RPG/POIs/` and minimap POIs in `_<Project>/Minimap/POIs/`.
+- **Save game format is Makinom-specific** — switching frameworks mid-project means reauthoring save logic.
+- **Heavy editor window** — Makinom editor is multi-tab + slow on first open (loads project asset). Acceptable trade-off for the depth of authoring it provides.
+- **`Makinom Extension Manager`** downloads vendor + community extensions into `Assets/Gaming Is Love/_Downloads/`. Curate what you install — the extensions list is large.
+
+**Verdict Rationale:** **Approved, Recommended.** ORK Framework 3.19.5 + Makinom 2.23 is the canonical Asset Store choice for full RPG game architecture. Frequent vendor updates, mature community, deep system coverage (combatants, battles, equipment, items, AI, shops, quests), and extension ecosystem make it the right pick for any TecVooDoo project where combat + inventory + stats are load-bearing. **HOK** is the most natural current candidate (boatman as combatant, souls as items, optional combat layer). **VNPC** can use selective subsystems (inventory + quests) alongside Dialogue System. **AQS / HideNReap / FearSteez / M3** would only adopt subsystems, not full ORK. Defer hands-on integration until HOK or a new RPG project commits to the architecture; until then, retain in Sandbox as a known-quantity backstop. MCP `ork-*` group is high-value once content is live but premature to build now.
+
+**Next Steps (when adopted):**
+1. **HOK eval pass:** Sit a Combatant on Charon; create Item assets for souls (1-soul / 5-soul / commemorative variants); test inventory transfer between Charon and customer NPCs via ShopInteraction. ~2-day eval session.
+2. **VNPC integration test:** Wire Dialogue System "give item" / "set variable" hooks to ORK quest + inventory. Test conversation → ORK action → DS variable update round-trip.
+3. **TMCP build:** Defer `ork-*` tool group until #1 or #2 is live with content. Likely first tools: `ork-query-combatant`, `ork-database-query`, `ork-inventory`.
+4. **License audit:** Confirm Pro tier active before any project ships. Source-code zips bundled in the Sandbox install suggest Pro purchase, but verify per project at standalone migration.
+
+**Asset Retention Decision:** **Removed mid-session by user before commit.** Structural eval data above is the reference snapshot; the asset itself is no longer in the project. Re-import directly into HOK (or another RPG project) when content-heavy phase begins — fresh install recommended over copy-paste because of `_Data/` project asset specificity. Install-residue left untracked: orphan folder metas for `Assets/Gaming Is Love/`, `Assets/Gaming Is Love/Makinom 2/`, `Assets/Gaming Is Love/Makinom 2/DLL/` (Unity will GC on next AssetDatabase refresh, or delete manually in a future hygiene pass).
+
+**MCP Candidate:** **High** — `ork-*` tool group queued (7 tools: `ork-query-combatant`, `ork-modify-combatant`, `ork-inventory`, `ork-quest`, `ork-battle`, `ork-schematic-run`, `ork-database-query`). Build deferred until a project actively uses ORK runtime APIs. (Add to MCP Candidates section in a subsequent session.)
+**TecVooDoo Utilities Candidate:** No — third-party RPG framework, not extractable utility code. The schematic-system pattern is interesting as a generic event-driven runtime but Makinom's implementation is licensed to Gaming Is Love.
+**TecVooDoo Games Candidate:** **Conditional** — when HOK or another project adopts ORK and standardizes integration patterns (e.g. "DS-conversation-fires-ORK-action" recipe), those bridge patterns could become `TVG.RPG.*` SOs. Not now.
 
 ---
 
