@@ -191,17 +191,17 @@ grep -nE "^[0-9]{4}-[0-9]{2}-[0-9]{2}" Library/mcp-server/win-x64/logs/server-lo
 | Sandbox | 24815 | `E:/Unity/Sandbox` | ✅ 2026-04-25 |
 | FearSteez | 59431 | `E:/Unity/FearSteez` | ✅ 2026-04-25 |
 | HOK | 54111 | `E:/Unity/HookedOnKharon` | ✅ 2026-04-25 |
-| AudioProject | 50774 | `E:/Unity/AudioProject` | — |
+| AudioProject | 50774 | `E:/Unity/AudioProject` | ✅ 2026-04-27 |
 | AnimationProject | 52516 | `E:/Unity/AnimationProject` | — |
-| SpaceSucks | 29794 | `E:/Unity/SpaceSucks` | — |
-| DLYH | 51240 | `C:/Unity/DontLoseYourHead` | — |
-| HideNReap | 26876 | `E:/Unity/HideNReap` | — |
+| SpaceSucks | 29794 | `E:/Unity/SpaceSucks` | ✅ 2026-04-27 |
+| DLYH | 51240 | `C:/Unity/DontLoseYourHead` | ✅ 2026-04-27 |
+| HideNReap | 26876 | `E:/Unity/HideNReap` | ✅ 2026-04-27 |
 | TecVooDoo | 23611 | `E:/Unity/TecVooDoo` | ✅ 2026-04-25 |
 | GRIMMORPG | 23845 | `E:/Unity/GRIMMORPG` | ✅ 2026-04-25 |
 | SetDesign | 29671 | `E:/Unity/SetDesign` | ✅ 2026-04-25 |
-| AQS | check Unity | `E:/Unity/AQuokkaStory` | — |
-| VNPC | check Unity | `E:/Unity/VNPC/VisualNovelPointClick` | — |
-| M3AnimatedSeries | check Unity | `E:/Unity/M3AnimatedSeries` | — |
+| AQS | 25675 | `E:/Unity/AQuokkaStory` | ✅ 2026-04-26 |
+| VNPC | 52724 | `E:/Unity/VNPC/VisualNovelPointClick` | ✅ 2026-04-27 |
+| M3AnimatedSeries | 23988 | `E:/Unity/M3AnimatedSeries` | ✅ 2026-04-27 |
 | Blender (all projects) | 9876 | N/A (runs via `uvx`) | n/a |
 
 > Project Claude: when verification passes for your project, edit the row above to add `✅ YYYY-MM-DD` and commit the brief if appropriate.
