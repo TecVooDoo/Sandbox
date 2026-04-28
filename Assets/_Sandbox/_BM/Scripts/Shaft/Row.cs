@@ -42,6 +42,10 @@ namespace BM.Shaft
         [SerializeField] private RuntimeAnimatorController _minionAnimCtrl;
         [SerializeField] private Material _minionMaterial;
 
+        [Header("Chop VFX")]
+        [Tooltip("Blood splat prefab applied to runtime-spawned ChopMinions.")]
+        [SerializeField] private GameObject _bloodSplatPrefab;
+
         public int RowIndex => _rowIndex;
         public int OutletCount => _outlets.Count;
         public PipeNetwork PipeNetwork => _pipeNetwork;
@@ -102,7 +106,8 @@ namespace BM.Shaft
         }
 
         public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, BloodManager bloodManager, float outletSpacing = 1.39f,
-            GameObject minionModel = null, RuntimeAnimatorController minionAnim = null, Material minionMat = null)
+            GameObject minionModel = null, RuntimeAnimatorController minionAnim = null, Material minionMat = null,
+            GameObject bloodSplatPrefab = null)
         {
             _rowIndex = rowIndex;
             _pipeNetwork = pipeNetwork;
@@ -113,6 +118,7 @@ namespace BM.Shaft
             _minionModelPrefab = minionModel;
             _minionAnimCtrl = minionAnim;
             _minionMaterial = minionMat;
+            if (bloodSplatPrefab != null) _bloodSplatPrefab = bloodSplatPrefab;
         }
 
         public bool BuyOutlet()
@@ -289,6 +295,7 @@ namespace BM.Shaft
             ChopMinion minion = minionGO.AddComponent<ChopMinion>();
             if (_minionModelPrefab != null)
                 minion.SetupModel(_minionModelPrefab, _minionAnimCtrl, _minionMaterial);
+            if (_bloodSplatPrefab != null) minion.BloodSplatPrefab = _bloodSplatPrefab;
 
             _workers.Add(minion);
             Debug.Log("[BM] Row " + _rowIndex + " AddChopMinion (#" + ChopMinionCount + "/" + _maxChopMinions + ")");

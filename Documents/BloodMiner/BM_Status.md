@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 28, 2026 (Session 86 -- Blood splat VFX on chop wired)
+**Last Updated:** April 28, 2026 (Session 86 -- Blood splat VFX + Ghoul input rework)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -23,8 +23,7 @@ These came out of design discussions during sessions 85/86 and are awaiting impl
 
 ### Mechanics track
 - **Outlet backup system** — each outlet pauses spawn after N queued bodies (e.g. 3) with a grace period after clearing before it can re-pause. Self-regulates burst delivery and creates strategy around outlet count vs. minion throughput. Isolated from input/animation work, so good first item.
-- **Ghoul input rework** — replace "click animal → ghoul walks → swings" with `A`/`D` for left/right ghoul movement on the active row + click-anywhere-to-swing (regardless of target presence). Up/Down arrows stay on view scroll. `D` key was previously bound to Descend but unused (player uses the UI button); freeing it for movement. Mobile maps cleanly to a directional pad + attack button. Required precursor for damageable minions.
-- **Damageable minions** — Ghoul swings can hit minions; minion plays KayKit skeleton-fall-apart anim → X-second offline → reassemble → resume. Adds tactical weight to swings + bonus minion (#2) becomes redundancy insurance. Needs Ghoul input rework first so click-to-swing is the input path that triggers AoE damage.
+- **Damageable minions** — Ghoul swings can hit minions; minion plays KayKit skeleton-fall-apart anim → X-second offline → reassemble → resume. Adds tactical weight to swings + bonus minion (#2) becomes redundancy insurance. Now unblocked: input rework landed Session 86, click/Space → `Ghoul.Swing()` is the AoE entry point.
 - **Animal falling animation** — bodies should drop into outlets (Rigidbody fall + ground collider) instead of teleporting to BodyDrop. Pairs with outlet backup (queued bodies stack visibly).
 
 ### Polish track
@@ -37,13 +36,29 @@ These came out of design discussions during sessions 85/86 and are awaiting impl
 
 ---
 
-**Session 86 (Apr 28, 2026) -- Blood splat VFX on chop:**
+**Session 86 (Apr 28, 2026) -- Blood splat VFX + Ghoul input rework:**
+
+*Blood splat VFX:*
 - **Vefects burst wired into chop pipeline:** `RowWorker` gained five Inspector fields under "Chop VFX" header: `_bloodSplatPrefab`, `_bloodSplatLocalOffset`, `_bloodSplatLocalEuler`, `_bloodSplatScale` (=1f), `_bloodSplatLifetime` (=1.5f). New private `SpawnBloodSplat(outlet)` is called in `ChopImpactRoutine` immediately before `outlet.ConsumeBody()` so the burst plays as the body is consumed. Spawned as a child of the outlet's spawn point, with `Destroy(splat, lifetime)` for cleanup.
 - **Public `BloodSplatPrefab` setter on RowWorker** so spawn paths can assign at runtime.
 - **Threaded prefab through dynamic spawning:** `Row` got a serialized `_bloodSplatPrefab` (Header "Chop VFX"). `Row.Init()` accepts `bloodSplatPrefab` (default null, only overwrites if non-null so scene-set value isn't clobbered). `Row.AddChopMinion()` assigns the prefab onto the new minion via the public setter. `ShaftManager` got serialized `_bloodSplatPrefab` and passes it through `row.Init()` in `UnlockNextRow`.
 - **Scene wiring (via reflection script-execute):** Set `VFX_Blood_Burst_Medium.prefab` (Once variant, default red) on Ghoul, Row_0, and ShaftManager. Saves so the field survives a scene reload.
 - **AutoButtonMinion inherits the field** (extends RowWorker) but never calls `Chop()`, so no spurious blood — it only presses the upgrade button.
 - **No pooling for first pass:** straight Instantiate + Destroy. Chop rate caps at ~1/0.7s per worker so it's safe; revisit with EasyPooling 2025 (approved Default) if profiling shows a hit.
+
+*Ghoul input rework:*
+- **Movement:** `Ghoul.cs` rewritten. Removed click-to-walk pathing (`GoToOutlet`, `_targetOutlet`, `_arriveDistance`). `Update()` polls A/D (Left/Right arrows as fallback), moves continuously via `transform.localPosition.x`, clamped to serialized `_minLocalX`/`_maxLocalX` (defaults -1.5/4.7 to span the row's outlet column range). Camera is rotated 180° around Y, so A/Left maps to world +X (=screen-left) and D/Right maps to world -X (=screen-right). Model facing rotation: Y=90 when moving world +X, Y=270 when moving world -X.
+- **Swing:** new public `Swing()` method. Triggers Attack anim and finds the nearest outlet with a body within `_chopReach` of the Ghoul's X. Default reach bumped 0.7 → 1.2 (scene Ghoul also patched 0.5 → 1.2 — the prior 0.7 was the walk-stop distance, not a hit radius, and felt too tight for tap-the-swing). `_swingCooldown` (0.45s) prevents button-mash spam. If no body is in reach the swing still plays — sets up the future damageable-minion AoE.
+- **Input source:** `ShaftTapHarvester` simplified to forward click/touch (and optional Space-bar) to `_ghoul.Swing()`. Removed the body-layer raycast, the row-match check, and the `_camera`/`_bodyLayer` serialized fields. UI pick-through guard kept.
+- **D key freed:** `ShaftManager.Update` no longer calls `Descend()` on D press (UI button is the only descend trigger now). Up/Down arrows still scroll the view via `ScrollView`.
+- **Walk loop import fix:** `Walking_A` clip on `Rig_Medium_MovementBasic.fbx` had `loopTime=false`, so after the 1.07s clip ended the animator held the last frame while the Ghoul kept moving (the "moonwalk slide" in the playtest report). Set `loopTime`+`loopPose` on Walking_A/B/C, Running_A/B (in `Rig_Medium_MovementBasic.fbx`) and Idle_A/B (in `Rig_Medium_General.fbx`); `SaveAndReimport`. Bonus: AC_ChopMinion's `Idle_A` is now looping too (shared FBX).
+- **AC_ChopMinion still has no Walk state** — only Idle and Attack. Minions slide on the idle pose while walking between outlets. Not user-visible enough to fix this session; flagged for follow-up.
+
+**Controls reference:**
+- A / Left → move left | D / Right → move right
+- Up / Down → scroll viewed row
+- Click / Tap / Space → Swing (chops nearest body within reach)
+- Descend = HUD button only
 
 **Session 85 (Apr 23, 2026) -- Mobile minions + unlock-ready gate + viewed-row purchases + HUD readability:**
 - **Descend fix when scrolled up:** `ShaftManager.Descend()` incremented `_rowParent.y` by one row spacing, assuming viewport was aligned to active row. If player scrolled up to a lower row and pressed descend, the shaft position was one row past the view anchor, making the new active row fly offscreen. Now sets `_rowParent.y = _viewedRowIndex * _rowSpacing` directly (matches `ScrollView` pattern).
@@ -339,9 +354,10 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 
 **Next:**
 
-1. **Playtest blood splat:** Run BM_Shaft, click bodies, confirm `VFX_Blood_Burst_Medium` plays at the outlet's spawn point on chop impact. Tune `_bloodSplatLocalOffset` / `_bloodSplatScale` on Ghoul + Row_0 if the burst sits off-target or feels too big/small. Once dialed, mirror the same offset/scale onto ShaftManager so dynamic rows match.
-2. **Balance pass v2:** Per Session 85, costs were doubled and the depth multiplier went exponential. Re-playtest 0→25 to see if Row 0 still feels disposable and whether late depths are reachable in a session.
-3. **Save/load verify after Session 86:** `_bloodSplatPrefab` is just a Inspector ref so save doesn't care, but smoke-test the save/load loop after the Row.Init signature change to confirm the new optional param doesn't break existing flows.
+1. **Outlet backup system** (top of Mechanics track): each outlet pauses spawn after N queued bodies (3?) with a grace period after clearing. Self-regulates burst delivery and creates strategy around outlet count vs. minion throughput.
+2. **Damageable minions** — now unblocked by Session 86 input rework. Ghoul `Swing()` already plays the attack animation regardless of body presence, so wiring AoE damage detection into `Swing()` is the entry point. Minion fall-apart anim → X-second offline → reassemble.
+3. **AC_ChopMinion Walk state** — minions currently slide on the Idle pose while walking between outlets. Add a Walk state mirroring AC_Ghoul (Idle ↔ Walk via IsWalking bool, motion = Walking_A which is already loop-imported). Minor, but visible if you're watching.
+4. **Tune Ghoul movement bounds in scene** — defaults are `_minLocalX=-1.5`, `_maxLocalX=4.7`. May need adjusting once Ghoul moves to deeper rows where the layout differs (it shouldn't, since rows are uniform, but verify on first playtest at depth).
 
 Sprint 3 Polish (deferred):
 - Body gravity-drop from outlet to floor (Rigidbody + ground collider)
@@ -352,7 +368,7 @@ Sprint 3 Polish (deferred):
 - Per-body-type splat color (could plug into the Vefects color variants — Pink for cute pets, Dark for cow, etc.)
 - Sound: hook chop impact to Master Audio (whetstone/squelch SFX)
 
-**Design consideration (undecided):** Rows still busy with 2 minions per row at 4-outlet density. Re-evaluate during Session 86 playtest now that the chop sells the kill more clearly.
+**Design consideration (undecided):** Rows still busy with 2 minions per row at 4-outlet density. Re-evaluate during deeper-row playtest now that the chop sells the kill more clearly and the player has direct positional control over the Ghoul.
 
 Carryover cleanup:
 - Delete `Assets/Knife/Real Blood/Shaders/BloodPuddle.shader.bak` (leftover from ASE port probe)

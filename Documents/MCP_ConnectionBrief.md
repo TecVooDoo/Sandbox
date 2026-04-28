@@ -1,6 +1,6 @@
 # MCP Connection Brief
 
-**Plugin:** `com.ivanmurzak.unity.mcp` v0.66.0+ (updates frequently)
+**Plugin:** `com.ivanmurzak.unity.mcp` v0.66.0+ (latest verified: v0.66.1, 2026-04-28)
 **Transport:** `streamableHttp` (single shared server per project)
 **Last architecture change:** April 25, 2026 — migrated from stdio to HTTP
 **First verified project:** Sandbox (April 25, 2026)
@@ -188,7 +188,7 @@ grep -nE "^[0-9]{4}-[0-9]{2}-[0-9]{2}" Library/mcp-server/win-x64/logs/server-lo
 
 | Project | Port | Path | HTTP Verified |
 |---------|------|------|---------------|
-| Sandbox | 24815 | `E:/Unity/Sandbox` | ✅ 2026-04-25 |
+| Sandbox | 24815 | `E:/Unity/Sandbox` | ✅ 2026-04-28 (v0.66.1) |
 | FearSteez | 59431 | `E:/Unity/FearSteez` | ✅ 2026-04-25 |
 | HOK | 54111 | `E:/Unity/HookedOnKharon` | ✅ 2026-04-25 |
 | AudioProject | 50774 | `E:/Unity/AudioProject` | ✅ 2026-04-27 |

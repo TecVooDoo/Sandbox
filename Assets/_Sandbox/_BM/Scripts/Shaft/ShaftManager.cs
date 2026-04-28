@@ -23,6 +23,10 @@ namespace BM.Shaft
         [SerializeField] private RuntimeAnimatorController _minionAnimCtrl;
         [SerializeField] private Material _minionMaterial;
 
+        [Header("Chop VFX")]
+        [Tooltip("Blood splat prefab passed to every dynamically-spawned row (and its ChopMinions).")]
+        [SerializeField] private GameObject _bloodSplatPrefab;
+
         [Header("Row Backdrops")]
         [SerializeField] private GameObject[] _backdropBlocks;
         [SerializeField] private int _backdropTilesX = 10;
@@ -248,7 +252,7 @@ namespace BM.Shaft
             var kb = UnityEngine.InputSystem.Keyboard.current;
             if (kb != null)
             {
-                if (kb.dKey.wasPressedThisFrame) Descend();
+                // D key freed for Ghoul movement (BMHUD descend button is the only descend trigger now).
                 if (kb.upArrowKey.wasPressedThisFrame) ScrollView(-1);
                 if (kb.downArrowKey.wasPressedThisFrame) ScrollView(1);
             }
@@ -293,7 +297,7 @@ namespace BM.Shaft
 
             Row row = rowGO.AddComponent<Row>();
             row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab, _bloodManager, 1.39f,
-                _minionModelPrefab, _minionAnimCtrl, _minionMaterial);
+                _minionModelPrefab, _minionAnimCtrl, _minionMaterial, _bloodSplatPrefab);
 
             CreateRowBackdrop(row);
             CreateRowPipesSides(row, unlocked: true); // new row is now the deepest -> end cap visible

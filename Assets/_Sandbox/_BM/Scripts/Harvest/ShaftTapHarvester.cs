@@ -6,35 +6,38 @@ using BM.Shaft;
 
 namespace BM.Harvest
 {
+    /// <summary>
+    /// Routes player click/tap (and keyboard "swing" key) to <see cref="Ghoul.Swing"/>.
+    /// Movement is driven directly by <see cref="Ghoul"/> reading A/D from the keyboard.
+    /// </summary>
     public sealed class ShaftTapHarvester : MonoBehaviour
     {
-        [Header("Config")]
-        [SerializeField] private LayerMask _bodyLayer;
-
         [Header("References")]
         [FormerlySerializedAs("_reaper")]
         [SerializeField] private Ghoul _ghoul;
-        [SerializeField] private Camera _camera;
         [SerializeField] private UIDocument _uiDocument;
-
-        private void Awake()
-        {
-            if (_camera == null) _camera = Camera.main;
-        }
 
         private void Update()
         {
+            if (_ghoul == null) return;
+
             if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
             {
                 Vector2 touchPos = Touchscreen.current.primaryTouch.position.ReadValue();
-                if (!IsOverUI(touchPos)) TryChopAt(touchPos);
+                if (!IsOverUI(touchPos)) _ghoul.Swing();
                 return;
             }
 
             if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 Vector2 mousePos = Mouse.current.position.ReadValue();
-                if (!IsOverUI(mousePos)) TryChopAt(mousePos);
+                if (!IsOverUI(mousePos)) _ghoul.Swing();
+            }
+
+            // Optional space-bar swing for desktop testing without taking the mouse off the row.
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                _ghoul.Swing();
             }
         }
 
@@ -44,23 +47,6 @@ namespace BM.Harvest
             Vector2 panelPos = new Vector2(screenPosition.x, Screen.height - screenPosition.y);
             VisualElement picked = _uiDocument.rootVisualElement.panel.Pick(panelPos);
             return picked != null;
-        }
-
-        private bool TryChopAt(Vector2 screenPosition)
-        {
-            if (_camera == null || _ghoul == null) return false;
-
-            Ray ray = _camera.ScreenPointToRay(screenPosition);
-            if (!Physics.Raycast(ray, out RaycastHit hit, 100f, _bodyLayer)) return false;
-
-            ClickableBody clickable = hit.collider.GetComponentInParent<ClickableBody>();
-            if (clickable != null && clickable.Owner != null)
-            {
-                Row ownerRow = clickable.Owner.GetComponentInParent<Row>();
-                if (ownerRow == null || ownerRow != _ghoul.GetComponentInParent<Row>()) return false;
-                _ghoul.GoToOutlet(clickable.Owner);
-            }
-            return true;
         }
     }
 }

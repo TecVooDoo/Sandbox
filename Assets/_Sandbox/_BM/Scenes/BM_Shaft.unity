@@ -334,6 +334,8 @@ MonoBehaviour:
     type: 3}
   _minionAnimCtrl: {fileID: 9100000, guid: c8e42848836124a48825825327e37236, type: 2}
   _minionMaterial: {fileID: 2100000, guid: 109717dcc2ee35c48bc2db4c066d8606, type: 2}
+  _bloodSplatPrefab: {fileID: 5627696518775099638, guid: f0693ec1a809cf641bb6ff1ba5fdc125,
+    type: 3}
   _backdropBlocks:
   - {fileID: 919132149155446097, guid: 314b671c0e339c84989e639f3c28d44e, type: 3}
   - {fileID: 919132149155446097, guid: ee078677428b2c9409e605da95bdbe70, type: 3}
@@ -828,10 +830,18 @@ MonoBehaviour:
   _assignedOutlet: {fileID: 1973956188}
   _chopAmount: 10
   _chopImpactDelay: 0.7
+  _bloodSplatPrefab: {fileID: 5627696518775099638, guid: f0693ec1a809cf641bb6ff1ba5fdc125,
+    type: 3}
+  _bloodSplatLocalOffset: {x: 0, y: 0, z: 0}
+  _bloodSplatLocalEuler: {x: 0, y: 0, z: 0}
+  _bloodSplatScale: 1
+  _bloodSplatLifetime: 1.5
   _currentRowIndex: 0
   _walkSpeed: 2.5
-  _arriveDistance: 0.15
-  _chopReach: 0.5
+  _chopReach: 1.2
+  _minLocalX: -1.5
+  _maxLocalX: 4.7
+  _swingCooldown: 0.45
 --- !u!65 &480114031
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1069,6 +1079,8 @@ MonoBehaviour:
     type: 3}
   _minionAnimCtrl: {fileID: 9100000, guid: c8e42848836124a48825825327e37236, type: 2}
   _minionMaterial: {fileID: 2100000, guid: 109717dcc2ee35c48bc2db4c066d8606, type: 2}
+  _bloodSplatPrefab: {fileID: 5627696518775099638, guid: f0693ec1a809cf641bb6ff1ba5fdc125,
+    type: 3}
 --- !u!1 &661268293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1446,11 +1458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4862d4a47b5b2ef4ca2408bcb89c00ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SM.Harvest.ShaftTapHarvester
-  _bodyLayer:
-    serializedVersion: 2
-    m_Bits: 64
   _ghoul: {fileID: 480114029}
-  _camera: {fileID: 2089749475}
   _uiDocument: {fileID: 661268295}
 --- !u!4 &917017694
 Transform:
