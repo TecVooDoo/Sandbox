@@ -17,7 +17,81 @@ ModelImporter:
     removeConstantScaleCurves: 0
     motionNodeName: 
     animationImportErrors: 
-    animationImportWarnings: 
+    animationImportWarnings: "\nClip 'Melee_1H_Attack_Chop' has import animation
+      warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'chest' is inbetween humanoid
+      transforms and has rotation animation that will be discarded.\n\nClip 'Melee_1H_Attack_Jump_Chop'
+      has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'chest'
+      is inbetween humanoid transforms and has rotation animation that will be discarded.\n\t'upperleg.l'
+      has translation animation that will be discarded.\n\nClip 'Melee_1H_Attack_Slice_Diagonal'
+      has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'chest'
+      is inbetween humanoid transforms and has rotation animation that will be discarded.\n\t'upperleg.l'
+      has translation animation that will be discarded.\n\nClip 'Melee_1H_Attack_Stab'
+      has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'chest'
+      is inbetween humanoid transforms and has rotation animation that will be discarded.\n\t'upperarm.r'
+      has translation animation that will be discarded.\n\t'upperleg.l' has translation
+      animation that will be discarded.\n\nClip 'Melee_2H_Attack_Chop' has import
+      animation warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'chest' is inbetween humanoid
+      transforms and has rotation animation that will be discarded.\n\t'upperarm.l'
+      has translation animation that will be discarded.\n\t'upperarm.r' has translation
+      animation that will be discarded.\n\nClip 'Melee_2H_Attack_Spin' has import
+      animation warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'chest' is inbetween humanoid
+      transforms and has rotation animation that will be discarded.\n\t'upperarm.l'
+      has translation animation that will be discarded.\n\t'upperarm.r' has translation
+      animation that will be discarded.\n\nClip 'Melee_2H_Attack_Spinning' has import
+      animation warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'chest' is inbetween humanoid
+      transforms and has rotation animation that will be discarded.\n\nClip 'Melee_2H_Attack_Stab'
+      has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'chest'
+      is inbetween humanoid transforms and has rotation animation that will be discarded.\n\t'upperarm.r'
+      has translation animation that will be discarded.\n\nClip 'Melee_2H_Idle' has
+      import animation warnings that might lower retargeting quality:\nNote: Activate
+      translation DOF on avatar to improve retargeting quality.\n\t'chest' is inbetween
+      humanoid transforms and has rotation animation that will be discarded.\n\nClip
+      'Melee_Block' has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'chest'
+      is inbetween humanoid transforms and has rotation animation that will be discarded.\n\t'upperarm.l'
+      has translation animation that will be discarded.\n\t'upperleg.l' has translation
+      animation that will be discarded.\n\t'upperleg.r' has translation animation
+      that will be discarded.\n\nClip 'Melee_Block_Attack' has import animation warnings
+      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'chest' is inbetween humanoid transforms
+      and has rotation animation that will be discarded.\n\t'upperarm.l' has translation
+      animation that will be discarded.\n\nClip 'Melee_Blocking' has import animation
+      warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'chest' is inbetween humanoid
+      transforms and has rotation animation that will be discarded.\n\nClip 'Melee_Dualwield_Attack_Chop'
+      has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'upperarm.l'
+      has translation animation that will be discarded.\n\t'upperarm.r' has translation
+      animation that will be discarded.\n\t'upperleg.l' has translation animation
+      that will be discarded.\n\t'upperleg.r' has translation animation that will
+      be discarded.\n\nClip 'Melee_Dualwield_Attack_Slice' has import animation warnings
+      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'chest' is inbetween humanoid transforms
+      and has rotation animation that will be discarded.\n\nClip 'Melee_Dualwield_Attack_Stab'
+      has import animation warnings that might lower retargeting quality:\nNote:
+      Activate translation DOF on avatar to improve retargeting quality.\n\t'chest'
+      is inbetween humanoid transforms and has rotation animation that will be discarded.\n\t'upperarm.l'
+      has translation animation that will be discarded.\n\t'upperarm.r' has translation
+      animation that will be discarded.\n\nClip 'Melee_Unarmed_Attack_Kick' has import
+      animation warnings that might lower retargeting quality:\nNote: Activate translation
+      DOF on avatar to improve retargeting quality.\n\t'chest' is inbetween humanoid
+      transforms and has rotation animation that will be discarded.\n\t'upperarm.l'
+      has translation animation that will be discarded.\n\t'upperarm.r' has translation
+      animation that will be discarded.\n\t'upperleg.l' has translation animation
+      that will be discarded.\n\t'upperleg.r' has translation animation that will
+      be discarded.\n\nClip 'Melee_Unarmed_Attack_Punch_A' has import animation warnings
+      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'chest' is inbetween humanoid transforms
+      and has rotation animation that will be discarded.\n\t'upperarm.r' has translation
+      animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -98,7 +172,7 @@ ModelImporter:
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
-  animationType: 3
+  animationType: 2
   humanoidOversampling: 1
   avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1

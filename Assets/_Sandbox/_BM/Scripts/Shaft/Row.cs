@@ -41,6 +41,7 @@ namespace BM.Shaft
         [SerializeField] private GameObject _minionModelPrefab;
         [SerializeField] private RuntimeAnimatorController _minionAnimCtrl;
         [SerializeField] private Material _minionMaterial;
+        [SerializeField] private GameObject _minionWeaponPrefab;
 
         [Header("Chop VFX")]
         [Tooltip("Blood splat prefab applied to runtime-spawned ChopMinions.")]
@@ -113,7 +114,7 @@ namespace BM.Shaft
 
         public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, BloodManager bloodManager, float outletSpacing = 1.39f,
             GameObject minionModel = null, RuntimeAnimatorController minionAnim = null, Material minionMat = null,
-            GameObject bloodSplatPrefab = null, Material outletHeatMaterial = null)
+            GameObject bloodSplatPrefab = null, Material outletHeatMaterial = null, GameObject minionWeaponPrefab = null)
         {
             _rowIndex = rowIndex;
             _pipeNetwork = pipeNetwork;
@@ -126,6 +127,7 @@ namespace BM.Shaft
             _minionMaterial = minionMat;
             if (bloodSplatPrefab != null) _bloodSplatPrefab = bloodSplatPrefab;
             if (outletHeatMaterial != null) _outletHeatMaterial = outletHeatMaterial;
+            if (minionWeaponPrefab != null) _minionWeaponPrefab = minionWeaponPrefab;
         }
 
         public bool BuyOutlet()
@@ -301,6 +303,9 @@ namespace BM.Shaft
             minionGO.transform.localPosition = new Vector3(spawnX, 0f, 0f);
 
             ChopMinion minion = minionGO.AddComponent<ChopMinion>();
+            // Set weapon prefab + material BEFORE SetupModel so AttachWeapon can find hand.r and equip the weapon.
+            if (_minionWeaponPrefab != null) minion.WeaponPrefab = _minionWeaponPrefab;
+            if (_minionMaterial != null) minion.WeaponMaterial = _minionMaterial;
             if (_minionModelPrefab != null)
                 minion.SetupModel(_minionModelPrefab, _minionAnimCtrl, _minionMaterial);
             if (_bloodSplatPrefab != null) minion.BloodSplatPrefab = _bloodSplatPrefab;

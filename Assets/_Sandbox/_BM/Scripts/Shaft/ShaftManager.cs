@@ -22,6 +22,8 @@ namespace BM.Shaft
         [SerializeField] private GameObject _minionModelPrefab;
         [SerializeField] private RuntimeAnimatorController _minionAnimCtrl;
         [SerializeField] private Material _minionMaterial;
+        [Tooltip("Weapon prop attached to spawned ChopMinions' hand.r bone (e.g. Skeleton_Dagger).")]
+        [SerializeField] private GameObject _minionWeaponPrefab;
 
         [Header("Chop VFX")]
         [Tooltip("Blood splat prefab passed to every dynamically-spawned row (and its ChopMinions).")]
@@ -317,7 +319,7 @@ namespace BM.Shaft
 
             Row row = rowGO.AddComponent<Row>();
             row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab, _bloodManager, 1.39f,
-                _minionModelPrefab, _minionAnimCtrl, _minionMaterial, _bloodSplatPrefab, _outletHeatMaterial);
+                _minionModelPrefab, _minionAnimCtrl, _minionMaterial, _bloodSplatPrefab, _outletHeatMaterial, _minionWeaponPrefab);
 
             CreateRowBackdrop(row);
             CreateRowPipesSides(row, unlocked: true); // new row is now the deepest -> end cap visible

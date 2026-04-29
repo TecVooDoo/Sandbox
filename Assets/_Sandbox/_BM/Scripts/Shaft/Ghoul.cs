@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,6 +18,8 @@ namespace BM.Shaft
         [Header("Swing")]
         [Tooltip("Cooldown between swings, regardless of whether anything was hit.")]
         [SerializeField] private float _swingCooldown = 0.45f;
+        [Tooltip("Delay between swing input and applying Hit() to minions in front. Slightly shorter than _chopImpactDelay so the minion crumples on visual contact, which lands a hair earlier than the body-chop impact at the outlet.")]
+        [SerializeField] private float _minionHitDelay = 0.55f;
 
         private Animator _animator;
         private Transform _model;
@@ -124,10 +127,34 @@ namespace BM.Shaft
             // within reach, hit it. If not, swing into air.
             if (_animator != null) _animator.SetTrigger(_animAttack);
 
+            // AoE: any living minion in front of the Ghoul within _chopReach takes a hit.
+            // The same swing both chops the body AND knocks down minions standing too close --
+            // adds tactical weight to swings (don't hit your own workers).
+            // Delay the hit by _chopImpactDelay (inherited from RowWorker, 0.7s default) so the
+            // minion dies on the downswing matching where the visual axe lands, not on the upswing.
+            StartCoroutine(HitMinionsAfterImpact());
+
             RowOutlet target = FindOutletInFront();
             if (target == null) return;
             _assignedOutlet = target;
             Chop();
+        }
+
+        private IEnumerator HitMinionsAfterImpact()
+        {
+            yield return new WaitForSeconds(_minionHitDelay);
+            if (_row == null) yield break;
+            float ghoulX = transform.position.x;
+            var minions = _row.GetComponentsInChildren<ChopMinion>();
+            for (int i = 0; i < minions.Length; i++)
+            {
+                var m = minions[i];
+                if (m == null || !m.IsAlive) continue;
+                float signed = m.transform.position.x - ghoulX;
+                if (signed * _facingDir < 0f) continue; // wrong side
+                if (Mathf.Abs(signed) > _chopReach) continue; // out of reach
+                m.Hit();
+            }
         }
 
         private RowOutlet FindOutletInFront()

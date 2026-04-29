@@ -11,6 +11,27 @@ namespace BM.Shaft
         [SerializeField] private float _arriveDistance = 0.15f;
         [SerializeField] private float _chopReach = 0.7f;
 
+        [Header("Weapon")]
+        [Tooltip("Weapon prop attached to the minion's hand.r bone (e.g. Skeleton_Dagger). Optional.")]
+        [SerializeField] private GameObject _weaponPrefab;
+        [Tooltip("Material applied to weapon renderers (typically Mat_Skeleton). Optional.")]
+        [SerializeField] private Material _weaponMaterial;
+
+        public GameObject WeaponPrefab { get => _weaponPrefab; set => _weaponPrefab = value; }
+        public Material WeaponMaterial { get => _weaponMaterial; set => _weaponMaterial = value; }
+
+        [Header("Damageable")]
+        [Tooltip("Time the minion stays offline (in DeathPose) after the death anim finishes, before reviving.")]
+        [SerializeField] private float _deadDuration = 3f;
+        [Tooltip("Length of the death anim (Skeletons_Death). Hold a minimum before checking for revive.")]
+        [SerializeField] private float _deathAnimLength = 2f;
+        [Tooltip("Length of the resurrect anim (Skeletons_Death_Resurrect). Resume Active when it finishes.")]
+        [SerializeField] private float _resurrectAnimLength = 2.7f;
+
+        private enum LifeState { Active, Dying, Dead, Reviving }
+        private LifeState _life = LifeState.Active;
+        private float _lifeTimer;
+
         private float _chopTimer;
         private Animator _animator;
         private Transform _model;
@@ -18,8 +39,11 @@ namespace BM.Shaft
         private bool _walking;
         private static readonly int _animAttack = Animator.StringToHash("Attack");
         private static readonly int _animIsWalking = Animator.StringToHash("IsWalking");
+        private static readonly int _animDeath = Animator.StringToHash("Death");
+        private static readonly int _animRevive = Animator.StringToHash("Revive");
 
-        public RowOutlet Target => _target;
+        public RowOutlet Target => _life == LifeState.Active ? _target : null;
+        public bool IsAlive => _life == LifeState.Active;
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -58,6 +82,34 @@ namespace BM.Shaft
             if (_animator == null) _animator = model.AddComponent<Animator>();
             if (animCtrl != null) _animator.runtimeAnimatorController = animCtrl;
             _animator.applyRootMotion = false;
+
+            AttachWeapon(model.transform);
+        }
+
+        private void AttachWeapon(Transform modelRoot)
+        {
+            if (_weaponPrefab == null || modelRoot == null) return;
+            // KayKit Rig_Medium hierarchy: model > Rig_Medium > root > hips > spine > chest > upperarm.r > lowerarm.r > wrist.r > hand.r
+            Transform handR = FindChildByName(modelRoot, "hand.r");
+            if (handR == null) return;
+            var weapon = Instantiate(_weaponPrefab, handR);
+            weapon.transform.localPosition = Vector3.zero;
+            weapon.transform.localRotation = Quaternion.identity;
+            weapon.transform.localScale = Vector3.one;
+            if (_weaponMaterial != null)
+                foreach (var rend in weapon.GetComponentsInChildren<Renderer>())
+                    rend.sharedMaterial = _weaponMaterial;
+        }
+
+        private static Transform FindChildByName(Transform root, string name)
+        {
+            if (root.name == name) return root;
+            for (int i = 0; i < root.childCount; i++)
+            {
+                var found = FindChildByName(root.GetChild(i), name);
+                if (found != null) return found;
+            }
+            return null;
         }
 
         private static void SetLayerRecursive(GameObject go, int layer)
@@ -67,8 +119,31 @@ namespace BM.Shaft
                 SetLayerRecursive(go.transform.GetChild(i).gameObject, layer);
         }
 
+        /// <summary>
+        /// Take a hit from the Ghoul. Triggers the death anim, releases the outlet, and stays offline
+        /// for _deathAnimLength + _deadDuration seconds before reviving (Skeletons_Death_Resurrect plays
+        /// then state returns to Active). No-op if already dying/dead/reviving.
+        /// </summary>
+        public void Hit()
+        {
+            if (_life != LifeState.Active) return;
+            _life = LifeState.Dying;
+            _lifeTimer = _deathAnimLength;
+            _target = null; // release outlet so other minions can claim it
+            _chopTimer = 0f;
+            SetWalking(false);
+            if (_animator != null) _animator.SetTrigger(_animDeath);
+        }
+
         private void Update()
         {
+            // Damageable lifecycle: when not Active, tick lifecycle timers and skip normal AI.
+            if (_life != LifeState.Active)
+            {
+                TickLifecycle();
+                return;
+            }
+
             // Release target if it got consumed (including by our own chop via ConsumeBody).
             if (_target != null && _target.IsClear) _target = null;
 
@@ -119,6 +194,31 @@ namespace BM.Shaft
                 if (_animator != null) _animator.SetTrigger(_animAttack);
                 _assignedOutlet = _target; // Chop() reads this
                 Chop();
+            }
+        }
+
+        private void TickLifecycle()
+        {
+            _lifeTimer -= Time.deltaTime;
+            if (_lifeTimer > 0f) return;
+
+            switch (_life)
+            {
+                case LifeState.Dying:
+                    // Death anim has played; enter the offline pose for _deadDuration before reviving.
+                    _life = LifeState.Dead;
+                    _lifeTimer = _deadDuration;
+                    break;
+                case LifeState.Dead:
+                    // Time's up. Fire the Revive trigger; controller transitions DeathPose -> Resurrect.
+                    _life = LifeState.Reviving;
+                    _lifeTimer = _resurrectAnimLength;
+                    if (_animator != null) _animator.SetTrigger(_animRevive);
+                    break;
+                case LifeState.Reviving:
+                    // Resurrect anim done; back to normal duty.
+                    _life = LifeState.Active;
+                    break;
             }
         }
 
