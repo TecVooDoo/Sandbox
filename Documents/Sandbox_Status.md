@@ -5,7 +5,7 @@
 **Unity Version:** 6000.3.10f1 (Unity 6, URP)
 **Project Path:** `E:\Unity\Sandbox`
 **Document Version:** Reconstructed Feb 23, 2026 (after data loss)
-**Last Updated:** April 27, 2026 (Session 81)
+**Last Updated:** April 28, 2026 (Session 82)
 
 > **NOTE:** This document was reconstructed after the Sandbox project became corrupt on Feb 23, 2026. Content recovered from session context and MEMORY.md.
 
@@ -17,9 +17,38 @@
 
 Sandbox is a dedicated asset evaluation environment AND game incubator for ALL TecVooDoo projects. Assets are imported, tested, and evaluated here before being used in actual projects. New game projects bootstrap here with on-demand asset loading, then migrate to standalone when proven.
 
-**Primary output:** `Sandbox_AssetLog.md` -- 345 asset evaluations as of Session 81.
+**Primary output:** `Sandbox_AssetLog.md` -- 349 asset evaluations as of Session 82.
 
 **Reference doc:** `Sandbox_DevReference.md` -- coding standards, MCP gotchas, eval standards, AI rules. Read on demand.
+
+---
+
+## Session 82 (Apr 28, 2026) -- Asset Evals: Power Pivot + AVP + SGC + Mesh Slicer Free (ENTRY-346 through 349)
+
+**Status:** Four asset evaluations completed. One daily-driver editor tool (Power Pivot — universal mesh-pivot fix; **promoted to default install set, alongside ALINE + TCC + MCP ParticleSystem** in this session), one shelved-for-future-vehicle-project gameplay controller (Arcade Vehicle Physics), one complete sim-game template (Simulation Game Creator), and one **free + open-source skinned-mesh slicing library** (Mesh Slicer Free — strong fit for BM chop / HnR reaping / FS finishers).
+
+**New Evals (4):**
+
+| ENTRY | Asset | Verdict | Highlights |
+|-------|-------|---------|------------|
+| 346 | Power Pivot (Kamgam) | **Approved, Recommended, Default** | Editor-only mesh pivot manipulation. 30 editor scripts in 1 asmdef. Move/rotate/scale pivot via Unity gizmos, snap to vertex/edge/face, sibling-asset-saved meshes survive FBX reimport via `MeshImportListener`. Public static API (`MeshModifier.StaticAPI`) enables scripted batch fixes. Skinned-mesh support via dedicated `BoneData`/`BoneDataResolver`. **Universal fit — every TecVooDoo project benefits** (HOK doors hinged at edge, BM body chop pivots, AQS plant base pivots, M3 production-grade rigging). Should join the standard install list alongside vHierarchy/vFolders/Ultimate Preview/TCC. **MCP: Medium-High** — optional `pp` group (4 tools) deferred; `script-execute` against the static API covers ad-hoc cases. |
+| 347 | Arcade Vehicle Physics (Ash Dev) | **Approved** | Lightweight rigidbody + raycast-suspension kart-style controller. 7 scripts (4 runtime + 3 editor). `ArcadeVehicleController` (Mario-Kart pattern: dual rigidbody, sphere/raycast ground check, AnimationCurve friction/turn, drift via `kartLike` toggle, body tilt, engine sound w/ pitch ramp), `SkidMarks`, legacy + new InputSystem variants, editor wizard (`ArcadeVehicleCreator`). 6 prefabs + demo scene. No project in current TecVooDoo catalog needs vehicles — **shelved as reference + future-bootstrap**. Tag for future kart-racer/driving-minigame/chase-sequence. **MCP: Low-Medium**, no tools queued. |
+| 348 | Simulation Game Creator (Queen) | **Approved** | Complete first-person job/shop/mechanic-sim game template. 50 scripts, 74 prefabs, 21 model subfolders (Buildings/Doors/Drawer/Box/Chair/Flower/Food_Drink/Key/MedievalPropsPack/Model_Character/ModularBuilding/MoneyBag/etc.), 1 GamePlay scene, full art pipeline. Coverage: FirstPersonController + InventoryManager + TaskManager + NPCManager + DayNightManager + WeatherManager + ObjectPlacing + ItemToMaintainScript (canonical mechanic-sim loop) + SellerScript + mobile/gamepad/KB&M input + minimap + speech + audio. **Best fit thematically: HideNReap** (stealth + container-search + loot + sell loop maps to Thief-Sim-adjacent gameplay via `ObjectPlacing`/`KeyScript`/`BoxScript`/`DrawerScript`/`CabinetScript`). MEDIUM cherry-pick value for VNPC (inventory/task patterns). LOW for everything else in current catalog. **MCP: Medium**, deferred until a sim project starts. |
+| 349 | Mesh Slicer Free (Hanzzz / Hanze Meng) | **Approved, Recommended** | **Free + open-source on GitHub.** Plane-based mesh slicing for both MeshFilter AND SkinnedMeshRenderer. Uses Shewchuk-style robust geometric predicates (exact arithmetic) + Constrained Delaunay Triangulation for cap-fill — professional approach, immune to floating-point cracks/holes that plague naive cutters. **Skinned variant preserves bone weights** via `BoneWeightLerp` — the killer feature, demonstrated by the shipped Male Dancer demo prefab. 3 main slicers (959 LOC core) + CDT (5 scripts) + predicates (2 scripts) + 1 demo scene with 6 distinctively different meshes. **Strong fit for BM chop loop, HnR reaping mechanic, FS heavy-attack finishers, M3 episode chop FX.** Pairs with Vefects (ENTRY-339) for blood + Feel for shake + Advanced Dissolve (ENTRY-156) for visual swipe. Complementary to RayFire (full destruction) — Mesh Slicer is the surgical cut. **MCP: Low** — single-method API; generic `script-execute` covers. |
+
+**Asset retention (post-eval):**
+- **Retained:** Power Pivot (Kamgam) — confirmed by user as a daily-driver. Belongs on the standard install list alongside vHierarchy / vFolders / Ultimate Preview / TCC.
+- **Retained:** Mesh Slicer Free (Hanzzz) — kept in project for the BM chop loop integration. Free + open-source upstream so re-import is trivial if removed later.
+- **Removed post-eval:** Arcade Vehicle Physics, Simulation Game Creator. Eval data captured; re-import direct into target project (kart-racer / sim project) when greenlit.
+
+**TMCP Candidates Queued (this session):**
+- **`pp` group (ENTRY-346):** 4 tools — `pp-set-pivot`, `pp-snap`, `pp-batch`, `pp-query`. Lower priority than `mkedge`/`pe`/`cozy`/`m3dt`/`ork`/`cg` queues; `script-execute` covers ad-hoc cases meanwhile.
+- **`avp` group (ENTRY-347):** 3 tools — `avp-create-vehicle` (wraps wizard), `avp-tune` (Loose/Tight/Drifty presets), `avp-query`. **Defer until a vehicle project is greenlit.**
+- **`sgc` group (ENTRY-348):** 5 tools — `sgc-spawn-item`, `sgc-give-task`, `sgc-set-money`, `sgc-place-npc`, `sgc-set-time`. **Defer until a sim project is greenlit.**
+
+**Default install set updated this session** (separate from the eval rows): MCP ParticleSystem promoted to Phase 2 (was flagged Don't Use; now fixed), ALINE promoted to Phase 3 default (was "skip / on demand"), Technie Collider Creator 2 promoted to Phase 3 default. Power Pivot also added to Phase 3 default. **14 defaults total** (up from 12). [NewProjectSetup_Brief.md](NewProjectSetup_Brief.md) and [Sandbox_FreshInstall.md](Sandbox_FreshInstall.md) reflect.
+
+**Docs Updated:** `Sandbox_AssetLog.md` (4 new summary rows 346-349 + ENTRY-346/347/348/349 detailed entries), `Sandbox_Status.md` (this), `NewProjectSetup_Brief.md` (default install promotions), `Sandbox_FreshInstall.md` (default install promotions).
 
 ---
 

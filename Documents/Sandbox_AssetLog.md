@@ -440,6 +440,10 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 343 | Ultimate Preview (Voxel Labs) | Asset Store | Editor Tool (Enhanced Asset Preview Window — Lighting, Skybox, VFX, Animator, Camera Controls) | Approved | Default, QoL | 2026-04-27 |
 | 344 | EasyPooling 2025 (GUPS) | Asset Store | Runtime Framework (Singleton GameObject Pool w/ Blueprint Definitions, Spawn Policies, Decorators, Strategies) | Approved | -- | 2026-04-27 |
 | 345 | ORK Framework 3.19.5 (Gaming Is Love) | Asset Store | Gameplay Framework (RPG Editor — Combatants, Battles, Equipment, Items, Move AI, Battle Grids; built on Makinom 2.23) | Approved | Recommended | 2026-04-27 |
+| 346 | Power Pivot (Kamgam) | Asset Store | Editor Tool (Mesh Pivot Editing / Snap / Move-Rotate-Scale Pivot Without Re-Export) | Approved | Recommended, Default | 2026-04-28 |
+| 347 | Arcade Vehicle Physics (Ash Dev) | Asset Store | Gameplay (Lightweight Arcade-Style Rigidbody + Raycast Vehicle Controller) | Approved | -- | 2026-04-28 |
+| 348 | Simulation Game Creator (Queen) | Asset Store | Gameplay (Complete Job/Shop/Mechanic-Sim Game Template — 50 scripts, 74 prefabs, full art) | Approved | -- | 2026-04-28 |
+| 349 | Mesh Slicer Free (Hanzzz / Hanze Meng) | Asset Store + GitHub (open source) | Runtime Library (Plane-Based Mesh + Skinned Mesh Slicing w/ Robust Predicates + CDT Cap-Fill) | Approved | Recommended | 2026-04-28 |
 
 ---
 
@@ -13488,6 +13492,394 @@ Already noted in the MCP Candidates section (line 10922) — this entry promotes
 **MCP Candidate:** **High** — `ork-*` tool group queued (7 tools: `ork-query-combatant`, `ork-modify-combatant`, `ork-inventory`, `ork-quest`, `ork-battle`, `ork-schematic-run`, `ork-database-query`). Build deferred until a project actively uses ORK runtime APIs. (Add to MCP Candidates section in a subsequent session.)
 **TecVooDoo Utilities Candidate:** No — third-party RPG framework, not extractable utility code. The schematic-system pattern is interesting as a generic event-driven runtime but Makinom's implementation is licensed to Gaming Is Love.
 **TecVooDoo Games Candidate:** **Conditional** — when HOK or another project adopts ORK and standardizes integration patterns (e.g. "DS-conversation-fires-ORK-action" recipe), those bridge patterns could become `TVG.RPG.*` SOs. Not now.
+
+---
+
+### ENTRY-346: Power Pivot (Kamgam)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Power Pivot |
+| **Publisher** | Kamgam |
+| **Source** | Unity Asset Store |
+| **Category** | Editor Tool (Mesh Pivot Manipulation) |
+| **Price** | Paid |
+| **Version** | Asset folder `Assets/Kamgam/PowerPivot/` |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 (verified 6000.3.10f1) |
+| **Pipeline** | **Pipeline-agnostic** -- editor-only tool, no runtime cost, no shaders |
+| **Dependencies** | None |
+| **Install Size** | Small (~30 editor scripts, 1 asmdef, 1 PDF manual, 1 root settings asset) |
+| **Evaluated** | Apr 28, 2026 |
+| **Evaluated in** | Sandbox `Assets/Kamgam/PowerPivot/` |
+| **Verdict** | **Approved, Recommended, Default** -- daily-driver editor tool that fixes Unity's biggest mesh-import gap (no built-in pivot editor) |
+
+**What It Does:** Editor-only tool that lets you **edit the pivot point of any imported mesh** (FBX / OBJ / GLB / Unity-built) without re-exporting from the source DCC. Activate the Power Pivot tool in the Scene View, then **move / rotate / scale the pivot** of the selected MeshFilter or SkinnedMeshRenderer using standard Unity gizmo controls. Snap pivot to vertex / edge / face / mesh-center / origin. Saves the modified mesh as a sibling asset with a marker extension so the change persists across reimports. Solves the universal Synty / KayKit / Polyperfect / asset-store problem of "doors hinged at center instead of edge," "props pivoted at floor center instead of base," "weapons pivoted at handle root instead of grip," etc.
+
+**Architecture:**
+- **30 editor scripts** in 1 asmdef (`PowerPivot.asmdef`):
+  - **Tool entry:** `PowerPivotTool.cs` (main `EditorTool`) split into partial class files: `.Cursor`, `.CursorSnap`, `.Move`, `.Rotate`, `.Scale`, `.Window`, `.Shortcut`, `.Debug`, `.Extensions`, `.ModelRefresh` (10 partials, clean concern separation)
+  - **Mesh ops:** `MeshModifier.cs` + `MeshModifier.StaticAPI.cs` (public static API for scripted use), `MeshUtils.cs`, `ObjExporter.cs`, `AssetExporter.cs`
+  - **Bone support:** `BoneData.cs`, `BoneDataResolver.cs` (handles SkinnedMeshRenderer pivots correctly with bind pose math)
+  - **State + lifecycle:** `PowerPivotActiveState.cs`, `MeshImportListener.cs` (auto-restore pivots after FBX reimport), `GlobalKeyEventHandler.cs`, `GlobalTransformObserver.cs`, `PivotData.cs`
+  - **Settings/UI:** `PowerPivotSettings.cs` (singleton SO at `Assets/PowerPivotSettings.asset`), `Installer.cs`, `CrossCompileCallbacks.cs`, `Logger.cs`, `VersionHelper.cs`
+- **Single asmdef** -- editor-only, no runtime exposure.
+- **Documentation:** `PowerPivotManual.pdf` shipped in the package root.
+
+**Compile Status (Unity 6, 2026-04-28):** Clean (no asmdef conflicts, standard Unity Editor APIs).
+
+**Public Static API (`MeshModifier.StaticAPI.cs` excerpt):**
+- `IsNameOfEditedMesh(string nameOrPath)` — detects whether an asset path/name has been pivot-edited
+- `GetNewMeshFilePath(Mesh originalMesh, Mesh newMesh, bool makeRelative)` — computes the sibling asset path for the pivot-modified mesh
+- `NameToValidPath(string name)` — sanitizer
+- `MakePathRelativeToAssets(...)` — path normalizer
+- File extension marker (`POWER_PIVOT_MARKER`) tags edited meshes so they survive FBX reimports
+
+This static API means scripted batch-pivot-fix workflows are straightforward: walk a folder of FBX assets, for each MeshFilter call the modifier with a pivot transform, save. Useful for processing whole asset packs (e.g. "fix every Synty door pivot to the hinge edge").
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Acheron props (urns, lanterns, oars, dock pillars) — Synty/KayKit pivots wrong by default. Doors hinged at edge. Coin pivots at base instead of center. | **HIGH** — daily-use tool |
+| **AQS** | Quokka props, Mega Cute Pet Zoo (ENTRY-314) animals with foot/center pivot mismatches, plant prefabs needing base pivots | **HIGH** |
+| **FearSteez** | Sidekick weapons (grip pivot vs root pivot), props for combat arena | **HIGH** |
+| **HideNReap** | Stealth props (doors hinged correctly), pickups, hidden objects | **HIGH** |
+| **Blood Miner** | KayKit body pivots (currently center-of-mass; chop animation needs neck/shoulder pivot) | **HIGH** — solves a real Sprint-2 BM problem |
+| **VNPC** | Point-and-click hotspot pivots, scene composition | **HIGH** |
+| **M3AnimatedSeries** | Animation pipeline — every prop needs precise pivot for production-grade rigging | **HIGH** |
+| **SetDesign** | Universal scene-building hub | **HIGH** |
+| **TecVooDoo project** | Tooling project | **HIGH** — install for tool dev |
+
+**Asset Store Label:** **Default 3D / QoL Editor Tool**. Should be on every TecVooDoo standalone project's standard install list alongside vHierarchy / vFolders / Ultimate Preview (ENTRY-343) / Technie Collider Creator (ENTRY-330).
+
+**Ecosystem Notes:**
+- **Replaces the "fix in Blender, reimport" loop** -- 30-second pivot fix in Unity vs 5-minute round-trip to Blender + reimport + verify.
+- **Works with Skinned Mesh Renderers** (separate `BoneData` + `BoneDataResolver` classes handle bind pose math). Most pivot-edit tools choke on rigged meshes.
+- **Pairs with Technie Collider Creator 2 (ENTRY-330)** -- fix pivot first, then paint colliders. Order matters because TCC works in mesh-local space.
+- **Same publisher as 2.5D Terrain (ENTRY-311), 2.5D Bridge Builder (ENTRY-312), 2.5D Looping (ENTRY-313)** -- Kamgam is consistently strong on editor tooling. Track record means we can install with confidence.
+- **Sibling-asset-saved meshes survive FBX reimport** via `MeshImportListener`. This is the killer feature -- you don't lose pivot edits when an art update comes in.
+
+**MCP Controllability:** **Medium-High.** The static API surface (`MeshModifier.StaticAPI`) makes scripted batch operations feasible. Existing generic MCP tools (`script-execute`) can drive batch pivot fixes today. A dedicated tool group `pp` could expose:
+- `pp-set-pivot` -- set pivot of a target mesh to a world position / vertex / face center / origin
+- `pp-snap` -- snap pivot to nearest vertex / edge / face on the mesh
+- `pp-batch` -- apply a pivot rule (e.g. "base of bounds") to all mesh filters in a folder
+- `pp-query` -- report current pivot state of a mesh (was it edited? where is it?)
+
+4 tools. Rating: **Medium-High.** Lower priority than `mkedge` / `pe` / `cozy` because `script-execute` covers most ad-hoc cases today and the API is simple enough to script inline. Queue but don't prioritize.
+
+**Key Gotchas:**
+- **Sibling asset files** (`*.powerpivot`-marked meshes) live next to the original FBX. Don't move the FBX without checking for the sibling.
+- **Single-asmdef editor-only** -- no runtime types exposed. If you need runtime pivot manipulation (rare), use a different approach (script the GameObject hierarchy or use a child transform offset).
+- **`PowerPivotSettings.asset`** lives at `Assets/PowerPivotSettings.asset` (project root) -- standard Kamgam pattern. Don't move it. Add to .gitignore-like-behavior carefully (it's project config, should be committed).
+- **`MeshImportListener`** auto-runs on FBX reimport. If you're doing heavy art iteration with frequent FBX updates, expect a small per-import cost. Not a blocker; just be aware.
+- **The Cursor + CursorSnap files** suggest a custom 3D cursor for snapping. UX is similar to Blender's 3D cursor -- learn the workflow once, productive forever.
+
+**Verdict Rationale:** **Approved, Recommended, Default.** Power Pivot fills a Unity gap that has frustrated devs for 15 years. The static API + sibling-asset-saved meshes + skinned-mesh support combine to make this a no-regret install for every 3D project. Cost (~30 scripts, no runtime, ~5 MB) is trivial; value is enormous (every imported asset pack benefits). Track record from Kamgam's other Sandbox-evaluated tools (ENTRY-311/312/313) gives high confidence.
+
+**MCP Candidate:** **Medium-High** -- 4 tools in optional `pp` group; defer until a project actively scripts batch pivot operations. `script-execute` against the static API covers ad-hoc cases meanwhile.
+**TecVooDoo Utilities Candidate:** No -- third-party editor tool.
+**TecVooDoo Games Candidate:** No -- editor tool, not game logic.
+
+---
+
+### ENTRY-347: Arcade Vehicle Physics (Ash Dev)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Arcade Vehicle Physics |
+| **Publisher** | Ash Dev (Ash Assets) |
+| **Source** | Unity Asset Store |
+| **Category** | Gameplay (Lightweight Arcade-Style Vehicle Controller) |
+| **Price** | Free or low-cost (typical of Ash Dev) |
+| **Version** | Asset folder `Assets/Ash Assets/Arcade Vehicle Physics/` |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **Pipeline-agnostic** -- standard Unity Rigidbody + raycast suspension; no custom shaders required |
+| **Dependencies** | Optional: new Input System (`New_InputManager_ArcadeVP.cs` is the new-input-system variant; `InputManager_ArcadeVP.cs` is the legacy variant). PhysicsMaterial used. AudioSource used for engine + skid. |
+| **Install Size** | Small (~7 scripts, 6 prefabs, 1 demo scene, audios + materials + textures + project-settings folder) |
+| **Evaluated** | Apr 28, 2026 |
+| **Evaluated in** | Sandbox `Assets/Ash Assets/Arcade Vehicle Physics/` |
+| **Verdict** | **Approved** -- solid lightweight kart-style controller. No project in current catalog needs vehicles, but a strong reference + reusable starting point if a future project does. |
+
+**What It Does:** Lightweight rigidbody + raycast/spherecast vehicle controller in the canonical "arcade kart" style. A single chassis Rigidbody is held above the ground by 4 raycasts (or sphere casts) doing virtual suspension, separate `carBody` Rigidbody handles tilt/lean, `bodyMesh` Transform is the visual body, four wheel transforms spin and steer cosmetically. No real wheel colliders -- the asset deliberately avoids Unity's WheelCollider in favor of a Mario-Kart-style "hover-and-cheat" model. Ships with engine sound + pitch curves + skid sound + skid marks (`SkidMarks.cs`), drift mode (`kartLike` toggle), air control toggle, drift multiplier, friction + turn AnimationCurves for tunable response, ground-check layer mask, and an editor wizard (`ArcadeVehicleCreator`) to scaffold a vehicle from an empty GameObject.
+
+**Architecture:**
+- **7 scripts in `Assets/Ash Assets/Arcade Vehicle Physics/Scripts/` + `Editor/`:**
+  - **Runtime (4):**
+    - `ArcadeVehicleController.cs` -- main MonoBehaviour. `MovementMode {Velocity, AngularVelocity}`, `GroundCheckType {RayCast, SphereCast}`, drivable surface LayerMask, max speed, acceleration, turn, gravity, downforce, air control, kart-like drift, drift multiplier, body tilt, friction/turn AnimationCurves, PhysicsMaterial reference. `[FormerlySerializedAs]` on most fields suggests the asset has been cleaned up over multiple versions while preserving serialized data.
+    - `InputManager_ArcadeVP.cs` -- legacy `Input.GetAxis` driver
+    - `New_InputManager_ArcadeVP.cs` -- new InputSystem driver (action-based)
+    - `SkidMarks.cs` -- runtime skid trail mesh generator
+  - **Editor (3):**
+    - `ArcadeVehicleCreator.cs` -- wizard window that scaffolds a complete vehicle GameObject from a body mesh + wheel meshes (drops chassis Rigidbody, raycast suspension, controller, input, skidmarks, audio)
+    - `AVC_Editor.cs` -- custom inspector for `ArcadeVehicleController`
+    - `AVP_ProjectSettings.cs` -- one-click project-settings setup (layers, tags, possibly InputSystem actions)
+- **No asmdef** -- scripts land in `Assembly-CSharp`. Acceptable for a small asset; would benefit from one in production.
+- **6 prefabs** -- likely vehicle variants (basic kart + truck + buggy etc.) ready to drop in.
+- **1 demo scene** (`Demo Scene/Demo.unity`) with track + multiple AI-or-player vehicles.
+- **`Project Settings/` folder** -- shipped settings overrides for layers/tags (apply via the editor wizard).
+
+**Key Tunables (`ArcadeVehicleController`):**
+- `movementMode` (Velocity / AngularVelocity) — fundamentally changes how steering works
+- `groundCheck` (RayCast / SphereCast) — sphere is more forgiving on uneven terrain
+- `maxSpeed`, `acceleration`, `turn`, `gravity`, `downforce`
+- `airControl` — can the player steer while airborne?
+- `kartLike` + `driftMultiplier` — Mario-Kart-style drift on space-bar
+- `frictionCurve`, `turnCurve` — speed-vs-grip and speed-vs-turn-rate tuning
+- `bodyTilt` 0-10 — visual lean while turning
+- `engineSound` + `minPitch`/`maxPitch` — speed-driven pitch ramp
+- `skidSound` — drift/brake skid
+
+**Compile Status (Unity 6, 2026-04-28):** Clean. New-InputSystem variant + legacy variant coexist; pick one in scene. `[FormerlySerializedAs]` annotations preserve serialized values across the camelCase rename pass the publisher did.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Charon's ferry — could the boat use this controller as a "hover vehicle"? | **LOW-MEDIUM** — possible reframe (boat = water-anchored hover kart) but probably not the right tool; a dedicated boat physics asset would be better |
+| **FearSteez** | Beat-em-up — rare car combat scene? | **LOW** — wrong genre |
+| **AQS** | Quokka world | **LOW** — no vehicles |
+| **HideNReap** | Stealth | **LOW** — no vehicles |
+| **Blood Miner** | Mobile idle | **LOW** — no vehicles |
+| **VNPC** | Point-and-click | **LOW** — no vehicles |
+| **M3AnimatedSeries** | Animated series | **LOW-MEDIUM** — could appear in a vehicle-themed episode for a quick-and-dirty animated chase |
+| **SetDesign** | Lookdev / set hub | **LOW** — no gameplay |
+| **TecVooDoo project** | Tool dev | **N/A** |
+| **Future kart racer / driving minigame / chase sequence** | Direct fit | **HIGH** — drop in, tune the curves, ship |
+
+**Asset Store Label:** No default label. Tag: **Gameplay**. Install only when a vehicle is in scope.
+
+**Ecosystem Notes:**
+- **Reference value:** the raycast-suspension + AnimationCurve-tuned-friction pattern is widely used in stylized racers. If we ever build a custom vehicle controller, this is the reference shape.
+- **Pairs with TopDown Engine (ENTRY-301)** for top-down driving sequences (TDE has a vehicle ability but it's basic; AVP would be better-feeling).
+- **No collision damage / repair / stat system** -- this is a controller, not a racing-game framework. Pair with a separate damage/health system if needed.
+- **Single-vehicle scope** -- multiplayer / network sync would need additional work.
+- **Could complement Simulation Game Creator (ENTRY-348)** if a sim-game variant adds driveable vehicles (e.g. "delivery driver" sim).
+
+**MCP Controllability:** **Low-Medium.** The asset is a single MonoBehaviour with mostly serialized fields -- generic `gameobject-component-modify` reaches everything. AnimationCurve tuning via MCP is awkward but possible. No project-specific need to wrap with dedicated tools right now. If a future kart-racer project picks this up, a small `avp-*` group with `avp-create-vehicle` (wraps the wizard), `avp-tune` (sets common curve presets like Loose/Tight/Drifty), `avp-query` (reports current state) could save scaffolding time. **No tools queued at this time.**
+
+**Key Gotchas:**
+- **Two Rigidbodies** (chassis `rb` + body `carBody`) — make sure both are present; missing either breaks tilt math.
+- **Drivable surface LayerMask** — assign correctly or the vehicle falls through the world. Use the wizard to set it up.
+- **Two input variants** — pick one. Don't put both `InputManager_ArcadeVP` and `New_InputManager_ArcadeVP` on the same vehicle.
+- **No asmdef** — if Sandbox adopts asmdef hygiene later, wrap this in a local asmdef referencing PhysicsModule + AudioModule + InputSystem.
+- **Demo scene assets** are good for reference but bloat the build. Move/exclude before shipping.
+- **AnimationCurves are not parameter-friendly** for runtime swap — preset curves should be authored in the editor, not generated procedurally at runtime.
+- **`[FormerlySerializedAs]` everywhere** — means the asset's gone through API changes. Stay current with publisher updates.
+
+**Verdict Rationale:** **Approved.** Solid arcade vehicle controller. The architecture (dual rigidbody + raycast suspension + AnimationCurve tuning) is the canonical pattern done well. Editor wizard + new-InputSystem variant + demo scene make it onboarding-friendly. No project in TecVooDoo's current catalog needs a vehicle, but if a kart-racer or driving minigame is ever in scope, this is the right starting point. Tag and shelve.
+
+**MCP Candidate:** No tools queued. Future `avp-*` group possible if a vehicle project starts.
+**TecVooDoo Utilities Candidate:** No — gameplay-specific.
+**TecVooDoo Games Candidate:** **Conditional** — if we standardize on a vehicle controller for a future kart project, a thin TVG.Vehicle wrapper that owns scene-wiring + standardized presets could ship. Not now.
+
+---
+
+### ENTRY-348: Simulation Game Creator (Queen)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Simulation Game Creator |
+| **Publisher** | Queen |
+| **Source** | Unity Asset Store |
+| **Category** | Gameplay / Complete Template (Simulation / Job-Sim / Shop-Sim Starter) |
+| **Price** | Paid |
+| **Version** | Asset folder `Assets/SimulationGameCreator/` |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | URP (likely standard URP/Lit materials given the `Sky`, `Water`, `Glass`, `Grass` material subfolders) |
+| **Dependencies** | Likely TextMeshPro (UI), Unity InputSystem (`GamePadSupport.cs` exists), standard URP. No asmdef so it folds into Assembly-CSharp. |
+| **Install Size** | **Large** -- 50 scripts, 74 prefabs, 21 model subfolders (Buildings, Doors, Drawer, Box, Chair, Flower, Food_Drink, Key, MedievalPropsPack, Model_Character, ModularBuilding, MoneyBag, Other Prop Models, Paper, Plastic Barrel Trash, Rock, Sofa, StreetLight, ToolsInHands, Tree, Water, Wrench), Materials and Textures across ~20 subfolders, Animations (Door + Tool_Animations), 1 GamePlay scene, documentation PDF |
+| **Evaluated** | Apr 28, 2026 |
+| **Evaluated in** | Sandbox `Assets/SimulationGameCreator/` |
+| **Verdict** | **Approved** -- complete simulation/job-sim template. Narrow direct use case (no current TecVooDoo project is a sim game), but valuable as a **reference architecture** + as a **drop-in foundation** if a sim project is ever greenlit. |
+
+**What It Does:** Ships a **complete, playable simulation/job-sim game template** in the style of Mechanic Simulator / Thief Simulator / House Flipper / Job Simulator. The 50-script kit covers the entire stack: first-person controller, inventory, tasks/quests, NPCs (CivilianController + NPCManager), shops (SellerScript), object placement (ObjectPlacing), interactable items (ItemScript, KeyScript, FoodScript, DrinkScript, EquipmentScript, ToolsInHands, BoxScript, BinScript, CabinetScript, DrawerScript), maintainable items (ItemToMaintainScript -- the "fix the broken thing" loop), money/economy (MoneyBag prefabs + GainScript + CityPointsManager), day/night cycle (DayNightManager), weather (WeatherManager), minimap, target-pointer (compass-style), main menu + settings + pause, mobile/touch input (Touchpad + SimpleJoystick + VirtualAxis + VirtualButton + GamePadSupport), audio manager, speech manager, and a configurable mechanic-selection UI (MechanicSelectionManager).
+
+**Architecture:**
+- **50 scripts in `Assets/SimulationGameCreator/Scripts/`** (all in `Assembly-CSharp`, no asmdef):
+  - **Core managers (8):** `AdvancedGameManager`, `AudioManager`, `DayNightManager`, `WeatherManager`, `InventoryManager`, `NPCManager`, `TaskManager`, `CityPointsManager`
+  - **Player controllers (4):** `FirstPersonController`, `HeroPlayerScript`, `BasicRigidBodyPush`, `CameraScript`
+  - **Interactable items (10):** `ItemScript`, `BoxScript`, `BinScript`, `CabinetScript`, `DrawerScript`, `DoorScript`, `KeyScript`, `FoodScript`, `DrinkScript`, `FoodDrinkConsume`
+  - **Equipment / tools (5):** `EquipmentScript`, `PhysicalEquipmentDetails`, `ItemToMaintainScript` (the central job-sim loop), `FPSHandRotator`, `ShakableObject`
+  - **Economy (3):** `SellerScript`, `GainScript`, `DrinkScript` (consumables overlap)
+  - **NPCs (2):** `CivilianController`, `NPCManager`
+  - **UI (12):** `GameCanvas`, `MainMenuCanvas`, `SettingsScript`, `PanelInventoryTabsSelector`, `Minimap`, `TargetPointer`, `TaskItem`, `TaskItemUI`, `EmptyGraphic`, `OutlineEffect`, `MechanicSelectionManager`, `SpeechManager`
+  - **Input / mobile (6):** `SimpleJoystick`, `Touchpad`, `VirtualAxis`, `VirtualButton`, `GamePadSupport`, `TaskItem`
+  - **Misc (3):** `ObjectPlacing` (build-mode placement), `WaterScript`, `NoteScript` (in-world notes/journal)
+- **74 prefabs** -- complete world building blocks
+- **21 model subfolders** (architecture, props, characters, food, money, tools)
+- **Animations** -- Door open/close + Tool_Animations subfolder
+- **1 GamePlay scene** -- runnable starter showing all systems wired
+- **Documentation PDF** + Third-Party Notices.txt
+- **No asmdef** -- folds into Assembly-CSharp
+
+**Compile Status (Unity 6, 2026-04-28):** Clean (compiles cleanly into Assembly-CSharp).
+
+**Genre Identification:** This template is for **Job Simulator / Shop Simulator / Mechanic Simulator** style first-person sandbox games where the loop is:
+1. Player explores a city/shop/garage
+2. Picks up tools (`ToolsInHands` models, `EquipmentScript`)
+3. Performs maintenance/repair on broken items (`ItemToMaintainScript`)
+4. Sells goods to NPCs (`SellerScript`, `CivilianController` interactions)
+5. Earns money (`MoneyBag` pickups, `GainScript`)
+6. Day/night cycle drives shop hours and NPC schedules
+7. Weather adds variety
+8. Tasks/quests guide progression (`TaskManager`)
+
+The presence of `ItemToMaintainScript` + `MechanicSelectionManager` + `Wrench` model + `ToolsInHands` strongly suggests **Mechanic-Simulator** is the canonical example genre.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Underworld ferryman — wrong genre, but inventory + task patterns transferable | **LOW** as template, **MEDIUM** as code reference for inventory/tasks |
+| **FearSteez** | Beat-em-up | **LOW** |
+| **AQS** | Quokka adventure | **LOW** as template; `ObjectPlacing` could feed a quokka-builds-nest mechanic | 
+| **HideNReap** | Stealth horror — actually has thematic overlap (Thief-Simulator-style stealth-and-steal-and-sell loop) | **MEDIUM-HIGH** — `ObjectPlacing`, `KeyScript`, `BoxScript`, `DrawerScript`, `CabinetScript` all map to "search containers, find loot, exit unseen" |
+| **Blood Miner** | Mobile idle | **LOW** |
+| **VNPC** | Point-and-click visual novel | **MEDIUM** — `InventoryManager`, `TaskManager`, `NoteScript`, `SpeechManager` are reusable patterns |
+| **M3AnimatedSeries** | Animated series | **LOW** — not gameplay |
+| **SetDesign** | Lookdev | **LOW** |
+| **TecVooDoo project** | Tool dev | **N/A** |
+| **Future Sim/Job-Sim project** | Direct fit | **HIGH** — instant 70% bootstrap |
+
+**Asset Store Label:** No default label. Tag: **Gameplay / Complete Game**. Install when a sim/job-sim game is in scope, or when cherry-picking the inventory/task/NPC patterns.
+
+**Ecosystem Notes:**
+- **Cherry-pick targets:** `InventoryManager` + `TaskManager` + `NoteScript` are the most-reusable scripts. Could inform a future TVG.Inventory / TVG.Tasks utility group.
+- **Doesn't conflict with Adventure Creator (ENTRY-251)** -- Adventure Creator is a fuller adventure-game framework; SGC is sim-specific.
+- **Compares to TopDown Engine (ENTRY-301)** -- different genre (top-down action vs first-person sim) but similar all-in-one philosophy.
+- **`ObjectPlacing`** is a common interest pattern -- pair with HideNReap's hide-the-body-style stealth mechanics if the Reap design ever calls for object hiding/placement.
+- **`WeatherManager` overlaps with COZY 3 (ENTRY-337)** if both are installed -- pick one. SGC's weather is light; Cozy is the comprehensive option.
+- **`MechanicSelectionManager`** is a UI pattern (selecting which "mechanic" / system to activate) -- could be repurposed as a settings selector or a build-mode tool picker.
+- **MedievalPropsPack** included as bonus art -- check what's in there; potentially useful for HOK / fantasy projects beyond the sim use case.
+- **`OutlineEffect.cs`** is a screen-space outline shader/component -- legacy approach. MK Edge Detection (ENTRY-333) is a stronger replacement when needed.
+- **`FirstPersonController`** is likely a Unity Starter Assets fork or original implementation. If `BasicRigidBodyPush` matches Unity's official pattern, this is a Starter Assets descendant.
+
+**MCP Controllability:** **Medium.** 50 scripts with mostly serialized configuration. Generic `gameobject-component-modify` covers most. The high-value MCP wrappers would be:
+- `sgc-spawn-item` -- spawn an `ItemScript`-prefab variant at a position with config
+- `sgc-give-task` -- create a TaskItem and add to TaskManager
+- `sgc-set-money` -- set player money via CityPointsManager
+- `sgc-place-npc` -- spawn a `CivilianController` at a position with patrol path
+- `sgc-set-time` -- set DayNightManager time / weather
+
+But the asset's narrow use case (only relevant if a sim project is in scope) makes dedicated tools speculative. **Defer until a sim project starts.** Generic tools are sufficient meanwhile.
+
+**Key Gotchas:**
+- **No asmdef** -- 50 scripts in Assembly-CSharp. If standalone-migrating to a sim project, wrap in a `_SGC.Runtime` asmdef early.
+- **Single GamePlay scene** -- everything is wired into one demo scene. Useful for studying integrations; less useful for cherry-picking. Rebuild your own scene from the prefabs if cherry-picking.
+- **`AdvancedGameManager` is a god object** -- expect to touch this when integrating into another project. Refactor toward smaller managers if shipping.
+- **74 prefabs + 21 model subfolders** = **large download / install size**. Trim aggressively before standalone migration if cherry-picking only some systems.
+- **MedievalPropsPack** subfolder mixes art genres (medieval) with the otherwise contemporary sim-game art -- separate folder reuse-by-folder is feasible.
+- **Mobile + gamepad + KB/M input all bundled** -- if shipping desktop-only, strip the mobile UI scripts (`SimpleJoystick`, `Touchpad`, `VirtualAxis`, `VirtualButton`).
+- **No multiplayer / save system shown** -- this is a single-player template. Add ES3 (or similar) for persistence.
+- **Documentation PDF** is the source of truth for setup -- read it before assuming wiring.
+- **`SpeechManager`** likely TTS or canned-audio (depending on implementation) -- check whether it's compatible with Dialogue System (ENTRY-214) or whether to swap.
+
+**Verdict Rationale:** **Approved** as a reference + future-bootstrap asset. Engineering quality is reasonable for a complete game template (50 scripts, full system coverage, one runnable scene). No project in current TecVooDoo catalog is a direct fit, but the **HideNReap thematic overlap** (stealth + container search + loot + sell loop) is real and worth a closer look if Reap design pivots toward Thief-Sim-adjacent gameplay. As a study reference for inventory/task/NPC architecture, this is a solid example to learn from. Install size is the main downside -- aggressive cherry-picking advised.
+
+**MCP Candidate:** **Medium**, deferred -- generic tools cover until a sim project is in scope.
+**TecVooDoo Utilities Candidate:** **Conditional** -- `InventoryManager`, `TaskManager`, `NoteScript` patterns are reusable and could inform future `TVU.Inventory` / `TVU.Tasks` modules. Don't lift the code (third-party license); use as design reference only.
+**TecVooDoo Games Candidate:** **Conditional** -- if a sim/job-sim project is greenlit, this becomes the bootstrap and TVG.Sim conventions could grow from it.
+
+---
+
+### ENTRY-349: Mesh Slicer Free (Hanzzz / Hanze Meng)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Mesh Slicer Free |
+| **Publisher** | Hanzzz (Hanze Meng) |
+| **Source** | Unity Asset Store (slug `283149`) **+ open source on GitHub** (`hanzemeng/MeshSlicerFree`) |
+| **Category** | Runtime Library (Plane-Based Mesh + Skinned Mesh Slicing with Robust Geometric Predicates + Constrained Delaunay Cap Fill) |
+| **Price** | **Free** (the asset is genuinely the free tier; pro version exists separately on Asset Store) |
+| **Version** | Asset folder `Assets/Hanzzz/MeshSlicerFree/` |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **Pipeline-agnostic** — pure C# mesh manipulation, no shaders |
+| **Dependencies** | None (everything is in-package: predicates + CDT + slicers) |
+| **Install Size** | Small (~18 scripts, 1 demo scene, 6 demo prefabs, ~290 + 344 + 325 LOC for the three slicer files = 959 lines core, plus CDT + predicates support) |
+| **Evaluated** | Apr 28, 2026 |
+| **Evaluated in** | Sandbox `Assets/Hanzzz/MeshSlicerFree/` |
+| **Verdict** | **Approved, Recommended** — best-in-class **free** mesh-cutting library with the killer feature of **skinned-mesh slicing with bone-weight preservation**. Open-source license + active GitHub means low risk. |
+
+**What It Does:** Cuts arbitrary 3D meshes (regular MeshFilter and **SkinnedMeshRenderer**) along a plane at runtime, producing two cleanly closed sub-meshes (top + bottom) with cap faces filled via Constrained Delaunay Triangulation. Uses **Shewchuk-style robust geometric predicates with exact arithmetic** (`ExactArithmetic.cs` + `GeometricPredicates.cs`) to avoid the floating-point edge cases that plague naive cutters. Skinned variant interpolates `BoneWeight` data across the cut so sliced rigged characters stay correctly skinned to their original armature.
+
+**Architecture:**
+- **3 main slicer scripts (959 LOC core):**
+  - `Slicer.cs` (325 LOC) — base plane-cut algorithm; takes vertex/triangle lists + a `Plane`, outputs top/bottom triangles + intersection edge data
+  - `MeshSlicer.cs` (290 LOC) — MeshFilter wrapper; handles submeshes, materials, normals, UVs, recalculates bounds
+  - `SkinnedMeshSlicer.cs` (344 LOC) — SkinnedMeshRenderer wrapper; preserves bind poses + interpolated bone weights via `BoneWeightLerp.cs`. `MAX_SUBMESH_COUNT = 16`.
+- **Constrained Delaunay Triangulation (5 scripts in `ConstrainedDelaunayTriangulation/`)** — `DelaunayTriangulation`, `DomainCalculation`, `SegmentRecovery`, `Utility`, `Public` + a test harness. Used to fill the cap face on the cut plane with valid triangles.
+- **Robust predicates (2 scripts in `Predicates/`)** — `ExactArithmetic.cs` + `GeometricPredicates.cs`. Industry-standard approach (Shewchuk's predicates) to avoid floating-point determinant errors that cause cracks/holes in naive cutters.
+- **Support infrastructure:** `BoneWeightLerp` (skinned weight interp), `FloatingPointConverter`, `ListExtension`, `MeshVertexDataMapper`, `Point` (2D + 3D), `RedBlackTree` (balanced BST for sweep-line CDT).
+- **No asmdef** — folds into Assembly-CSharp. Open-source upstream means we can wrap with our own asmdef if we adopt it long-term.
+- **Test harnesses:** `MeshSlicerTest.cs`, `ConstrainedDelaunayTriangulationTest.cs` — useful for verifying behavior post-import.
+
+**Public API:**
+```csharp
+using Hanzzz.MeshSlicerFree;
+
+// Plane-based slice (most common)
+var slicer = new MeshSlicer();
+slicer.Slice(meshFilter, planePosition, planeNormal, topMaterial, bottomMaterial);
+// Returns two new GameObjects with sliced sub-meshes
+
+// Or the lower-level Slicer.Slice(vertices, triangles, Plane) for custom workflows
+```
+For skinned: `new SkinnedMeshSlicer().Slice(skinnedMeshRenderer, plane, ...)` — same shape, preserves rigging.
+
+**Compile Status (Unity 6, 2026-04-28):** Clean (pure C# + UnityEngine.Mesh APIs).
+
+**Demo Coverage:** One scene (`MeshSlicerFreeDemo.unity`) with **6 distinctively different test meshes** showcasing edge cases:
+- **Sphere** — basic primitive baseline
+- **Functional Differential Gear System** — interlocking parts test
+- **Nest iPhone Cover** — thin-shell mesh
+- **Protein Model** — high-vertex-count organic mesh
+- **PTK Elevator** — architectural mesh
+- **Male Dancer** — **skinned mesh test (the killer feature)**
+
+The Male Dancer prefab is the headline — proving skinned slicing works on a rigged humanoid is what separates this from every "free mesh slicer" on GitHub.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **Blood Miner** | Chop loop currently swaps prefabs; could use real skinned slicing for "head off / arm off" splits on the body. Mobile perf concern but slice-on-tap (one cut per chop) is bounded. | **HIGH** — exactly the genre fit. Test on a KayKit Skeleton chop to validate framerate before adopting. |
+| **HideNReap** | Stealth-horror "Reap" — sliced victim meshes when the Reaper performs a stealth kill. The skinned variant means we can slice mid-animation. | **HIGH** — thematic core mechanic, real visceral feedback. |
+| **FearSteez** | Beat-em-up heavy-attack finisher: slice an enemy's leg/arm off on a critical. Skinned slicing on Sidekick bodies. | **MEDIUM-HIGH** — strong "wow" moment for finishers. Performance test before adopting. |
+| **HOK** | Charon's scythe / oar could slice scenery (rope, planks). Underworld doesn't need gore. | **MEDIUM** — props slicing, not characters. |
+| **AQS** | Cute quokka world — wrong genre. | **LOW**. |
+| **M3AnimatedSeries** | Pre-render slice FX for episode content (chop / cut sequences). Free version is fine for offline-render workflows. | **MEDIUM-HIGH**. |
+| **VNPC** | Point-and-click — no cut mechanics. | **LOW**. |
+| **SetDesign / TecVooDoo project** | Tooling | **N/A**. |
+
+**Asset Store Label:** **Recommended, VFX/Gameplay**. **Free + open-source** lowers adoption friction to zero — install when a chop/slice mechanic is in scope, no license risk, no payment.
+
+**Ecosystem Notes:**
+- **vs Advanced Dissolve (ENTRY-156):** Different layer entirely. Dissolve is **shader-based geometric slicing** (visual only — mesh stays whole). Mesh Slicer **actually cuts the mesh and produces two real GameObjects**. Pair them: dissolve for visual sweep + Mesh Slicer for the moment-of-cut. Dissolve handles the swipe animation, Mesh Slicer commits the cut.
+- **vs RayFire (rayfire-* TMCP group):** RayFire is full destruction simulation (fragmentation, demolition, damage thresholds). Mesh Slicer is just the surgical cut. Use RayFire for "explode this barrel into 50 chunks," use Mesh Slicer for "chop this body in half along this plane." Complementary.
+- **vs TCC's `MeshCutter` (ENTRY-330 internal helper):** TCC's MeshCutter is for collider auto-clip, not gameplay slicing. Different intent.
+- **vs Real Blood (ENTRY-329) — superseded for URP:** Real Blood was rejected URP-side. Vefects Blood VFX (ENTRY-339) covers blood VFX. Mesh Slicer covers the actual cut. Stack: **Mesh Slicer (cut) + Vefects (blood VFX) + Feel (camera shake / pause) + Damage Numbers Pro (number)** = complete chop feedback loop for BM/FearSteez/HnR.
+- **Pairs with Power Pivot (ENTRY-346):** If a mesh has its pivot set wrong, slicing math is still correct (Slicer works in mesh-local space) but the resulting GameObjects' pivots inherit the original. Use Power Pivot to fix source-mesh pivots first if cosmetic positioning matters.
+- **Pairs with Technie Collider Creator 2 (ENTRY-330):** After slicing, the resulting halves have no colliders. Could batch-add Auto/VHACD colliders post-slice via TCC's static API.
+- **Open-source upstream** — `github.com/hanzemeng/MeshSlicerFree` — means we can fork/patch if needed. License is in the repo.
+
+**MCP Controllability:** **Low.** The whole API surface is `MeshSlicer.Slice(...)` and `SkinnedMeshSlicer.Slice(...)` — single-method, runtime, called from gameplay code. Generic `script-execute` covers any agent-driven slicing test. **No dedicated tools needed**; if a project adopts it heavily, a 1-tool `meshslicer-slice` wrapper could speed up scripted slice tests but the value is marginal.
+
+**Key Gotchas:**
+- **`MAX_SUBMESH_COUNT = 16`** — hard limit on submeshes the skinned variant can handle. Fine for game characters; could clip on multi-material complex meshes. The comment says "must be strictly less than the number of submeshes in the target game object" — read more carefully before slicing dense multi-material meshes.
+- **No asmdef** — folds into Assembly-CSharp. If adopting long-term, wrap in `Hanzzz.MeshSlicerFree.Runtime` asmdef (the namespace is already there).
+- **Slicing allocates** — generates new meshes, vertex/triangle lists. For BM mobile, profile per-chop cost; expect a measurable spike. Pool the slicer instance (the class is reused after `Reset()`, intended).
+- **Free version may have feature ceiling vs Pro** — check Pro version before assuming feature parity. Free's docs (Google Doc link in `Readme.txt`) should list limitations.
+- **Cap face uses material from one of the source submeshes** — you typically want a separate "interior" material (raw flesh, wood interior, metal cross-section). Set this in the API call; demo prefabs show how.
+- **Skinned slicing requires the bind poses to be intact** — slicing a character mid-animation works, but the resulting halves' new mesh data inherits the bind pose at slice time. Don't expect the two halves to continue animating their original armature seamlessly without additional rigging glue.
+- **Robust predicates use double-precision arithmetic** — slightly slower than naive but immune to the cracks/holes that plague every "I wrote a mesh slicer in 200 lines" GitHub repo. Worth the cost.
+- **CDT can degenerate on highly non-convex cap polygons** — extreme cases (very thin/twisted cuts) may produce sliver triangles. Test with project-typical mesh complexity.
+- **Demo `Meshes_Sources.txt`** (in Demo/Meshes/) lists attribution for the demo meshes. Worth keeping that file when shipping if you ship any demo content.
+
+**Verdict Rationale:** **Approved, Recommended.** Free + open-source + ships with skinned-mesh slicing + uses robust predicates is an unusual combination at the **free** tier. For Blood Miner's chop loop, HideNReap's reaping mechanic, and FearSteez finisher slices, this is the right tool. The Male Dancer demo prefab is the proof-of-concept that matters most — skinned slicing works on a rigged humanoid, which is the critical use case. Cost of install/uninstall is trivial. License risk is zero (asset is free + GitHub-mirrored). Recommend installing into BM directly during the next chop-VFX iteration.
+
+**MCP Candidate:** **Low** — single-method runtime API, generic tools cover.
+**TecVooDoo Utilities Candidate:** **Conditional** — the source is open source and license-permitting. Could fork into `TVU.Mesh.Slicer` if we want a maintained internal version, but vendor's GitHub being live makes that unnecessary unless we hit upstream-blocking bugs.
+**TecVooDoo Games Candidate:** No — runtime library, not gameplay logic.
 
 ---
 

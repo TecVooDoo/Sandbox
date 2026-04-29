@@ -1,5 +1,19 @@
 {
   "dependencies": {
+    "com.arongranberg.aline": {
+      "version": "file:com.arongranberg.aline",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.burst": "1.7.2",
+        "com.unity.collections": "1.4.0",
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.modules.physics2d": "1.0.0",
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.ugui": "1.0.0"
+      }
+    },
     "com.cysharp.unitask": {
       "version": "2.5.10",
       "depth": 0,
@@ -14,7 +28,7 @@
       "dependencies": {}
     },
     "com.ivanmurzak.unity.mcp": {
-      "version": "0.66.0",
+      "version": "0.66.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -135,11 +149,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collections": {
-      "version": "2.6.4",
+      "version": "2.6.6",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.burst": "1.8.25",
+        "com.unity.burst": "1.8.28",
         "com.unity.mathematics": "1.3.2",
         "com.unity.test-framework": "1.4.6",
         "com.unity.nuget.mono-cecil": "1.11.6",
@@ -213,10 +227,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.postprocessing": {
-      "version": "3.5.1",
+      "version": "3.5.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
+        "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.physics": "1.0.0"
       },
       "url": "https://packages.unity.com"

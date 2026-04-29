@@ -29,6 +29,7 @@
 | MCP for Unity | OpenUPM | `"com.ivanmurzak.unity.mcp": "0.63.3"` |
 | MCP Animation | OpenUPM | `"com.ivanmurzak.unity.mcp.animation": "1.1.22"` |
 | MCP ProBuilder | OpenUPM | `"com.ivanmurzak.unity.mcp.probuilder": "1.0.61"` |
+| MCP ParticleSystem | OpenUPM | `"com.ivanmurzak.unity.mcp.particlesystem": "1.0.52"` (previously flagged Don't Use due to McpPlugin.Instance API mismatch; **fixed**, install with the others) |
 | com.tecvoodoo.utilities | Local | `"com.tecvoodoo.utilities": "file:../../DefaultUnityPackages/com.tecvoodoo.utilities"` |
 | com.tecvoodoo.games | Local | `"com.tecvoodoo.games": "file:../../DefaultUnityPackages/com.tecvoodoo.games"` |
 | com.tecvoodoo.mcp-tools | Local | `"com.tecvoodoo.mcp-tools": "file:../../DefaultUnityPackages/com.tecvoodoo.mcp-tools"` |
@@ -70,10 +71,13 @@
 | vHierarchy 2 | Asset Store | Editor QoL -- standard |
 | Wingman | Asset Store | Inspector tool -- standard |
 | Ultimate Preview Window Pro | Asset Store | Preview -- standard |
+| Power Pivot (Kamgam) | Asset Store | Mesh pivot editing -- standard (fixes Synty/KayKit FBX pivots in-place; sibling-asset-saved meshes survive FBX reimport via `MeshImportListener`; ENTRY-346) |
+| Technie Collider Creator 2 (Triangular Pixels) | Asset Store | Paint-based collider authoring + VHACD auto-decomp -- standard (ENTRY-330; pipeline-agnostic; pairs with Power Pivot — fix pivot first, then paint colliders) |
+| ALINE | Asset Store | Debug visualization -- standard (used in every project; promoted out of "install on demand") |
 | Markdown for Unity | Asset Store | Markdown rendering -- standard |
 | Audio Preview Tool | Asset Store | Audio preview -- standard |
 
-**11 defaults total.** Down from 15.
+**14 defaults total.** Down from 15 originally; back up after readding ALINE + TCC + Power Pivot.
 
 ## Phase 4: SM Art Assets (when ready for jumpstart)
 
@@ -88,7 +92,6 @@
 
 | Package | Why Skip |
 |---------|----------|
-| ALINE | Debug viz. Install for specific evals only. |
 | Flexalon Pro | Not needed for SM. Install for UI layout evals. |
 | Asset Inventory 4 | 24 DLLs = huge domain reload hit. Install only for batch asset searches. |
 | vFavorites 2 | Not in standard QoL set. Install if wanted. |

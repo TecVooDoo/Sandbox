@@ -43,8 +43,7 @@ Add this to `Packages/manifest.json` under `scopedRegistries` (or verify it exis
 | MCP for Unity | `com.ivanmurzak.unity.mcp` | Check latest version, updates frequently |
 | MCP Animation | `com.ivanmurzak.unity.mcp.animation` | Optional, for animation tools |
 | MCP ProBuilder | `com.ivanmurzak.unity.mcp.probuilder` | Optional, for ProBuilder tools |
-
-**DO NOT install:** `com.ivanmurzak.unity.mcp.particlesystem` -- McpPlugin.Instance API mismatch causes CS0117 errors.
+| MCP ParticleSystem | `com.ivanmurzak.unity.mcp.particlesystem` | ParticleSystem MCP tools (`particle-system-get`, `particle-system-modify`). Previously flagged Don't Use due to McpPlugin.Instance API mismatch (CS0117); **fixed in current versions**, install with the other MCP packages. |
 
 ---
 
@@ -65,9 +64,12 @@ Add this to `Packages/manifest.json` under `scopedRegistries` (or verify it exis
 |---------|--------|-------|
 | UniTask | OpenUPM (`com.cysharp.unitask`) | async/await over coroutines |
 | com.tecvoodoo.utilities | Local file ref | Shared utility library |
-| com.tecvoodoo.mcp-tools | Local file ref | Custom MCP tools (35 tools) |
+| com.tecvoodoo.mcp-tools | Local file ref | Custom MCP tools (35+ tools) |
 | com.tecvoodoo.games | Local file ref | Shared gameplay library (depends on utilities) |
 | MCP for Unity | OpenUPM | AI agent bridge |
+| MCP Animation | OpenUPM | Animation MCP tools |
+| MCP ProBuilder | OpenUPM | ProBuilder MCP tools |
+| MCP ParticleSystem | OpenUPM | ParticleSystem MCP tools (previously flagged Don't Use; **now fixed**, install with the others) |
 
 **Local file references** in manifest.json:
 ```json
@@ -80,7 +82,7 @@ Path assumes project is at `E:\Unity\<ProjectName>`. Adjust `../../` depth if pr
 
 ### Phase 3: Default Asset Store Packages
 
-These 15 packages are used consistently across all TecVooDoo projects. Install in every new project.
+These 17 packages are used consistently across all TecVooDoo projects. Install in every new project.
 
 **Prerequisites first:** Addressables before Master Audio 2024. TextMesh Pro before DOTween Pro.
 
@@ -99,6 +101,8 @@ These 15 packages are used consistently across all TecVooDoo projects. Install i
 | vFavorites 2 | 2.0.14 | Editor QoL |
 | Wingman | 1.3.0 | Inspector tool |
 | Ultimate Preview Window Pro | 1.3.2 | Editor preview |
+| Power Pivot (Kamgam) | -- | Mesh pivot editing (fixes Synty/KayKit FBX pivots in-place; survives reimport via sibling-asset-saved meshes) |
+| Technie Collider Creator 2 (Triangular Pixels) | -- | Paint-based collider authoring + VHACD auto-decomp; pipeline-agnostic output (ENTRY-330) |
 | Audio Preview Tool | 1.1.0 | Audio preview |
 | Markdown for Unity | 1.0.0 | Markdown rendering |
 
