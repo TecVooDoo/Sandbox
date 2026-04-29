@@ -103,6 +103,15 @@ namespace BM.Shaft
 
             SetWalking(false);
 
+            // Even when we don't walk this frame (already at goal), face the body before chopping
+            // so a re-pick to a target on the opposite side doesn't chop the air.
+            if (_model != null)
+            {
+                float targetDirX = bodyPos.x - transform.position.x;
+                if (Mathf.Abs(targetDirX) > 0.001f)
+                    _model.localRotation = Quaternion.Euler(0f, targetDirX > 0f ? 90f : 270f, 0f);
+            }
+
             _chopTimer += Time.deltaTime;
             if (_chopTimer >= _chopInterval)
             {

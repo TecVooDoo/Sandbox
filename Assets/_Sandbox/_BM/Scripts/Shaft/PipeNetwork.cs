@@ -24,28 +24,56 @@ namespace BM.Shaft
             _registeredOutlets.Remove(outlet);
         }
 
-        public int GetClearOutletCount()
+        /// <summary>
+        /// First paused-outlet index in physical pipe order, or count if none. Outlets at this
+        /// index and beyond are cascade-blocked: bodies physically can't traverse a backed-up
+        /// section of pipe, so downstream outlets stop receiving until the upstream one drains.
+        /// </summary>
+        private int FindCascadeBarrier()
         {
-            int count = 0;
+            for (int i = 0; i < _registeredOutlets.Count; i++)
+            {
+                var o = _registeredOutlets[i];
+                if (o != null && !o.IsAcceptingBodies) return i;
+            }
+            return _registeredOutlets.Count;
+        }
+
+        /// <summary>Outlets that can actually receive a body right now (un-paused AND upstream of any paused outlet).</summary>
+        public int GetAcceptingOutletCount()
+        {
+            return FindCascadeBarrier();
+        }
+
+        private void Update()
+        {
+            // Drive each outlet's blocked visual based on the cascade barrier:
+            // outlets at index >= barrier are either paused themselves or downstream of a paused one.
+            int barrier = FindCascadeBarrier();
             for (int i = 0; i < _registeredOutlets.Count; i++)
             {
                 RowOutlet o = _registeredOutlets[i];
-                if (o != null && o.IsClear) count++;
+                if (o == null) continue;
+                o.SetBlockedVisual(i >= barrier);
             }
-            return count;
         }
 
         public bool DeliverBody(BodyConfigSO config)
         {
             if (config == null || _registeredOutlets.Count == 0) return false;
-            for (int step = 0; step < _registeredOutlets.Count; step++)
+
+            int barrier = FindCascadeBarrier();
+            if (barrier == 0) return false; // outlet 0 paused -> nothing receives
+
+            // Round-robin only among outlets before the cascade barrier.
+            for (int step = 0; step < barrier; step++)
             {
-                int idx = (_nextOutletIndex + step) % _registeredOutlets.Count;
+                int idx = (_nextOutletIndex + step) % barrier;
                 RowOutlet candidate = _registeredOutlets[idx];
-                if (candidate != null && candidate.IsClear)
+                if (candidate != null && candidate.IsAcceptingBodies)
                 {
                     candidate.PlaceBody(config);
-                    _nextOutletIndex = (idx + 1) % _registeredOutlets.Count;
+                    _nextOutletIndex = (idx + 1) % barrier;
                     return true;
                 }
             }

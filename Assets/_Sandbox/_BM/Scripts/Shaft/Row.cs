@@ -46,6 +46,10 @@ namespace BM.Shaft
         [Tooltip("Blood splat prefab applied to runtime-spawned ChopMinions.")]
         [SerializeField] private GameObject _bloodSplatPrefab;
 
+        [Header("Outlet Backup Visual")]
+        [Tooltip("Heat-shader material applied to a paused outlet's PipeTCrossSmall renderer.")]
+        [SerializeField] private Material _outletHeatMaterial;
+
         public int RowIndex => _rowIndex;
         public int OutletCount => _outlets.Count;
         public PipeNetwork PipeNetwork => _pipeNetwork;
@@ -85,6 +89,8 @@ namespace BM.Shaft
             for (int i = 0; i < _outlets.Count; i++)
             {
                 if (_outlets[i] == null) continue;
+                if (_outletHeatMaterial != null && _outlets[i].HeatMaterial == null)
+                    _outlets[i].HeatMaterial = _outletHeatMaterial;
                 Transform kit = _outlets[i].transform.Find("PipesOutletKit");
                 if (kit == null)
                 {
@@ -107,7 +113,7 @@ namespace BM.Shaft
 
         public void Init(int rowIndex, PipeNetwork pipeNetwork, BodyPool bodyPool, GameObject pipeVisualPrefab, BloodManager bloodManager, float outletSpacing = 1.39f,
             GameObject minionModel = null, RuntimeAnimatorController minionAnim = null, Material minionMat = null,
-            GameObject bloodSplatPrefab = null)
+            GameObject bloodSplatPrefab = null, Material outletHeatMaterial = null)
         {
             _rowIndex = rowIndex;
             _pipeNetwork = pipeNetwork;
@@ -119,6 +125,7 @@ namespace BM.Shaft
             _minionAnimCtrl = minionAnim;
             _minionMaterial = minionMat;
             if (bloodSplatPrefab != null) _bloodSplatPrefab = bloodSplatPrefab;
+            if (outletHeatMaterial != null) _outletHeatMaterial = outletHeatMaterial;
         }
 
         public bool BuyOutlet()
@@ -232,6 +239,7 @@ namespace BM.Shaft
 
             RowOutlet outlet = outletGO.AddComponent<RowOutlet>();
             outlet.Pool = _bodyPool;
+            if (_outletHeatMaterial != null) outlet.HeatMaterial = _outletHeatMaterial;
 
             GameObject bodyDrop = new GameObject("BodyDrop");
             bodyDrop.transform.SetParent(outletGO.transform, false);

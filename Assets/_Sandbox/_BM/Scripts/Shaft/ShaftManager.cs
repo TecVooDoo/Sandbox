@@ -27,6 +27,10 @@ namespace BM.Shaft
         [Tooltip("Blood splat prefab passed to every dynamically-spawned row (and its ChopMinions).")]
         [SerializeField] private GameObject _bloodSplatPrefab;
 
+        [Header("Outlet Backup Visual")]
+        [Tooltip("Heat-shader material applied to a paused outlet's PipeTCrossSmall renderer. Plumbed to dynamically-spawned rows.")]
+        [SerializeField] private Material _outletHeatMaterial;
+
         [Header("Row Backdrops")]
         [SerializeField] private GameObject[] _backdropBlocks;
         [SerializeField] private int _backdropTilesX = 10;
@@ -65,6 +69,22 @@ namespace BM.Shaft
 
         public Row ActiveRow => GetRow(_ghoulRowIndex);
         public Row ViewedRow => GetRow(_viewedRowIndex);
+
+        /// <summary>True if any outlet on any row is currently paused (queue at cap).</summary>
+        public bool AnyOutletPaused()
+        {
+            for (int i = 0; i < _rows.Count; i++)
+            {
+                Row r = _rows[i];
+                if (r == null) continue;
+                for (int j = 0; j < r.OutletCount; j++)
+                {
+                    RowOutlet o = r.GetOutlet(j);
+                    if (o != null && o.IsPaused) return true;
+                }
+            }
+            return false;
+        }
 
         private double GetRowDepthMultiplier(Row row)
         {
@@ -271,9 +291,9 @@ namespace BM.Shaft
             Row viewedRow = GetRow(_viewedRowIndex);
             if (_ghoul != null && viewedRow != null)
             {
-                _ghoul.MoveToRow(_viewedRowIndex);
                 _ghoul.transform.SetParent(viewedRow.transform, false);
                 _ghoul.transform.localPosition = new Vector3(0.24f, 0f, 0f);
+                _ghoul.MoveToRow(_viewedRowIndex, viewedRow);
             }
 
             CreateEmptyRowBelow(viewedRow);
@@ -297,7 +317,7 @@ namespace BM.Shaft
 
             Row row = rowGO.AddComponent<Row>();
             row.Init(newIndex, _pipeNetwork, _bodyPool, _pipeVisualPrefab, _bloodManager, 1.39f,
-                _minionModelPrefab, _minionAnimCtrl, _minionMaterial, _bloodSplatPrefab);
+                _minionModelPrefab, _minionAnimCtrl, _minionMaterial, _bloodSplatPrefab, _outletHeatMaterial);
 
             CreateRowBackdrop(row);
             CreateRowPipesSides(row, unlocked: true); // new row is now the deepest -> end cap visible
@@ -337,9 +357,9 @@ namespace BM.Shaft
 
             if (_ghoul != null)
             {
-                _ghoul.MoveToRow(_ghoulRowIndex);
                 _ghoul.transform.SetParent(nextRow.transform, false);
                 _ghoul.transform.localPosition = new Vector3(0.24f, 0f, 0f);
+                _ghoul.MoveToRow(_ghoulRowIndex, nextRow);
             }
 
             // Camera stays fixed. Player stays at fixed screen position.

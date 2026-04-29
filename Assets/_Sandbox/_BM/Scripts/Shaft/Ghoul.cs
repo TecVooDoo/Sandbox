@@ -22,6 +22,9 @@ namespace BM.Shaft
         private Transform _model;
         private float _swingTimer;
         private bool _walking;
+        // +1 = facing world +X (screen-left under mirrored camera), -1 = facing world -X (screen-right).
+        // Player movement (A/D) sets this; Swing() respects it -- the ghoul never auto-pivots toward a body.
+        private int _facingDir = -1;
 
         private static readonly int _animIsWalking = Animator.StringToHash("IsWalking");
         private static readonly int _animAttack = Animator.StringToHash("Attack");
@@ -37,9 +40,15 @@ namespace BM.Shaft
             if (transform.childCount > 0) _model = transform.GetChild(0);
         }
 
-        public void MoveToRow(int rowIndex)
+        public void MoveToRow(int rowIndex, Row newRow = null)
         {
             _currentRowIndex = rowIndex;
+            // _row is cached in RowWorker.Awake(). When ShaftManager.Descend reparents us under a
+            // new row, the cached reference is otherwise stale and Swing() searches the old row's
+            // outlets (which are empty after descend). Caller passes the new Row; if not, fall back
+            // to a parent walk.
+            if (newRow != null) _row = newRow;
+            else _row = GetComponentInParent<Row>();
         }
 
         private void Update()
@@ -64,9 +73,10 @@ namespace BM.Shaft
                 lp.x = Mathf.Clamp(lp.x + axis * _walkSpeed * Time.deltaTime, _minLocalX, _maxLocalX);
                 transform.localPosition = lp;
 
-                // Y=90 faces world +X (screen-left under the mirrored camera), Y=270 faces world -X (screen-right).
+                // Player input is authoritative for facing. Y=90 faces world +X (screen-left), Y=270 faces world -X (screen-right).
+                _facingDir = axis > 0f ? 1 : -1;
                 if (_model != null)
-                    _model.localRotation = Quaternion.Euler(0f, axis > 0f ? 90f : 270f, 0f);
+                    _model.localRotation = Quaternion.Euler(0f, _facingDir > 0 ? 90f : 270f, 0f);
             }
 
             SetWalking(moving);
@@ -79,19 +89,48 @@ namespace BM.Shaft
         /// </summary>
         public void Swing()
         {
+            DoSwing();
+        }
+
+        /// <summary>
+        /// Player swing with click position. Turns the ghoul to face the side the player clicked
+        /// (relative to the ghoul's screen position) and then swings on that side. Lets the player
+        /// stand between two outlets and hit whichever one they click without using A/D.
+        /// </summary>
+        public void SwingAt(Vector2 screenPosition, Camera cam)
+        {
+            if (cam != null)
+            {
+                Vector3 ghoulScreen = cam.WorldToScreenPoint(transform.position);
+                float dx = screenPosition.x - ghoulScreen.x;
+                if (Mathf.Abs(dx) > 1f)
+                {
+                    // Camera is rotated 180° around Y. Click on screen-right -> world -X (_facingDir = -1).
+                    // Click on screen-left -> world +X (_facingDir = +1).
+                    _facingDir = dx > 0f ? -1 : 1;
+                    if (_model != null)
+                        _model.localRotation = Quaternion.Euler(0f, _facingDir > 0 ? 90f : 270f, 0f);
+                }
+            }
+            DoSwing();
+        }
+
+        private void DoSwing()
+        {
             if (_swingTimer > 0f) return;
             _swingTimer = _swingCooldown;
 
+            // Always swing in the ghoul's current facing direction. If a body is in front and
+            // within reach, hit it. If not, swing into air.
             if (_animator != null) _animator.SetTrigger(_animAttack);
 
-            RowOutlet target = FindOutletInReach();
+            RowOutlet target = FindOutletInFront();
             if (target == null) return;
-
             _assignedOutlet = target;
             Chop();
         }
 
-        private RowOutlet FindOutletInReach()
+        private RowOutlet FindOutletInFront()
         {
             if (_row == null) return null;
             float ghoulX = transform.position.x;
@@ -102,7 +141,10 @@ namespace BM.Shaft
                 RowOutlet outlet = _row.GetOutlet(i);
                 if (outlet == null || outlet.IsClear) continue;
                 Transform sp = outlet.SpawnPoint != null ? outlet.SpawnPoint : outlet.transform;
-                float d = Mathf.Abs(sp.position.x - ghoulX);
+                float signed = sp.position.x - ghoulX;
+                // Body must be on the side we're facing. _facingDir +1 = looking at world +X (signed > 0).
+                if (signed * _facingDir < 0f) continue;
+                float d = Mathf.Abs(signed);
                 if (d <= bestDist)
                 {
                     bestDist = d;

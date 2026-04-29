@@ -9,13 +9,20 @@ namespace BM.Harvest
     /// <summary>
     /// Routes player click/tap (and keyboard "swing" key) to <see cref="Ghoul.Swing"/>.
     /// Movement is driven directly by <see cref="Ghoul"/> reading A/D from the keyboard.
+    /// Click position is forwarded so the ghoul turns to face whichever side the player clicked.
     /// </summary>
     public sealed class ShaftTapHarvester : MonoBehaviour
     {
         [Header("References")]
         [FormerlySerializedAs("_reaper")]
         [SerializeField] private Ghoul _ghoul;
+        [SerializeField] private Camera _camera;
         [SerializeField] private UIDocument _uiDocument;
+
+        private void Awake()
+        {
+            if (_camera == null) _camera = Camera.main;
+        }
 
         private void Update()
         {
@@ -24,17 +31,17 @@ namespace BM.Harvest
             if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
             {
                 Vector2 touchPos = Touchscreen.current.primaryTouch.position.ReadValue();
-                if (!IsOverUI(touchPos)) _ghoul.Swing();
+                if (!IsOverUI(touchPos)) _ghoul.SwingAt(touchPos, _camera);
                 return;
             }
 
             if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 Vector2 mousePos = Mouse.current.position.ReadValue();
-                if (!IsOverUI(mousePos)) _ghoul.Swing();
+                if (!IsOverUI(mousePos)) _ghoul.SwingAt(mousePos, _camera);
             }
 
-            // Optional space-bar swing for desktop testing without taking the mouse off the row.
+            // Space-bar swing for desktop testing -- no click position, swings in current facing.
             if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
             {
                 _ghoul.Swing();

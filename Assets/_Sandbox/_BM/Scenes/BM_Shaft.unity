@@ -272,6 +272,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4682417134123156633, guid: 027209f0f54d56248886b2750dc00898,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5507607787595840050, guid: 027209f0f54d56248886b2750dc00898,
         type: 3}
       propertyPath: m_Name
@@ -280,7 +285,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5507607787595840050, guid: 027209f0f54d56248886b2750dc00898,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1866042370}
   m_SourcePrefab: {fileID: 100100000, guid: 027209f0f54d56248886b2750dc00898, type: 3}
 --- !u!4 &62102818 stripped
 Transform:
@@ -336,6 +345,7 @@ MonoBehaviour:
   _minionMaterial: {fileID: 2100000, guid: 109717dcc2ee35c48bc2db4c066d8606, type: 2}
   _bloodSplatPrefab: {fileID: 5627696518775099638, guid: f0693ec1a809cf641bb6ff1ba5fdc125,
     type: 3}
+  _outletHeatMaterial: {fileID: 2100000, guid: def9f59230f275746a33e33abe91c196, type: 2}
   _backdropBlocks:
   - {fileID: 919132149155446097, guid: 314b671c0e339c84989e639f3c28d44e, type: 3}
   - {fileID: 919132149155446097, guid: ee078677428b2c9409e605da95bdbe70, type: 3}
@@ -710,6 +720,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1973956187}
     m_Modifications:
+    - target: {fileID: 835933033066117201, guid: c52f4b7ae002cb24882d5c45064095ca,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 835933033066117201, guid: c52f4b7ae002cb24882d5c45064095ca,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fed83207535325949ba7ab216431a89f, type: 2}
+    - target: {fileID: 835933033066117201, guid: c52f4b7ae002cb24882d5c45064095ca,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: -876546973899608171, guid: c9dca7d8218a65a47bd3c6bccd49de1e,
+        type: 3}
     - target: {fileID: 3923070863413878072, guid: c52f4b7ae002cb24882d5c45064095ca,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -837,11 +863,11 @@ MonoBehaviour:
   _bloodSplatScale: 1
   _bloodSplatLifetime: 1.5
   _currentRowIndex: 0
-  _walkSpeed: 2.5
-  _chopReach: 1.2
+  _walkSpeed: 3.5
+  _chopReach: 1.4
   _minLocalX: -1.5
   _maxLocalX: 4.7
-  _swingCooldown: 0.45
+  _swingCooldown: 0.15
 --- !u!65 &480114031
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1081,6 +1107,7 @@ MonoBehaviour:
   _minionMaterial: {fileID: 2100000, guid: 109717dcc2ee35c48bc2db4c066d8606, type: 2}
   _bloodSplatPrefab: {fileID: 5627696518775099638, guid: f0693ec1a809cf641bb6ff1ba5fdc125,
     type: 3}
+  _outletHeatMaterial: {fileID: 2100000, guid: def9f59230f275746a33e33abe91c196, type: 2}
 --- !u!1 &661268293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1459,6 +1486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SM.Harvest.ShaftTapHarvester
   _ghoul: {fileID: 480114029}
+  _camera: {fileID: 2089749475}
   _uiDocument: {fileID: 661268295}
 --- !u!4 &917017694
 Transform:
@@ -2269,6 +2297,27 @@ MonoBehaviour:
       m_Calls: []
   _baseCapacity: 100
   _capacityGrowth: 1.5
+--- !u!1 &1866042369 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5507607787595840050, guid: 027209f0f54d56248886b2750dc00898,
+    type: 3}
+  m_PrefabInstance: {fileID: 62102817}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1866042370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866042369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef5468441f2c3d34a9eb149214416d98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BM.Shaft.SurfacePipeBlockIndicator
+  _normalPipe: {fileID: 0}
+  _blockedPipe: {fileID: 0}
+  _shaftManager: {fileID: 0}
 --- !u!1 &1922510133
 GameObject:
   m_ObjectHideFlags: 0
@@ -2385,10 +2434,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SM.Shaft.RowOutlet
   _spawnPoint: {fileID: 352379834}
   _pool: {fileID: 240367683}
+  _maxQueue: 3
+  _graceAfterClear: 1.5
+  _heatMaterial: {fileID: 2100000, guid: def9f59230f275746a33e33abe91c196, type: 2}
+  _heatRendererChildName: PipeTCrossSmall
   OnBodyPlaced:
     m_PersistentCalls:
       m_Calls: []
   OnBodyCleared:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPaused:
+    m_PersistentCalls:
+      m_Calls: []
+  OnResumed:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &2004156697

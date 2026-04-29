@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 28, 2026 (Session 86 -- Blood splat VFX + Ghoul input rework)
+**Last Updated:** April 28, 2026 (Session 87 -- Outlet backup system + cascade visuals + Ghoul facing/feel polish)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -22,7 +22,6 @@
 These came out of design discussions during sessions 85/86 and are awaiting implementation. Order reflects current intended priority.
 
 ### Mechanics track
-- **Outlet backup system** — each outlet pauses spawn after N queued bodies (e.g. 3) with a grace period after clearing before it can re-pause. Self-regulates burst delivery and creates strategy around outlet count vs. minion throughput. Isolated from input/animation work, so good first item.
 - **Damageable minions** — Ghoul swings can hit minions; minion plays KayKit skeleton-fall-apart anim → X-second offline → reassemble → resume. Adds tactical weight to swings + bonus minion (#2) becomes redundancy insurance. Now unblocked: input rework landed Session 86, click/Space → `Ghoul.Swing()` is the AoE entry point.
 - **Animal falling animation** — bodies should drop into outlets (Rigidbody fall + ground collider) instead of teleporting to BodyDrop. Pairs with outlet backup (queued bodies stack visibly).
 
@@ -35,6 +34,30 @@ These came out of design discussions during sessions 85/86 and are awaiting impl
 - **Prestige / reset system** — row 25 cap → reset blood/rows/outlets/minions/auto-buttons but persist tool tiers, gatherer count, gatherer speed. Reset trigger and prestige currency (if any) still TBD.
 
 ---
+
+**Session 87 (Apr 28, 2026) -- Outlet backup system + cascade visuals + Ghoul facing/feel polish:**
+
+*Outlet backup system:*
+- **RowOutlet queue:** new `_maxQueue` (default 3) and `_graceAfterClear` (1.5s) Inspector fields. Internal `Queue<BodyConfigSO> _backlog` plus `_paused`/`_pauseAllowedAt` runtime state. `PlaceBody` enqueues; if no current body, places one immediately. When `TotalBodies >= _maxQueue` and grace has elapsed, outlet pauses. `ConsumeBody` advances from backlog if non-empty; if fully cleared and was paused, unpauses + records grace window so it can't immediately re-pause.
+- **PipeNetwork cascade routing:** `FindCascadeBarrier()` returns the index of the first paused outlet. Round-robin delivery now operates only over `[0, barrier)` -- a paused outlet blocks every downstream outlet from receiving, even if those downstream outlets technically have queue space. `GetClearOutletCount` renamed `GetAcceptingOutletCount` and returns the barrier (matches the cascade semantic).
+- **BodyFunnel** uses `accepting` count for tick scaling, so the funnel naturally throttles when upstream outlets pause.
+- **Public surface on RowOutlet:** `IsAcceptingBodies`, `BacklogCount`, `TotalBodies`, `IsPaused`, `MaxQueue`, plus UnityEvents `OnPaused` / `OnResumed` for downstream listeners.
+
+*Cascade-aware backup visuals:*
+- **PipeTCrossSmall_Heat material** authored at `Assets/_Sandbox/_BM/Materials/PipeTCrossSmall_Heat.mat`. Uses PipeDreamPack's `Heat_Effect.shadergraph` with the demo's `RegularPipeMed2.mat` settings (`_HeatColor=red`, `_HeatIntensity=1.83`, `_PulseSpeed=3.85`, `_ScrollSpeed=0.58`) but pointing at the TCrossSmall textures. Note: building a fresh material from the heat shader gives white because `_BaseMap` and `_HeatColor` default to nothing/white -- copy the demo's full property set when wiring new pipe shapes.
+- **Per-outlet hot/cool swap:** `RowOutlet` caches its child `PipeTCrossSmall` renderer + the original (cool) material. New public method `SetBlockedVisual(bool hot)` flips `sharedMaterial` between heat and cool. Per-renderer reference flip -- doesn't bleed into other outlets sharing the cool material.
+- **Driven by PipeNetwork cascade, not just self-pause:** `PipeNetwork.Update` walks all outlets each frame and calls `SetBlockedVisual(i >= barrier)`. So a paused outlet AND every cascade-blocked outlet downstream of it both go red. When the upstream outlet drains, the barrier moves and only the still-paused ones stay hot.
+- **Lazy renderer cache:** runtime-spawned outlets get the kit child AFTER `RowOutlet.Awake` runs, so the initial `CacheHeatRenderer` finds nothing. `SetBlockedVisual` retries the cache lazily until the kit lands -- without this, runtime-purchased outlets (Outlet 1+) never resolve their renderer and stay cool no matter their state.
+- **Surface_Pipe_Connection indicator:** new `SurfacePipeBlockIndicator` component on Surface_Pipe_Connection toggles `RegularPipeMed` (flowing) vs `PipeBlock`+`PipeBaloon` (clogged) each frame based on `ShaftManager.AnyOutletPaused()`. Component finds children by name and self-locates ShaftManager via `FindAnyObjectByType`.
+- **Plumbing:** `Row._outletHeatMaterial` + `ShaftManager._outletHeatMaterial` (Inspector fields). `Row.Init()` accepts `outletHeatMaterial` (optional). `Row.AddOutlet()` assigns it onto each new RowOutlet via the `HeatMaterial` setter. `Row.Awake()` back-fills any pre-existing scene outlets that don't have it set.
+
+*Ghoul facing + feel polish (continued from Session 86):*
+- **Click-side facing:** `Ghoul.SwingAt(screenPos, camera)` projects the ghoul's screen position and compares to click X, sets `_facingDir` to point at whichever side was clicked, then plays the swing. Lets the player stand between two outlets and chop either side without using A/D. A/D held still sets facing every frame, so movement keys override the click-side flip on the next frame.
+- **Hit-side filter:** `FindOutletInFront` only considers bodies on the side the ghoul currently faces (`signed * _facingDir >= 0`). Bodies behind the ghoul are never chopped without the player turning first. No more auto-pivot toward stale targets.
+- **Chop impact timing:** `_chopImpactDelay` on the scene Ghoul restored to 0.7s (was tuned down to 0.2s in Session 86 for snap, but it landed on the upswing visually). Body now dies on the downswing matching where the visual axe lands. ChopMinion stays at 0.7s.
+- **Other Ghoul tunings (carried from Session 86):** `_swingCooldown=0.15`, `_walkSpeed=3.5`, `_chopReach=1.4`.
+- **Cross-row bug fixes:** ShaftManager.Descend now reparents the Ghoul BEFORE `MoveToRow(rowIndex, newRow)`, and `Ghoul.MoveToRow` refreshes the cached `_row` field. Without this the Ghoul could descend then fail to find any chop targets on the new row (cached `_row` pointed at empty Row_0). Same fix applied to ScrollView.
+- **ChopMinion target-side chop:** also added a face-target step right before the chop fires in the already-at-goal branch, fixing the case where a target re-pick within `arriveDistance` skipped the walk-and-face step and chopped with stale rotation.
 
 **Session 86 (Apr 28, 2026) -- Blood splat VFX + Ghoul input rework:**
 
@@ -354,10 +377,11 @@ See `BM_StatusArchive.md` (to be created) for sessions 1-73 if needed. Key outpu
 
 **Next:**
 
-1. **Outlet backup system** (top of Mechanics track): each outlet pauses spawn after N queued bodies (3?) with a grace period after clearing. Self-regulates burst delivery and creates strategy around outlet count vs. minion throughput.
-2. **Damageable minions** — now unblocked by Session 86 input rework. Ghoul `Swing()` already plays the attack animation regardless of body presence, so wiring AoE damage detection into `Swing()` is the entry point. Minion fall-apart anim → X-second offline → reassemble.
-3. **AC_ChopMinion Walk state** — minions currently slide on the Idle pose while walking between outlets. Add a Walk state mirroring AC_Ghoul (Idle ↔ Walk via IsWalking bool, motion = Walking_A which is already loop-imported). Minor, but visible if you're watching.
-4. **Tune Ghoul movement bounds in scene** — defaults are `_minLocalX=-1.5`, `_maxLocalX=4.7`. May need adjusting once Ghoul moves to deeper rows where the layout differs (it shouldn't, since rows are uniform, but verify on first playtest at depth).
+1. **Damageable minions** — unblocked by Session 86 input rework. Ghoul `Swing()` already plays the attack animation regardless of body presence, so wiring AoE damage detection into `Swing()` is the entry point. Minion fall-apart anim → X-second offline → reassemble. Bonus minion (#2) becomes redundancy insurance.
+2. **AC_ChopMinion Walk state** — minions currently slide on the Idle pose while walking between outlets. Add a Walk state mirroring AC_Ghoul (Idle ↔ Walk via IsWalking bool, motion = Walking_A which is already loop-imported). Minor, but visible if you're watching.
+3. **Multi-row cascade audit** — `PipeNetwork._registeredOutlets` currently holds outlets across ALL rows (Row.AddOutlet calls the global `_pipeNetwork.RegisterOutlet`). With one row this works fine, but at depth Row 0's paused outlet 2 would cascade-block Row 1's outlets too. Likely fix: one PipeNetwork per row. Sniff-test before it bites.
+4. **Tune Ghoul movement bounds in scene** — defaults are `_minLocalX=-1.5`, `_maxLocalX=4.7`. Layout uniform across rows so should be fine, but verify at depth on first multi-row playtest.
+5. **Balance pass v2 playthrough** — Session 84 balance pass hasn't been re-tested with the new outlet backup mechanic. Cascade throttling may make some depths feel slow.
 
 Sprint 3 Polish (deferred):
 - Body gravity-drop from outlet to floor (Rigidbody + ground collider)

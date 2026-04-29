@@ -33,20 +33,20 @@ namespace BM.Gatherer
         {
             if (_pipeNetwork == null || _queue.Count == 0) return;
 
-            int clear = _pipeNetwork.GetClearOutletCount();
-            if (clear <= 0)
+            int accepting = _pipeNetwork.GetAcceptingOutletCount();
+            if (accepting <= 0)
             {
                 _tickTimer = 0f;
                 return;
             }
 
-            float interval = _baseTickInterval / clear;
+            float interval = _baseTickInterval / accepting;
             _tickTimer += Time.deltaTime;
             if (_tickTimer >= interval)
             {
                 _tickTimer = 0f;
                 BodyConfigSO next = _queue.Dequeue();
-                Debug.Log("[BM] Funnel tick dispatch " + next.name + " clearOutlets=" + clear);
+                Debug.Log("[BM] Funnel tick dispatch " + next.name + " acceptingOutlets=" + accepting);
                 if (_pipeNetwork.DeliverBody(next))
                 {
                     Debug.Log("[BM] Funnel dispatch SUCCESS");
