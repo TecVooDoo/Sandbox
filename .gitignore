@@ -41,6 +41,9 @@ Thumbs.db
 # Crashlytics
 crashlytics-build.properties
 
+# MCP config backups (.mcp.json.bak in project root, .claude/mcp.json.bak)
+*.bak
+
 # Asset Store tools
 /Assets/AssetStoreTools*
 
