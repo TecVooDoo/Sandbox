@@ -16,9 +16,10 @@ MonoBehaviour:
   _baseBloodValue: 1
   _carryTierRequired: 1
   _unlockRow: 1
-  _bodyPrefab: {fileID: 3709150949319397418, guid: 7f9457d4f63eac14cb20be4c3c9a2e53,
+  _bodyPrefab: {fileID: 6745898904359586811, guid: 2fc84e95d39b7d94e8cdad38f2c2b979,
     type: 3}
   _gorePrefab: {fileID: 0}
   _particleColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   _bodyPartPrefabs: []
+  _organSize: 0
   _harvestSound: {fileID: 0}

@@ -5,7 +5,7 @@
 **Unity Version:** Unity 6 (URP)
 **Working Path:** `E:\Unity\Sandbox` (Sandbox incubator)
 **SM Root:** `Assets/_Sandbox/_BM/`
-**Last Updated:** April 30, 2026 (Session 89 -- Damageable minions + Generic rig conversion for KayKit Skeletons)
+**Last Updated:** May 2, 2026 (Session 94 -- Animal scales tuned by true-AABB; Ghoul replaced with Skeleton_Rogue + dual axes + dual-wield Slice + one-click kill; cape rendered double-sided; minion AT split for chainsaw 2H_Spin; gates reverted, old meshes cleaned)
 
 > **ARCHIVE RULE:** This doc holds only the current state and last ~2 sessions. When adding a new session, move older entries to `BM_StatusArchive.md` (newest first at top of archive). This keeps the status doc fast to read while preserving full history.
 
@@ -35,63 +35,68 @@ These came out of design discussions during sessions 85/86 and are awaiting impl
 
 ---
 
-**Session 89 (Apr 30, 2026) -- Damageable minions + Generic rig conversion for KayKit Skeletons:**
+**Session 94 (May 2, 2026) -- Animal scales by true-AABB + Ghoul replaced with Skeleton_Rogue + dual-axe Slice + one-click kill + cape double-sided + chainsaw minion split:**
 
-*Generic rig conversion (root cause of "minion sinks into floor on death"):*
-- KayKit's `Skeletons_Death` / `Skeletons_Death_Pose` / `Skeletons_Death_Resurrect` clips animate bones flying APART from each other (the skeleton-falls-apart effect). Mecanim's Humanoid avatar abstracts the rig into ~15 muscle joints with rigid hierarchy, so Humanoid retargeting strips out the bone-separation entirely (collapsed it to a "humanoid crumples to ground" pose). Generic preserves per-bone translations because the clip's curves drive bones directly by name.
-- Inspector showed the smoking gun: *"Some generic clip(s) animate transforms that are already bound by a Humanoid avatar. These transforms can only be changed by Humanoid clips."* Unity blocks Generic clips on Humanoid models.
-- **Converted to Generic + NoAvatar:** `Skeleton_Minion.fbx`, `Skeleton_Warrior.fbx`, and all KayKit anim FBXs (`Rig_Medium_*.fbx`, `CharAnim_Rig_Medium_*.fbx`). Animatronic stays Humanoid (Synty retarget chain unchanged).
-- All KayKit anim clips share the same `Rig_Medium` skeleton hierarchy → Generic clips drive bones by name across every model + every clip without retargeting.
-- **BM_Shaft scene rewire:** Cleared `Skeleton_WarriorAvatar` reference on the Ghoul's WarriorModel Animator (avatar sub-asset deleted when FBX went Generic). Runtime-spawned minions/gatherers are handled automatically because they instantiate from the now-Generic FBX prefabs.
-- Memory `project_bm_skeleton_rig_type.md` written with the full reasoning.
+*Animal scales finalized via true skinned-vertex AABB measurement.* `SkinnedMeshRenderer.bounds` was misleading for several animals (Cow inflated 2.5×, others varying), so my first-pass "match by SMR.bounds" tuning produced a Cow that was actually the smallest visible animal in playtest despite reporting biggest bounds. Switched to computing each prefab's actual bone-weighted AABB (the same compute the slicer uses) and tuned each animal's `_Sliceable.prefab` Whole/TwoPiece/FourPiece subtree scales until the user-confirmed visible sizes were:
+- Chicken **3.82** → avg 0.59
+- Cat **3.00** → avg 0.70 (reference, untouched)
+- Dog **3.26** → avg 0.70 (matches Cat)
+- Rabbit **2.85** → avg 0.70 (matches Cat)
+- Pig **3.74** → avg 0.91 (between Cat and Sheep)
+- Sheep **4.02** → avg 1.02 (between Pig and Cow)
+- Cow **4.95** → avg 1.12 (largest)
 
-*Damageable minions (Queued / Mechanics → done):*
-- **AC_ChopMinion.controller** extended: 5 states now (Idle, Attack, **Death**, **DeathPose**, **Resurrect**) with new triggers `Death` + `Revive`. AnyState→Death on `Death` trigger interrupts whatever the minion was doing. Death → DeathPose (auto on exit) → Resurrect (on `Revive` trigger) → Idle (auto on exit).
-- **ChopMinion.cs** new `LifeState { Active, Dying, Dead, Reviving }` + public `Hit()` and `IsAlive`. `Hit()` fires `Death` trigger, releases outlet target, sets timer. During non-Active states: skips normal AI, ticks `_lifeTimer`, transitions through Dying → Dead (waits `_deadDuration` = 3s, then fires `Revive`) → Reviving (waits resurrect anim length) → Active.
-- `Target` getter returns null when not Active so other minions don't get blocked from claiming the same outlet.
-- **Tunable defaults on ChopMinion:** `_deathAnimLength = 2s`, `_deadDuration = 3s` offline, `_resurrectAnimLength = 2.7s`. **Total downtime per hit ≈ 7.7s.**
-- **Ghoul.cs DoSwing()** new `HitMinionsInFront()` runs before the body-chop. Finds all `ChopMinion` components in the current row, filters by `_facingDir` (must be on side Ghoul faces) and `_chopReach`, calls `Hit()` on each living one. Swings hit ALL living minions in that wedge — not just the first. The same swing chops the body AND knocks down minions standing too close, adding tactical weight (don't hit your own workers; bonus minion #2 is redundancy insurance).
+*Ghoul → Skeleton_Rogue + dual axes + Dualwield_Slice anim:* Replaced the Skeleton_Warrior visual with KayKit Skeleton_Rogue. Dual `Skeleton_Axe` instances attached to `handslot.r` AND `handslot.l` (dual-wield). New `AC_TestGhoul_Dualwield_Slice` controller using `Melee_Dualwield_Attack_Slice` (1.17s). Also created `_Chop` and `_Stab` variants for swap-in testing.
 
-*Test scene reference:* `Assets/_Sandbox/_BM/Scenes/AnimationTest.unity` runs `AC_TestMinionDeathCycle.controller` on the Skeleton_Minion (Idle_A → Skeletons_Death → Skeletons_Death_Pose → Skeletons_Death_Resurrect → Idle_A, auto-cycling). Verified bone-separation playing cleanly after Generic conversion.
+*Cape rendered double-sided via duplicate-mesh-with-flipped-normals:* The Skeleton_Rogue's cape is a single-sided plane mesh — invisible from the front by default. Tried URP/Lit + Cull=Off (back-facing fragments rendered with the front-facing normal, making the inside read brighter than the outside). User wanted "same color as the hood." Final approach: built `Assets/_Sandbox/_BM/Art/Characters/Skeleton_Rogue_Cape_DoubleSided.asset` (62 verts → 124 verts, 84 tris → 168 tris) with each triangle duplicated in reverse winding + flipped normals, so URP/Lit + default back-culling renders both sides naturally with proper lighting. Cape uses the embedded `skeleton` material (same as the hood) — color now matches.
 
-*Slice animation + weapons wired (later in same session, after damageable minions verified):*
-- `Melee_1H_Attack_Chop` looked like a jab once weapons were in hand. Swapped Attack-state motion on `AC_ChopMinion.controller` and `AC_Ghoul.controller` to `Melee_1H_Attack_Slice_Horizontal` (1.37s, Generic). The queued "swap Chop → Slice_Horizontal" item from Session 88 is now done.
-- **Weapon prop pipeline:** new `_weaponPrefab` + `_weaponMaterial` serialized fields on ChopMinion. `SetupModel()` walks the rig hierarchy to find the `hand.r` bone and parents the weapon there with Mat_Skeleton applied. Plumbed through `Row._minionWeaponPrefab` → `Row.Init(... minionWeaponPrefab)` → `ShaftManager._minionWeaponPrefab` so dynamically-spawned rows inherit. Scene wired with `Skeleton_Dagger` for minions. `Skeleton_Axe` parented onto the BM_Shaft Ghoul's `hand.r` bone (path: `[Shaft]/Row_0/Ghoul/WarriorModel/Rig_Medium/root/hips/spine/chest/upperarm.r/lowerarm.r/wrist.r/hand.r`).
-- **Hit timing fix:** initial implementation hit minions on the upswing. `Ghoul.HitMinionsAfterImpact()` is now a coroutine that waits `_minionHitDelay` before applying `Hit()`. This is a **separate field** from the inherited `_chopImpactDelay` (0.7s, used for the body-chop landing). Code default `_minionHitDelay = 0.55s`, **tuned in BM_Shaft scene to 0.4s** — minion-on-axe contact is a hair earlier than body-chop impact since the minion is roughly at the Ghoul's X while the body sits at the outlet. Verified in playtest: Ghoul swings → brief pause → minion crumples on the downswing where the visual axe lands.
+*Chop-chain one-click kill for Ghoul (carryover from user request):* Added `RowWorker._oneShotKill` SerializeField + public `OneShotKill` property. New `SliceableBody.Hit(swingDir, bool oneShot=false)` overload — when `oneShot=true` and state is Whole, advance directly to FourPiece (skip TwoPiece): hide Whole, hide TwoPiece, clone+fling the 4 pieces with full impulse, spawn organs, return consumed=true. Outlet release fires immediately. `RowWorker.ChopImpactRoutine` passes `_oneShotKill` through to `slice.Hit()`. BM_Shaft Ghoul instance has `_oneShotKill = true` baked into the YAML. ChopMinion stays default-false (2-hit); chainsaw-tier ChopMinions will set it to true at runtime once the weapon-tier system lands.
 
-*Gatherer starting count rebalanced (2 → 1):*
-- Pipe-block cascades + minion downtime per Ghoul swing made the throughput pressure too friendly at start with 2 gatherers. `GathererManager._count` code default flipped 2 → 1 and BM_Shaft scene's serialized `_count` patched from 2 → 1. Slot gating unchanged (1 per 5 rows, 5 earnable + 1 start = 6 max).
+*Minion AT scene split (animation evaluation):* The `Skeleton_Minion` in AnimationTest now has 5 weapons stacked on `handslot.r` for visual A/B testing — Wrench, Skeleton_Dagger, Machete, Axe (all sized individually by user), and ChainSaw. The original minion uses `AC_TestMinion_2HChop` for the four standard weapons (ChainSaw deactivated). A new duplicate `Skeleton_Minion_ChainSaw` at +1.5 X offset has only the ChainSaw active and uses `AC_TestMinion_2HSpin`. Minion root scale 0.6, weapons compensate by scaling 1/0.6 ≈ 1.667 to render at full size. Eight new test controllers created at `Assets/_Sandbox/_BM/Scenes/AnimationTest_Controllers/`: dual-wield Slice/Chop/Stab and 2H Slice/Chop/Stab/Spin/Spinning.
 
-*Status of current BM scene:* Sprint 2 still in progress. Production controller + script changes landed; BM_Shaft Ghoul avatar cleared, weapons attached, Slice motion wired, hit timing matched to swing impact. Playtest confirmed minion damageable cycle reads cleanly.
+*Weapon-tier visual progression — design locked, implementation deferred:*
+- Geometric ramp on `ToolUpgradeController._toolTier` per row: Tier 1-2 = Wrench, 3-5 = Dagger, 6-9 = Machete, 10-14 = Axe, 15+ = ChainSaw (the cap, intentionally aspirational).
+- ChainSaw uses `Melee_2H_Attack_Spin` instead of the default `2H_Chop` — implemented via `AnimatorOverrideController` overriding the Attack clip on `AC_ChopMinion` (lighter than parallel state machines).
+- Architecture: a `WeaponTierMapSO` ScriptableObject holds entries `(minTier, weaponPrefab, attackClipOverride)`. Each `Row` listens to its `ToolUpgradeController.OnTierChanged(int)` and calls a refresh method on its ChopMinions to swap weapon + override controller.
+- ChainSaw-tier ChopMinion sets `OneShotKill = true` at equip — reuses the `RowWorker._oneShotKill` field landed this session.
+
+*Gate revert + cleanup:* BodyConfig `_unlockRow` and `_carryTierRequired` restored from S93's testing-only flatten (Cat/Dog=1, Pig=3/2, Sheep=5/3, Chicken=7/3, Rabbit=7/3, Cow=9/4). 28 old `_TopFront/_TopBack/_BotFront/_BotBack` mesh assets deleted (orphaned by S93's head-to-tail re-bake). Cape's interim `BM_Skeleton_DoubleSided.mat` (URP/Unlit attempt) deleted, replaced by the geometry-based double-sided mesh.
+
+*BM_Shaft scene-edit gotcha (worth remembering for future sessions):* `script-execute` Roslyn calls run against the currently-loaded assembly. When you edit a `[SerializeField]` field on a script and immediately try to set that field via reflection on a scene instance, the assembly hasn't recompiled yet — the field doesn't exist on the runtime type. Two workarounds that worked: (a) trigger `AssetDatabase.Refresh()` + wait for compile to complete before reading the new field, or (b) edit the scene YAML directly (`_oneShotKill: 1`) and let Unity deserialize on next scene reload. (b) is robust and bypasses the compile race entirely.
+
+*Open visual issue confirmed resolved:* The S93 "BM_Shaft body scale mismatch" — Cat/Dog rendered at correct scale, Pig/Sheep/Chicken/Rabbit/Cow tiny. Root cause: Cat/Dog `_Sliceable.prefab` had `Whole.localScale = 3` + each TwoPiece/FourPiece child = 3, while the other 5 had everything at 1. Compounded by SMR-baseline variance (Cow 0.43, Pig 0.75). True-AABB measurement gave the right scale targets per-animal. **All 7 animals now playtest-confirmed at correct in-shaft sizes.**
 
 ---
 
-**Session 88 (Apr 29, 2026) -- Animation test scene + Animatronic/Dragon imports + KayKit weapons:**
+**Session 93 (May 1, 2026) -- All 7 animals sliceable: head-to-tail X-axis bake + BM_BloodCap on cut faces + chop-chain timing tuning + containment off + BodyConfigs wired:**
 
-*New AnimationTest scene at `Assets/_Sandbox/_BM/Scenes/AnimationTest.unity`:*
-- Created an isolated humanoid retarget sandbox so animation/weapon tests don't pollute `BM_Shaft`. Lined up Skeleton_Minion, Skeleton_Warrior (used for Ghoul role), and Animatronic_Normal on a 60×20 ground plane. Tear-down controllers under `Assets/_Sandbox/_BM/Scenes/AnimationTest_Controllers/`.
-- Confirmed Mecanim humanoid retarget works: KayKit characters (Skeleton_Minion/Warrior, Animatronic) all import as Humanoid with auto-generated avatars. Synty Idles + Emotes/Taunts clips are also Humanoid → drive the KayKit avatars cleanly through Mecanim with no extra setup.
+*Re-cut all 7 animals on world X (sagittal / head-to-tail) instead of world Z (front/back):* Carryover from S92 next-list item #1 — the canonical butcher cut. New mesh suffixes `_TopLeft / _TopRight / _BotLeft / _BotRight`. `SliceableBody.QuadrantDirection` re-mapped: Top → +Y, Bot → -Y, Left → -X, Right → +X, with a Z kicker (was the X kicker before). Old `_TopFront / _TopBack / _BotFront / _BotBack` mesh assets retained but unreferenced — cleanup pending visual confirmation across all 7 animals.
 
-*Animatronic + Dragon role decisions captured (memory `project_bm_animation_sources.md`):*
-- **Animatronic** (KayKit Mystery Monthly #5, November 2023) = visual replacement for the **auto-upgrade button when activated**. Stands idle most of the time and "prods the Dragon to go to work" when fired. Synty Idles + Emotes/Taunts packs earmarked for its animation library (humanoid retarget). Guitar prop imported from same pack but not confirmed canonical for production.
-- **Dragon** (DragonPADefault from `RPGMonsterBundlePolyart`) = visual replacement for the **tool upgrade button**. Animates emptying leftovers when the button fires. Non-humanoid, uses its own bundled `Dragon` AnimatorController (16 clips: `IdleNormal`, `IdleBattle`, `Attack01/02`, `FlyFWD`, `SenseSomethingST/RPT`, etc.) — never retarget anything onto it.
+*Y-cut bias to bring more body bulk into the top half:* Plane is `bounds.center.y + size.y * -0.12f` (12% of body height below center). Cat top/bot ratio went from 17%/83% to 28%/72%. User confirmed "much better."
 
-*Asset imports:*
-- `Animatronic_Normal.fbx`, `Animatronic_Creepy.fbx` (Humanoid rig, scale 1, materials externalized) → `Assets/_Sandbox/_BM/Art/Characters/KayKit_Animatronic/`. Texture `animatronic_A.png`/`B.png` → `Textures/`. URP/Lit `Mat_Animatronic_A.mat` and `Mat_Animatronic_B.mat` created for the two skin variants.
-- `Guitar.fbx` (Animatronic prop) → `KayKit_Animatronic/Props/Guitar.fbx`.
-- 19 KayKit Skeleton **weapons** copied from `KayKit Skeletons 1.1/assets/fbx(unity)/` → `Assets/_Sandbox/_BM/Art/Characters/KayKit_Skeletons/Weapons/`: Axe, Blade, Dagger, Mace, Mace_Large, Scythe, Staff, Golem_Axe, Golem_Axe_Large, Crossbow, Arrow (+Half/Broken/Broken_Half), Quiver, Shield_Large_A/B, Shield_Small_A/B. Mat_Skeleton (existing) auto-applies via the script that attached the test props.
-- KayKit Skeleton character pack's bundled texture (`skeleton_texture_A.png`) intentionally not re-imported — already in project.
+*BM_BloodCap.mat (new at `Assets/_Sandbox/_BM/Materials/`):* URP/Lit, dark butcher red (R=0.55, G=0.05, B=0.05, smoothness 0.35, metallic 0). Replaces the dim `PolygonParticleFX_Blood` additive cap from S91. Knocks out S92 next-list item #8 ("Cap material upgrade").
 
-*Validation findings:*
-- **`Melee_1H_Attack_Chop` reads as a jab once a weapon is in the hand.** It's a 1.07s straight-thrust clip (full clip range, not truncated). With nothing in the hand it looked plausible; with `Skeleton_Axe`/`Dagger`/Guitar attached it's clearly wrong. Slice variants tested: `Slice_Diagonal` (1.00s), `Slice_Horizontal` (1.37s), `2H_Attack_Slice` (1.10s). **Slice_Horizontal reads best with weapons in hand for both Minion and Ghoul.** Queued as a real swap to the BM controllers (see Queued / Design Decisions).
-- Synty AirGuitar (`A_POLY_EMOT_Celebrate_AirGuitar_Masc.fbx`, 4.33s) retargets cleanly to the Animatronic — fun pairing with the Guitar prop, but NOT canonical given the Animatronic's auto-upgrade-button role. Tagged in memory as test-only.
-- Mild clipping observed on Skeleton_Minion's narrower torso during full-arm Synty motions (e.g. `Eat_Large`). Owner: Retarget Pro (purchased; not yet reinstalled in Sandbox). Plan is to bake retargeted clips per-rig with Retarget Pro rather than tweak avatar muscles.
+*Bake uses `createSubmeshForIntersection=true` for both cuts:* output meshes have 3 submeshes (body + Y-cap + X-cap). Each 4Piece child SMR.sharedMaterials set to `[bodyMat, BloodCap, BloodCap]`. User playtested: "the cat visual looks good." Cuts now read as colored butcher faces, not white.
 
-*Memory updates:*
-- `project_bm_animation_sources.md` rewritten with character roles (Ghoul/Minion/Animatronic/Dragon), pack assignments (KayKit melee → Minion/Ghoul, Synty Idles + Emotes/Taunts → Animatronic, Dragon's bundled clips for Dragon), and the Retarget Pro queue.
-- Indexed in `MEMORY.md`.
+*Cow needed a true-AABB compute path — `SkinnedMeshRenderer.bounds` was 2.5× the actual skinned-vertex AABB:* SMR.bounds reported center.y=0.33 / size.y=0.52, but actual skinned vertex range was y[-0.001..0.196]. My initial Y-cut at y=0.27 was above the entire mesh, so Y-cut returned null. Fix: mirror the slicer's bone-weighted vertex transform once before placing the plane (compute true AABB from `bones[i].localToWorldMatrix * bindposes[i] * mesh.vertex[i]`). Other 6 animals had similar bounds inflation but enough vertex spread to not fail outright; their cut placement may still be off — re-bake any animal that looks wrong with the true-AABB path.
 
-*Status of current BM scene:* unchanged — Sprint 2 Phase 1-9 still in progress. Test-scene experimentation only; no `BM_Shaft` edits.
+*Chop-chain timing fixes (carryover from S92 next-list item #2 + the rapid-click bug surfaced in playtest):*
+- `Ghoul._swingCooldown` 0.15 → 0.7 (gate input to roughly half the 1.367s attack anim — second click can't pre-empt the first swing's recovery; rapid double-click no longer fires the body-fly-apart before the visual swing peak).
+- `Ghoul._chopImpactDelay` 0.2 → 0.3 (S92's "a breath too quick" retune now that the axe-pose fix landed in S92's `handslot.r` reparent).
+- `Ghoul._minionHitDelay` 0.4 → 0.5 (rebalanced relative to the new 0.3s impact).
+- `RowWorker._chopImpactDelay` script default 0.7 → 0.3. Affects runtime-spawned ChopMinions (Ghoul carries its scene Inspector override; minions are `AddComponent<ChopMinion>()` at runtime and read script defaults). Closes out the S92 carryover note about minions having Ghoul-old slow-impact timing.
+
+*Row_0 Containment disabled (parts fly free across rows now):* User playtested with the X-axis pieces and decided the chunk-corral was over-tight: "remove the container completely or at least we need to let the parts fly." The 6 wall GameObjects under `Row_0/Containment` are SetActive(false) and preserved as a layout reference for the future organ-only containment volume. As a side effect, this also fixed an unrelated bug: the wall colliders had been intercepting the Row_0 tool-upgrade button click via Unity's `OnMouseDown` raycast.
+
+*BodyConfigs wired to Sliceable prefabs:* All 7 BodyConfigs now point `_bodyPrefab` at the matching `<Animal>_Sliceable.prefab`. The S92 status note "other 6 still point at legacy single-chop prefabs" was slightly off — only Dog had a legacy `Body_Dog` reference; the other 5 were null.
+
+*Body picker logic worth remembering:* `GathererManager.PickRandomBody(int carryTierLimit)` filters by **both** `UnlockRow <= currentRowDepth + 1` **AND** `CarryTierRequired <= carryTierLimit`. The carry-tier limit comes from each `Gatherer._carryTier` field (default 1, **separate upgrade from gatherer count + walk speed**). User had walk speed 3 + 3 gatherers at row 11 but still only saw Cat/Dog because the carry-tier upgrade wasn't raised — gatherer tier was still 1.
+
+*⚠ TESTING-ONLY GATE FLATTEN — DO NOT COMMIT WITHOUT REVERTING:* All 7 BodyConfigs have `_unlockRow=1` and `_carryTierRequired=1` set for testing every body type from row 1. Originals to restore before commit:
+- **unlockRow:** Cat=1, Dog=1, Pig=3, Sheep=5, Chicken=7, Rabbit=7, Cow=9
+- **carryTierRequired:** Cat=1, Dog=1, Pig=2, Sheep=3, Chicken=3, Rabbit=3, Cow=4
+
+*Open visual issue surfaced this session — BM_Shaft body scale mismatch:* Only Cat and Dog render at correct scale in the live shaft; Pig/Sheep/Chicken/Rabbit/Cow render tiny. The AnimationTest scene has these same animals at correct scale, so the underlying prefabs are fine — the issue is somewhere in the spawn path (likely the BM-canonical Cat/Dog were authored at a different scale than the raw Suriyun Pig/Sheep/Chicken/Rabbit/Cow Sliceable prefabs, or the BodyPool / RowOutlet placement applies a scale that only Cat/Dog were authored to expect). Queued for next session.
 
 ---
 
@@ -105,10 +110,18 @@ These came out of design discussions during sessions 85/86 and are awaiting impl
 
 **Next:**
 
-1. **AC_ChopMinion Walk state** — minions currently slide on the Idle pose while walking between outlets. Add a Walk state mirroring AC_Ghoul (Idle ↔ Walk via IsWalking bool, motion = Walking_A which is already loop-imported). Minor, but visible if you're watching.
-2. **Multi-row cascade audit** — `PipeNetwork._registeredOutlets` currently holds outlets across ALL rows (Row.AddOutlet calls the global `_pipeNetwork.RegisterOutlet`). With one row this works fine, but at depth Row 0's paused outlet 2 would cascade-block Row 1's outlets too. Likely fix: one PipeNetwork per row. Sniff-test before it bites.
-3. **Tune Ghoul movement bounds in scene** — defaults are `_minLocalX=-1.5`, `_maxLocalX=4.7`. Layout uniform across rows so should be fine, but verify at depth on first multi-row playtest.
-4. **Balance pass v2 playthrough** — Session 84 balance pass hasn't been re-tested with the new outlet backup mechanic + damageable minions + 1-gatherer start. Throughput pressure may need re-tuning.
+1. **Implement weapon-tier visual progression** (design locked S94). Build `WeaponTierMapSO` ScriptableObject with the geometric ramp: Tier 1-2 = Wrench, 3-5 = Dagger, 6-9 = Machete, 10-14 = Axe, 15+ = ChainSaw. ChainSaw entry includes an `AnimatorOverrideController` that overrides AC_ChopMinion's Attack clip to `Melee_2H_Attack_Spin`. `Row` listens to `ToolUpgradeController.OnTierChanged(int)` and calls a refresh method on its ChopMinions to swap weapon prefab + override controller. ChainSaw-tier ChopMinion sets `OneShotKill = true` at equip.
+2. **Re-bake any animal with off-balance Y-cut placement** using the true-AABB path (Cow uses it; the other 5 used SMR.bounds and may look wrong since their bounds are also inflated to varying degrees). Check at depth, not just from the front camera.
+3. **Organs layer + collision matrix** — make organs (and possibly 4-piece chunks) push-but-don't-block when player/minions walk into them. Phase A.5. Pattern: organs on `Organs` layer, Player & Minion ignore `Organs` in matrix, each gets a child trigger collider on a "Pusher" layer that detects organs and applies force on contact.
+4. **Outlet → floor rigidbody drop** — animals drop from outlet to ground floor under physics instead of teleport-to-spawn-point. Pieces will then fly from floor level instead of from the outlet. Once it lands, set `RowOutlet._postConsumeDelay=0` since drop time naturally spaces arrivals. (Sprint 3 polish item, prerequisite for the dragon flow visually.)
+5. **Organ-only containment volume** — corral spawned organs to the row area while letting body parts fly free across rows. The disabled `Row_0/Containment` walls are still in the scene as a layout reference. Likely one volume per row, sized similar to the orange reference cube from S92.
+6. **Sprint 3 dragon + animatronic flow** — captured fully in S91 design lock-in. Dragon asleep → player wakes → eats organs (drains gauge) → walks home → burp particle FX → tool upgrade fires → sleeps. Animatronic = visual auto-upgrade button cycling random idle states + waking the dragon. Big rework — own session(s) when prioritized.
+7. **Per-`SliceableBody` tuning sweep** — per-animal pass on `_twoPieceImpulse` / `_fourPieceImpulse` / `_upwardBias` / `_fourPieceLifetime` / `_organCount` so cow chunks fly less than chicken chunks, large organs scatter less than small, etc. Note: with Ghoul one-click kill, `_twoPieceImpulse` doesn't apply on Ghoul hits (skipped state); only `_fourPieceImpulse` matters.
+8. **AC_ChopMinion Walk state** — minions currently slide on the Idle pose while walking between outlets. Add a Walk state mirroring AC_Ghoul (Idle ↔ Walk via IsWalking bool, motion = Walking_A which is already loop-imported).
+9. **Multi-row cascade audit** — `PipeNetwork._registeredOutlets` currently holds outlets across ALL rows. With one row this works fine, but at depth Row 0's paused outlet 2 would cascade-block Row 1's outlets too. Likely fix: one PipeNetwork per row.
+10. **Tune Ghoul movement bounds in scene** — defaults are `_minLocalX=-1.5`, `_maxLocalX=4.7`. Verify at depth on first multi-row playtest.
+11. **Balance pass v2 playthrough** — Session 84 balance pass hasn't been re-tested with the new outlet backup mechanic + damageable minions + 1-gatherer start + sliceable chop chain + Ghoul one-click kill. Throughput pressure may need re-tuning.
+12. **SMB-driven impact frame (optional)** — if the new 0.7s `_swingCooldown` + click-time-based `_chopImpactDelay` ever feels sluggish for a 2-hit chain, replace the coroutine delay with a `StateMachineBehaviour` on the Attack state that fires `OnSwingImpact()` at a configurable normalizedTime. Decouples impact from cooldown and matches the visual swing peak regardless of input cadence. Both AC_Ghoul and AC_ChopMinion use the same `Melee_1H_Attack_Slice_Horizontal` clip (1.367s) so one SMB serves both.
 
 Sprint 3 Polish (deferred):
 - Body gravity-drop from outlet to floor (Rigidbody + ground collider)

@@ -86,3 +86,10 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 0
+  packageName: POLYGON Particle FX
+  packageVersion: 1.3.2
+  assetPath: Assets/Synty/PolygonParticleFX/Models/SM_GoreChunk_04.fbx
+  uploadId: 0

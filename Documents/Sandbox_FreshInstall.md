@@ -70,7 +70,7 @@
 | vFolders 2 | Asset Store | Editor QoL -- standard |
 | vHierarchy 2 | Asset Store | Editor QoL -- standard |
 | Wingman | Asset Store | Inspector tool -- standard |
-| Ultimate Preview Window Pro | Asset Store | Preview -- standard |
+| Ultimate Preview 2 (Voxel Labs) | Asset Store | Preview -- standard. v2 (succeeds Ultimate Preview Window Pro 1.3.4 — same publisher, same install path, ENTRY-343 + v2 addendum). HDRP users: import bundled `UltimatePreview_HDRP.unitypackage` after install. |
 | Power Pivot (Kamgam) | Asset Store | Mesh pivot editing -- standard (fixes Synty/KayKit FBX pivots in-place; sibling-asset-saved meshes survive FBX reimport via `MeshImportListener`; ENTRY-346) |
 | Technie Collider Creator 2 (Triangular Pixels) | Asset Store | Paint-based collider authoring + VHACD auto-decomp -- standard (ENTRY-330; pipeline-agnostic; pairs with Power Pivot — fix pivot first, then paint colliders) |
 | ALINE | Asset Store | Debug visualization -- standard (used in every project; promoted out of "install on demand") |

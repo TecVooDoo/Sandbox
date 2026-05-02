@@ -15,6 +15,8 @@ namespace BM.Shaft
         [SerializeField] private int _maxQueue = 3;
         [Tooltip("After the outlet fully clears (current body chopped, backlog empty) it ignores re-pause for this many seconds. Lets a quick burst flow through without thrashing.")]
         [SerializeField] private float _graceAfterClear = 1.5f;
+        [Tooltip("Delay between consuming the current body and placing the next from the backlog. Lets flying chunks/organs from the previous body clear the outlet before the next animal arrives. 0 = instant (legacy).")]
+        [SerializeField] private float _postConsumeDelay = 0.8f;
 
         [Header("Backup Visual")]
         [Tooltip("Heat-shader material applied to the kit's PipeTCrossSmall renderer when this outlet pauses. Swapped via sharedMaterial -- per-renderer reference flip, doesn't bleed into other outlets sharing the cool material.")]
@@ -43,6 +45,8 @@ namespace BM.Shaft
         /// <summary>True iff there is no body on display. Choppers use this to find a target.</summary>
         public bool IsClear => _currentBody == null;
         public BodyConfigSO CurrentConfig => _currentConfig;
+        /// <summary>The body GameObject currently on display (if any). Choppers use this to dispatch through SliceableBody for multi-hit chains.</summary>
+        public GameObject CurrentBody => _currentBody;
         /// <summary>True iff the outlet will accept another delivery from the pipe network.</summary>
         public bool IsAcceptingBodies => !_paused;
         public int BacklogCount => _backlog.Count;
@@ -133,6 +137,15 @@ namespace BM.Shaft
             if (clickable == null) clickable = body.AddComponent<ClickableBody>();
             clickable.Bind(this, config);
 
+            // Reset Sliceable bodies to Whole and tell them which animal they are (organ size).
+            // Bodies without SliceableBody fall through unchanged.
+            SliceableBody slice = body.GetComponent<SliceableBody>();
+            if (slice != null)
+            {
+                slice.ResetState();
+                slice.Configure(config);
+            }
+
             _currentBody = body;
             _currentConfig = config;
             if (OnBodyPlaced != null) OnBodyPlaced.Invoke();
@@ -148,7 +161,8 @@ namespace BM.Shaft
 
             if (_backlog.Count > 0)
             {
-                PlaceFromBacklog();
+                if (_postConsumeDelay > 0f) StartCoroutine(PlaceNextAfterDelay());
+                else PlaceFromBacklog();
                 return;
             }
 
@@ -159,6 +173,13 @@ namespace BM.Shaft
                 _pauseAllowedAt = Time.time + _graceAfterClear;
                 if (OnResumed != null) OnResumed.Invoke();
             }
+        }
+
+        private System.Collections.IEnumerator PlaceNextAfterDelay()
+        {
+            yield return new WaitForSeconds(_postConsumeDelay);
+            // Backlog can shrink/grow during the wait. Re-check before placing.
+            if (_currentBody == null && _backlog.Count > 0) PlaceFromBacklog();
         }
     }
 }

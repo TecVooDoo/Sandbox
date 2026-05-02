@@ -444,6 +444,10 @@ Quick-reference of all evaluations. See detailed entries below for full notes.
 | 347 | Arcade Vehicle Physics (Ash Dev) | Asset Store | Gameplay (Lightweight Arcade-Style Rigidbody + Raycast Vehicle Controller) | Approved | -- | 2026-04-28 |
 | 348 | Simulation Game Creator (Queen) | Asset Store | Gameplay (Complete Job/Shop/Mechanic-Sim Game Template — 50 scripts, 74 prefabs, full art) | Approved | -- | 2026-04-28 |
 | 349 | Mesh Slicer Free (Hanzzz / Hanze Meng) | Asset Store + GitHub (open source) | Runtime Library (Plane-Based Mesh + Skinned Mesh Slicing w/ Robust Predicates + CDT Cap-Fill) | Approved | Recommended | 2026-04-28 |
+| 350 | Sound Shapes (TelePresent Games) | Asset Store | Audio (3D Zone-Based Ambient Audio w/ Mesh Shapes, Occlusion, Multi-Emitter, BVH) | Approved | Recommended, Audio | 2026-05-01 |
+| 351 | UI Shader Effects: Edge Effects (RVFX) | Asset Store | UI VFX (UGUI Shaders + UIToolkit ShaderGraphs for Animated Edge Glow / Electric / Border Effects) | Approved | Recommended, UI | 2026-05-01 |
+| 352 | UIMotionFX Tool / UI Effects (RVFX) | Asset Store | UI VFX Tool (Editor Painter for Flow + Glow Maps; Compute-Shader UI Particles; UGUI + UIToolkit) | Approved | Recommended, UI | 2026-05-01 |
+| 353 | VFX Graph Mega Pack Vol 2 v1.3 (Gabriel Aguiar Productions) | Asset Store | VFX (Visual Effect Graph Asset Pack — URP + HDRP unitypackages, requires `com.unity.visualeffectgraph`) | Approved | Recommended, VFX | 2026-05-01 |
 
 ---
 
@@ -13253,6 +13257,36 @@ Both packages were auto-pulled in by CityGen3D's import and were not auto-remove
 
 ---
 
+#### ENTRY-343 Addendum: Ultimate Preview 2 upgrade (May 1, 2026)
+
+**Voxel Labs released Ultimate Preview 2** as a major-version successor to Ultimate Preview Window Pro v1.3.4 (the version originally evaluated). User updated in-place this session — the asset still installs to the same path (`Assets/Voxel Labs/Ultimate Preview/`) under the same Asset Store slug, and the original ENTRY-343 verdict (**Approved, Default, QoL**) carries forward to v2.
+
+**Continuity (still true under v2):**
+- Same publisher (Voxel Labs, `contact@voxellabs.in`)
+- Same install path (`Assets/Voxel Labs/Ultimate Preview/`)
+- Same DLL namespace (`VoxelLabs.UltimatePreview.Core.dll`, `VoxelLabs.UltimatePreview.Shared.dll`)
+- Same asmdefs (`VoxelLabs.UltimatePreview.CustomPreview.asmdef`, `VoxelLabs.UltimatePreview.Lib.asmdef`)
+- Same install size band (~40 MB editor-only)
+- Same labels: **Default, QoL**
+- Same MCP/TVU/TVG decisions: all No
+
+**v2 changes observed at the file-system level:**
+- New `Render Pipeline/` folder at the asset root with its own `Readme.txt` indicating BiRP/URP shipped by default, HDRP via a separate optional unitypackage at `Assets/Voxel Labs/Ultimate Preview/Packages/UltimatePreview_HDRP.unitypackage`
+- `Editor/Resources/UltimatePreviewWindow/Settings/` now hosts a `UltimatePreview - Settings.asset` SO (`UltimatePreviewSettingsData`) with structured `ultimateAnimationPreviewSettings` config (camera orbit, FOV, clear flags, ambient color, lights enable, skybox material) — settings asset shape is more developed than v1.3.4's flat keys
+- Editor lighting workflow now supports **"Reset to HDRP Default" / "Reset to URP Default"** quick-apply buttons (per the Settings folder Readme), reflecting v2's improved cross-pipeline support
+
+**Install / upgrade notes:**
+- HDRP users must double-click the bundled `UltimatePreview_HDRP.unitypackage` after import (per Read Me)
+- URP and BiRP users: no extra import needed
+- Restart Unity Editor recommended after import
+- Importing the HDRP package on URP/BiRP projects "may cause conflicts" per publisher
+
+**Default install set still applies** — Power Pivot / TCC / ALINE / vHierarchy / vFolders / **Ultimate Preview 2** / Markdown for Unity / Audio Preview Tool stack stays the same. Doc references updated this session: [NewProjectSetup_Brief.md](NewProjectSetup_Brief.md), [Sandbox_FreshInstall.md](Sandbox_FreshInstall.md).
+
+**No new ENTRY allocated** — same product, same publisher, same install path, same verdict. Tracked here as an addendum so future-you doesn't get confused by the v2 branding.
+
+---
+
 ### ENTRY-344: EasyPooling 2025 (GUPS)
 
 **Date Evaluated:** 2026-04-27 (Session 81)
@@ -13880,6 +13914,411 @@ The Male Dancer prefab is the headline — proving skinned slicing works on a ri
 **MCP Candidate:** **Low** — single-method runtime API, generic tools cover.
 **TecVooDoo Utilities Candidate:** **Conditional** — the source is open source and license-permitting. Could fork into `TVU.Mesh.Slicer` if we want a maintained internal version, but vendor's GitHub being live makes that unnecessary unless we hit upstream-blocking bugs.
 **TecVooDoo Games Candidate:** No — runtime library, not gameplay logic.
+
+---
+
+### ENTRY-350: Sound Shapes (TelePresent Games)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | Sound Shapes |
+| **Publisher** | TelePresent Games (Martin Hansen, telepresentgames.dk) |
+| **Source** | Unity Asset Store |
+| **Category** | Audio (3D Zone-Based Ambient Audio with Custom Shapes, Mesh Zones, Occlusion, Multi-Emitter, BVH Spatial Index) |
+| **Price** | Paid |
+| **Version** | © 2025 (asset folder `Assets/TelePresent/Sound Shapes/`) |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **Pipeline-agnostic** — pure C# + Unity AudioSource / AudioLowPassFilter, no shaders |
+| **Dependencies** | Unity AudioModule (default). `using UnityEngine.Rendering;` for editor gizmos. No third-party deps. |
+| **Install Size** | Small (17 scripts, ~3000 LOC, 12 demo prefabs, 1 demo scene, PDF documentation, no shipped audio) |
+| **Evaluated** | May 1, 2026 |
+| **Evaluated in** | Sandbox `Assets/TelePresent/Sound Shapes/` |
+| **Verdict** | **Approved, Recommended, Audio** — best-in-class spatial zone audio system. Strong complement to Master Audio (already a default). |
+
+**What It Does:** Lets you author **3D audio zones with arbitrary shapes** — paint a 2D polygon outline (closed or open, freehand or point-by-point), wrap zones around mesh geometry, or define a multi-emitter cloud. Each zone has tracking (by Tag or specific Object), occlusion (raycast-based with LayerMask + 2D-mode + spread + lowpass-filter cutoff blend), optional dual audio (inside vs outside the zone), and is accelerated by a Bounding Volume Hierarchy (`SoundShapes_BVH`) for fast nearest-point queries on complex mesh zones. The headline use case: "I hear the lake along the shore, wind through the tunnel, leaves rustling in the bush — and the stone wall between me and the river audibly muffles it."
+
+**Architecture:**
+- **17 scripts (~3000 LOC):**
+  - **Core (10 scripts in `Scripts/`):**
+    - `AudioZone.cs` (965 LOC) — main MonoBehaviour. 3 zone modes (`Shape`, `Mesh`, `MultiEmitter`), 2 tracking modes (`Tag`, `Object`). Hosts shape points, mesh filters, multi-emitter points, audio source, position target, occlusion config, dual-audio config. `[ExecuteInEditMode]`.
+    - `AudioZoneDualAudio.cs` — handles inside/outside audio swap with crossfade
+    - `AudioZoneGeometry.cs` (322 LOC) — mesh data generation + cache
+    - `AudioZoneMultiEmitterHandler.cs` (235 LOC) — emit from N points within a zone
+    - `AudioZoneOcclusion.cs` (151 LOC) — raycast occlusion + lowpass filter blending
+    - `SceneAudioListenerManager.cs` — multi-listener / scene-active-listener logic
+    - `SoundShapes_BVH.cs` (213 LOC) + `SoundShapes_BVHNode.cs` — bounding volume hierarchy spatial accel
+    - `SoundShapes_CachedMeshData.cs` — per-mesh data cache to avoid recompute
+    - `SoundShapes_EditorStartupHelper.cs` — editor-time bootstrap
+  - **Editor (4 scripts in `Editor/`):**
+    - `AudioZoneEditor.cs` — custom inspector for `AudioZone`
+    - `AudioZoneDrawingTools.cs` — Scene View shape-painting UI (drag points, freehand, close shape)
+    - `SoundShapesSettings.cs` — project-wide settings asset
+    - `SoundShapesWelcomeWindow.cs` — first-run setup window
+  - **Demo (3 scripts in `Demo Assets/Scripts/`):** `SoundShapes_Billboard`, `SoundShapes_DemoFPSController`, `SoundShapes_DemoUtilities`
+- **No asmdef** — folds into Assembly-CSharp. Could wrap in `TelePresent.SoundShapes.Runtime` if standalone-migrating long-term (the namespace already matches).
+- **Demo scene + 12 demo prefabs** showcasing different zone shapes:
+  - **Mesh-based:** Lake Water, Tin Roof, Tunnel, Long Thin Pipe, SkyDome, Pole, Bush, Cloud, Ground Plane, Electrified Plane (electric crackle along a flat surface)
+  - **Helpers:** Emitter Billboard (visual marker), Indicator Plane
+- **No shipped audio files** — bring your own AudioClips. Demo prefabs reference Unity AudioSource with project-side clips.
+
+**Key Features (from `AudioZone.cs` inspector fields):**
+- **Zone Modes:**
+  - `Shape` — 2D polygon points (`points: List<Vector3>`), `closedShape`, `freehandMode`
+  - `Mesh` — use one or more `MeshFilter`s as the zone shape (`meshFilters`, `cachedMeshDataList`, `meshAudioOffset`)
+  - `MultiEmitter` — sound emanates from N points (`multiEmitterPoints`)
+- **Tracking:** by Tag (`trackingTag = "Player"` default) or by direct Transform reference (`trackingObject`)
+- **Trigger:** `triggerDistanceOverride` + `flipTriggerDistance` (audible inside vs outside)
+- **Dual Audio:** `enableDualAudio` swaps between two AudioSources at the zone boundary
+- **Occlusion:**
+  - `enableOcclusion` + `occlusionLayer` (LayerMask)
+  - `occlusion2DMode` + `occlusion2DSpreadDegrees` (180°-cone for 2D-style projects)
+  - `occlusionVolumeMultiplier` (0-1)
+  - `occlusionLowPassCutoff` 7000 Hz (occluded) → `defaultLowPassCutoff` 22000 Hz (clear)
+  - `occlusionResolution: 4` raycast samples
+  - `occlusionSampleRadius: 0.5` for area-sample averaging
+- **Lifecycle hooks:** `event Action<bool> OnTrackingStateChanged` — fires when tracker enters/exits zone
+- **BVH spatial index** for mesh zones — sub-frame nearest-point queries on complex meshes
+- **Editor preview** + debug visualization
+
+**Compile Status (Unity 6, 2026-05-01):** Clean (pure UnityEngine + AudioModule + standard editor APIs).
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Acheron riverbank — Mesh zone wrapping the river surface for water sound only when near; wind zones along pillars; ferry creaks zone around the boat; cave torch crackle as MultiEmitter; occlusion makes stone walls muffle the river | **HIGH** — exactly the genre fit. Atmospheric audio is a core HOK pillar. |
+| **AQS** | Quokka forest — Bush prefab pattern matches AQS perfectly. Rustling leaves zone, lake/pond, wind through canopy, MultiEmitter for bird flock | **HIGH** — strong match for the cute-quokka-in-the-woods vibe. |
+| **HideNReap** | Stealth horror — precise ambient audio is a core mechanic. Footsteps muffled through walls (occlusion), heartbeat zones around hiding spots, wind howling through window gaps as MultiEmitter | **HIGH** — directly serves the stealth gameplay loop, not just polish. Pair with HnR's "Reap vision" mode for audio-only stealth indicators. |
+| **FearSteez** | Beat-em-up arena ambient — crowd cheers in a Shape zone, jukebox MultiEmitter, traffic hum outside a window | **MEDIUM** — adds atmosphere; not gameplay-critical. |
+| **Blood Miner** | Mobile idle, single shaft scene | **LOW** — minimal need; one ambient track is enough at the gameplay level. |
+| **VNPC** | Point-and-click visual novel — outdoor scene backdrops with ambient zones (cafe chatter, street traffic, garden birds) | **MEDIUM-HIGH** — non-mechanical use, but elevates immersion. |
+| **M3AnimatedSeries** | Animated series — spatial audio prep for episode soundscapes | **MEDIUM** — useful for pre-render audio passes; offline workflow. |
+| **SetDesign** | Universal scene-building hub | **HIGH** — drop into every outdoor/atmospheric set as the default ambient layer. Pairs with COZY 3 (ENTRY-337) for sky/weather + Sound Shapes for ground-level audio. |
+| **TecVooDoo project** | Tooling | **N/A** |
+
+**Asset Store Label:** **Default Audio** for any 3D project with outdoor or atmospheric scenes. **Recommended, Audio.** Doesn't replace Master Audio (different layer); they pair.
+
+**Ecosystem Notes:**
+- **Pairs with Master Audio (default install):** Master Audio is global audio (groups, buses, playlists, ducking, music control). Sound Shapes is per-scene 3D zone authoring. Master Audio plays the sound; Sound Shapes positions/shapes/occludes it. The two aren't redundant. AudioZone references a Unity `AudioSource` directly today; routing through Master Audio's `PlaySound` API would need a small bridge component but is straightforward.
+- **Pairs with COZY 3 (ENTRY-337):** Cozy drives the sky/weather/wind globally; Sound Shapes drives where the wind is *audible*. Cozy's `CozyAmbienceModule` could trigger Sound Shapes preset swaps on weather change.
+- **Pairs with Feel:** wrap zone-enter/exit events (`OnTrackingStateChanged`) in Feel feedbacks for camera shake, vignette, post-FX on entering an atmospheric zone.
+- **Pairs with HnR's stealth mechanics:** the Tag-based tracking means a "Reaper" tag could trigger different behavior than a "Civilian" tag in the same zone. Useful for asymmetric stealth audio.
+- **No conflict with Audio Preview Tool (default install):** Audio Preview is editor playback for AudioClips; Sound Shapes is runtime spatial audio. Different layers.
+- **Demo scene includes a SkyDome prefab** — interesting nested-zone case (sky zone + ground zone with different audio).
+
+**MCP Controllability:** **Medium-High.** `AudioZone` has ~30 inspector fields, mostly serialized — generic `gameobject-component-modify` reaches everything. The structured nature (3 zone modes × tracking config × occlusion config × dual audio) makes a small dedicated tool group worthwhile. Proposed `ss` (or `soundshapes`):
+- `ss-create-zone` — add an `AudioZone` to a target GO with `mode`, `audioSource`, optional initial points
+- `ss-add-points` — append shape points (List<Vector3>) for Shape mode, or attach MeshFilters for Mesh mode
+- `ss-configure-occlusion` — set occlusion layer / lowpass cutoffs / 2D mode / sample resolution
+- `ss-configure-tracking` — Tag vs Object, set trigger distance + flip
+- `ss-query` — list all `AudioZone`s in scene with mode, tracker, audio source, occlusion-on, point count
+
+5 tools. **MCP rating: Medium-High.** Queue alongside the existing audio MCP groups (`ma-*` for Master Audio).
+
+**Key Gotchas:**
+- **No asmdef** — Assembly-CSharp. If asmdef hygiene matters at standalone migration, wrap.
+- **`[ExecuteInEditMode]` on AudioZone** — runs in edit mode. Expect Scene view updates while editing the zone. Editor preview mode is intentional but can churn.
+- **`OnValidate` regenerates mesh data** when not in play mode — heavy mesh zones may produce a noticeable hiccup on every inspector change.
+- **No shipped audio** — bring your own AudioClips. The demo plugs Unity AudioSources into the prefabs but doesn't ship sound files. Pair with FreeSound / Asset Store audio packs.
+- **AudioLowPassFilter is auto-added on Start** if missing — be aware if you're hand-managing AudioSource component stacks.
+- **Mesh zones with high-poly meshes** — BVH helps but on huge meshes (terrain LODs etc.) the cache initialization is non-trivial. Prefer authored low-poly proxy meshes for the zone shape.
+- **Multi-listener support** — `SceneAudioListenerManager` exists; verify against split-screen or multi-camera setups before assuming single-listener semantics.
+- **Tag-based tracking** uses Unity's tag system — verify the Player tag is set or use Object mode.
+- **Demo FPS controller is for demo only** — replace with project-specific controller on integration.
+- **Closed vs open shapes** — closed shapes are volumetric, open shapes are line-of-sound paths (good for "follow this corridor" audio).
+
+**Verdict Rationale:** **Approved, Recommended.** Sound Shapes fills a gap between Master Audio (global) and per-AudioSource setup (manual + tedious). The Mesh-zone mode + occlusion combination is unusually capable for an asset-store audio tool. Strong fit for the four projects with atmospheric/3D needs (HOK, AQS, HnR, SetDesign). Engineering quality is good — explicit BVH spatial index, structured editor tooling, rich demo prefabs covering common patterns. Cost (~3000 LOC, no third-party deps, no shipped audio bloat) is trivial. **Worth installing into HOK or HnR directly during the next ambient-audio iteration.**
+
+**MCP Candidate:** **Medium-High** — 5 tools in proposed `ss` group; queue after `cozy` (ENTRY-337) in TecVooDoo project priority.
+**TecVooDoo Utilities Candidate:** No — domain-specific spatial audio system; the BVH implementation is generic but the rest is audio-specific. The BVH alone could be lifted as `TVU.Spatial.BVH` if a need ever arises elsewhere; cherry-pick only.
+**TecVooDoo Games Candidate:** No — third-party runtime library.
+
+---
+
+### ENTRY-351: UI Shader Effects: Edge Effects (RVFX)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | UI Shader Effects: Edge Effects |
+| **Publisher** | RVFX |
+| **Source** | Unity Asset Store |
+| **Category** | UI VFX (Edge Glow / Electric / Border Animated Shaders for UGUI + UIToolkit) |
+| **Price** | Paid |
+| **Version** | Asset folder `Assets/RVFX/UIShaderEffects-EdgeEffects/` |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **URP + BiRP via UGUI shaders, URP via UIToolkit ShaderGraphs.** No HDRP-specific path observed. UGUI overlay shaders work pipeline-agnostically (canvas-rendered). |
+| **Dependencies** | TextMeshPro / UGUI (default install). UIToolkit (default install). No third-party deps. |
+| **Install Size** | ~73 MB (`Assets/RVFX/UIShaderEffects-EdgeEffects/`) |
+| **Evaluated** | May 1, 2026 |
+| **Evaluated in** | Sandbox `Assets/RVFX/UIShaderEffects-EdgeEffects/` |
+| **Verdict** | **Approved, Recommended, UI** — animated edge-effect shaders for both UGUI and UIToolkit in one pack. Strong default UI VFX layer. |
+
+**What It Does:** Animated **edge / border / glow / electric** UI shaders. Apply to a `UI/Image` (UGUI) or as a UIToolkit ShaderGraph reference and the borders pulse / electrify / glow with configurable patterns and masks. Both **additive** and **multiplicative** variants ship — additive for energy/glow, multiplicative for grunge / damage / vignette-style overlays. Includes 14+ pre-built EdgeGlow prefab variants for UIToolkit (`EdgeGlow_01` through `EdgeGlow_14+`).
+
+**Architecture:**
+- **Two parallel deliverables — UGUI + UIToolkit:**
+  - `Assets/RVFX/UIShaderEffects-EdgeEffects/Shader/` — **UGUI `.shader` files** (7 shaders: `UIEffect`, `EdgeEffect_Additive`, `EdgeEffect_Electric_Additive`, `Electric_Additive`, plus `Multiplicative/` subfolder mirroring with `EdgeEffect_Multiplicative`, `EdgeEffect_Electric_Multiplicative`, `Electric_Multiplicative`)
+  - `Assets/RVFX/UIShaderEffects-EdgeEffects/UIToolkit/Shader/` — **UIToolkit ShaderGraphs** (mirror set of `.shadergraph` files with the same names)
+- **Materials + Prefabs** — `Effects/Material/` and `Effects/Prefab/` for UGUI; `UIToolkit/Effects/EdgeGlow_NN/` per-variant folders (14+) for UIToolkit
+- **Textures (3 categories)** — `Mask/` (alpha masks for shape control), `Pattern/` (procedural-style patterns), `Icon_AI_Generated/` (AI-generated icon library to test the effects against)
+- **Demo scenes** — separate UGUI demo (`Demo/Demo.unity`) and UIToolkit demo (`UIToolkit/Demo/Demo.unity`)
+- **1 runtime helper script** — `AttachUXMLByName.cs` (UIToolkit demo helper that wires UXMLs by name)
+- **No asmdef** — minimal C# surface, folds into Assembly-CSharp
+- **Documentation** — `Document/Document.pdf` (UGUI), `UIToolkit/Document_UIToolkit.pdf`, `UIToolkit/PleaseRead.txt` (warns about UI Builder gamma-vs-linear color mismatch in Unity)
+
+**Compile Status (Unity 6, 2026-05-01):** Clean (1 trivial helper script, pure shader content otherwise).
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Underworld UI panels with ink/electric edge effects matching the Synty Dark Fantasy HUD aesthetic | **HIGH** |
+| **FearSteez** | Beat-em-up combo UI flash on hit (additive electric edges), low-HP red multiplicative vignette | **HIGH** |
+| **HideNReap** | "Reap" vision mode — pulsing edge effects on hideable objects + UI feedback | **HIGH** |
+| **AQS** | Cute quokka UI with soft edge glows on buttons | **MEDIUM-HIGH** |
+| **Blood Miner** | Mobile idle — currency gain glow, tool upgrade button electric edges, row-row activation pulse | **HIGH** |
+| **VNPC** | Point-and-click hotspot indicators (animated edge highlight on interactive areas) | **HIGH** |
+| **M3AnimatedSeries** | Animated series UI overlays / chapter cards | **HIGH** |
+| **SetDesign** | Universal UI VFX layer for hub scenes | **MEDIUM** |
+| **TecVooDoo project** | N/A | **N/A** |
+
+**Asset Store Label:** **Default UI** for any project with active UI feedback. **Recommended, UI.**
+
+**Ecosystem Notes:**
+- **Pairs with Modular 3D Text (ENTRY-341)** — 3D text + animated edge effects on the supporting frames.
+- **Pairs with Synty InterfaceDarkFantasyHUD (ENTRY-332)** — apply Edge Effects to the Synty button frames for active/hover/disabled states. Already-shipped HUD plus animated edges = polished feel.
+- **Pairs with Damage Numbers Pro** — text core handles numeric pop, edge effect handles surrounding aura.
+- **Pairs with Feel** — trigger material parameter animations on hit/event via Feel feedbacks.
+- **UIMotionFX Tool (ENTRY-352, sibling RVFX product)** is a separate, complementary pack — Edge Effects = pre-built shaders, UIMotionFX = author-your-own brush tool. Different abstraction levels.
+
+**MCP Controllability:** **Low.** Pure shader/material content; generic `assets-find` + `gameobject-component-modify` (to set material refs / shader properties) cover all use. No dedicated tool group needed.
+
+**Key Gotchas:**
+- **UI Builder Gamma vs Linear color space mismatch** — flagged in shipped `PleaseRead.txt`. Always preview in Game View, not the UI Builder preview, when authoring effect colors. (Unity-side known issue.)
+- **UIToolkit `UnityDefaultRuntimeTheme` reference** — demo scene requires `UnityDefaultRuntimeTheme` assigned to the ThemeStyleSheet field of `DemoPanelSettings`. Sometimes the ref goes missing on import; verify per the shipped `0_READ_ME_PLEASE.txt`.
+- **Two parallel deliverables** — if shipping UGUI-only or UIToolkit-only, you can prune the other tree to halve install size.
+- **`AttachUXMLByName.cs`** is demo-only glue — replace with project-specific UXML loading on integration.
+- **`Icon_AI_Generated/` textures** — AI-generated content. Verify your project's stance on AI content licensing before shipping demo icons. Replace with hand-authored or Synty icons before release.
+- **Pattern + Mask textures** are the most reusable assets — keep these even if pruning prefabs/demo.
+- **No HDRP-specific shader variants** — UI overlays render in the UI canvas pipeline regardless, so this is rarely an issue, but worth noting if ever doing HDRP world-space UI.
+
+**Verdict Rationale:** **Approved, Recommended, UI.** RVFX's UI Shader Effects: Edge Effects fills the "polished UI VFX" gap that's expensive to build by hand. Shipping both UGUI shaders AND UIToolkit ShaderGraphs in one pack is uncommon and high-value — most asset-store UI VFX assets pick one. 73 MB install is reasonable for the shader/prefab content delivered. Strong fit across nearly every TecVooDoo project with active UI.
+
+**MCP Candidate:** No — covered by generic tools.
+**TecVooDoo Utilities Candidate:** No — third-party shader content, not extractable utility code.
+**TecVooDoo Games Candidate:** No — UI VFX content, not gameplay logic.
+
+---
+
+### ENTRY-352: UIMotionFX Tool / UI Effects (RVFX)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | UIMotionFX Tool (also referenced as "UI Effects" by RVFX) |
+| **Publisher** | RVFX |
+| **Source** | Unity Asset Store |
+| **Category** | UI VFX Tool (Editor Painter for Flow + Glow Maps; Compute-Shader UI Particles; UGUI + UIToolkit) |
+| **Price** | Paid |
+| **Version** | Asset folder `Assets/RVFX/UIMotionFXTool/` |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 |
+| **Pipeline** | **Pipeline-agnostic at the UI canvas layer.** Compute shader requires SM 5.0+ (any modern desktop / mobile-tier-3+). |
+| **Dependencies** | UGUI, UIToolkit, TextMeshPro. ComputeShader runtime support (most modern targets). |
+| **Install Size** | **~341 MB** — large because of bundled AI-generated texture library across 6 thematic categories |
+| **Evaluated** | May 1, 2026 |
+| **Evaluated in** | Sandbox `Assets/RVFX/UIMotionFXTool/` |
+| **Verdict** | **Approved, Recommended, UI** — sister product to ENTRY-351 at a different abstraction level: editor brush tool + compute particles for authoring custom UI motion FX. |
+
+**What It Does:** Two complementary sub-tools in one pack:
+
+1. **UIMotionFX Painter** — editor brush tool that lets you **paint flow maps and glow maps directly onto image/UI assets**. Open the painter scene, drag a brush over an image, and watch animated motion appear (flow map drives UV scrolling direction + speed; glow map drives intensity). Export the result as a runtime-ready material + texture pair.
+
+2. **UIMotionFX Compute Shader Particles** — runtime compute-shader-driven UI particle system. Three preset variants ship: `BloomGlow`, `Geometry`, `Snow`. Compute-driven means thousands of UI particles at sub-millisecond cost vs CPU Shuriken hitting the UI canvas hard.
+
+Both subsystems ship UGUI AND UIToolkit variants.
+
+**Architecture:**
+- **UIMotionFX Painter (`UIMotionFX_Painter/`):**
+  - **Editor scripts (`Editor/Script/`):**
+    - `Core/`: `BrushSettings`, `EditorQuadUtility`, `ProcessFlowmap`, `ProcessGlowmap` (the painter algorithm)
+    - `Editor/`: `ImageMotionEffect` (custom editor)
+    - `Utilities/`: `MotionFXExporter`, `PlayBlocker`, `SceneViewUtility`, `Styles`
+  - **Shaders (`Shader/`):** `UIMotionFX.shader`, `UIMotionFX_Additive.shader`, `EditorDisplay.shader`
+  - **Editor scene** `UIMotionFX_Painter.unity` — the painting workspace
+  - **Quick Start Guide PDF** + main `UIMotionFX.pdf` doc
+- **UIMotionFX Compute Shader Particles (`UIMotionFX_ComputeShaderParticles/`):**
+  - **Runtime script:** `ComputeParticles.cs` (UGUI) + `ComputeParticles_UIToolkit.cs`
+  - **Editor:** `UI_ComputeShaderParticles_GUI.cs` (custom inspector)
+  - **Shader:** `UIComputeShaderParticles.shader` (UGUI), `UIComputeShaderParticles_Additive.shadergraph` + `UIComputeShaderParticles_AlphaBlended.shadergraph` (UIToolkit)
+  - **Pre-built prefabs:** `ComputeShaderParticleEffect_BloomGlow.prefab`, `_Geometry.prefab`, `_Snow.prefab`
+- **UIToolkit branch (`UIToolkit/`):** mirror of all above for UIToolkit-specific deployment
+- **Texture library (`Effects/Texture/AIGenerated/`)** — AI-generated images organized by theme:
+  - `Abstract/`, `Fantasy/`, `FireSmokeExplosion/`, `Icon/`, `Nature/`, `War/`
+- **Effects prefab library (`Effects/UIMotionFX/`):** 11 ImageMotionEffect prefabs (`ImageMotionEffect_01` through `_10` + `ToolImage`) — each is a pre-baked motion-FX image showing the painter's output
+- **35 prefabs total**
+- **No asmdef** — folds into Assembly-CSharp; editor scripts auto-detected by `Editor/` folder convention
+- **Documentation:** `UIMotionFX.pdf`, `UIMotionFX Painter - Quick Start Guide.pdf`, `UIToolkit.pdf`, plus per-folder `0_READ_ME_PLEASE.txt` files
+
+**Compile Status (Unity 6, 2026-05-01):** Clean. ComputeShader-using code requires SM 5.0+ at runtime; editor compiles regardless.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Acheron-themed flowing-water motion on UI panels (river-flow patterns), torch-flicker UI overlays | **HIGH** |
+| **VNPC** | Painted-style point-and-click hotspots with custom motion painted directly onto illustrated assets | **HIGH** — the painter pairs perfectly with hand-authored illustrated UI |
+| **M3AnimatedSeries** | Animated-series-grade UI motion (custom flow on transition cards) | **HIGH** |
+| **AQS** | Quokka world UI with subtle painted motion on cute icons | **MEDIUM-HIGH** |
+| **HnR** | Stealth horror UI — painter for custom "Reap vision" effect overlays + Snow compute particles for atmospheric UI | **HIGH** |
+| **FearSteez** | Beat-em-up — Geometry compute particles for combo flash, BloomGlow for power-up indicator | **MEDIUM-HIGH** |
+| **Blood Miner** | Mobile compute-shader cost — verify on target mobile GPU; if framerate is fine, BloomGlow for currency-gain feedback is great | **MEDIUM** (perf gate) |
+| **SetDesign / TecVooDoo project** | N/A | **N/A** |
+
+**Asset Store Label:** **Recommended, UI.** Not strictly Default — value emerges when you author **custom** UI motion (painter workflow). For projects that just need pre-built effects, ENTRY-351 (Edge Effects) is the lighter default; this pack is the next step up.
+
+**Ecosystem Notes:**
+- **Sibling to ENTRY-351 (Edge Effects)** — different abstraction levels:
+  - **ENTRY-351 = pre-built shaders.** Drop in, configure parameters, ship.
+  - **ENTRY-352 = author-your-own.** Painter + compute particles. Higher ceiling, higher floor.
+- **Pairs with Synty / Modular 3D Text / Damage Numbers Pro** — the painter outputs material + texture pairs that drop into any standard UGUI / UIToolkit pipeline.
+- **Pairs with Feel** — trigger compute-particle bursts via MMF feedback.
+- **Compute-shader path is GPU-bound, not CPU-bound** — frees the UI thread for transform-heavy work. Important for mobile/Switch.
+- **Painter workflow is editor-only** — no runtime cost beyond the exported textures.
+
+**MCP Controllability:** **Low-Medium.** Painter is a heavy editor UI workflow that's hard to automate via MCP (mouse-driven brush). Compute particles have ~6 parameters (count, lifetime, color, gravity, bloom, etc.) reachable via generic `gameobject-component-modify`. No dedicated tool group needed. If a project standardizes on a few pre-baked motion-FX outputs, `assets-prefab-instantiate` covers usage.
+
+**Key Gotchas:**
+- **341 MB on disk** — the AI-generated texture library is the bulk. **Prune `Effects/Texture/AIGenerated/`** by category if you only use one (e.g. drop War + FireSmokeExplosion if your project is cute/fantasy). Could trim to ~100-150 MB easily.
+- **AI-generated texture licensing** — verify your project's stance on AI content before shipping. Replace with hand-authored / Synty / KayKit textures pre-release.
+- **Painter scene has its own `UIMotionFX_Painter.unity`** — don't accidentally include it in build scenes. Editor-only workspace.
+- **UIToolkit branch is a parallel deliverable** — drop the unused branch (UGUI-only or UIToolkit-only) at standalone migration to cut size and avoid confusion.
+- **Compute shader requirement** — desktop/console fine. Mobile: SM 5.0+ (most 2018+ phones). WebGL: limited compute support; verify before shipping web builds.
+- **Painter outputs material + texture pairs** — these are project-side assets; fold into your project's UI prefab structure rather than referencing back into the RVFX folder.
+- **`PlayBlocker.cs`** suggests the painter blocks play mode while painting — expected, mention it if onboarding new contributors.
+- **`MotionFXExporter.cs` flow** — runs at export-time. Verify the export goes to a `_Project/UI/MotionFX/` folder under your project root, not into the RVFX install folder (which would get overwritten on update).
+
+**Verdict Rationale:** **Approved, Recommended, UI.** UIMotionFX Tool is a legitimate workflow upgrade — the painter abstraction (paint flow + glow with a brush) is what most teams hand-roll badly. Plus compute-shader UI particles is a genuinely faster path than Shuriken in UI canvas. Strong fit for projects that author custom UI motion (HOK, M3, VNPC). Cost (341 MB) is the main downside but is fully prunable. Pair with ENTRY-351 (Edge Effects) — Edge Effects for fast pre-built, UIMotionFX for custom authoring.
+
+**MCP Candidate:** No — painter is editor-mouse-driven, compute particles covered by generic tools.
+**TecVooDoo Utilities Candidate:** **Conditional** — the `ProcessFlowmap` / `ProcessGlowmap` algorithm is genuinely interesting and could become a `TVU.UI.MotionFX` reference if we ever build internal UI tooling. Don't lift the code (third-party), but the painter abstraction is worth referencing.
+**TecVooDoo Games Candidate:** No — UI tooling, not gameplay.
+
+---
+
+### ENTRY-353: VFX Graph Mega Pack Vol 2 v1.3 (Gabriel Aguiar Productions)
+
+| Field | Value |
+|-------|-------|
+| **Asset** | VFX Graph Mega Pack Vol 2 (v1.3) |
+| **Publisher** | Gabriel Aguiar Productions |
+| **Source** | Unity Asset Store |
+| **Category** | VFX (Visual Effect Graph asset pack — Hit Impacts / Lightning / Loot Drops / Magic Orbs / Muzzle Flashes / Portals / Summon Creatures / Weapon FX) |
+| **Price** | Paid |
+| **Version** | v1.3 (URP unitypackage extracted May 1, 2026; HDRP unitypackage retained for future HDRP project use) |
+| **Unity Versions** | Unity 2021.3+ / Unity 6 (verified extraction on Unity 6000.3.10f1 — `6.3` in original filename was internal pack version, not a Unity-target version) |
+| **Pipeline** | **URP extracted in Sandbox.** HDRP variant available as `VFXGraph_MegaPackVol2_6.3_HDRP_v1.3.unitypackage` for future HDRP projects. |
+| **Dependencies** | **Unity Visual Effect Graph** (`com.unity.visualeffectgraph 17.3.0` — added to manifest, in place). |
+| **Install Size** | **~553 MB on disk** post-extraction (includes 42 VFX Graph assets, 106 prefabs, 10+ shadergraphs, 7 demo scenes, weapon model textures, noise textures, animations) |
+| **Evaluated** | May 1, 2026 (provisional) → **re-eval extracted May 1, 2026** |
+| **Evaluated in** | Sandbox `Assets/GabrielAguiarProductions/` |
+| **Verdict** | **Approved, Recommended, VFX** — eval upgraded from provisional to confirmed after URP extraction. |
+
+**What It Does:** Visual Effect Graph (VFX Graph) asset pack containing 42 GPU-accelerated particle effects across 7 gameplay categories — Hit Impacts, Lightning, Loot Drops, Magic Orbs, Muzzle Flashes, Portals, Summon Creatures, and Weapon FX (with paired weapon models for Axe/Dagger/Hammer/Shield). 7 demo scenes (one per category) showcase the effects; 106 prefabs total wrap the VFX Graphs into ready-to-instantiate objects. Two PDFs ship: general (`Documentation_v1.pdf`) and a **Weapon FX sub-pack** (`Documentation_WeaponFX_v1.pdf`).
+
+**Extracted Content Inventory (post URP unitypackage extraction):**
+
+| Folder | Contents |
+|--------|----------|
+| `Animations/` | Per-effect animation clips |
+| `Materials/Lightning/` `LootDrop/` `MeshEffects/` `Sky/` `Weapons/` | Per-category materials feeding the VFX Graphs |
+| `Models/Animals/` `Weapons/` | Demo weapon meshes (Axe, Dagger, Hammer, Shield) + summon-creature animal models |
+| `Prefabs/` | 106 prefabs across 8 categories: `HitsImpacts/`, `Lightning/`, `LootDrops/` (5 variants in own folders), `MagicOrbs/`, `Muzzles/`, `Portals/`, `SummonCreatures/`, `WeaponEffects/`, plus `VFXGraphs/` (42 source VFX Graph assets including a `Tests/` sub-folder for Lightning02/03 variations) |
+| `Scenes/` | 7 demo scenes: `VFXGraph_Hit-n-Impacts.unity`, `VFXGraph_Lightning.unity`, `VFXGraph_LootDrops.unity`, `VFXGraph_MagicOrbs.unity`, `VFXGraph_Muzzles.unity`, `VFXGraph_Portals.unity`, `VFXGraph_WeaponFX.unity` |
+| `Scripts/` | Light scripts (likely demo glue — animation triggers, weapon swing logic) |
+| `Settings/` | Project-side VFX-related config |
+| `Shaders/` | 10+ ShaderGraphs: `Distortion_VFXShader`, `GalaxyShader_Unlit`, `Glow_Unlit`, `Lightning01_Unlit_VertexOffset`, `Lightning01_VFXGraph_{GradientNoise,SimpleNoise,Voronoi}`, `Lightning02_VFXGraph`, `MeshEffect01_PBR`, `MeshEffect02_PBR`, etc. |
+| `Textures/` | `Noise/` (procedural noise textures), `Sword/`, `Weapons/{Axe,Dagger,Hammer,Shield}/` (per-weapon-type texture sets) |
+
+**42 VFX Graph asset breakdown (file names):**
+- **Hits (9):** `vfxgraph_Hit01` through `vfxgraph_Hit09`
+- **Lightning (4):** `vfxgraph_Lightning01`, `Lightning02`, `Lightning03` (in Tests/), `Lightning04_simple`
+- **Loot Drops (3 in main folder + per-LootDrop subfolder VFX):** `vfxgraph_LootDrop01`, `LootDrop04`, `LootDrop05` (plus per-variant prefab folders 01-05)
+- **Magic Orbs (10):** `vfxgraph_MagicOrb01` through `MagicOrb09`, plus `MagicOrb02_Tut` (tutorial variant)
+- **Muzzle Flashes (4+):** `vfxgraph_MuzzleFlash01` through `MuzzleFlash04` (more in subfolders)
+- **Portals, Summon Creatures, Weapon Effects:** wrapped in their own prefab subfolders
+
+**No asmdef** — VFX Graph assets are data-only; demo scripts fold into Assembly-CSharp.
+
+**Pipeline + Install Workflow (completed):**
+1. ✅ Asset Store wrapper installed (PDFs + two pipeline `.unitypackage` files).
+2. ✅ `com.unity.visualeffectgraph 17.3.0` added to manifest.
+3. ✅ **DONE:** `VFXGraph_MegaPackVol2_6.3_URP_v1.3.unitypackage` extracted to `Assets/GabrielAguiarProductions/`.
+4. ✅ Compile clean post-extraction (Unity 6, URP, VFX Graph 17.3.0).
+
+**Compile Status (Unity 6, 2026-05-01):** **Clean post-extraction.** `com.unity.visualeffectgraph 17.3.0` resolves dependencies cleanly. The `6.3` in the original unitypackage filename was internal pack version, not a Unity-target version — extraction worked on Unity 6000.3.10f1 without compat issues.
+
+**Project Fit:**
+
+| Project | Use Case | Fit |
+|---------|----------|-----|
+| **HOK** | Underworld VFX — soul wisps, river-water particles, ghost trails, ferry lantern flicker | **HIGH** |
+| **AQS** | Quokka world — sparkles, dust motes, pollen, magical trails, friend-pop visualizations | **HIGH** |
+| **HideNReap** | Stealth horror — vision FX (Reap mode), dread aura, blood mist (paired with Vefects ENTRY-339), shadow tendrils | **HIGH** |
+| **FearSteez** | Beat-em-up impact FX — punch flashes, finisher bursts, status effect auras (paired with Mesh Slicer ENTRY-349) | **HIGH** |
+| **M3AnimatedSeries** | Animated series — episode-grade VFX for action / magic / environmental scenes | **HIGH** |
+| **Blood Miner** | Mobile idle — VFX Graph is GPU-heavy; verify mobile budget. Currency particle burst on chop is a tempting use, but Polygon Arsenal (ENTRY-307, Shuriken-based, lighter) may be the better mobile fit | **LOW-MEDIUM** (perf gate) |
+| **VNPC** | Point-and-click — atmospheric scene VFX (rain, magic, fire) | **MEDIUM-HIGH** |
+| **SetDesign** | Universal VFX library for hub scenes | **HIGH** |
+| **TecVooDoo project** | N/A | **N/A** |
+
+**Asset Store Label:** **Recommended, VFX** for any project on URP/HDRP needing high-quality GPU VFX. Skip for mobile/Shuriken-only projects.
+
+**Ecosystem Notes:**
+- **vs Polygon Arsenal (ENTRY-307):** Polygon Arsenal is **Shuriken-based** (CPU particles, ~1400 prefabs, low-poly stylized). VFX Graph Mega Pack is **GPU-based** (high particle count, more complex behaviors, higher visual fidelity). **Complementary** — Polygon Arsenal for stylized/mobile/quick, VFX Graph Mega Pack for premium/desktop/fidelity.
+- **vs Vefects Blood VFX (ENTRY-339):** Vefects = blood-specific Shuriken library. VFX Graph Mega Pack = general-purpose GPU VFX (impacts, magic, environment, weapons per the Weapon FX docs). Complementary.
+- **vs Effect Collection Megapack (ENTRY-309):** Effect Collection was Conditional (CartoonVFX9x). Mega Pack Vol 2 covers the same broad-VFX-library role at higher fidelity.
+- **vs Cozy 3 (ENTRY-337):** Cozy is sky/weather/atmosphere; this is gameplay/effect VFX. Stack: Cozy (sky) + Lumen (god rays, ENTRY-325) + Mega Pack Vol 2 (gameplay) + Vefects (blood) = comprehensive VFX layer.
+- **VFX Graph requires Unity Visual Effect Graph package** — added this session to manifest at 17.3.0. Don't remove it.
+- **Vol 2 implies Vol 1 may exist** — if Vol 1 is also in scope, evaluate together later. The two Mega Pack volumes are typically complementary, not redundant.
+- **`Documentation_WeaponFX_v1.pdf`** suggests a Weapon FX sub-line — could be muzzle flashes, impact decals, projectile trails. Re-eval after extraction to confirm.
+
+**MCP Controllability:** **Low-Medium** post-extraction. VFX Graph assets (`.vfx` files) are configured via VFX Graph editor — heavy node-based UI that's hard to automate. Per-VFX-instance properties (spawn rate, color, lifetime) are reachable via `VisualEffect.SetFloat(name, value)` etc. — generic `gameobject-component-modify` covers this. **No dedicated tool group needed** unless a project standardizes on dozens of VFX presets, in which case a small `vfx-spawn` / `vfx-set-property` pair could speed iteration.
+
+**Key Gotchas:**
+- **NOT YET EXTRACTED.** The eval is provisional — actual VFX content is inside the URP `.unitypackage` file. Extract before relying on this entry for asset selection.
+- **`6.3` in the filename is suspicious** — could be:
+  - Unity version target (Unity 6.3, which doesn't exist yet — Unity 6 is `6000.x`), OR
+  - The pack's own internal version naming (Mega Pack 6.3), OR
+  - An old Unity 2019.x VFX Graph version artifact
+  - **Verify before extracting on Unity 6000.3.10f1** — if 6.3 means the pack targets a too-new Unity version, extraction may fail or produce errors.
+- **HDRP unitypackage NOT for URP projects** — only extract the URP one in Sandbox. Importing the HDRP package on a URP project will likely cause shader/render-feature errors.
+- **VFX Graph version compatibility** — Mega Pack v1.3 may have been authored against an older VFX Graph version. Unity's VFX Graph has had API churn; expect possible upgrade prompts on import.
+- **Restart Unity after extracting** — VFX Graph picks up new shader includes / property bindings on restart.
+- **No asmdef expected** in the extracted content — VFX Graph assets are data-only, no code surface.
+- **GPU memory cost** — VFX Graph effects can allocate large compute buffers. Profile before shipping mobile/low-VRAM targets.
+- **The two PDF docs may not match the extracted content version** — `Documentation_v1.pdf` is "v1" while the unitypackage is "v1.3". Check the extracted folder for any updated docs.
+- **Re-eval after extraction.** Update this ENTRY in place with the actual VFX inventory once `Assets/GabrielAguiarProductions/VFXGraph_MegaPackVol2/` is populated.
+
+**Verdict Rationale:** **Approved, Recommended, VFX.** Gabriel Aguiar is a known-good Unity VFX Graph publisher with strong production quality. Mega Pack Vol 2 v1.3 delivered as advertised — 42 VFX Graph assets across 7 gameplay categories (Hits / Lightning / LootDrops / MagicOrbs / Muzzles / Portals / SummonCreatures / WeaponFX), 106 wrapped prefabs, 7 isolated demo scenes per category, 10+ supporting ShaderGraphs (Lightning has 4 noise variants — GradientNoise, SimpleNoise, Voronoi, plus VertexOffset for stylized lightning bolts), weapon mesh textures for paired Weapon FX use. URP path is clean on Unity 6000.3.10f1 with VFX Graph 17.3.0. 553 MB on disk is reasonable for the GPU-fidelity content delivered.
+
+**Strongest categories for current TecVooDoo catalog:**
+- **HitsImpacts (9 variants)** — universal across HOK / FS / HnR / BM (chop hit). Pair with Vefects Blood VFX (ENTRY-339) for blood overlay.
+- **MagicOrbs (10 variants)** — HOK underworld magic, AQS ambient sparkles, M3 series content
+- **Lightning (4 variants)** — HnR storm/thunder, M3, HOK underworld lightning crackle
+- **LootDrops (5)** — BM blood-coin pickup, HOK soul collection, FS pickup feedback
+- **MuzzleFlashes (4+)** — FearSteez gun-style finishers if applicable, M3, HnR Reap weapon
+- **WeaponFX** — FS swing trails, HOK scythe (the Reaper has a scythe!)
+- **Portals** — HOK underworld transitions, AQS portal-to-friend mechanic
+- **SummonCreatures** — HnR Reap summon, M3 episode content
+
+**MCP Candidate:** No — VFX Graph editing is node-based, not parameter-based. Runtime per-instance config covered by generic tools (`gameobject-component-modify` on `VisualEffect` component for SetFloat / SetVector / SetTexture parameter overrides).
+**TecVooDoo Utilities Candidate:** No — third-party VFX content.
+**TecVooDoo Games Candidate:** No — third-party content pack.
+
+**Standalone Migration Notes:**
+- 553 MB total — at standalone migration, **prune to needed categories** (e.g. HOK keeps MagicOrbs + Lightning + Portals + WeaponFX, drops MuzzleFlashes + LootDrops + SummonCreatures → likely halves the install).
+- 7 demo scenes are valuable for reference — keep at least one per category you ship, exclude from build via Build Profile scene list.
+- HDRP unitypackage stays in place for future HDRP project re-import; harmless on URP project (just sits as a `.unitypackage` file).
+- Restart Unity is recommended whenever extracting VFX Graph packs (shader compilation cache).
 
 ---
 

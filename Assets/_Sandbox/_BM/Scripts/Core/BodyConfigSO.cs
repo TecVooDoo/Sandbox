@@ -13,6 +13,12 @@ namespace BM.Core
         Cow
     }
 
+    public enum OrganSize
+    {
+        Small,
+        Large
+    }
+
     [CreateAssetMenu(menuName = "BM/Body Config", fileName = "NewBodyConfig")]
     public sealed class BodyConfigSO : ScriptableObject
     {
@@ -27,6 +33,7 @@ namespace BM.Core
         [SerializeField] private GameObject _gorePrefab;
         [SerializeField] private Color _particleColor = Color.red;
         [SerializeField] private GameObject[] _bodyPartPrefabs;
+        [SerializeField] private OrganSize _organSize = OrganSize.Small;
 
         [Header("Audio")]
         [SerializeField] private AudioClip _harvestSound;
@@ -39,6 +46,7 @@ namespace BM.Core
         public GameObject GorePrefab => _gorePrefab;
         public Color ParticleColor => _particleColor;
         public GameObject[] BodyPartPrefabs => _bodyPartPrefabs;
+        public OrganSize OrganSize => _organSize;
         public AudioClip HarvestSound => _harvestSound;
     }
 }

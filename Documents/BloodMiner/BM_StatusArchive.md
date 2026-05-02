@@ -4,6 +4,166 @@
 
 ---
 
+**Session 92 (May 1, 2026) -- Sliceable Phase A polish: timing, FX burst, post-consume spacing, deterministic 4-quadrant fling, containment cube:**
+
+*Driven by playtest feedback from end of Session 91. Each fix paired with a verifiable observation from the user's playtest.*
+
+*Timing tightened (chop+FX felt ~0.5s late):*
+- `Ghoul._chopImpactDelay` 0.7 → 0.2 (scene Ghoul Inspector). Slice + FX dispatch now lands much closer to the visual axe-impact frame of `Melee_1H_Attack_Slice_Horizontal`.
+- **Synty FX startDelay quirk patched at runtime:** `FX_Explosion_Body_Bloody_01` ships with `startDelay=0.1` + `loop=true` on 3 of its 4 particle systems — the 0.1s delay made the burst feel late and the loop made it trickle. New `SliceableBody.NormalizeFxForBurst(GameObject)` overrides per-instance: `startDelay=0`, `loop=false`, then `Clear(true)` + `Play(true)`. Doesn't touch the shared Synty asset. Applied to both `_hitFxPrefab` and `_bloodSplatPrefab` spawns.
+- After playtest the user said FX is now "a breath too quick" — parking re-tune until the axe idle-pose fix lands (carryover from Session 91 next list), since the axe pose change will shift the perceived swing impact frame anyway.
+
+*Animals "stacking" at outlet (pre-existing, surfaced once chop chain made transitions slower):*
+- Code already only renders one body per outlet (`_currentBody` is single, backlog is invisible config queue). Real cause was chunks/organs from the previous body overlapping with the next body's instant teleport-to-outlet on consume.
+- New `RowOutlet._postConsumeDelay` field (default 0.8s, Inspector). After `ConsumeBody()`: if backlog has items, start `PlaceNextAfterDelay()` coroutine that waits the delay then calls `PlaceFromBacklog()`. Lets the previous body's chunks/organs fly clear before the next one arrives. Eventually replaced by the rigidbody-drop on each animal (Sprint 3 polish item) — once dropping is in, set `_postConsumeDelay=0` since drop time naturally spaces arrivals.
+
+*"4-piece looks like halves on Hit 2" — perception, not a bug:*
+- Diagnostic confirmed `Body_Cat_4Piece` has 4 distinct meshes (TopFront/TopBack/BotFront/BotBack, all with RB+BoxCollider). The visual issue was the previous **random outward direction** in `CloneAndFlingFourPiece` could send 2 pieces in similar directions → user reads them as "two halves flying."
+- Replaced random with deterministic `QuadrantDirection(pieceName)` mapping piece name suffix → outward octant (Top→+Y, Bot→-Y; Front→+Z, Back→-Z; alternating X kicker). Each quarter now reliably flies into its own quadrant.
+- `_fourPieceImpulse` 3.5 → 6 for stronger separation.
+- All chunk RBs now use `CollisionDetectionMode.ContinuousDynamic` so fast-moving pieces don't tunnel through the containment walls.
+- User confirmed playtest: "I guess it was slicing into quarters" — perception issue resolved. **But the slice axis still reads wrong**: V-cut is currently along world Z (front/back of body), they want it along world X (head-to-tail / left-right symmetry plane, the canonical butcher cut). Queued for next session — needs a re-bake of the 4-piece prefabs with the new V-plane normal.
+
+*Row_0 containment cube:*
+- User drew an orange reference Cube in BM_Shaft at Position (1.9, 0.7, 0.05) Scale (6.81, 2.31, 2.11) showing the desired containment volume — width matches the leftover gauge, length runs from half the tool upgrade button to the gauge edge, height from gauge bottom to about half the outlet.
+- Initial 6-wall containment built with 0.1-thick walls **inside** the cube → some chunks tunneled through.
+- Fixed by rebuilding with 0.5-thick walls placed **outside** the reference cube (so the inner surface of the wall still aligns with the reference cube's outer surface — no shrinkage of the chop volume). User confirmed playtest: "containment worked better that time."
+- The orange `Cube` GameObject in scene root remains intact — user explicitly noted it's the upgrade button (will be repurposed visually when the dragon flow lands in Sprint 3).
+
+*Other 6 BodyConfigs still on legacy single-chop prefabs* — Cat-only validation still in effect, scale once head-to-tail slice is dialed in. [S93 retroactively confirmed only Dog had a legacy ref; the other 5 were null.]
+
+*Weapon attach bone correction (end-of-session find by user):*
+- KayKit characters have a dedicated `handslot.r` / `handslot.l` bone nested inside `hand.r` / `hand.l`. The handslot is authored with the correct grip rotation. Weapons parented to **handslot** with reset local transform line up perfectly; parenting to `hand.r` (which is what the prior code did) leaves the weapon dangling straight down at idle, clipping the ground.
+- `ChopMinion.AttachWeapon` updated to find `handslot.r` first, falling back to `hand.r` for non-KayKit rigs.
+- The BM_Shaft Ghoul's existing `Skeleton_Axe` was re-parented from `hand.r` to `handslot.r` and transform reset.
+- Resolves the queued "Weapon idle pose fix" item that was originally going to be a hand-rotation tweak.
+- Memory `project_kaykit_weapon_attach.md` written.
+
+---
+
+**Session 91 (May 1, 2026) -- Sliceable chop chain wired (Phase A): SliceableBody + OrganPool + 2-hit consume with organs, Cat smoke-tested in BM_Shaft:**
+
+*Design lock-in (decisions made before any code):*
+- **2-hit chain.** Hit 1: Whole→TwoPiece + FX. Hit 2: TwoPiece→FourPiece (4 pieces fly with stronger impulse + torque) + 2 random organs spawn at body center + outlet releases its slot. Picked 2-hit over 3-hit so the loop stays tight; the four-piece is the "they fly" moment, not a rest state.
+- **Organs are visual juice, not a new mechanic.** Leftover gauge mechanics unchanged; gauge UI stays as the clear signal for when the dragon can wake. Total gauge fill per body matches legacy single-chop value (only fires on Hit 2).
+- **Outlet ownership** stays through both hits; releases on Hit 2 (when organs spawn). Ties chop-chain progression to the existing outlet backup mechanic — encourages player to keep chopping.
+- **Per-animal organ size class** (Small / Large) drives which 5-prefab pool to draw from. Cat/Dog/Chicken/Rabbit = Small; Pig/Sheep/Cow = Large.
+- **Sprint 3 dragon/animatronic flow captured but deferred:** dragon asleep at home → player walks over to wake → dragon eats organs (drains gauge) → walks home → burp particle FX → tool upgrade triggered → sleeps. Animatronic = visual auto-upgrade button that wakes the dragon between random idle states.
+
+*Code foundation (compiles clean, no errors):*
+- **`BodyConfigSO`** added `OrganSize { Small, Large }` enum + `_organSize` field exposed via `OrganSize` property.
+- **`OrganPool.cs`** new ScriptableObject with `_smallOrgans` / `_largeOrgans` arrays + `PickRandom(OrganSize)`. Asset created at `Assets/_Sandbox/_BM/Data/OrganPool.asset` populated with the user's 10 organ prefabs from `Assets/_Sandbox/_BM/Prefabs/Organs/` (5 Small + 5 Large: Brain/Eye/Guts/Heart/Liver each).
+- **`SliceableBody.cs`** new MonoBehaviour. Sits on the Sliceable prefab root, owns Whole/TwoPiece/FourPiece sub-trees. `Hit(Vector3 swingDir)` advances state and returns `true` on the final hit. On Hit 1 the TwoPiece children's Rigidbodies get an outward+up impulse + torque. On Hit 2 each FourPiece child is **cloned** out to the row, given an RB+impulse+torque, auto-destroyed after `_fourPieceLifetime` (default 4s) — and N random organs spawn at the body center with their own impulses, auto-destroyed after `_organLifetime` (default 6s). **Cloning preserves the prefab structure for pool reuse** (the alternative — reparent original pieces — would break the prefab when it returns to BodyPool).
+- **`RowOutlet`** added `CurrentBody` getter; `PlaceFromBacklog` now calls `slice.ResetState()` + `slice.Configure(config)` after rent so pool reuse comes back as Whole.
+- **`RowWorker.ChopImpactRoutine`** dispatches to `SliceableBody.Hit(swingDir)` when the body has one; legacy single-chop path retained as a fallback for any body without SliceableBody. Outlet only releases on the final hit. `Row.OnChop` only fires on the final hit (so total gauge fill per body is unchanged from the legacy 1-hit path).
+
+*Asset / prefab wiring:*
+- All 7 `<Animal>_4Piece.prefab` children got `Rigidbody` (mass=0.5, drag=0.5, angularDrag=1.5, useGravity=true) + `BoxCollider` (0.15³ default — Cat/Dog already had colliders from BM-canonical authoring, others got fresh ones).
+- All 7 `<Animal>_Sliceable.prefab` roots got `SliceableBody` component with all references wired: `_whole` / `_twoPiece` / `_fourPiece` sub-trees, `_hitFxPrefab` → `FX_Explosion_Body_Bloody_01.prefab`, `_bloodSplatPrefab` → `FX_BloodSplat_01.prefab`, `_organPool` → `OrganPool.asset`.
+- All 7 BodyConfigs got `_organSize` set (Cat/Dog/Chicken/Rabbit=Small, Pig/Sheep/Cow=Large).
+- **`BodyConfig_Cat._bodyPrefab` repointed to `Body_Cat_Sliceable.prefab`** for smoke test. The other 6 BodyConfigs still point at legacy single-chop prefabs (Cat-first validation, scale once dialed in). [Note: S93 retroactively confirmed only Dog had a legacy ref; the other 5 were null.]
+
+*Smoke test result:* user playtested in BM_Shaft, chop chain works — needs tuning. Tuning passes belong in the next session's open agenda.
+
+*Gotchas hit and worth remembering:*
+- **`Transform.Find("ChildName")` skips inactive children** in this Unity version. The Sliceable prefab's TwoPiece and FourPiece sub-trees default to inactive (only Whole is active), so the auto-find via `transform.Find` returned null. Fixed by iterating `transform.GetChild(i)` and matching by name. SliceableBody.Awake's auto-find still uses `Find` — fine for runtime since the prefab is instantiated active, but the editor-time wiring script had to iterate.
+- The SliceableBody wiring script also needed to use `PrefabUtility.LoadPrefabContents` + `SaveAsPrefabAsset` (not direct Inspector edits) because the prefab's nested instances couldn't be reliably modified through other paths.
+
+*Status of current BM scene:* `BM_Shaft` only changed via the BodyConfig_Cat repoint + the outlet/worker dispatch. No scene-level changes needed beyond that. Sprint 2 still in progress.
+
+---
+
+**Session 90 (Apr 30, 2026) -- Mesh Slicer Free experiment + pre-baked sliced body prefab pipeline:**
+
+*AnimationTest scene populated with animal bodies (`Animals` parent → renamed `AnimalsTest` after dup):*
+- 7 BM body types instantiated under `AnimalsTest` parent at world Z=8 (opposite the Characters row at Z=-7.86): `Body_Cat` + `Body_Dog` (BM-canonical variants of Suriyun Cute Pet) and `Chicken` / `Pig` / `Rabbit` / `Sheep` / `Cow` (raw Suriyun Cute Pet sources, since their `BodyConfigSO._bodyPrefab` slots are still empty).
+- Layout: 2-unit X-spacing, all facing Characters row (Y=180 rot). User repositioned/rescaled in-scene during the session — the script-driven layout was just a starting point.
+
+*Mesh Slicer Free runtime experiment (ENTRY-349 application — first BM use of the asset):*
+- All 7 SkinnedMeshRenderer animals sliced cleanly via `Hanzzz.MeshSlicerFree.SkinnedMeshSlicer.Slice(targetGO, smrIdx, rootIdx, threePointsOnPlane, capMat)` with bone weights preserved.
+- **First pass:** horizontal cut through each animal's `bounds.center` → `_Top` + `_Bottom` halves under `AnimalsSlices` parent. Cap-fill submesh got `Assets/Synty/PolygonParticleFX/Materials/PolygonParticleFX_Blood.mat` (placeholder — additive particle material, looks dim at the cut face).
+- **Second pass:** chained slicing — H-cut then V-cut (normal = world forward Z) on each half → 4 quarters per animal under `AnimalsSlices3`. Confirmed mesh slicer can be re-applied to its own output (each clone is a full rig with correct bone references).
+- **Rayfire 2 not needed** for mesh-cutting use case.
+
+*Discovered quirks (worth remembering):*
+- **`Instantiate(targetGO)` inside `CreateSlicedGameObject` drops world Z** — the slice halves end up at world Z=0 even when the source is at Z=8. The slicer code creates clones via `Object.Instantiate(targetGameObject)` without explicit position. Workaround: snap `result.Item1.position.z` and `result.Item2.position.z` back to the source's original Z before doing anything else (especially before chained slices, since the V-plane needs to actually intersect the mesh).
+- **Y-sink risk for runtime gore:** if you nudge the bottom half down (e.g. `position -= Vector3.up * 0.05f`), the rendered geometry dips below the floor. For BM ground-level use, either skip the Y-nudge or apply a positive Y-bump to both halves.
+- **Bounds inflation on chained slices:** SMR auto-bounds for sliced halves come back larger than the original (Cow Z-size 0.19 → 0.71 after cut). Cosmetic — culling box only — but if it causes pop-in, call `RecalculateBounds()` on the sliced mesh.
+
+*Pre-baked sliced prefab pipeline (the actual production asset):*
+- Decided against runtime slicing — pre-bake pieces into prefabs and swap on hit. Way cheaper, predictable performance, hand-tunable in editor, simpler rigidbody/collider attach later.
+- **Built 21 prefabs total** under `Assets/_Sandbox/_BM/Prefabs/Bodies/Sliced/`:
+  - 7 × `<Animal>_2Piece.prefab` — H-cut halves
+  - 7 × `<Animal>_4Piece.prefab` — H+V quartered pieces
+  - 7 × `<Animal>_Sliceable.prefab` — **the canonical body prefab format**: single root with three nested prefab instances `Whole` (active), `TwoPiece` (inactive), `FourPiece` (inactive). Hit cycles state via `SetActive` flips — no GameObject swap, no respawn, no BodyConfigSO field changes. Picked over the "swap whole prefab on hit" alternative because it's one BodyConfigSO ref per body and one in-scene instance through the entire chop chain.
+- 42 mesh assets persisted under `Sliced/Meshes/` (`<Animal>_Top`, `_Bottom`, `_TopFront`, `_TopBack`, `_BotFront`, `_BotBack`).
+- Build script: `BuildSlicedPrefabs.Main` + `BuildSliceablePrefabs.Main` (one-shot script-execute calls; not committed as editor scripts since this is editor-time data baking, not runtime code).
+- One demo `Body_Cat_Sliceable_Demo` instance dropped in the AnimationTest scene at (0, 0, 4) for hand-toggling Whole/TwoPiece/FourPiece in the Inspector.
+
+*Status of current BM scene:* unchanged — `BM_Shaft` not touched this session. Sprint 2 still in progress. Sliced prefabs are sitting in `Sliced/` ready to be wired into `BodyConfigSO._bodyPrefab` next session.
+
+---
+
+**Session 89 (Apr 30, 2026) -- Damageable minions + Generic rig conversion for KayKit Skeletons:**
+
+*Generic rig conversion (root cause of "minion sinks into floor on death"):*
+- KayKit's `Skeletons_Death` / `Skeletons_Death_Pose` / `Skeletons_Death_Resurrect` clips animate bones flying APART from each other (the skeleton-falls-apart effect). Mecanim's Humanoid avatar abstracts the rig into ~15 muscle joints with rigid hierarchy, so Humanoid retargeting strips out the bone-separation entirely (collapsed it to a "humanoid crumples to ground" pose). Generic preserves per-bone translations because the clip's curves drive bones directly by name.
+- Inspector showed the smoking gun: *"Some generic clip(s) animate transforms that are already bound by a Humanoid avatar. These transforms can only be changed by Humanoid clips."* Unity blocks Generic clips on Humanoid models.
+- **Converted to Generic + NoAvatar:** `Skeleton_Minion.fbx`, `Skeleton_Warrior.fbx`, and all KayKit anim FBXs (`Rig_Medium_*.fbx`, `CharAnim_Rig_Medium_*.fbx`). Animatronic stays Humanoid (Synty retarget chain unchanged).
+- All KayKit anim clips share the same `Rig_Medium` skeleton hierarchy → Generic clips drive bones by name across every model + every clip without retargeting.
+- **BM_Shaft scene rewire:** Cleared `Skeleton_WarriorAvatar` reference on the Ghoul's WarriorModel Animator (avatar sub-asset deleted when FBX went Generic). Runtime-spawned minions/gatherers are handled automatically because they instantiate from the now-Generic FBX prefabs.
+- Memory `project_bm_skeleton_rig_type.md` written with the full reasoning.
+
+*Damageable minions (Queued / Mechanics → done):*
+- **AC_ChopMinion.controller** extended: 5 states now (Idle, Attack, **Death**, **DeathPose**, **Resurrect**) with new triggers `Death` + `Revive`. AnyState→Death on `Death` trigger interrupts whatever the minion was doing. Death → DeathPose (auto on exit) → Resurrect (on `Revive` trigger) → Idle (auto on exit).
+- **ChopMinion.cs** new `LifeState { Active, Dying, Dead, Reviving }` + public `Hit()` and `IsAlive`. `Hit()` fires `Death` trigger, releases outlet target, sets timer. During non-Active states: skips normal AI, ticks `_lifeTimer`, transitions through Dying → Dead (waits `_deadDuration` = 3s, then fires `Revive`) → Reviving (waits resurrect anim length) → Active.
+- `Target` getter returns null when not Active so other minions don't get blocked from claiming the same outlet.
+- **Tunable defaults on ChopMinion:** `_deathAnimLength = 2s`, `_deadDuration = 3s` offline, `_resurrectAnimLength = 2.7s`. **Total downtime per hit ≈ 7.7s.**
+- **Ghoul.cs DoSwing()** new `HitMinionsInFront()` runs before the body-chop. Finds all `ChopMinion` components in the current row, filters by `_facingDir` (must be on side Ghoul faces) and `_chopReach`, calls `Hit()` on each living one. Swings hit ALL living minions in that wedge — not just the first. The same swing chops the body AND knocks down minions standing too close, adding tactical weight (don't hit your own workers; bonus minion #2 is redundancy insurance).
+
+*Test scene reference:* `Assets/_Sandbox/_BM/Scenes/AnimationTest.unity` runs `AC_TestMinionDeathCycle.controller` on the Skeleton_Minion (Idle_A → Skeletons_Death → Skeletons_Death_Pose → Skeletons_Death_Resurrect → Idle_A, auto-cycling). Verified bone-separation playing cleanly after Generic conversion.
+
+*Slice animation + weapons wired (later in same session, after damageable minions verified):*
+- `Melee_1H_Attack_Chop` looked like a jab once weapons were in hand. Swapped Attack-state motion on `AC_ChopMinion.controller` and `AC_Ghoul.controller` to `Melee_1H_Attack_Slice_Horizontal` (1.37s, Generic). The queued "swap Chop → Slice_Horizontal" item from Session 88 is now done.
+- **Weapon prop pipeline:** new `_weaponPrefab` + `_weaponMaterial` serialized fields on ChopMinion. `SetupModel()` walks the rig hierarchy to find the `hand.r` bone and parents the weapon there with Mat_Skeleton applied. Plumbed through `Row._minionWeaponPrefab` → `Row.Init(... minionWeaponPrefab)` → `ShaftManager._minionWeaponPrefab` so dynamically-spawned rows inherit. Scene wired with `Skeleton_Dagger` for minions. `Skeleton_Axe` parented onto the BM_Shaft Ghoul's `hand.r` bone (path: `[Shaft]/Row_0/Ghoul/WarriorModel/Rig_Medium/root/hips/spine/chest/upperarm.r/lowerarm.r/wrist.r/hand.r`).
+- **Hit timing fix:** initial implementation hit minions on the upswing. `Ghoul.HitMinionsAfterImpact()` is now a coroutine that waits `_minionHitDelay` before applying `Hit()`. This is a **separate field** from the inherited `_chopImpactDelay` (0.7s, used for the body-chop landing). Code default `_minionHitDelay = 0.55s`, **tuned in BM_Shaft scene to 0.4s** — minion-on-axe contact is a hair earlier than body-chop impact since the minion is roughly at the Ghoul's X while the body sits at the outlet. Verified in playtest: Ghoul swings → brief pause → minion crumples on the downswing where the visual axe lands.
+
+*Gatherer starting count rebalanced (2 → 1):*
+- Pipe-block cascades + minion downtime per Ghoul swing made the throughput pressure too friendly at start with 2 gatherers. `GathererManager._count` code default flipped 2 → 1 and BM_Shaft scene's serialized `_count` patched from 2 → 1. Slot gating unchanged (1 per 5 rows, 5 earnable + 1 start = 6 max).
+
+*Status of current BM scene:* Sprint 2 still in progress. Production controller + script changes landed; BM_Shaft Ghoul avatar cleared, weapons attached, Slice motion wired, hit timing matched to swing impact. Playtest confirmed minion damageable cycle reads cleanly.
+
+---
+
+**Session 88 (Apr 29, 2026) -- Animation test scene + Animatronic/Dragon imports + KayKit weapons:**
+
+*New AnimationTest scene at `Assets/_Sandbox/_BM/Scenes/AnimationTest.unity`:*
+- Created an isolated humanoid retarget sandbox so animation/weapon tests don't pollute `BM_Shaft`. Lined up Skeleton_Minion, Skeleton_Warrior (used for Ghoul role), and Animatronic_Normal on a 60×20 ground plane. Tear-down controllers under `Assets/_Sandbox/_BM/Scenes/AnimationTest_Controllers/`.
+- Confirmed Mecanim humanoid retarget works: KayKit characters (Skeleton_Minion/Warrior, Animatronic) all import as Humanoid with auto-generated avatars. Synty Idles + Emotes/Taunts clips are also Humanoid → drive the KayKit avatars cleanly through Mecanim with no extra setup.
+
+*Animatronic + Dragon role decisions captured (memory `project_bm_animation_sources.md`):*
+- **Animatronic** (KayKit Mystery Monthly #5, November 2023) = visual replacement for the **auto-upgrade button when activated**. Stands idle most of the time and "prods the Dragon to go to work" when fired. Synty Idles + Emotes/Taunts packs earmarked for its animation library (humanoid retarget). Guitar prop imported from same pack but not confirmed canonical for production.
+- **Dragon** (DragonPADefault from `RPGMonsterBundlePolyart`) = visual replacement for the **tool upgrade button**. Animates emptying leftovers when the button fires. Non-humanoid, uses its own bundled `Dragon` AnimatorController (16 clips: `IdleNormal`, `IdleBattle`, `Attack01/02`, `FlyFWD`, `SenseSomethingST/RPT`, etc.) — never retarget anything onto it.
+
+*Asset imports:*
+- `Animatronic_Normal.fbx`, `Animatronic_Creepy.fbx` (Humanoid rig, scale 1, materials externalized) → `Assets/_Sandbox/_BM/Art/Characters/KayKit_Animatronic/`. Texture `animatronic_A.png`/`B.png` → `Textures/`. URP/Lit `Mat_Animatronic_A.mat` and `Mat_Animatronic_B.mat` created for the two skin variants.
+- `Guitar.fbx` (Animatronic prop) → `KayKit_Animatronic/Props/Guitar.fbx`.
+- 19 KayKit Skeleton **weapons** copied from `KayKit Skeletons 1.1/assets/fbx(unity)/` → `Assets/_Sandbox/_BM/Art/Characters/KayKit_Skeletons/Weapons/`: Axe, Blade, Dagger, Mace, Mace_Large, Scythe, Staff, Golem_Axe, Golem_Axe_Large, Crossbow, Arrow (+Half/Broken/Broken_Half), Quiver, Shield_Large_A/B, Shield_Small_A/B. Mat_Skeleton (existing) auto-applies via the script that attached the test props.
+- KayKit Skeleton character pack's bundled texture (`skeleton_texture_A.png`) intentionally not re-imported — already in project.
+
+*Validation findings:*
+- **`Melee_1H_Attack_Chop` reads as a jab once a weapon is in the hand.** It's a 1.07s straight-thrust clip (full clip range, not truncated). With nothing in the hand it looked plausible; with `Skeleton_Axe`/`Dagger`/Guitar attached it's clearly wrong. Slice variants tested: `Slice_Diagonal` (1.00s), `Slice_Horizontal` (1.37s), `2H_Attack_Slice` (1.10s). **Slice_Horizontal reads best with weapons in hand for both Minion and Ghoul.** Queued as a real swap to the BM controllers (see Queued / Design Decisions).
+- Synty AirGuitar (`A_POLY_EMOT_Celebrate_AirGuitar_Masc.fbx`, 4.33s) retargets cleanly to the Animatronic — fun pairing with the Guitar prop, but NOT canonical given the Animatronic's auto-upgrade-button role. Tagged in memory as test-only.
+- Mild clipping observed on Skeleton_Minion's narrower torso during full-arm Synty motions (e.g. `Eat_Large`). Owner: Retarget Pro (purchased; not yet reinstalled in Sandbox). Plan is to bake retargeted clips per-rig with Retarget Pro rather than tweak avatar muscles.
+
+*Memory updates:*
+- `project_bm_animation_sources.md` rewritten with character roles (Ghoul/Minion/Animatronic/Dragon), pack assignments (KayKit melee → Minion/Ghoul, Synty Idles + Emotes/Taunts → Animatronic, Dragon's bundled clips for Dragon), and the Retarget Pro queue.
+- Indexed in `MEMORY.md`.
+
+*Status of current BM scene:* unchanged — Sprint 2 Phase 1-9 still in progress. Test-scene experimentation only; no `BM_Shaft` edits.
+
+---
+
 **Session 87 (Apr 28, 2026) -- Outlet backup system + cascade visuals + Ghoul facing/feel polish:**
 
 *Outlet backup system:*

@@ -100,7 +100,7 @@ These 17 packages are used consistently across all TecVooDoo projects. Install i
 | vFolders 2 | 2.1.14 | Editor QoL |
 | vFavorites 2 | 2.0.14 | Editor QoL |
 | Wingman | 1.3.0 | Inspector tool |
-| Ultimate Preview Window Pro | 1.3.2 | Editor preview |
+| Ultimate Preview 2 (Voxel Labs) | v2 | Editor preview (succeeds Ultimate Preview Window Pro 1.3.4; same install path, same Asset Store slug, ENTRY-343 + v2 addendum). HDRP users must import the bundled `UltimatePreview_HDRP.unitypackage` after install. |
 | Power Pivot (Kamgam) | -- | Mesh pivot editing (fixes Synty/KayKit FBX pivots in-place; survives reimport via sibling-asset-saved meshes) |
 | Technie Collider Creator 2 (Triangular Pixels) | -- | Paint-based collider authoring + VHACD auto-decomp; pipeline-agnostic output (ENTRY-330) |
 | Audio Preview Tool | 1.1.0 | Audio preview |

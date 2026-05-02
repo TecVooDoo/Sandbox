@@ -1,9 +1,146 @@
 # MCP Connection Brief
 
-**Plugin:** `com.ivanmurzak.unity.mcp` v0.66.0+ (latest verified: v0.66.1, 2026-04-28)
+**Plugin:** `com.ivanmurzak.unity.mcp` — **PINNED to v0.66.1** (do NOT upgrade past this; see warning below)
 **Transport:** `streamableHttp` (single shared server per project)
 **Last architecture change:** April 25, 2026 — migrated from stdio to HTTP
 **First verified project:** Sandbox (April 25, 2026)
+
+> ## ⚠️ Do NOT upgrade past v0.66.1 — sub-packages stripped (as of 2026-04-29)
+>
+> **Broken versions:** v0.67.0, v0.67.1, and v0.67.2 (all released 2026-04-29) ship the ReflectorNet 5.1.x "path-scoped reads/views" tool schema. Two failure modes:
+>
+> 1. **Schema rejected by Claude Code MCP client:** HTTP 400 `invalid_request_body` (e.g. on `gameobject-component-destroy`). Tool bridge dies, Unity panel still shows green.
+> 2. **Compile errors inside the package itself** (seen on 0.67.2): `CS0246: type 'ViewQuery' could not be found` across `Assets.Shader.GetData.cs`, `Assets.GetData.cs`, `Scene.GetData.cs`, `GameObject.Find.cs`, `GameObject.Component.Get.pre-Unity.6.5.cs`, `Object.GetData.cs`. Compilation fails before tools even register.
+>
+> Tracking issues:
+> - **[#699](https://github.com/IvanMurzak/Unity-MCP/issues/699)** "ViewQuery Errors After Update to 0.67.1" — exact match for the CS0246 symptom (filed by vaulcul, closed via PR #700).
+> - **[#700](https://github.com/IvanMurzak/Unity-MCP/pull/700)** "fix: disable auto-referencing for DependencyResolver assembly" — Ivan's fix. Merged *before* the v0.67.2 release commit, so v0.67.2 should contain it… but several users (including this one) hit the bug on a build labeled v0.67.2.
+> - **[#696](https://github.com/IvanMurzak/Unity-MCP/issues/696)** "Auto-update popup uses GitHub release as version source, causing premature update prompts before OpenUPM publish" — was suspected as the root cause initially, but ruled out: OpenUPM verified to be serving v0.67.2 (published 2026-04-30 per `https://package.openupm.com/com.ivanmurzak.unity.mcp`). The package users get IS the same code as the GitHub tag.
+> - (Older, unrelated: #646 was about VS2026 Insiders specifically.)
+>
+> ### What we actually tested on 2026-04-29 (cold install on Sandbox)
+>
+> Sandbox was in a clean-slate state (no `Assets/Plugins/NuGet/` folder, no MCP entry in manifest, falling back to 0.63.3 transitively). Pinned manifest to v0.67.2 to test if a cold install with no stale state would work cleanly. Result: **180+ compile errors** like `error CS0234: type or namespace 'Json' does not exist in namespace 'System.Text'`, `'ReflectorNet' does not exist in 'com.IvanMurzak'`, `'McpPlugin' does not exist`, `'Extensions' does not exist in 'Microsoft'`, `'R3' could not be found`. Unity opened in Safe Mode.
+>
+> Diagnosis: the `DependencyResolver` assembly that's supposed to fetch NuGet DLLs into `Assets/Plugins/NuGet/` is itself a C# assembly that has to compile first — but the MCP package's *other* assemblies fail to compile when the NuGet DLLs are absent, which apparently blocks DependencyResolver from running at all. Chicken-and-egg.
+>
+> **PR #700's "fix" does NOT solve the cold-install case.** It addresses an auto-referencing issue but still requires existing NuGet DLLs to bootstrap. Anyone with an already-populated `Assets/Plugins/NuGet/` from a prior install can probably take 0.67.2 fine; anyone starting cold cannot.
+>
+> Reverting Sandbox to v0.66.1 with no NuGet folder failed the same way. Same chicken-and-egg.
+>
+> ### What's in place (2026-04-29, end of day)
+>
+> 1. **Every project pinned** to `"com.ivanmurzak.unity.mcp": "0.66.1"` in `Packages/manifest.json` (13 projects: Sandbox, FearSteez, HOK, AudioProject, SpaceSucks, DLYH, HideNReap, TecVooDoo, GRIMMORPG, SetDesign, AQS, VNPC, M3).
+> 2. **All three sub-packages stripped** from every manifest: `com.ivanmurzak.unity.mcp.animation`, `com.ivanmurzak.unity.mcp.particlesystem`, `com.ivanmurzak.unity.mcp.probuilder`. They were the upgrade vector — newer versions transitively demand `mcp >= 0.67.x` and silently drag the core up. With them removed entirely, Package Manager has no path to escalate the core version.
+>
+> ### Why pinning alone wasn't enough — TWO failure modes seen today
+>
+> - **Transitive escalation:** UPM resolves transitive deps to the *highest* matching version. A sub-package declaring `mcp >= 0.67.x` silently dragged the core past the pin, no conflict prompt. (This is why we removed the sub-packages.)
+> - **UI-driven update overrides the pin:** Sandbox got bumped from 0.66.1 → 0.67.2 because Package Manager UI rewrote the manifest line directly when an Update notification was accepted. The pin in `manifest.json` protects against background resolution; only user discipline protects against UI clicks.
+>
+> ### Critical rule for the user
+>
+> **Do NOT click "Update" on `com.ivanmurzak.unity.mcp` in the Package Manager UI** until #699 is genuinely fixed (cold-install verified — see below). Treat any 0.67.x update prompt as a "no."
+>
+> ### Tool loss from removing sub-packages
+>
+> Gone until the package is re-added: `animation-create/modify`, `animator-*`, `particle-system-*`, `probuilder-*`. Use Unity's UI directly for those operations in the meantime. The 95+ core IvanMurzak tools (gameobject-*, scene-*, assets-*, script-execute) and all TMCP custom tools are unaffected.
+>
+> ### Recovery if a project does get bumped (still has its NuGet folder)
+>
+> Use this if the project's `Assets/Plugins/NuGet/` is intact — most upgrade-bump cases.
+>
+> 1. Close Unity.
+> 2. Edit `Packages/manifest.json`: revert `com.ivanmurzak.unity.mcp` to `"0.66.1"`.
+> 3. Delete `Library/PackageCache/com.ivanmurzak.unity.mcp@<hash>/` (check `package.json` inside to confirm it's a 0.67.x cache before deleting). Forces UPM to re-fetch 0.66.1 cleanly.
+> 4. Reopen Unity. Lock file rewrites itself.
+>
+> ### Recovery if a project lost its NuGet folder (cold-install bootstrap)
+>
+> Use this if `Assets/Plugins/NuGet/` is missing or empty AND the project keeps falling into Safe Mode with `CS0234`/`CS0246` errors about missing namespaces (`System.Text.Json`, `com.IvanMurzak.ReflectorNet`, `com.IvanMurzak.McpPlugin`, `Microsoft.Extensions`, `R3`). This happens if:
+>
+> - The project was on an old MCP version (e.g. 0.63.3) that didn't use NuGet, and is now being bumped to 0.66.x+
+> - Someone manually deleted the NuGet folder
+> - The DependencyResolver was killed mid-bootstrap on first install
+>
+> **Bootstrap by copying the NuGet folder from a working sibling project.** Verified working on 2026-04-29: Sandbox had no NuGet folder, copied HOK's, then upgrade to 0.66.1 succeeded.
+>
+> 1. Close Unity on the broken project.
+> 2. Pick any working sibling project at the same MCP version target (e.g. HOK has 0.66.1 with a fully populated NuGet folder).
+> 3. Copy `<sibling>/Assets/Plugins/NuGet/` → `<broken-project>/Assets/Plugins/NuGet/` (recursive, ~31 MB, ~40 packages including ReflectorNet, McpPlugin, Microsoft.Extensions.*, R3, System.Text.Json).
+> 4. Edit broken project's `Packages/manifest.json`: set `"com.ivanmurzak.unity.mcp"` to the target version (e.g. `"0.66.1"`).
+> 5. Reopen Unity. The MCP source compiles against the existing NuGet DLLs, DependencyResolver takes over from there, lock file rewrites.
+>
+> The .meta GUIDs from the sibling are reused — that's fine for plain DLL meta files (Unity doesn't care about cross-project GUID uniqueness for plugins).
+>
+> ### Sub-package version map (for re-adding once #646 closes)
+>
+> Last 0.66-compatible versions, in case you partially restore before the full fix:
+> - `com.ivanmurzak.unity.mcp.animation`: **1.1.26** (1.1.28+ demands core 0.67.x)
+> - `com.ivanmurzak.unity.mcp.particlesystem`: **1.0.53** (still 0.66-compatible at this version)
+> - `com.ivanmurzak.unity.mcp.probuilder`: **1.0.65** (1.0.67+ demands core 0.67.x)
+>
+> ### Re-check before unpinning / re-adding sub-packages
+>
+> Schedule reminder fires 2026-05-03 ([routine](https://claude.ai/code/routines/trig_01BdRSGbqeTGAkUc5aEo61XV)). Before lifting the pin:
+>
+> - Confirm OpenUPM has a NEW published version higher than 0.67.2 (since we know 0.67.2 itself doesn't fix the cold-install bug). https://package.openupm.com/com.ivanmurzak.unity.mcp serves the registry JSON.
+> - Confirm [#699](https://github.com/IvanMurzak/Unity-MCP/issues/699) hasn't been reopened, and that any new release notes mention the cold-install / DependencyResolver chicken-and-egg specifically (not just the auto-reference fix from PR #700).
+> - Bump core `mcp` on Sandbox first; run the [Verification Commands](#verification-commands). Sandbox is the safest canary — its NuGet folder is the most recently bootstrapped, lowest risk if it breaks again.
+> - If green, propagate to the other 12 one at a time and re-add the three sub-packages at their latest versions.
+> - Update this section + the Port Registry timestamps. Don't bulk-bump.
+
+> ### Status note (2026-04-30, late update)
+>
+> **v0.67.3 was published to OpenUPM at 2026-04-30 18:24 UTC** containing PR #705 ("NuGet resolver doesn't replace stale ReflectorNet version after package update"). We tested it on Sandbox; the auto-resolver fix in PR #705 **does NOT actually work** — same `CS0246: 'ViewQuery' could not be found` errors as before, only this time just 6 errors (only ReflectorNet stale; the bootstrap-supplied McpPlugin/Microsoft.Extensions/R3/System.Text.Json all stayed compatible).
+>
+> **However: the v0.67.3 source code itself is correct.** Verified via manual workaround on Sandbox:
+> 1. Closed Unity at 0.67.3 with compile errors.
+> 2. Downloaded `com.IvanMurzak.ReflectorNet 5.1.1` from nuget.org (`https://www.nuget.org/api/v2/package/com.IvanMurzak.ReflectorNet/5.1.1`).
+> 3. Extracted, took the `lib/netstandard2.1/ReflectorNet.dll` (230 KB).
+> 4. Created `Assets/Plugins/NuGet/com.IvanMurzak.ReflectorNet.5.1.1/` with that DLL + the old `.meta` file copied over from the 5.0.0 folder.
+> 5. Deleted the old `Assets/Plugins/NuGet/com.IvanMurzak.ReflectorNet.5.0.0/` folder + its `.meta`.
+> 6. Reopened Unity. Compile clean.
+> 7. Verified MCP tools functional: `scene-list-opened` returned a valid response — **no HTTP 400 schema rejection**. The schema regression from 0.67.0–0.67.2 is also fixed in 0.67.3 source.
+>
+> So v0.67.3 works **iff** you manually swap ReflectorNet. The only remaining bug is the resolver's failure to do that swap automatically.
+>
+> ### Current cross-project state (end of day 2026-04-30)
+>
+> | Project | MCP version | Sub-packages | Status |
+> |---------|-------------|--------------|--------|
+> | Sandbox | **0.67.3** | animation 1.1.29, particlesystem 1.0.56, probuilder 1.0.68 | manual ReflectorNet 5.1.1 swap, **fully working** |
+> | All other 12 | 0.66.1 | none | working, ReflectorNet 5.0.0, untouched |
+>
+> Sandbox is the canary and proves the full upgrade path works. The other 12 are fine on 0.66.1. No need to bulk-upgrade unless you want the latest features or restored sub-package tools — the recipe below applies per project.
+>
+> ### What we proved on Sandbox
+>
+> 1. v0.67.3 source code is correct (compiles, tools work, no HTTP 400 schema rejection).
+> 2. The PR #705 "fix" for auto-refreshing stale ReflectorNet does NOT actually work; manual DLL swap is still required.
+> 3. The three sub-packages at their latest 0.67.x-compatible versions install cleanly on top of 0.67.3 + manual ReflectorNet swap, no additional DLL swaps needed.
+> 4. The McpPlugin DLLs (6.1.0) carried over from the 0.66.1 NuGet folder still work on 0.67.3 — only ReflectorNet needed updating.
+>
+> ### Manual upgrade recipe: 0.66.1 → 0.67.3 + sub-packages (per project)
+>
+> Verified on Sandbox 2026-04-30. Use this to bring a project to bleeding-edge with full tool coverage.
+>
+> 1. **Close Unity** for the project.
+> 2. **Edit `Packages/manifest.json`**:
+>    - Bump `"com.ivanmurzak.unity.mcp"` from `"0.66.1"` to `"0.67.3"`.
+>    - (Optional, only if you want the tool groups back) add the three sub-packages:
+>      ```json
+>      "com.ivanmurzak.unity.mcp.animation": "1.1.29",
+>      "com.ivanmurzak.unity.mcp.particlesystem": "1.0.56",
+>      "com.ivanmurzak.unity.mcp.probuilder": "1.0.68",
+>      ```
+> 3. **Replace ReflectorNet DLL** in the project's NuGet folder:
+>    - Either download fresh from `https://www.nuget.org/api/v2/package/com.IvanMurzak.ReflectorNet/5.1.1` and use `lib/netstandard2.1/ReflectorNet.dll`, OR copy from Sandbox's existing 5.1.1 folder (`E:/Unity/Sandbox/Assets/Plugins/NuGet/com.IvanMurzak.ReflectorNet.5.1.1/`).
+>    - Create `Assets/Plugins/NuGet/com.IvanMurzak.ReflectorNet.5.1.1/` containing `ReflectorNet.dll` and a `.meta` (copied from the existing 5.0.0 meta).
+>    - Delete the old `Assets/Plugins/NuGet/com.IvanMurzak.ReflectorNet.5.0.0/` folder and its `.meta`.
+> 4. **Reopen Unity.** Should compile clean. Test a tool to verify MCP works.
+>
+> **Do NOT click the Update prompt in Package Manager UI** — the resolver will fail to refresh the DLL even if the manifest version updates correctly. Always do the DLL swap manually alongside the manifest bump.
 
 > **For a project Claude reading this:** if you're being pointed here to migrate a project, jump to **[Per-Project Migration](#per-project-migration-checklist)** below. The user already flipped Transport in Unity and restarted; your job is to verify and (if needed) hand-edit `.claude/mcp.json` to match `.mcp.json`.
 >

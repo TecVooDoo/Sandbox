@@ -89,10 +89,14 @@ namespace BM.Shaft
         private void AttachWeapon(Transform modelRoot)
         {
             if (_weaponPrefab == null || modelRoot == null) return;
-            // KayKit Rig_Medium hierarchy: model > Rig_Medium > root > hips > spine > chest > upperarm.r > lowerarm.r > wrist.r > hand.r
-            Transform handR = FindChildByName(modelRoot, "hand.r");
-            if (handR == null) return;
-            var weapon = Instantiate(_weaponPrefab, handR);
+            // KayKit Rig_Medium hierarchy: model > Rig_Medium > root > hips > spine > chest > upperarm.r > lowerarm.r > wrist.r > hand.r > handslot.r
+            // Parent to handslot.r (not hand.r) -- handslot is authored with the correct grip rotation
+            // for KayKit weapons. Resetting the weapon transform under handslot lines it up perfectly.
+            // Falls back to hand.r if handslot.r is missing (non-KayKit rig).
+            Transform attach = FindChildByName(modelRoot, "handslot.r");
+            if (attach == null) attach = FindChildByName(modelRoot, "hand.r");
+            if (attach == null) return;
+            var weapon = Instantiate(_weaponPrefab, attach);
             weapon.transform.localPosition = Vector3.zero;
             weapon.transform.localRotation = Quaternion.identity;
             weapon.transform.localScale = Vector3.one;

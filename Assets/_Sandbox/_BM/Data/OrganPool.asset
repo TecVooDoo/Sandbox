@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69dcc3cce82391e4f86007ef393a2f86, type: 3}
+  m_Name: OrganPool
+  m_EditorClassIdentifier: Assembly-CSharp::BM.Core.OrganPool
+  _smallOrgans:
+  - {fileID: 8222375708860251369, guid: 69046ab3f9205d048adbc6122bfae0c5, type: 3}
+  - {fileID: 8685314399073279580, guid: 2bead30f0c8f59e41a177cafef588b91, type: 3}
+  - {fileID: 5608731545631368727, guid: e0b93ba8c62d4414a9b4ba7784437c10, type: 3}
+  - {fileID: 6507303684040338089, guid: 5d4907b5d02cc5d4dbbddd638301c43c, type: 3}
+  - {fileID: 8575239311820781604, guid: b38ecb03d10d2164e8e22b3cdd6c33e6, type: 3}
+  _largeOrgans:
+  - {fileID: 4804237946954239398, guid: db503c6bdb9a1ff488b42ee14cc2f228, type: 3}
+  - {fileID: 9031415208316644020, guid: 74828ec1b20f95e40ab8259a07a14292, type: 3}
+  - {fileID: 2951336265782384143, guid: c46d0817400a4a2478968c6c88b78588, type: 3}
+  - {fileID: 2934292902126418537, guid: 623cdcd02789c2e4697944aaa49ac07f, type: 3}
+  - {fileID: 6661418719479576981, guid: 0312a0eb3750aa34697ec46109c071ff, type: 3}
